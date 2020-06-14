@@ -1,82 +1,83 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
-  <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-    <RuntimeIdentifiers>win-x64;linux-x64</RuntimeIdentifiers>
-    <LangVersion>8</LangVersion>
-  </PropertyGroup>
-  <ItemGroup>
-    <Folder Include="Storage\Logs" />
-    <Folder Include="wwwroot\" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="CodeHollow.FeedReader" Version="1.2.1" />
-    <PackageReference Include="CsvHelper" Version="15.0.5" />
-    <PackageReference Include="EasyEncrypt" Version="2.1.0" />
-    <PackageReference Include="FluentMigrator" Version="3.2.6" />
-    <PackageReference Include="FluentMigrator.Runner" Version="3.2.6" />
-    <PackageReference Include="Flurl.Http" Version="2.4.2" />
-    <PackageReference Include="Google.Cloud.Vision.V1" Version="2.0.0" />
-    <PackageReference Include="GoogleTranslateFreeApi" Version="1.1.1" />
-    <PackageReference Include="Hangfire.AspNetCore" Version="1.7.11" />
-    <PackageReference Include="Hangfire.Dashboard.Basic.Authentication" Version="1.1.0" />
-    <PackageReference Include="Hangfire.Heartbeat" Version="0.5.0" />
-    <PackageReference Include="Hangfire.LiteDB" Version="0.3.1" />
-    <PackageReference Include="Hangfire.MySql.Core_MySqlData" Version="2.2.7" />
-    <PackageReference Include="Hangfire.Storage.SQLite" Version="0.2.4" />
-    <PackageReference Include="JsonEnvVar" Version="1.0.0" />
-    <PackageReference Include="JsonFlatFileDataStore" Version="2.2.2" />
-    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.0.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.ML" Version="1.5.0" />
-    <PackageReference Include="MySql.Data" Version="8.0.20" />
-    <PackageReference Include="Serilog" Version="2.9.0" />
-    <PackageReference Include="Serilog.AspNetCore" Version="3.2.0" />
-    <PackageReference Include="Serilog.Settings.Configuration" Version="3.1.0" />
-    <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
-    <PackageReference Include="Serilog.Sinks.Datadog.Logs" Version="0.3.1" />
-    <PackageReference Include="Serilog.Sinks.File" Version="4.1.0" />
-    <PackageReference Include="Serilog.Sinks.Loggly" Version="5.4.0" />
-    <PackageReference Include="SqlKata" Version="2.2.0" />
-    <PackageReference Include="SqlKata.Execution" Version="2.2.0" />
-    <PackageReference Include="System.Data.DataSetExtensions" Version="4.6.0-preview3.19128.7" />
-    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.113.1" />
-    <PackageReference Include="Telegram.Bot" Version="15.6.0" />
-    <PackageReference Include="Telegram.Bot.Framework" Version="2.0.0-alpha5" />
-    <PackageReference Include="Tesseract" Version="3.3.0" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Update="Storage\Buttons\**">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Storage\Config\**">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Storage\InbotDocs\**">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Storage\SQL\**">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Update="I18n\Lang.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Lang.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Update="I18n\Lang.en.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="I18n\Lang.id.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="I18n\Lang.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Lang.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <RuntimeIdentifiers>win-x64;linux-x64</RuntimeIdentifiers>
+        <LangVersion>8</LangVersion>
+    </PropertyGroup>
+    <ItemGroup>
+        <Folder Include="Storage\Logs" />
+        <Folder Include="wwwroot\" />
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="CodeHollow.FeedReader" Version="1.2.1" />
+        <PackageReference Include="CsvHelper" Version="15.0.5" />
+        <PackageReference Include="Datadog.Trace" Version="1.17.0" />
+        <PackageReference Include="EasyEncrypt" Version="2.1.0" />
+        <PackageReference Include="FluentMigrator" Version="3.2.7" />
+        <PackageReference Include="FluentMigrator.Runner" Version="3.2.7" />
+        <PackageReference Include="Flurl.Http" Version="2.4.2" />
+        <PackageReference Include="Google.Cloud.Vision.V1" Version="2.0.0" />
+        <PackageReference Include="GoogleTranslateFreeApi" Version="1.1.1" />
+        <PackageReference Include="Hangfire.AspNetCore" Version="1.7.11" />
+        <PackageReference Include="Hangfire.Dashboard.Basic.Authentication" Version="1.1.0" />
+        <PackageReference Include="Hangfire.Heartbeat" Version="0.5.0" />
+        <PackageReference Include="Hangfire.LiteDB" Version="0.3.1" />
+        <PackageReference Include="Hangfire.MySql.Core_MySqlData" Version="2.2.7" />
+        <PackageReference Include="Hangfire.Storage.SQLite" Version="0.2.4" />
+        <PackageReference Include="JsonEnvVar" Version="1.0.0" />
+        <PackageReference Include="JsonFlatFileDataStore" Version="2.2.2" />
+        <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.0.0">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.ML" Version="1.5.0" />
+        <PackageReference Include="MySql.Data" Version="8.0.20" />
+        <PackageReference Include="Serilog" Version="2.9.0" />
+        <PackageReference Include="Serilog.AspNetCore" Version="3.2.0" />
+        <PackageReference Include="Serilog.Settings.Configuration" Version="3.1.0" />
+        <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
+        <PackageReference Include="Serilog.Sinks.Datadog.Logs" Version="0.3.1" />
+        <PackageReference Include="Serilog.Sinks.File" Version="4.1.0" />
+        <PackageReference Include="Serilog.Sinks.Loggly" Version="5.4.0" />
+        <PackageReference Include="SqlKata" Version="2.2.0" />
+        <PackageReference Include="SqlKata.Execution" Version="2.2.0" />
+        <PackageReference Include="System.Data.DataSetExtensions" Version="4.6.0-preview3.19128.7" />
+        <PackageReference Include="System.Data.SQLite.Core" Version="1.0.113.1" />
+        <PackageReference Include="Telegram.Bot" Version="15.7.0" />
+        <PackageReference Include="Telegram.Bot.Framework" Version="2.0.0-alpha5" />
+        <PackageReference Include="Tesseract" Version="3.3.0" />
+    </ItemGroup>
+    <ItemGroup>
+        <None Update="Storage\Buttons\**">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="Storage\Config\**">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="Storage\InbotDocs\**">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="Storage\SQL\**">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Update="I18n\Lang.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>Lang.resx</DependentUpon>
+        </Compile>
+    </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Update="I18n\Lang.en.resx">
+            <Generator>PublicResXFileCodeGenerator</Generator>
+        </EmbeddedResource>
+        <EmbeddedResource Update="I18n\Lang.id.resx">
+            <Generator>PublicResXFileCodeGenerator</Generator>
+        </EmbeddedResource>
+        <EmbeddedResource Update="I18n\Lang.resx">
+            <Generator>PublicResXFileCodeGenerator</Generator>
+            <LastGenOutput>Lang.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+    </ItemGroup>
 </Project>
