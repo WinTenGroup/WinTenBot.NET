@@ -174,6 +174,12 @@ namespace WinTenBot.Services
         {
             Log.Information($"Sending media: {mediaType}, fileId: {fileId} to {Message.Chat.Id}");
             
+            TimeProc = Message.Date.GetDelay();
+            if (caption.IsNotNullOrEmpty())
+            {
+                caption += $"\n\n⏱ <code>{TimeInit} s</code> | ⌛️ <code>{TimeProc} s</code>";
+            }
+
             switch (mediaType)
             {
                 case MediaType.Document:
