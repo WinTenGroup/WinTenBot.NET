@@ -39,9 +39,13 @@ namespace WinTenBot.Telegram
 
         public static async Task<bool> IsBotAdded(this User[] users)
         {
+            "Checking is added me?".LogInfo();
             var me = await BotSettings.Client.GetMeAsync()
                 .ConfigureAwait(false);
-            return (from user in users where user.Id == me.Id select user.Id == me.Id).FirstOrDefault();
+            var isMe = (from user in users where user.Id == me.Id select user.Id == me.Id).FirstOrDefault();
+            $"Is added me? {isMe}".LogInfo();
+
+            return isMe;
         }
 
         public static bool IsRestricted()

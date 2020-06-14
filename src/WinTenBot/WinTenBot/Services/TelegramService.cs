@@ -98,9 +98,12 @@ namespace WinTenBot.Services
 
         public async Task<long> GetMemberCount()
         {
-            var member = await Client.GetChatMembersCountAsync(Message.Chat.Id)
+            var chatId = Message.Chat.Id;
+            var memberCount = await Client.GetChatMembersCountAsync(chatId)
                 .ConfigureAwait(false);
-            return member;
+            $"Member count on {chatId} is {memberCount}".LogInfo();
+            
+            return memberCount;
         }
 
         public async Task<Chat> GetChat()
