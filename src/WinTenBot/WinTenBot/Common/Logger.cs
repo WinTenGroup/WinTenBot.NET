@@ -11,8 +11,12 @@ namespace WinTenBot.Common
     {
         public static void SetupLogger()
         {
-            var consoleStamp = "[{Timestamp:yyyy-MM-dd HH:mm:ss.ffff zzz}";
-            var outputTemplate = $"{consoleStamp} {{Level:u3}}] {{Message:lj}}{{NewLine}}{{Exception}}";
+            // var consoleStamp = "[{Timestamp:yyyy-MM-dd HH:mm:ss.ffff zzz}";
+            // var outputTemplate = $"{consoleStamp} {{Level:u3}}] {{Message:lj}}{{NewLine}}{{Exception}}";
+            
+            var templateBase = $"{{Level:u3}}] {{Message:lj}}{{NewLine}}{{Exception}}";
+            var consoleTemplate = $"[{{Timestamp:HH:mm:ss.fffff zzz}} {templateBase}";
+            var fileTemplate = $"[{{Timestamp:yyyy-MM-dd HH:mm:ss.ffff zzz}} {templateBase}";
             var logPath = "Storage/Logs/ZiziBot-.log";
             var flushInterval = TimeSpan.FromSeconds(1);
             var rollingInterval = RollingInterval.Day;
@@ -21,9 +25,9 @@ namespace WinTenBot.Common
 
             var serilogConfig = new LoggerConfiguration()
                 .Enrich.FromLogContext()
-                .WriteTo.Console(theme: SystemConsoleTheme.Colored, outputTemplate: outputTemplate)
+                .WriteTo.Console(theme: SystemConsoleTheme.Colored, outputTemplate: consoleTemplate)
                 .WriteTo.File(logPath, rollingInterval: rollingInterval, flushToDiskInterval: flushInterval,
-                    shared: true, fileSizeLimitBytes: rollingFile, outputTemplate: outputTemplate);
+                    shared: true, fileSizeLimitBytes: rollingFile, outputTemplate: consoleTemplate);
 
             if (BotSettings.IsProduction)
             {
