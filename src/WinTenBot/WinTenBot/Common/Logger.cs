@@ -62,20 +62,28 @@ namespace WinTenBot.Common
             Log.Logger = serilogConfig.CreateLogger();
         }
 
-        public static string LogInfo(string message)
+        public static string LogInfo(this string message)
         {
             Log.Information(message);
             return message;
         }
 
-        public static void LogDebug(this string message)
+        public static string LogWarning(this string message)
         {
-            Log.Debug(message);
+            Log.Warning(message);
+            return message;
         }
 
-        public static void LogError(string message, Exception ex)
+        public static string LogDebug(this string message)
+        {
+            Log.Debug(message);
+            return message;
+        }
+
+        public static string LogError(this Exception ex, string message)
         {
             Log.Error(message, ex);
+            return message;
         }
     }
 }
