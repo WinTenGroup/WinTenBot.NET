@@ -234,7 +234,7 @@ namespace WinTenBot
 
             BotScheduler.StartScheduler();
 
-            MigrationHelper.MigrateAll();
+            SqlMigration.MigrateAll();
 
             Log.Information("App is ready.");
         }

@@ -3,12 +3,13 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Serilog;
+using WinTenBot.IO;
 using WinTenBot.Providers;
 
 namespace WinTenBot.Tools
 {
     [Obsolete("Soon replace with FluentMigration")]
-    public static class MigrationHelper
+    public static class SqlMigration
     {
         public static async Task MigrateLocalStorage(this string tableName)
         {
@@ -20,28 +21,33 @@ namespace WinTenBot.Tools
         public static void MigrateMysql()
         {
             var path = Environment.CurrentDirectory + @"/Storage/SQL/MySql";
-            var listFiles = System.IO.Directory.GetFiles(path).Where(f => f.EndsWith(".sql"));
+            var listFiles = Directory.GetFiles(path).Where(f => f.EndsWith(".sql"));
             foreach (var file in listFiles)
             {
-                Log.Information($"Migrating => {file}");
-                var sql = File.ReadAllText(file);
-                var result = sql.ExecForMysqlNonQuery(true);
-
-                // Log.Information($"Result: {result}");
+                var filePath = file.SanitizeSlash();
+                if (filePath.Contains("obs"))
+                {
+                    Log.Information($"Skip => {filePath} because obsolete");
+                }
+                else
+                {
+                    Log.Information($"Migrating => {filePath}");
+                    var sql = File.ReadAllText(file);
+                    sql.ExecForMysqlNonQuery(true);
+                }
             }
         }
 
         public static void MigrateSqlite()
         {
             var path = Environment.CurrentDirectory + @"/Storage/SQL/Sqlite";
-            var listFiles = System.IO.Directory.GetFiles(path);
+            var listFiles = Directory.GetFiles(path);
             foreach (var file in listFiles)
             {
-                Log.Information($"Migrating => {file}");
-                var sql = File.ReadAllText(file);
-                var result = sql.ExecForSqLite(true);
-
-                // Log.Information($"Result: {result}");
+                var filePath = file.SanitizeSlash();
+                Log.Information($"Migrating => {filePath}");
+                var sql = File.ReadAllText(file); 
+                sql.ExecForSqLite(true);
             }
         }
 
