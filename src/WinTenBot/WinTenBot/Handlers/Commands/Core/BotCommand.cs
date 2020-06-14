@@ -25,8 +25,8 @@ namespace WinTenBot.Handlers.Commands.Core
                 case "migrate":
                     await _telegramService.SendTextAsync("Migrating ")
                         .ConfigureAwait(false);
-                    MigrationHelper.MigrateMysql();
-                    MigrationHelper.MigrateSqlite();
+                    SqlMigration.MigrateMysql();
+                    SqlMigration.MigrateSqlite();
                     await _telegramService.SendTextAsync("Migrate complete ")
                         .ConfigureAwait(false);
 
