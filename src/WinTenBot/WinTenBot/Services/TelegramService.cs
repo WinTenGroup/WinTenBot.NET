@@ -228,8 +228,11 @@ namespace WinTenBot.Services
                 sendText += $"\n\n⏱ <code>{TimeInit} s</code> | ⌛️ <code>{TimeProc} s</code>";
             }
 
+            var chatId = Message.Chat.Id;
+            Log.Information($"Updating message {SentMessageId} on {chatId}");
+
             var edit = await Client.EditMessageTextAsync(
-                Message.Chat,
+                chatId,
                 SentMessageId,
                 sendText,
                 ParseMode.Html,
