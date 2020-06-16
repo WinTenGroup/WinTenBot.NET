@@ -4,42 +4,31 @@ namespace WinTenBot.Model.Lmao
 {
     public partial class CovidAll
     {
-        [JsonProperty("cases")]
         public long Cases { get; set; }
-
-        [JsonProperty("deaths")]
+        public long TodayCases { get; set; }
         public long Deaths { get; set; }
-
-        [JsonProperty("recovered")]
+        public long TodayDeaths { get; set; }
         public long Recovered { get; set; }
-
-        [JsonProperty("updated")]
+        public long TodayRecovered { get; set; }
         public long Updated { get; set; }
-
-        [JsonProperty("active")]
         public long Active { get; set; }
+        public long Critical { get; set; }
+        public decimal CasesPerOneMillion { get; set; }
+        public decimal DeathsPerOneMillion { get; set; }
+        public long Tests { get; set; }
+        public decimal TestsPerOneMillion { get; set; }
+        public long Population { get; set; }
     }
 
     public partial class CovidAll
     {
-        public static CovidAll FromJson(string json) => JsonConvert.DeserializeObject<CovidAll>(json, Converter.Settings);
+        public static CovidAll FromJson(string json) => 
+            JsonConvert.DeserializeObject<CovidAll>(json, Converter.Settings);
     }
 
     public static partial class Serialize
     {
-        public static string ToJson(this CovidAll self) => JsonConvert.SerializeObject(self, Converter.Settings);
+        public static string ToJson(this CovidAll self) => 
+            JsonConvert.SerializeObject(self, Converter.Settings);
     }
-
-    // internal static class Converter
-    // {
-    //     public static readonly JsonSerializerSettings Settings = new JsonSerializerSettings
-    //     {
-    //         MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
-    //         DateParseHandling = DateParseHandling.None,
-    //         Converters =
-    //         {
-    //             new IsoDateTimeConverter { DateTimeStyles = DateTimeStyles.AssumeUniversal }
-    //         },
-    //     };
-    // }
 }

@@ -20,22 +20,26 @@ namespace WinTenBot.Handlers.Commands.Additional
             var partTxt = txt.SplitText(" ").ToArray();
             var part1 = partTxt.ValueOfIndex(1); // Country
 
-            await _telegramService.SendTextAsync("🔍 Getting information..");
+            await _telegramService.SendTextAsync("🔍 Getting information..")
+                .ConfigureAwait(false);
 
             var sendText = "";
             if (part1.IsNullOrEmpty())
             {
                 Log.Information("Getting Covid info Global");
                 // var sendText = await CovidHelper.GetCovidUpdatesAsync();
-                sendText = await Covid.GetCovidAll();
+                sendText = await Covid.GetCovidAll()
+                    .ConfigureAwait(false);
             }
             else
             {
                 Log.Information($"Getting Covid info by Region: {part1}");
-                sendText = await Covid.GetCovidByCountry(part1);
+                sendText = await Covid.GetCovidByCountry(part1)
+                    .ConfigureAwait(false);
             }
-
-            await _telegramService.EditAsync(sendText);
+            
+            await _telegramService.EditAsync(sendText)
+                .ConfigureAwait(false);
             
         }
     }

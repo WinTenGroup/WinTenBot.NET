@@ -5,40 +5,21 @@ namespace WinTenBot.Model.Lmao
 {
     public partial class CovidByCountry
     {
-        [JsonProperty("country")]
         public string Country { get; set; }
-
-        [JsonProperty("countryInfo")]
         public CountryInfo CountryInfo { get; set; }
-
-        [JsonProperty("cases")]
         public long Cases { get; set; }
-
-        [JsonProperty("todayCases")]
         public long TodayCases { get; set; }
-
-        [JsonProperty("deaths")]
         public long Deaths { get; set; }
-
-        [JsonProperty("todayDeaths")]
         public long TodayDeaths { get; set; }
-
-        [JsonProperty("recovered")]
         public long Recovered { get; set; }
-
-        [JsonProperty("active")]
+        public long TodayRecovered { get; set; }
         public long Active { get; set; }
-
-        [JsonProperty("critical")]
         public long Critical { get; set; }
-
-        [JsonProperty("casesPerOneMillion")]
         public long CasesPerOneMillion { get; set; }
-
-        [JsonProperty("deathsPerOneMillion")]
         public double DeathsPerOneMillion { get; set; }
-
-        [JsonProperty("updated")]
+        public long Tests { get; set; }
+        public decimal TestsPerOneMillion { get; set; }
+        public long Population { get; set; }
         public long Updated { get; set; }
     }
 
