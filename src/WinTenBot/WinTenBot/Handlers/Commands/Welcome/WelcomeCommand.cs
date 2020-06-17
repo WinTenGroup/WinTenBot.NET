@@ -8,6 +8,7 @@ using Telegram.Bot.Types.ReplyMarkups;
 using WinTenBot.Common;
 using WinTenBot.Enums;
 using WinTenBot.Services;
+using WinTenBot.Telegram;
 
 namespace WinTenBot.Handlers.Commands.Welcome
 {
@@ -31,6 +32,12 @@ namespace WinTenBot.Handlers.Commands.Welcome
             {
                 await _telegramService.SendTextAsync(sendText)
                     .ConfigureAwait(false);
+                return;
+            }
+            
+            if (!await _telegramService.IsAdminGroup()
+                .ConfigureAwait(false))
+            {
                 return;
             }
 
