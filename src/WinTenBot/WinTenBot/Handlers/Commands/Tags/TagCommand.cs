@@ -79,8 +79,8 @@ namespace WinTenBot.Handlers.Commands.Tags
                     {
                         var data = new Dictionary<string, object>()
                         {
-                            {"id_chat", msg.Chat.Id},
-                            {"id_user", msg.From.Id},
+                            {"chat_id", msg.Chat.Id},
+                            {"from_id", msg.From.Id},
                             {"tag", slugTag.Trim()},
                             {"btn_data", buttonData},
                             {"content", content}
@@ -88,7 +88,7 @@ namespace WinTenBot.Handlers.Commands.Tags
 
                         if (repFileId.IsNotNullOrEmpty())
                         {
-                            data.Add("id_data", repFileId);
+                            data.Add("file_id", repFileId);
                             data.Add("type_data", repMsg.Type);
                         }
 

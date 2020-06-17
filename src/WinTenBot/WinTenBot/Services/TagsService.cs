@@ -40,7 +40,7 @@ namespace WinTenBot.Services
         public async Task<List<CloudTag>> GetTagsByGroupAsync(string column, long chatId)
         {
             var query = await new Query("tags")
-                .Where("id_chat", chatId)
+                .Where("chat_id", chatId)
                 .OrderBy("tag")
                 .ExecForMysql()
                 .GetAsync()
@@ -61,7 +61,7 @@ namespace WinTenBot.Services
         public async Task<List<CloudTag>> GetTagByTag(long chatId, string tag)
         {
             var query = await new Query("tags")
-                .Where("id_chat", chatId)
+                .Where("chat_id", chatId)
                 .Where("tag", tag)
                 .OrderBy("tag")
                 .ExecForMysql(true)
@@ -92,7 +92,7 @@ namespace WinTenBot.Services
         {
             var delete = await new Query("tags")
                 .ExecForMysql()
-                .Where("id_chat",chatId)
+                .Where("chat_id",chatId)
                 .Where("tag",tag)
                 .DeleteAsync()
                 .ConfigureAwait(false);

@@ -6,10 +6,10 @@ namespace WinTenBot.Model
 {
     public class CloudTag
     {
-        [JsonProperty("id_chat")]
+        [JsonProperty("chat_id")]
         public string ChatId { get; set; }
         
-        [JsonProperty("id_user")]
+        [JsonProperty("from_id")]
         public string FromId { get; set; }
         
         [JsonProperty("tag")]
@@ -24,8 +24,8 @@ namespace WinTenBot.Model
         [JsonProperty("type_data")]
         public MediaType TypeData { get; set; }
         
-        [JsonProperty("id_data")]
-        public string IdData { get; set; }
+        [JsonProperty("file_id")]
+        public string FileId { get; set; }
         
         [JsonProperty("created_at")]
         public DateTime CreatedAt { get; set; }
