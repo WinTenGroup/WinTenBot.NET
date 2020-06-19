@@ -332,7 +332,7 @@ namespace WinTenBot.Telegram
                 var content = tagData[0].Content;
                 var buttonStr = tagData[0].BtnData;
                 var typeData = tagData[0].TypeData;
-                var idData = tagData[0].IdData;
+                var idData = tagData[0].FileId;
 
                 InlineKeyboardMarkup buttonMarkup = null;
                 if (!buttonStr.IsNullOrEmpty())
