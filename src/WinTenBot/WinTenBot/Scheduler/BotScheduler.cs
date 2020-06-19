@@ -26,8 +26,8 @@ namespace WinTenBot.Scheduler
 
             Log.Debug($"Starting cron Log Cleaner with id {jobId}");
             RecurringJob.RemoveIfExists(jobId);
-            RecurringJob.AddOrUpdate(jobId, () =>
-                path.ClearLogs("Zizi", true), Cron.Hourly);
+            // RecurringJob.AddOrUpdate(jobId, () => Storage.ClearLogs(path, "Zizi", true), Cron.Hourly);
+            RecurringJob.AddOrUpdate(jobId, () => Storage.ClearLog(), Cron.Hourly);
             RecurringJob.Trigger(jobId);
         }
 
