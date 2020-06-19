@@ -50,25 +50,10 @@ namespace WinTenBot
 
             BotSettings.GlobalConfiguration = Configuration;
             BotSettings.HostingEnvironment = env;
-            BotSettings.FillSettings();
-            Logger.SetupLogger();
-
-            BotSettings.DbConnectionString = Configuration["CommonConfig:ConnectionString"];
-            DbMigration.ConnectionString = BotSettings.DbConnectionString;
-
-            Log.Information($"ProductName: {Configuration["Engines:ProductName"]}");
-            Log.Information($"Version: {Configuration["Engines:Version"]}");
 
             BotSettings.Client = new TelegramBotClient(Configuration["ZiziBot:ApiToken"]);
 
-            // Bot.Clients.Add("zizibot", new TelegramBotClient(Configuration["ZiziBot:ApiToken"]));
-            // Bot.Clients.Add("macosbot", new TelegramBotClient(Configuration["MacOsBot:ApiToken"]));
-
-            GlobalConfiguration.Configuration
-                .UseSerilogLogProvider()
-                .UseColouredConsoleLogProvider();
-
-            DbMigration.RunMySqlMigration();
+            Init.RunAll();
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -158,7 +143,7 @@ namespace WinTenBot
                 .AddScoped<OcrCommand>()
                 .AddScoped<CatCommand>()
                 .AddScoped<TranslateCommand>();
-            
+
             services.AddScoped<CovidCommand>();
 
             services.AddScoped<LearnCommand>()
@@ -228,14 +213,14 @@ namespace WinTenBot
                 new ProcessMonitor(checkInterval: TimeSpan.FromSeconds(1))
             });
 
-            app.Run(async context => { await context.Response.WriteAsync("Hello World!"); });
+            app.Run(async context =>
+                await context.Response.WriteAsync("Hello World!")
+                    .ConfigureAwait(false));
 
             app.UseSerilogRequestLogging();
 
             BotScheduler.StartScheduler();
-
-            SqlMigration.MigrateAll();
-
+            
             Log.Information("App is ready.");
         }
 
@@ -321,7 +306,7 @@ namespace WinTenBot
                                 )
                                 .Use<GenericMessageHandler>()
 
-                        //.Use<NLP>()
+                            //.Use<NLP>()
                         )
                         // .UseWhen<StickerHandler>(When.StickerMessage)
                         .UseWhen<WeatherReporter>(When.LocationMessage)
