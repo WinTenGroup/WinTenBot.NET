@@ -16,6 +16,7 @@
         <PackageReference Include="FluentMigrator" Version="3.2.7" />
         <PackageReference Include="FluentMigrator.Runner" Version="3.2.7" />
         <PackageReference Include="Flurl.Http" Version="2.4.2" />
+        <PackageReference Include="Google.Cloud.Firestore" Version="2.1.0" />
         <PackageReference Include="Google.Cloud.Vision.V1" Version="2.0.0" />
         <PackageReference Include="GoogleTranslateFreeApi" Version="1.1.1" />
         <PackageReference Include="Hangfire.AspNetCore" Version="1.7.11" />
