@@ -17,7 +17,7 @@ namespace WinTenBot.Migrations.MySql
                 .WithColumn("chat_id").AsString(20)
                 .WithColumn("chat_title").AsString(150)
                 .WithColumn("chat_type").AsString(100)
-                .WithColumn("member_count").AsInt64().WithDefaultValue(-1)
+                .WithColumn("members_count").AsInt64().WithDefaultValue(-1)
                 .WithColumn("enable_bot").AsBoolean().WithDefaultValue(1)
                 .WithColumn("enable_afk_stats").AsBoolean().WithDefaultValue(1)
                 .WithColumn("enable_badword_filter").AsBoolean().WithDefaultValue(1)
