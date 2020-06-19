@@ -141,6 +141,11 @@ namespace WinTenBot.Common
             return feedUrl;
         }
 
+        public static string NumSeparator(this object number)
+        {
+            return $"{number:#,#.00}";
+        }
+
         public static string MkUrl(this string text, string url)
         {
             return $"<a href ='{url}'>{text}</a>";
