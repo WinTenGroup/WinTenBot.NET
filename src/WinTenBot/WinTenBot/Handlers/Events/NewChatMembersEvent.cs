@@ -18,7 +18,6 @@ namespace WinTenBot.Handlers.Events
 {
     public class NewChatMembersEvent : IUpdateHandler
     {
-        private GlobalBanService _globalBanService;
         private SettingsService _settingsService;
         private TelegramService _telegramService;
         private ChatSetting Settings { get; set; }
@@ -28,7 +27,6 @@ namespace WinTenBot.Handlers.Events
             var msg = context.Update.Message;
             _telegramService = new TelegramService(context);
             _settingsService = new SettingsService(msg);
-            _globalBanService = new GlobalBanService(context.Update.Message);
             await _telegramService.DeleteAsync(msg.MessageId)
                 .ConfigureAwait(false);
 
@@ -151,6 +149,7 @@ namespace WinTenBot.Handlers.Events
                 {
                     {"chat_id", msg.Chat.Id},
                     {"chat_title", msg.Chat.Title},
+                    {"chat_type", msg.Chat.Type},
                     {"members_count", memberCount},
                     {"last_welcome_message_id", sentMsgId}
                 }).ConfigureAwait(false);
@@ -221,33 +220,6 @@ namespace WinTenBot.Handlers.Events
             newMembers.AllNewBot = allNewBot;
 
             return newMembers;
-        }
-
-        private async Task<bool> CheckGlobalBanAsync(User user)
-        {
-            var userId = user.Id;
-            var isKicked = false;
-
-            // var isBan = await _elasticSecurityService.IsExistInCache(userId);
-            var isBan = await user.Id.CheckGBan().ConfigureAwait(false);
-            Log.Information($"{user} IsBan: {isBan}");
-            if (!isBan) return false;
-
-            var sendText = $"{user} terdeteksi pada penjaringan WinTenDev ES2 tapi gagal di tendang.";
-            isKicked = await _telegramService.KickMemberAsync(user).ConfigureAwait(false);
-            if (isKicked)
-            {
-                await _telegramService.UnbanMemberAsync(user).ConfigureAwait(false);
-                sendText = sendText.Replace("tapi gagal", "dan berhasil");
-            }
-            else
-            {
-                sendText += " Pastikan saya admin yang dapat menghapus Pengguna";
-            }
-
-            await _telegramService.SendTextAsync(sendText).ConfigureAwait(false);
-
-            return isKicked;
         }
     }
 }
