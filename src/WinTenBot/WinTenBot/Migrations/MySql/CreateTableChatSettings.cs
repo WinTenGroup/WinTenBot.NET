@@ -3,7 +3,7 @@ using WinTenBot.Extensions;
 
 namespace WinTenBot.Migrations.MySql
 {
-    [Migration(120200517224914)]
+    [Migration(120200621163214)]
     public class CreateTableChatSettings : Migration
     {
         private const string TableName = "group_settings";
@@ -20,6 +20,7 @@ namespace WinTenBot.Migrations.MySql
                 .WithColumn("members_count").AsInt64().WithDefaultValue(-1)
                 .WithColumn("enable_bot").AsBoolean().WithDefaultValue(1)
                 .WithColumn("enable_afk_stats").AsBoolean().WithDefaultValue(1)
+                .WithColumn("enable_anti_malfiles").AsBoolean().WithDefaultValue(1)
                 .WithColumn("enable_badword_filter").AsBoolean().WithDefaultValue(1)
                 .WithColumn("enable_fed_cas_ban").AsBoolean().WithDefaultValue(1)
                 .WithColumn("enable_fed_es2_ban").AsBoolean().WithDefaultValue(1)
