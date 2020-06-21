@@ -21,7 +21,7 @@ namespace WinTenBot.Scheduler
                     .ConfigureAwait(false);
                 foreach (var rssSetting in listChatId)
                 {
-                    var chatId = rssSetting.ChatId.ToInt64().ReduceChatId();
+                    var chatId = rssSetting.ChatId.ToInt64();
                     RegisterScheduler(chatId);
                 }
 
@@ -35,8 +35,8 @@ namespace WinTenBot.Scheduler
 
             var baseId = "rss";
             var cronInMinute = 5;
-            chatId = chatId.ToInt64().ReduceChatId();
-            var recurringId = $"{baseId}-{chatId}";
+            var reduceChatId = chatId.ToInt64().ReduceChatId();
+            var recurringId = $"{baseId}-{reduceChatId}";
 
             Log.Information($"Creating Jobs for {chatId}");
 
