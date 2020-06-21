@@ -30,21 +30,22 @@ namespace WinTenBot.Services
         public Message MessageOrEdited { get; set; }
         public CallbackQuery CallbackQuery { get; set; }
         public int SentMessageId { get; internal set; }
+        public Message SentMessage { get; set; }
         public int EditedMessageId { get; private set; }
         public int CallBackMessageId { get; set; }
         private string TimeInit { get; set; }
         private string TimeProc { get; set; }
-        
+
         public TelegramService(IUpdateContext updateContext)
         {
             Context = updateContext;
             Client = updateContext.Bot.Client;
             EditedMessage = updateContext.Update.EditedMessage;
-            
+
             Message = updateContext.Update.CallbackQuery != null
                 ? updateContext.Update.CallbackQuery.Message
                 : updateContext.Update.Message;
-            
+
             if (updateContext.Update.CallbackQuery != null)
                 CallbackQuery = updateContext.Update.CallbackQuery;
 
@@ -52,7 +53,7 @@ namespace WinTenBot.Services
 
             var settingService = new SettingsService(MessageOrEdited);
             CurrentSetting = settingService.ReadCache().Result;
-            
+
             if (Message != null)
             {
                 TimeInit = Message.Date.GetDelay();
@@ -102,7 +103,7 @@ namespace WinTenBot.Services
             var memberCount = await Client.GetChatMembersCountAsync(chatId)
                 .ConfigureAwait(false);
             $"Member count on {chatId} is {memberCount}".LogInfo();
-            
+
             return memberCount;
         }
 
@@ -165,7 +166,7 @@ namespace WinTenBot.Services
             }
 
             if (send != null) SentMessageId = send.MessageId;
-            
+
             return send;
         }
 
@@ -173,7 +174,7 @@ namespace WinTenBot.Services
             IReplyMarkup replyMarkup = null, int replyToMsgId = -1)
         {
             Log.Information($"Sending media: {mediaType}, fileId: {fileId} to {Message.Chat.Id}");
-            
+
             TimeProc = Message.Date.GetDelay();
             if (caption.IsNotNullOrEmpty())
             {
@@ -183,8 +184,8 @@ namespace WinTenBot.Services
             switch (mediaType)
             {
                 case MediaType.Document:
-                    return await Client.SendDocumentAsync(Message.Chat.Id, fileId, caption, ParseMode.Html,
-                        replyMarkup: replyMarkup, replyToMessageId: replyToMsgId)
+                    SentMessage = await Client.SendDocumentAsync(Message.Chat.Id, fileId, caption, ParseMode.Html,
+                            replyMarkup: replyMarkup, replyToMessageId: replyToMsgId)
                         .ConfigureAwait(false);
                     break;
 
@@ -193,22 +194,24 @@ namespace WinTenBot.Services
                     await using (var fs = File.OpenRead(fileId))
                     {
                         InputOnlineFile inputOnlineFile = new InputOnlineFile(fs, fileName);
-                        return await Client.SendDocumentAsync(Message.Chat.Id, inputOnlineFile, caption, ParseMode.Html,
-                            replyMarkup: replyMarkup, replyToMessageId: replyToMsgId)
+                        SentMessage = await Client.SendDocumentAsync(Message.Chat.Id, inputOnlineFile, caption,
+                                ParseMode.Html,
+                                replyMarkup: replyMarkup, replyToMessageId: replyToMsgId)
                             .ConfigureAwait(false);
                     }
 
                     break;
 
                 case MediaType.Photo:
-                    return await Client.SendPhotoAsync(Message.Chat.Id, fileId, caption, ParseMode.Html,
-                        replyMarkup: replyMarkup, replyToMessageId: replyToMsgId)
+                    SentMessage = await Client.SendPhotoAsync(Message.Chat.Id, fileId, caption, ParseMode.Html,
+                            replyMarkup: replyMarkup, replyToMessageId: replyToMsgId)
                         .ConfigureAwait(false);
                     break;
 
                 case MediaType.Video:
-                    return await Client.SendVideoAsync(Message.Chat.Id, fileId, caption: caption, parseMode: ParseMode.Html,
-                    replyMarkup:replyMarkup, replyToMessageId:replyToMsgId)
+                    SentMessage = await Client.SendVideoAsync(Message.Chat.Id, fileId, caption: caption,
+                            parseMode: ParseMode.Html,
+                            replyMarkup: replyMarkup, replyToMessageId: replyToMsgId)
                         .ConfigureAwait(false);
                     break;
 
@@ -217,9 +220,14 @@ namespace WinTenBot.Services
                     return null;
                     break;
             }
+            
+            Log.Information($"SendMedia: {SentMessage.MessageId}");
+
+            return SentMessage;
         }
 
-        public async Task EditAsync(string sendText, InlineKeyboardMarkup replyMarkup = null, bool disableWebPreview = true)
+        public async Task EditAsync(string sendText, InlineKeyboardMarkup replyMarkup = null,
+            bool disableWebPreview = true)
         {
             TimeProc = Message.Date.GetDelay();
 
@@ -243,7 +251,8 @@ namespace WinTenBot.Services
             EditedMessageId = edit.MessageId;
         }
 
-        public async Task EditMessageCallback(string sendText, InlineKeyboardMarkup replyMarkup = null, bool disableWebPreview = true)
+        public async Task EditMessageCallback(string sendText, InlineKeyboardMarkup replyMarkup = null,
+            bool disableWebPreview = true)
         {
             try
             {
@@ -321,7 +330,7 @@ namespace WinTenBot.Services
             await Client.AnswerCallbackQueryAsync(callbackQueryId, text)
                 .ConfigureAwait(false);
         }
-        
+
         public void ResetTime()
         {
             Log.Information("Resetting time..");
@@ -419,15 +428,15 @@ namespace WinTenBot.Services
             try
             {
                 await Client.PromoteChatMemberAsync(
-                    Message.Chat.Id,
-                    userId,
-                    canChangeInfo: false,
-                    canPostMessages: false,
-                    canEditMessages: false,
-                    canDeleteMessages: true,
-                    canInviteUsers: true,
-                    canRestrictMembers: true,
-                    canPinMessages: true)
+                        Message.Chat.Id,
+                        userId,
+                        canChangeInfo: false,
+                        canPostMessages: false,
+                        canEditMessages: false,
+                        canDeleteMessages: true,
+                        canInviteUsers: true,
+                        canRestrictMembers: true,
+                        canPinMessages: true)
                     .ConfigureAwait(false);
 
                 requestResult.IsSuccess = true;
@@ -449,15 +458,15 @@ namespace WinTenBot.Services
             try
             {
                 await Client.PromoteChatMemberAsync(
-                    Message.Chat.Id,
-                    userId,
-                    canChangeInfo: false,
-                    canPostMessages: false,
-                    canEditMessages: false,
-                    canDeleteMessages: false,
-                    canInviteUsers: false,
-                    canRestrictMembers: false,
-                    canPinMessages: false)
+                        Message.Chat.Id,
+                        userId,
+                        canChangeInfo: false,
+                        canPostMessages: false,
+                        canEditMessages: false,
+                        canDeleteMessages: false,
+                        canInviteUsers: false,
+                        canRestrictMembers: false,
+                        canPinMessages: false)
                     .ConfigureAwait(false);
 
                 requestResult.IsSuccess = true;
@@ -501,7 +510,7 @@ namespace WinTenBot.Services
                 CanPinMessages = unMute,
                 CanSendPolls = unMute
             };
-            
+
             Log.Information($"ChatPermissions: {permission.ToJson(true)}");
 
             if (unMute) untilDate = DateTime.UtcNow;
