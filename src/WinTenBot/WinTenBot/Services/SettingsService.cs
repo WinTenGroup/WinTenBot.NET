@@ -18,8 +18,10 @@ namespace WinTenBot.Services
     {
         private string baseTable = "group_settings";
         public Message Message { get; set; }
-        
-        public SettingsService(){}
+
+        public SettingsService()
+        {
+        }
 
         public SettingsService(Message message)
         {
@@ -68,7 +70,7 @@ namespace WinTenBot.Services
 
             var selectColumns = new[]
             {
-                "id", 
+                "id",
                 "enable_anti_malfiles",
                 "enable_fed_cas_ban",
                 "enable_fed_es2_ban",
@@ -77,9 +79,9 @@ namespace WinTenBot.Services
                 "enable_find_tags",
                 "enable_human_verification",
                 "enable_reply_notification",
-                "enable_warn_username", 
+                "enable_warn_username",
                 "enable_welcome_message",
-                "enable_word_filter_group", 
+                "enable_word_filter_group",
                 "enable_word_filter_global",
             };
 
@@ -92,9 +94,9 @@ namespace WinTenBot.Services
 
             // Log.Debug($"PreTranspose: {data.ToJson()}");
             // data.ToJson(true).ToFile("settings_premap.json");
-            
+
             using var dataTable = data.ToJson().ToDataTable();
-            
+
             var rowId = dataTable.Rows[0]["id"].ToString();
             Log.Debug($"RowId: {rowId}");
 
@@ -109,7 +111,7 @@ namespace WinTenBot.Services
             {
                 var textOrig = row["id"].ToString();
                 var value = row[rowId].ToString();
-                
+
                 Log.Debug($"Orig: {textOrig}, Value: {value}");
 
                 var boolVal = value.ToBool();
@@ -121,7 +123,7 @@ namespace WinTenBot.Services
                 {
                     forCallbackData = textOrig.Replace("enable", "disable");
                 }
-                
+
                 if (boolVal)
                 {
                     forCaptionText = textOrig.Replace("enable", "✅");
@@ -133,14 +135,14 @@ namespace WinTenBot.Services
 
                 var btnText = forCaptionText
                     .Replace("enable_", "")
-                    .Replace("_"," ");
+                    .Replace("_", " ");
 
                 // listBtn.Add(new CallBackButton()
                 // {
                 //     Text = row["id"].ToString(),
                 //     Data = row[rowId].ToString()
                 // });
-                
+
                 listBtn.Add(new CallBackButton()
                 {
                     Text = btnText.ToTitleCase(),
@@ -167,21 +169,22 @@ namespace WinTenBot.Services
 
         public async Task<int> SaveSettingsAsync(Dictionary<string, object> data)
         {
-            var where = new Dictionary<string, object>() {{"chat_id", data["chat_id"]}};
+            var chatId = data["chat_id"];
+            var where = new Dictionary<string, object>() {{"chat_id", chatId}};
 
             var check = await new Query(baseTable)
                 .Where(where)
                 .ExecForMysql()
                 .GetAsync()
                 .ConfigureAwait(false);
-            
+
             var isExist = check.Any();
-            
+
             var insert = -1;
             Log.Information($"Group setting IsExist: {isExist}");
             if (!isExist)
             {
-                Log.Information($"Inserting new data for {Message.Chat}");
+                Log.Information($"Inserting new data for {chatId}");
 
                 insert = await new Query(baseTable)
                     .ExecForMysql(true)
@@ -223,7 +226,7 @@ namespace WinTenBot.Services
                 await UpdateCache()
                     .ConfigureAwait(false);
             }
-            
+
             return await cachePath.ReadCacheAsync<ChatSetting>()
                 .ConfigureAwait(false);
         }
