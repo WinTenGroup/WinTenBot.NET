@@ -14,7 +14,6 @@ using Telegram.Bot;
 using Telegram.Bot.Framework;
 using Telegram.Bot.Framework.Abstractions;
 using WinTenBot.Bots;
-using WinTenBot.Common;
 using WinTenBot.Extensions;
 using WinTenBot.Handlers;
 using WinTenBot.Handlers.Commands.Additional;
@@ -33,7 +32,6 @@ using WinTenBot.Handlers.Events;
 using WinTenBot.Interfaces;
 using WinTenBot.Model;
 using WinTenBot.Options;
-using WinTenBot.Providers;
 using WinTenBot.Scheduler;
 using WinTenBot.Services;
 using WinTenBot.Tools;
@@ -153,14 +151,17 @@ namespace WinTenBot
             services.AddHangfireServer();
             services.AddHangfire(config =>
             {
-                config.UseStorage(Tools.Hangfire.GetMysqlStorage());
-                // config.UseStorage(Tools.Hangfire.GetSqliteStorage());
-                // config.UseStorage(HangfireProvider.GetLiteDbStorage());
-
-                config.UseSimpleAssemblyNameTypeSerializer()
-                    .UseHeartbeatPage(checkInterval: TimeSpan.FromSeconds(10))
+                config
+                    .UseStorage(HangfireJobs.GetMysqlStorage())
+                    // config.UseStorage(HangfireJobs.GetSqliteStorage())
+                    // config.UseStorage(HangfireJobs.GetLiteDbStorage())
+                    // config.UseStorage(HangfireJobs.GetRedisStorage())
+                    .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+                    .UseHeartbeatPage(checkInterval: TimeSpan.FromSeconds(5))
+                    .UseSimpleAssemblyNameTypeSerializer()
+                    .UseRecommendedSerializerSettings()
                     .UseSerilogLogProvider()
-                    .UseRecommendedSerializerSettings();
+                    .UseColouredConsoleLogProvider();
             });
         }
 
@@ -220,7 +221,7 @@ namespace WinTenBot
             app.UseSerilogRequestLogging();
 
             BotScheduler.StartScheduler();
-            
+
             Log.Information("App is ready.");
         }
 

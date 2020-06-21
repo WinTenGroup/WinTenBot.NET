@@ -4,7 +4,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Serilog;
 using WinTenBot.Common;
-using WinTenBot.Common.JsonSettings;
 using WinTenBot.Model;
 
 namespace WinTenBot.Tools
@@ -31,16 +30,18 @@ namespace WinTenBot.Tools
 
             // Bot.Clients.Add("macosbot", new TelegramBotClient(Configuration["MacOsBot:ApiToken"]));
             // Bot.Clients.Add("zizibot", new TelegramBotClient(Configuration["ZiziBot:ApiToken"]));
-
-            SetupHangfire();
         }
 
-        private static void SetupHangfire()
-        {
-            GlobalConfiguration.Configuration
-                .UseSerilogLogProvider()
-                .UseColouredConsoleLogProvider();
-        }
+        // private static void SetupHangfire()
+        // {
+        //     GlobalConfiguration.Configuration
+        //         .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+        //         .UseSimpleAssemblyNameTypeSerializer()
+        //         .UseRecommendedSerializerSettings()
+        //         .UseStorage(HangfireJobs.GetMysqlStorage())
+        //         .UseSerilogLogProvider()
+        //         .UseColouredConsoleLogProvider();
+        // }
 
         private static void ConfigureNewtonsoftJson()
         {

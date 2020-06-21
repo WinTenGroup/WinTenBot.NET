@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using Hangfire;
 using Serilog;
 using WinTenBot.IO;
@@ -10,12 +10,12 @@ namespace WinTenBot.Scheduler
     {
         public static void StartScheduler()
         {
-            Tools.Hangfire.DeleteAllJobs();
-            
+            HangfireJobs.DeleteAllJobs();
+
             StartLogCleanupScheduler();
             StartSyncWordFilter();
             RssScheduler.InitScheduler();
-            
+
             // StartSyncGlobalBanToLocal();
         }
 
