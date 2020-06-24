@@ -486,7 +486,7 @@ namespace WinTenBot.Services
 
             return requestResult;
         }
-
+        
         public async Task RestrictMemberAsync(int userId, bool unMute = false, DateTime until = default)
         {
             var chatId = Message.Chat.Id;
