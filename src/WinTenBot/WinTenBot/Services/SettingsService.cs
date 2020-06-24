@@ -172,6 +172,7 @@ namespace WinTenBot.Services
             var chatId = data["chat_id"];
             var where = new Dictionary<string, object>() {{"chat_id", chatId}};
 
+            Log.Debug($"Checking settings for {chatId}");
             var check = await new Query(baseTable)
                 .Where(where)
                 .ExecForMysql()
@@ -181,7 +182,7 @@ namespace WinTenBot.Services
             var isExist = check.Any();
 
             var insert = -1;
-            Log.Information($"Group setting IsExist: {isExist}");
+            Log.Debug($"Group setting IsExist: {isExist}");
             if (!isExist)
             {
                 Log.Information($"Inserting new data for {chatId}");
@@ -193,7 +194,7 @@ namespace WinTenBot.Services
             }
             else
             {
-                Log.Information($"Updating data for {Message.Chat}");
+                Log.Information($"Updating data for {chatId}");
 
                 insert = await new Query(baseTable)
                     .Where(where)
