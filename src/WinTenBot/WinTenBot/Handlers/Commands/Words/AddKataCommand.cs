@@ -85,7 +85,7 @@ namespace WinTenBot.Handlers.Commands.Words
                     
                     await _telegramService.AppendTextAsync("Sinkronisasi Kata ke cache")
                         .ConfigureAwait(false);
-                    await Sync.SyncGBanToLocalAsync()
+                    await Sync.SyncWordToLocalAsync()
                         .ConfigureAwait(false);
                     
                     await _telegramService.AppendTextAsync("Kata berhasil di tambahkan")
