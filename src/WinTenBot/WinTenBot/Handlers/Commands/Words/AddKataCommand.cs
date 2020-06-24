@@ -5,6 +5,7 @@ using Telegram.Bot.Framework.Abstractions;
 using WinTenBot.Common;
 using WinTenBot.Services;
 using WinTenBot.Telegram;
+using WinTenBot.Tools;
 
 namespace WinTenBot.Handlers.Commands.Words
 {
@@ -81,7 +82,12 @@ namespace WinTenBot.Handlers.Commands.Words
                 {
                     var save = await _wordFilterService.SaveWordAsync(word, isGlobalBlock)
                         .ConfigureAwait(false);
-
+                    
+                    await _telegramService.AppendTextAsync("Sinkronisasi Kata ke cache")
+                        .ConfigureAwait(false);
+                    await Sync.SyncGBanToLocalAsync()
+                        .ConfigureAwait(false);
+                    
                     await _telegramService.AppendTextAsync("Kata berhasil di tambahkan")
                         .ConfigureAwait(false);
                 }

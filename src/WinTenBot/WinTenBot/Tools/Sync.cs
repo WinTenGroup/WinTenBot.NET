@@ -146,7 +146,7 @@ namespace WinTenBot.Tools
 
             if (cloudQuery.Count() == localQuery.Count())
             {
-                // Log.Information("Seem not need sync words to Local storage");
+                Log.Debug("Seem not need sync words to Local storage");
                 return;
             }
 

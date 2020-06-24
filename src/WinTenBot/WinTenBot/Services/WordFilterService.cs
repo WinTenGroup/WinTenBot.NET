@@ -54,10 +54,10 @@ namespace WinTenBot.Services
                 .InsertAsync(data)
                 .ConfigureAwait(false);
             
-            insert = await new Query(TableName)
-                .ExecForSqLite(true)
-                .InsertAsync(data)
-                .ConfigureAwait(false);
+            // insert = await new Query(TableName)
+            //     .ExecForSqLite(true)
+            //     .InsertAsync(data)
+            //     .ConfigureAwait(false);
 
             return insert > 0;
 
