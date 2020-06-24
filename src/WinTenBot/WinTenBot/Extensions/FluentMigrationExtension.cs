@@ -21,7 +21,7 @@ namespace WinTenBot.Extensions
         public static TNext AsMySqlVarchar<TNext>(this IColumnTypeSyntax<TNext> columnTypeSyntax, Int16 max)
             where TNext : IFluentSyntax
         {
-            string varcharType = $"VARCHAR({max})";
+            string varcharType = $"VARCHAR({max}) COLLATE utf8mb4_bin";
             return columnTypeSyntax.AsCustom(varcharType);
         }
 

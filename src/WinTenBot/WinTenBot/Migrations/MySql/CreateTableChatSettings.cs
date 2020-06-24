@@ -1,4 +1,5 @@
-﻿using FluentMigrator;
+﻿using System;
+using FluentMigrator;
 using WinTenBot.Extensions;
 
 namespace WinTenBot.Migrations.MySql
@@ -11,11 +12,11 @@ namespace WinTenBot.Migrations.MySql
         public override void Up()
         {
             if (Schema.Table(TableName).Exists()) return;
-            
+
             Create.Table(TableName)
                 .WithColumn("id").AsInt32().PrimaryKey().Identity()
                 .WithColumn("chat_id").AsString(20)
-                .WithColumn("chat_title").AsString(150)
+                .WithColumn("chat_title").AsMySqlVarchar(150)
                 .WithColumn("chat_type").AsString(100)
                 .WithColumn("members_count").AsInt64().WithDefaultValue(-1)
                 .WithColumn("enable_bot").AsBoolean().WithDefaultValue(1)
@@ -53,7 +54,7 @@ namespace WinTenBot.Migrations.MySql
 
         public override void Down()
         {
-            throw new System.NotImplementedException();
+            Delete.Table(TableName);
         }
     }
 }
