@@ -35,15 +35,17 @@ namespace WinTenBot.Telegram
                 Message = message
             };
 
+            Log.Information("preparing settings data..");
             var data = new Dictionary<string, object>()
             {
-                ["chat_id"] = message.Chat.Id,
-                ["chat_title"] = message.Chat.Title,
-                ["chat_type"] = message.Chat.Type
+                {"chat_id", message.Chat.Id},
+                {"chat_title", message.Chat.Title ?? @"N\A"},
+                {"chat_type", message.Chat.Type.ToString()}
             };
-
-            var update = await settingsService.SaveSettingsAsync(data)
+            
+            var saveSettings = await settingsService.SaveSettingsAsync(data)
                 .ConfigureAwait(false);
+            Log.Debug($"Ensure Settings: {saveSettings}");
 
             await settingsService.UpdateCache()
                 .ConfigureAwait(false);
