@@ -34,7 +34,7 @@ namespace WinTenBot.Telegram
             };
 
             var insertHit = await new Query("hit_activity")
-                .ExecForMysql()
+                .ExecForMysql(true)
                 .InsertAsync(data)
                 .ConfigureAwait(false);
 
