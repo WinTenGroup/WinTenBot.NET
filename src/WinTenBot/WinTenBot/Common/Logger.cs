@@ -32,7 +32,7 @@ namespace WinTenBot.Common
             if (BotSettings.IsProduction)
             {
                 serilogConfig = serilogConfig
-                    .MinimumLevel.Debug()
+                    .MinimumLevel.Information()
                     .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
                     .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Information)
                     .MinimumLevel.Override("Hangfire", LogEventLevel.Information);
