@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
     <PropertyGroup>
         <TargetFramework>netcoreapp3.1</TargetFramework>
         <RuntimeIdentifiers>win-x64;linux-x64</RuntimeIdentifiers>
@@ -44,7 +44,7 @@
         <PackageReference Include="SqlKata.Execution" Version="2.2.0" />
         <PackageReference Include="System.Data.DataSetExtensions" Version="4.6.0-preview3.19128.7" />
         <PackageReference Include="System.Data.SQLite.Core" Version="1.0.113.1" />
-        <PackageReference Include="Telegram.Bot" Version="15.7.0" />
+        <PackageReference Include="Telegram.Bot" Version="15.7.1" />
         <PackageReference Include="Telegram.Bot.Framework" Version="2.0.0-alpha5" />
         <PackageReference Include="Tesseract" Version="3.3.0" />
     </ItemGroup>
