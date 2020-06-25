@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -110,7 +110,7 @@ namespace WinTenBot.Telegram
 
                 var hitActivity = query.ToJson().MapObject<List<HitActivity>>().FirstOrDefault();
 
-                Log.Information($"SangMata: {hitActivity.ToJson(true)}");
+                Log.Debug($"SangMata: {hitActivity.ToJson(true)}");
 
                 var changesCount = 0;
                 var msgBuild = new StringBuilder();
