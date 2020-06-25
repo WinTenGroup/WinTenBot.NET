@@ -127,24 +127,29 @@ namespace WinTenBot.Tools
             await "fban_user".DeleteDuplicateRow("user_id")
                 .ConfigureAwait(false);
         }
-
-
+        
         public static async Task SyncWordToLocalAsync()
         {
             // Log.Information("Getting data from MySql");
-            var cloudQuery = await new Query("word_filter")
+            var cloudQuery = (await new Query("word_filter")
                 .ExecForMysql()
                 .GetAsync()
-                .ConfigureAwait(false);
+                .ConfigureAwait(false)).ToList();
 
             var cloudWords = cloudQuery.ToJson().MapObject<List<WordFilter>>();
 
-            var localQuery = await new Query("word_filter")
+            var localQuery = (await new Query("word_filter")
                 .ExecForSqLite()
                 .GetAsync()
-                .ConfigureAwait(false);
+                .ConfigureAwait(false)).ToList();
+            var localWords = localQuery.ToJson().MapObject<List<WordFilter>>();
 
-            if (cloudQuery.Count() == localQuery.Count())
+
+            var diffWords = cloudWords
+                .Where(c => localWords.All(l => l.Word != c.Word)).ToList();
+            Log.Debug($"DiffWords: {diffWords.Count} item(s)");
+
+            if (diffWords.Count == 0)
             {
                 Log.Debug("Seem not need sync words to Local storage");
                 return;
@@ -176,7 +181,7 @@ namespace WinTenBot.Tools
                     .ConfigureAwait(false);
             }
 
-            Log.Information($"Synced {cloudQuery.Count()} row(s)");
+            Log.Information($"Synced {cloudWords.Count} row(s)");
         }
     }
 }
