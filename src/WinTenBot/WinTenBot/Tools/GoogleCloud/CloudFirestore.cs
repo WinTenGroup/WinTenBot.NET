@@ -5,7 +5,7 @@ using WinTenBot.Common;
 using WinTenBot.IO;
 using WinTenBot.Model;
 
-namespace WinTenBot.Tools
+namespace WinTenBot.Tools.GoogleCloud
 {
     public static class CloudFirestore
     {

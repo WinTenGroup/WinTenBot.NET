@@ -6,6 +6,7 @@ using WinTenBot.Common;
 using WinTenBot.IO;
 using WinTenBot.Services;
 using WinTenBot.Tools;
+using WinTenBot.Tools.GoogleCloud;
 
 namespace WinTenBot.Handlers.Commands.Additional
 {
