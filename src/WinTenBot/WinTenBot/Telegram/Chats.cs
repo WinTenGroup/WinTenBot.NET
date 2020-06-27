@@ -27,18 +27,26 @@ namespace WinTenBot.Telegram
 
         public static async Task EnsureChatHealthAsync(this TelegramService telegramService)
         {
-            Log.Information("Ensuring chat health..");
+            Log.Debug("Ensuring chat health..");
 
             var message = telegramService.Message;
+            var chatId = message.Chat.Id;
             var settingsService = new SettingsService
             {
                 Message = message
             };
 
-            Log.Information("preparing settings data..");
+            var isExist = await settingsService.IsSettingExist().ConfigureAwait(false);
+            if (isExist)
+            {
+                Log.Debug("Settings for chatId {0} is exist, done.", chatId);
+                return;
+            }
+
+            Log.Information("preparing restore health on chatId {0}..", chatId);
             var data = new Dictionary<string, object>()
             {
-                {"chat_id", message.Chat.Id},
+                {"chat_id", chatId},
                 {"chat_title", message.Chat.Title ?? @"N\A"},
                 {"chat_type", message.Chat.Type.ToString()}
             };
