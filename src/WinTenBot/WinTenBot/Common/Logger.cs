@@ -25,9 +25,15 @@ namespace WinTenBot.Common
 
             var serilogConfig = new LoggerConfiguration()
                 .Enrich.FromLogContext()
-                .WriteTo.Console(theme: SystemConsoleTheme.Colored, outputTemplate: consoleTemplate)
-                .WriteTo.File(logPath, rollingInterval: rollingInterval, flushToDiskInterval: flushInterval,
-                    shared: true, fileSizeLimitBytes: rollingFile, outputTemplate: consoleTemplate);
+                .WriteTo.Async(a =>
+                    a.File(logPath, rollingInterval: rollingInterval, flushToDiskInterval: flushInterval,
+                        shared: true, fileSizeLimitBytes: rollingFile, outputTemplate: consoleTemplate))
+                .WriteTo.Async(a => 
+                    a.Console(theme: SystemConsoleTheme.Colored, outputTemplate: consoleTemplate));
+            
+                // .WriteTo.Console(theme: SystemConsoleTheme.Colored, outputTemplate: consoleTemplate);
+                // .WriteTo.File(logPath, rollingInterval: rollingInterval, flushToDiskInterval: flushInterval,
+                    // shared: true, fileSizeLimitBytes: rollingFile, outputTemplate: consoleTemplate);
 
             if (BotSettings.IsProduction)
             {
