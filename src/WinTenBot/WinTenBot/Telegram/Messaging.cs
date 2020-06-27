@@ -183,7 +183,9 @@ namespace WinTenBot.Telegram
                 // var ocr = await TesseractProvider.OcrSpace(savedFile)
                 //     .ConfigureAwait(false);
                 var ocr = GoogleVision.ScanText(savedFile);
-                // var safeSearch = GoogleVision.SafeSearch(savedFile);
+                
+                var safeSearch = GoogleVision.SafeSearch(savedFile);
+                Log.Debug($"SafeSearch: {safeSearch.ToJson(true)}");
 
                 Log.Information("Scanning message..");
                 var isMustDelete = await IsMustDelete(ocr)
