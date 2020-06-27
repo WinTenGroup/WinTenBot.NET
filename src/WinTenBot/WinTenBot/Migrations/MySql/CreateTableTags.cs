@@ -17,7 +17,7 @@ namespace WinTenBot.Migrations.MySql
                 .WithColumn("tag").AsMySqlVarchar(100)
                 .WithColumn("content").AsMySqlText()
                 .WithColumn("btn_data").AsMySqlText()
-                .WithColumn("type_data").AsMySqlVarchar(10)
+                .WithColumn("type_data").AsMySqlVarchar(10).WithDefaultValue(-1)
                 .WithColumn("file_id").AsMySqlVarchar(200)
                 .WithColumn("from_id").AsInt32()
                 .WithColumn("chat_id").AsInt64()
