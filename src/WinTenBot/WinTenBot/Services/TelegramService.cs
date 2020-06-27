@@ -511,7 +511,7 @@ namespace WinTenBot.Services
                 CanSendPolls = unMute
             };
 
-            Log.Information($"ChatPermissions: {permission.ToJson(true)}");
+            Log.Debug($"ChatPermissions: {permission.ToJson(true)}");
 
             if (unMute) untilDate = DateTime.UtcNow;
 
