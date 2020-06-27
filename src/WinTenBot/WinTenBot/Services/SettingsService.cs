@@ -220,6 +220,8 @@ namespace WinTenBot.Services
 
         public async Task<ChatSetting> ReadCache()
         {
+            if (Message == null) return null;
+
             var chatId = Message.Chat.Id.ToString();
             var cachePath = Path.Combine(chatId, "settings.json");
             if (!cachePath.IsFileCacheExist())
