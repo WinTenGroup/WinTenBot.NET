@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -543,11 +543,18 @@ namespace WinTenBot.Telegram
 
                     await telegramService.DeleteAsync(lastMessageId)
                         .ConfigureAwait(false);
+                    var addMinutes = 5 * updatedStep;
+                    var muteTime = DateTime.Now.AddMinutes(addMinutes);
+                    await telegramService.RestrictMemberAsync(fromUser.Id, until: muteTime)
+                        .ConfigureAwait(false);
 
-                    var sendText = $"Hai {nameLink}, kamu belum memasang username!" +
+                    var sendText = $"Hai {nameLink}, Anda belum memasang username!" +
+                                   $"\nAnda telah di mute selama {addMinutes} menit, " +
+                                   $"silakan segera pasang Username lalu tekan Verifikasi agar tidak di senyapkan." +
                                    $"\nPeringatan ke {updatedStep} dari {warnLimit}";
 
                     if (updatedStep == warnLimit) sendText += "\n\n<b>Ini peringatan terakhir!</b>";
+
 
                     if (updatedStep > warnLimit)
                     {
@@ -570,12 +577,24 @@ namespace WinTenBot.Telegram
                         .ConfigureAwait(false);
                     Log.Information($"UrlStart: {urlStart}");
 
+                    var inlineKeyboard = new InlineKeyboardMarkup(new[]
+                    {
+                        new[]
+                        {
+                            InlineKeyboardButton.WithUrl("Cara Pasang Username", urlStart),
+                        },
+                        new[]
+                        {
+                            InlineKeyboardButton.WithCallbackData("Verifikasi Username", "verify username")
+                        }
+                    });
+
                     var keyboard = new InlineKeyboardMarkup(
                         InlineKeyboardButton.WithUrl("Cara Pasang Username", urlStart)
                     );
 
-                    await telegramService.SendTextAsync(sendText, keyboard)
-                .ConfigureAwait(false);
+                    await telegramService.SendTextAsync(sendText, inlineKeyboard)
+                        .ConfigureAwait(false);
                     await message.UpdateLastWarnUsernameMessageIdAsync(telegramService.SentMessageId)
                         .ConfigureAwait(false);
                 }

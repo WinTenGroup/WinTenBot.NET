@@ -3,6 +3,7 @@ using Serilog;
 using Telegram.Bot.Types;
 using WinTenBot.Common;
 using WinTenBot.Services;
+using WinTenBot.Telegram;
 
 namespace WinTenBot.Handlers.Callbacks
 {
@@ -23,19 +24,36 @@ namespace WinTenBot.Handlers.Callbacks
 
         private async Task ExecuteVerifyAsync()
         {
+            Log.Information("Executing Verify Callback");
+            
             var callbackData = CallbackQuery.Data;
             var fromId = CallbackQuery.From.Id;
 
-            Log.Information($"CallbackData: {callbackData} from {fromId}");
+            Log.Debug($"CallbackData: {callbackData} from {fromId}");
 
             var partCallbackData = callbackData.Split(" ");
-            var userId = partCallbackData.ValueOfIndex(1).ToInt();
+            var callBackParam1 = partCallbackData.ValueOfIndex(1);
             var answer = "Tombol ini bukan untukmu Bep!";
 
-            Log.Information($"Verify UserId: {userId}");
-            if (fromId == userId)
+            Log.Debug("Verify Param1: {0}", callBackParam1);
+
+            if (callBackParam1 == "username")
             {
-                await Telegram.RestrictMemberAsync(userId, true)
+                Log.Debug("Checking username");
+                if (CallbackQuery.From.IsNoUsername())
+                {
+                    answer = "Sepertinya Anda belum memasang Username, silakan di periksa kembali.";
+                }
+                else
+                {
+                    await Telegram.RestrictMemberAsync(fromId, true)
+                        .ConfigureAwait(false);
+                    answer = "Terima kasih sudah verifikasi Username!";
+                }
+            }
+            else if (fromId == callBackParam1.ToInt64())
+            {
+                await Telegram.RestrictMemberAsync(callBackParam1.ToInt(), true)
                     .ConfigureAwait(false);
                 answer = "Terima kasih sudah verifikasi!";
             }
