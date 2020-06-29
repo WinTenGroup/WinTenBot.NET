@@ -32,5 +32,19 @@ namespace WinTenBot.Common
 
             return greet;
         }
+
+        public static long GetMuteStep(this long step)
+        {
+            var muteResult = step switch
+            {
+                1 => 10,
+                2 => 30,
+                3 => 8 * 60,
+                4 => 365 * 24 * 60,
+                _ => -1
+            };
+
+            return muteResult;
+        }
     }
 }

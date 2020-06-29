@@ -543,19 +543,18 @@ namespace WinTenBot.Telegram
 
                     await telegramService.DeleteAsync(lastMessageId)
                         .ConfigureAwait(false);
-                    var addMinutes = 5 * updatedStep;
+                    var addMinutes = updatedStep.GetMuteStep();
                     var muteTime = DateTime.Now.AddMinutes(addMinutes);
                     await telegramService.RestrictMemberAsync(fromUser.Id, until: muteTime)
                         .ConfigureAwait(false);
 
                     var sendText = $"Hai {nameLink}, Anda belum memasang username!" +
-                                   $"\nAnda telah di mute selama {addMinutes} menit, " +
+                                   $"\nAnda telah di mute selama {addMinutes} menit (sampai dengan {muteTime}), " +
                                    $"silakan segera pasang Username lalu tekan Verifikasi agar tidak di senyapkan." +
                                    $"\nPeringatan ke {updatedStep} dari {warnLimit}";
 
                     if (updatedStep == warnLimit) sendText += "\n\n<b>Ini peringatan terakhir!</b>";
-
-
+                    
                     if (updatedStep > warnLimit)
                     {
                         var sendWarn = $"Batas peringatan telah di lampaui." +
