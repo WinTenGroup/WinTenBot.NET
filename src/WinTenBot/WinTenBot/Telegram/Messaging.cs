@@ -263,6 +263,12 @@ namespace WinTenBot.Telegram
                     return;
                 }
 
+                if (msgText.Contains("\n"))
+                {
+                    Log.Debug("Slug notes shouldn't multiline.");
+                    return;
+                }
+
                 var notesService = new NotesService();
 
                 var selectedNotes = await notesService.GetNotesBySlug(message.Chat.Id, message.Text)
