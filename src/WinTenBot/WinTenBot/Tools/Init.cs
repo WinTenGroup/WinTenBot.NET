@@ -1,10 +1,10 @@
 using Dapper;
-using Hangfire;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Serilog;
 using WinTenBot.Common;
 using WinTenBot.Model;
+using WinTenBot.Providers;
 
 namespace WinTenBot.Tools
 {
@@ -14,6 +14,7 @@ namespace WinTenBot.Tools
         {
             DefaultTypeMap.MatchNamesWithUnderscores = true;
 
+            LiteDbProvider.OpenDatabase();
             ConfigureNewtonsoftJson();
             BotSettings.FillSettings();
             Logger.SetupLogger();

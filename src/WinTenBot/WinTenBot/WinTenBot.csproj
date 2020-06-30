@@ -27,6 +27,7 @@
         <PackageReference Include="Hangfire.Storage.SQLite" Version="0.2.4" />
         <PackageReference Include="JsonEnvVar" Version="1.0.0" />
         <PackageReference Include="JsonFlatFileDataStore" Version="2.2.2" />
+        <PackageReference Include="LiteDB" Version="5.0.8" />
         <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.0.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
