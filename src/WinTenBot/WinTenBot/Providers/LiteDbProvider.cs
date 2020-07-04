@@ -1,7 +1,7 @@
 ﻿using System.IO;
+using Humanizer;
 using LiteDB;
 using Serilog;
-using WinTenBot.Common;
 using WinTenBot.IO;
 
 namespace WinTenBot.Providers
@@ -26,7 +26,7 @@ namespace WinTenBot.Providers
         public static ILiteCollection<T> GetCollections<T>()
         {
             var collectionName = typeof(T).Name.Pluralize();
-            Log.Information($"Getting collection {collectionName}");
+            Log.Debug("Getting collection {0}", collectionName);
             return LiteDb.GetCollection<T>(collectionName);
         }
 
