@@ -2,6 +2,7 @@ using System.IO;
 using Hangfire;
 using Serilog;
 using WinTenBot.IO;
+using WinTenBot.Telegram;
 using WinTenBot.Tools;
 
 namespace WinTenBot.Scheduler
@@ -14,6 +15,7 @@ namespace WinTenBot.Scheduler
 
             StartLogCleanupScheduler();
             StartSyncWordFilter();
+            StartCronFlushHitActivity();
             RssScheduler.InitScheduler();
 
             // StartSyncGlobalBanToLocal();
@@ -40,6 +42,16 @@ namespace WinTenBot.Scheduler
             RecurringJob.AddOrUpdate(jobId, () =>
                 Sync.SyncWordToLocalAsync(), Cron.Minutely);
             RecurringJob.Trigger(jobId);
+        }
+
+        private static void StartCronFlushHitActivity()
+        {
+            const string jobId = "flush-hit-activity";
+
+            Log.Debug("Starting cron Flush HitActivity buffer Storage");
+            RecurringJob.RemoveIfExists(jobId);
+            RecurringJob.AddOrUpdate(jobId, () => Metrics.FlushHitActivity(), Cron.Minutely);
+            // RecurringJob.Trigger(jobId);
         }
     }
 }
