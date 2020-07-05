@@ -22,48 +22,48 @@ namespace WinTenBot.Telegram
             var message = telegramService.MessageOrEdited;
             var botUser = await telegramService.GetMeAsync()
                 .ConfigureAwait(false);
-            // var data = new Dictionary<string, object>()
-            // {
-            //     {"via_bot", botUser.Username},
-            //     {"message_type", message.Type.ToString()},
-            //     {"from_id", message.From.Id},
-            //     {"from_first_name", message.From.FirstName},
-            //     {"from_last_name", message.From.LastName},
-            //     {"from_username", message.From.Username},
-            //     {"from_lang_code", message.From.LanguageCode},
-            //     {"chat_id", message.Chat.Id},
-            //     {"chat_username", message.Chat.Username},
-            //     {"chat_type", message.Chat.Type.ToString()},
-            //     {"chat_title", message.Chat.Title},
-            // };
-
-            var hitActivity = new HitActivity()
+            var data = new Dictionary<string, object>()
             {
-                ViaBot = botUser.Username,
-                MessageType = message.Type.ToString(),
-                FromId = message.From.Id,
-                FromFirstName = message.From.FirstName,
-                FromLastName = message.From.LastName,
-                FromUsername = message.From.Username,
-                FromLangCode = message.From.LanguageCode,
-                ChatId = message.Chat.Id.ToString(),
-                ChatUsername = message.Chat.Username,
-                ChatType = message.Chat.Type.ToString(),
-                ChatTitle = message.Chat.Title,
-                Timestamp = DateTime.Now
+                {"via_bot", botUser.Username},
+                {"message_type", message.Type.ToString()},
+                {"from_id", message.From.Id},
+                {"from_first_name", message.From.FirstName},
+                {"from_last_name", message.From.LastName},
+                {"from_username", message.From.Username},
+                {"from_lang_code", message.From.LanguageCode},
+                {"chat_id", message.Chat.Id},
+                {"chat_username", message.Chat.Username},
+                {"chat_type", message.Chat.Type.ToString()},
+                {"chat_title", message.Chat.Title},
             };
 
-            Log.Debug("Inserting to LiteDB.");
-            var metrics = LiteDbProvider.GetCollections<HitActivity>();
-            metrics.Insert(hitActivity);
+            var insertHit = await new Query("hit_activity")
+                .ExecForMysql(true)
+                .InsertAsync(data)
+                .ConfigureAwait(false);
+            
+            Log.Information($"Insert Hit: {insertHit}");
+            
+            // var hitActivity = new HitActivity()
+            // {
+            //     ViaBot = botUser.Username,
+            //     MessageType = message.Type.ToString(),
+            //     FromId = message.From.Id,
+            //     FromFirstName = message.From.FirstName,
+            //     FromLastName = message.From.LastName,
+            //     FromUsername = message.From.Username,
+            //     FromLangCode = message.From.LanguageCode,
+            //     ChatId = message.Chat.Id.ToString(),
+            //     ChatUsername = message.Chat.Username,
+            //     ChatType = message.Chat.Type.ToString(),
+            //     ChatTitle = message.Chat.Title,
+            //     Timestamp = DateTime.Now
+            // };
 
-            Log.Debug("Buffer saved.");
-            // var insertHit = await new Query("hit_activity")
-            //     .ExecForMysql(true)
-            //     .InsertAsync(data)
-            //     .ConfigureAwait(false);
-            //
-            // Log.Information($"Insert Hit: {insertHit}");
+            // Log.Debug("Inserting to LiteDB.");
+            // var metrics = LiteDbProvider.GetCollections<HitActivity>();
+            // metrics.Insert(hitActivity);
+            // Log.Debug("Buffer saved.");
         }
 
         public static void HitActivityBackground(this TelegramService telegramService)
