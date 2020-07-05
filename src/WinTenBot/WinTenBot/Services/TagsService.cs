@@ -6,7 +6,6 @@ using SqlKata.Execution;
 using Telegram.Bot.Types;
 using WinTenBot.Common;
 using WinTenBot.Interfaces;
-using WinTenBot.IO;
 using WinTenBot.Model;
 using WinTenBot.Providers;
 
@@ -37,7 +36,7 @@ namespace WinTenBot.Services
             // return data;
         }
 
-        public async Task<List<CloudTag>> GetTagsByGroupAsync(string column, long chatId)
+        public async Task<List<CloudTag>> GetTagsByGroupAsync(long chatId)
         {
             var query = await new Query("tags")
                 .Where("chat_id", chatId)
@@ -48,7 +47,7 @@ namespace WinTenBot.Services
 
             var mapped = query.ToJson().MapObject<List<CloudTag>>();
 
-            Log.Debug(mapped.ToJson(true));
+            Log.Debug("Tags for ChatId: {0} {1}", chatId, mapped.ToJson(true));
             return mapped;
 
             // Log.Debug($"tags: {query.ToJson(true)}");
@@ -70,7 +69,11 @@ namespace WinTenBot.Services
 
             var mapped = query.ToJson().MapObject<List<CloudTag>>();
 
-            Log.Debug(mapped.ToJson(true));
+            // var mapped = (await LiteDbProvider.GetCollectionsAsync<CloudTag>()
+            //         .ConfigureAwait(false))
+            //     .Find(x => x.ChatId == chatId.ToString() && x.Tag == tag).ToList();
+
+            Log.Debug("Tag by Tag for {0} => {1}", chatId, mapped.ToJson(true));
             return mapped;
 
             // var sql = $"SELECT * FROM tags WHERE id_chat = '{chatId}' AND tag = '{tag}' ORDER BY tag";
@@ -84,7 +87,7 @@ namespace WinTenBot.Services
                 .ExecForMysql(true)
                 .InsertAsync(data)
                 .ConfigureAwait(false);
-            
+
             Log.Information($"SaveTag: {insert}");
         }
 
@@ -92,11 +95,11 @@ namespace WinTenBot.Services
         {
             var delete = await new Query("tags")
                 .ExecForMysql()
-                .Where("chat_id",chatId)
-                .Where("tag",tag)
+                .Where("chat_id", chatId)
+                .Where("tag", tag)
                 .DeleteAsync()
                 .ConfigureAwait(false);
-            
+
             // var sql = $"DELETE FROM {baseTable} WHERE id_chat = '{chatId}' AND tag = '{tag}'";
             // var delete = await _mySqlProvider.ExecNonQueryAsync(sql);
             return delete > 0;
@@ -105,9 +108,15 @@ namespace WinTenBot.Services
         public async Task UpdateCacheAsync(Message message)
         {
             var chatId = message.Chat.Id;
-            var data = await GetTagsByGroupAsync("*", chatId)
+            var data = await GetTagsByGroupAsync(chatId)
                 .ConfigureAwait(false);
-            data.BackgroundWriteCache($"{chatId}/{jsonCache}");
+            // data.BackgroundWriteCache($"{chatId}/{jsonCache}");
+
+            var liteDb = await LiteDbProvider.GetCollectionsAsync<CloudTag>()
+                .ConfigureAwait(false);
+            data.ForEach(y => liteDb.DeleteMany(x => x.ChatId == y.ChatId));
+
+            var insertBulk = liteDb.InsertBulk(data);
         }
     }
 }
