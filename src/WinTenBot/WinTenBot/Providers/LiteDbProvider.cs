@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Threading.Tasks;
 using Humanizer;
 using LiteDB;
 using Serilog;
@@ -28,6 +29,14 @@ namespace WinTenBot.Providers
             var collectionName = typeof(T).Name.Pluralize();
             Log.Debug("Getting collection {0}", collectionName);
             return LiteDb.GetCollection<T>(collectionName);
+        }
+
+        public static async Task<ILiteCollection<T>> GetCollectionsAsync<T>()
+        {
+            var collectionName = typeof(T).Name.Pluralize();
+            Log.Debug("Getting collection {0} async", collectionName);
+            return await Task.Run(() => LiteDb.GetCollection<T>(collectionName))
+                .ConfigureAwait(false);
         }
 
         public static long Rebuild()
