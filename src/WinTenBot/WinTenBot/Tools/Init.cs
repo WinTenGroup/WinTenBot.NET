@@ -13,14 +13,16 @@ namespace WinTenBot.Tools
         public static void RunAll()
         {
             DefaultTypeMap.MatchNamesWithUnderscores = true;
-
-            LiteDbProvider.OpenDatabase();
             ConfigureNewtonsoftJson();
+
             BotSettings.FillSettings();
             Logger.SetupLogger();
 
             Log.Information($"Name: {BotSettings.ProductName}");
             Log.Information($"Version: {BotSettings.ProductVersion}");
+
+            LiteDbProvider.OpenDatabase();
+            // RavenDbProvider.InitDatabase();
 
             BotSettings.DbConnectionString = BotSettings.DbConnectionString;
             DbMigration.ConnectionString = BotSettings.DbConnectionString;
