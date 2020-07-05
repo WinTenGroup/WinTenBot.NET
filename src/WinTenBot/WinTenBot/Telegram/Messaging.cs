@@ -183,7 +183,7 @@ namespace WinTenBot.Telegram
                 // var ocr = await TesseractProvider.OcrSpace(savedFile)
                 //     .ConfigureAwait(false);
                 var ocr = GoogleVision.ScanText(savedFile);
-                
+
                 var safeSearch = GoogleVision.SafeSearch(savedFile);
                 Log.Debug($"SafeSearch: {safeSearch.ToJson(true)}");
 
@@ -314,7 +314,7 @@ namespace WinTenBot.Telegram
             var tagsService = new TagsService();
             if (!message.Text.Contains("#"))
             {
-                Log.Information($"Message {message.MessageId} is not contains any Hashtag.");
+                Log.Information("Message {0} is not contains any Hashtag.", message.MessageId);
                 return;
             }
 
@@ -326,17 +326,17 @@ namespace WinTenBot.Telegram
             var limitedTags = partsText.Take(5).ToArray();
             var limitedCount = limitedTags.Length;
 
-            Log.Information($"AllTags: {allTags.ToJson(true)}");
-            Log.Information($"First 5: {limitedTags.ToJson(true)}");
+            Log.Debug("AllTags: {0}", allTags.ToJson(true));
+            Log.Debug("First 5: {0}", limitedTags.ToJson(true));
             //            int count = 1;
             foreach (var split in limitedTags)
             {
                 var trimTag = split.TrimStart('#');
-                Log.Information($"Processing : {trimTag}");
+                Log.Information("Processing : {0}", trimTag);
 
                 var tagData = await tagsService.GetTagByTag(message.Chat.Id, trimTag)
                     .ConfigureAwait(false);
-                Log.Information($"Data of tag: {trimTag} {tagData.ToJson(true)}");
+                Log.Debug("Data of tag: {0} {1}", trimTag, tagData.ToJson(true));
 
                 var content = tagData[0].Content;
                 var buttonStr = tagData[0].BtnData;
