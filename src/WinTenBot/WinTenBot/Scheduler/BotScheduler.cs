@@ -15,7 +15,7 @@ namespace WinTenBot.Scheduler
 
             StartLogCleanupScheduler();
             StartSyncWordFilter();
-            StartCronFlushHitActivity();
+            // StartCronFlushHitActivity();
             RssScheduler.InitScheduler();
 
             // StartSyncGlobalBanToLocal();
