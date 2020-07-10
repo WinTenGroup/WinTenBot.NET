@@ -43,7 +43,7 @@ namespace WinTenBot.Model
         public string ChatTitle { get; set; }
 
         [JsonProperty("timestamp")]
-        public DateTimeOffset Timestamp { get; set; }
+        public DateTime Timestamp { get; set; }
     }
 
     public partial class HitActivity
