@@ -118,7 +118,7 @@ namespace WinTenBot.Services
         #region Message
 
         public async Task<Message> SendTextAsync(string sendText, InlineKeyboardMarkup replyMarkup = null,
-            int replyToMsgId = -1, long customChatId = -1)
+            int replyToMsgId = -1, long customChatId = -1, bool disableWebPreview = false)
         {
             TimeProc = Message.Date.GetDelay();
 
@@ -142,7 +142,8 @@ namespace WinTenBot.Services
                     sendText,
                     ParseMode.Html,
                     replyMarkup: replyMarkup,
-                    replyToMessageId: replyToMsgId
+                    replyToMessageId: replyToMsgId,
+                    disableWebPagePreview: disableWebPreview
                 ).ConfigureAwait(false);
             }
             catch (ApiRequestException apiRequestException)
