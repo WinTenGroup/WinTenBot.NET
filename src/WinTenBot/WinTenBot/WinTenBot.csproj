@@ -9,6 +9,7 @@
         <Folder Include="wwwroot\" />
     </ItemGroup>
     <ItemGroup>
+        <PackageReference Include="Ben.Demystifier" Version="0.1.6" />
         <PackageReference Include="CodeHollow.FeedReader" Version="1.2.1" />
         <PackageReference Include="CsvHelper" Version="15.0.5" />
         <PackageReference Include="Datadog.Trace" Version="1.17.0" />
