@@ -16,14 +16,14 @@ namespace WinTenBot.Handlers
         public async Task HandleAsync(IUpdateContext context, UpdateDelegate next, CancellationToken cancellationToken)
         {
             _telegramService = new TelegramService(context);
-            CallbackQuery cq = context.Update.CallbackQuery;
-            _telegramService.CallBackMessageId = cq.Message.MessageId;
+            var callbackQuery = context.Update.CallbackQuery;
+            _telegramService.CallBackMessageId = callbackQuery.Message.MessageId;
 
-            Log.Information("CallbackQuery" + cq.ToJson(true));
+            Log.Debug("CallbackQuery: {0}", callbackQuery.ToJson(true));
             // Log.Information($"CallBackData: {cq.Data}");
 
-            var partsCallback = cq.Data.SplitText(" ");
-            Log.Information($"Callbacks: {partsCallback.ToJson()}");
+            var partsCallback = callbackQuery.Data.SplitText(" ");
+            Log.Debug("Callbacks: {0}", partsCallback.ToJson(true));
 
             switch (partsCallback[0]) // Level 0
             {
@@ -31,7 +31,7 @@ namespace WinTenBot.Handlers
                     var callbackResult = new ActionCallback(_telegramService);
                     Log.Information($"ActionResult: {callbackResult.ToJson(true)}");
                     break;
-                
+
                 case "help":
                     var helpCallback = new HelpCallback(_telegramService);
                     Log.Information($"HelpResult: {helpCallback.ToJson(true)}");
@@ -41,12 +41,11 @@ namespace WinTenBot.Handlers
                     var settingsCallback = new SettingsCallback(_telegramService);
                     Log.Information($"SettingsResult: {settingsCallback.ToJson(true)}");
                     break;
-                
+
                 case "verify":
                     var verifyCallback = new VerifyCallback(_telegramService);
                     Log.Information($"VerifyResult: {verifyCallback.ToJson(true)}");
                     break;
-
             }
 
             // await context.Bot.Client.AnswerCallbackQueryAsync(cq.Id, "PONG", true);
