@@ -220,7 +220,7 @@ namespace WinTenBot.Services
                     return null;
                     break;
             }
-            
+
             Log.Information($"SendMedia: {SentMessage.MessageId}");
 
             return SentMessage;
@@ -238,17 +238,27 @@ namespace WinTenBot.Services
 
             var chatId = Message.Chat.Id;
             Log.Information($"Updating message {SentMessageId} on {chatId}");
+            try
+            {
+                var edit = await Client.EditMessageTextAsync(
+                    chatId,
+                    SentMessageId,
+                    sendText,
+                    ParseMode.Html,
+                    replyMarkup: replyMarkup,
+                    disableWebPagePreview: disableWebPreview
+                ).ConfigureAwait(false);
 
-            var edit = await Client.EditMessageTextAsync(
-                chatId,
-                SentMessageId,
-                sendText,
-                ParseMode.Html,
-                replyMarkup: replyMarkup,
-                disableWebPagePreview: disableWebPreview
-            ).ConfigureAwait(false);
-
-            EditedMessageId = edit.MessageId;
+                EditedMessageId = edit.MessageId;
+            }
+            catch (MessageIsNotModifiedException exception)
+            {
+                Log.Warning(exception, "Message is not modified!");
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error edit message");
+            }
         }
 
         public async Task EditMessageCallback(string sendText, InlineKeyboardMarkup replyMarkup = null,
@@ -486,7 +496,7 @@ namespace WinTenBot.Services
 
             return requestResult;
         }
-        
+
         public async Task RestrictMemberAsync(int userId, bool unMute = false, DateTime until = default)
         {
             var chatId = Message.Chat.Id;
