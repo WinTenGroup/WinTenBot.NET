@@ -12,12 +12,12 @@
         <PackageReference Include="Ben.Demystifier" Version="0.1.6" />
         <PackageReference Include="CodeHollow.FeedReader" Version="1.2.1" />
         <PackageReference Include="CsvHelper" Version="15.0.5" />
-        <PackageReference Include="Datadog.Trace" Version="1.17.0" />
-        <PackageReference Include="EasyEncrypt" Version="2.1.0" />
+        <PackageReference Include="Datadog.Trace" Version="1.18.2" />
+        <PackageReference Include="EasyEncrypt" Version="2.2.1" />
         <PackageReference Include="FluentMigrator" Version="3.2.7" />
         <PackageReference Include="FluentMigrator.Runner" Version="3.2.7" />
         <PackageReference Include="Flurl.Http" Version="2.4.2" />
-        <PackageReference Include="Google.Apis.Drive.v3" Version="1.47.0.1995" />
+        <PackageReference Include="Google.Apis.Drive.v3" Version="1.48.0.1995" />
         <PackageReference Include="Google.Cloud.Firestore" Version="2.1.0" />
         <PackageReference Include="Google.Cloud.Vision.V1" Version="2.0.0" />
         <PackageReference Include="GoogleTranslateFreeApi" Version="1.1.1" />
@@ -43,7 +43,7 @@
         <PackageReference Include="Serilog.Settings.Configuration" Version="3.1.0" />
         <PackageReference Include="Serilog.Sinks.Async" Version="1.4.0" />
         <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
-        <PackageReference Include="Serilog.Sinks.Datadog.Logs" Version="0.3.1" />
+        <PackageReference Include="Serilog.Sinks.Datadog.Logs" Version="0.3.2" />
         <PackageReference Include="Serilog.Sinks.File" Version="4.1.0" />
         <PackageReference Include="Serilog.Sinks.Loggly" Version="5.4.0" />
         <PackageReference Include="SqlKata" Version="2.2.0" />
