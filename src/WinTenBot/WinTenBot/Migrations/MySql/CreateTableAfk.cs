@@ -2,6 +2,7 @@
 
 namespace WinTenBot.Migrations.MySql
 {
+    [Migration(120200705202114)]
     public class CreateTableAfk:Migration
     {
         private const string TableName = "afk";
@@ -22,7 +23,7 @@ namespace WinTenBot.Migrations.MySql
 
         public override void Down()
         {
-            throw new System.NotImplementedException();
+            Delete.Table(TableName);
         }
     }
 }
