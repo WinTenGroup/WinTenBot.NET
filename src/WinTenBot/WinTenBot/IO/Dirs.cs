@@ -10,11 +10,14 @@ namespace WinTenBot.IO
     {
         public static string EnsureDirectory(this string dirPath)
         {
-            Log.Information($"EnsuringDir of {dirPath}");
+            Log.Debug("EnsuringDir: {0}", dirPath);
 
             var path = Path.GetDirectoryName(dirPath);
             if (!path.IsNullOrEmpty())
+            {
+                Log.Debug("Creating directory..");
                 Directory.CreateDirectory(path);
+            }
 
             return dirPath;
         }
