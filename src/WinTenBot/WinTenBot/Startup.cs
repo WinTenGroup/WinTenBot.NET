@@ -140,7 +140,8 @@ namespace WinTenBot
             services.AddScoped<QrCommand>()
                 .AddScoped<OcrCommand>()
                 .AddScoped<CatCommand>()
-                .AddScoped<TranslateCommand>();
+                .AddScoped<TranslateCommand>()
+                .AddScoped<WgetCommand>();
 
             services.AddScoped<CovidCommand>();
 
@@ -303,6 +304,7 @@ namespace WinTenBot
                                     .UseCommand<WelcomeMessageCommand>("welmsg")
                                     .UseCommand<WelcomeButtonCommand>("welbtn")
                                     .UseCommand<WelcomeDocumentCommand>("weldoc")
+                                    .UseCommand<WgetCommand>("wget")
                                     .UseCommand<WordSyncCommand>("wsync")
                                 )
                                 .Use<GenericMessageHandler>()
