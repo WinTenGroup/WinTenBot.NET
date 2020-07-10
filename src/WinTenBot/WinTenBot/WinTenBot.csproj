@@ -16,6 +16,7 @@
         <PackageReference Include="FluentMigrator" Version="3.2.7" />
         <PackageReference Include="FluentMigrator.Runner" Version="3.2.7" />
         <PackageReference Include="Flurl.Http" Version="2.4.2" />
+        <PackageReference Include="Google.Apis.Drive.v3" Version="1.47.0.1995" />
         <PackageReference Include="Google.Cloud.Firestore" Version="2.1.0" />
         <PackageReference Include="Google.Cloud.Vision.V1" Version="2.0.0" />
         <PackageReference Include="GoogleTranslateFreeApi" Version="1.1.1" />
@@ -33,6 +34,7 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Microsoft.ML" Version="1.5.0" />
+        <PackageReference Include="MimeTypesMap" Version="1.0.8" />
         <PackageReference Include="MySql.Data" Version="8.0.20" />
         <PackageReference Include="RavenDB.Client" Version="4.2.103" />
         <PackageReference Include="Serilog" Version="2.9.0" />

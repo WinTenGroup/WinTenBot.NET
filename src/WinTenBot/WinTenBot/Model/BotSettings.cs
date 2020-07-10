@@ -23,7 +23,8 @@ namespace WinTenBot.Model
             DbConnectionString = GlobalConfiguration["CommonConfig:ConnectionString"];
 
             GoogleCloudCredentialsPath = GlobalConfiguration["GoogleCloud:CredentialsPath"];
-            
+            GoogleDriveAuth = GlobalConfiguration["GoogleCloud:DriveAuth"];
+
             HangfireMysqlDb = GlobalConfiguration["Hangfire:MySql"];
             HangfireSqliteDb = GlobalConfiguration["Hangfire:Sqlite"];
             HangfireLiteDb = GlobalConfiguration["Hangfire:LiteDb"];
@@ -79,6 +80,7 @@ namespace WinTenBot.Model
         public static string SpamWatchToken { get; set; }
 
         public static string GoogleCloudCredentialsPath { get; set; }
+        public static string GoogleDriveAuth { get; set; }
 
         public static string HangfireMysqlDb { get; set; }
         public static string HangfireSqliteDb { get; set; }
