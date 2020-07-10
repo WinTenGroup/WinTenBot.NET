@@ -44,6 +44,11 @@ namespace WinTenBot.Handlers.Commands.Rss
                             .ConfigureAwait(false);
                         // await "Tampaknya tidak ada RSS baru saat ini".EditAsync();
                     }
+                    else
+                    {
+                        await _telegramService.DeleteAsync(_telegramService.SentMessageId)
+                            .ConfigureAwait(false);
+                    }
 
                     // ChatHelper.Close();
                 }, cancellationToken);

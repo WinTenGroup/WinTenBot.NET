@@ -90,7 +90,7 @@ namespace WinTenBot.Services
                 .ConfigureAwait(false);
 
             var mapped = data.ToJson().MapObject<List<RssSetting>>();
-            Log.Information("RSSData: " + mapped.ToJson(true));
+            Log.Debug("RSSData: {0}" , mapped.ToJson(true));
 
             return mapped;
         }

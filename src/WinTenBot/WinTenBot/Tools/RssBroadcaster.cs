@@ -36,7 +36,7 @@ namespace WinTenBot.Tools
                 Log.Information($"Processing {rssUrl} for {chatId}.");
                 try
                 {
-                    await ExecuteUrlAsync(chatId, rssUrl)
+                    newRssCount += await ExecuteUrlAsync(chatId, rssUrl)
                         .ConfigureAwait(false);
                 }
                 catch (Exception ex)
@@ -55,13 +55,14 @@ namespace WinTenBot.Tools
             return newRssCount;
         }
 
-        public static async Task ExecuteUrlAsync(long chatId, string rssUrl)
+        public static async Task<int> ExecuteUrlAsync(long chatId, string rssUrl)
         {
             int newRssCount = 0;
             var rssService = new RssService();
 
             var rssFeeds = await FeedReader.ReadAsync(rssUrl)
                 .ConfigureAwait(false);
+
             var rssTitle = rssFeeds.Title;
 
             // var castLimit = 10;
@@ -69,6 +70,8 @@ namespace WinTenBot.Tools
 
             foreach (var rssFeed in rssFeeds.Items)
             {
+                // Log.Debug("Rss from url {0} => {1}", rssUrl, rssFeed.ToJson(true));
+
                 // Prevent flood in first time;
                 // if (castLimit == castStep)
                 // {
@@ -82,24 +85,28 @@ namespace WinTenBot.Tools
                     ["rss_source"] = rssUrl
                 };
 
+                Log.Debug("Getting last history for {0} url {1}", chatId, rssUrl);
                 var rssHistory = await rssService.GetRssHistory(whereHistory)
                     .ConfigureAwait(false);
                 var lastRssHistory = rssHistory.LastOrDefault();
 
-                if (!rssHistory.Any()) break;
-
-                var lastArticleDate = DateTime.Parse(lastRssHistory.PublishDate);
-                var currentArticleDate = rssFeed.PublishingDate.Value;
-
-                if (currentArticleDate < lastArticleDate)
+                // if (!rssHistory.Any()) break;
+                if (rssHistory.Count > 0)
                 {
-                    Log.Information($"Current article is older than last article. Stopped.");
-                    break;
+                    Log.Debug("Last send feed {0} => {1}", rssUrl, lastRssHistory.PublishDate);
+
+                    var lastArticleDate = DateTime.Parse(lastRssHistory.PublishDate);
+                    var currentArticleDate = rssFeed.PublishingDate.Value;
+
+                    if (currentArticleDate < lastArticleDate)
+                    {
+                        Log.Information($"Current article is older than last article. Stopped.");
+                        break;
+                    }
+
+                    Log.Debug("LastArticleDate: {0}", lastArticleDate);
+                    Log.Debug("CurrentArticleDate: {0}", currentArticleDate);
                 }
-
-                Log.Information($"LastArticleDate: {lastArticleDate}");
-                Log.Information($"CurrentArticleDate: {currentArticleDate}");
-
 
                 Log.Information("Prepare sending article.");
 
@@ -141,7 +148,7 @@ namespace WinTenBot.Tools
                         {"created_at", DateTime.Now.ToString(CultureInfo.InvariantCulture)}
                     };
 
-                    Log.Information($"Writing to RSS History");
+                    Log.Debug($"Writing to RSS History");
                     await rssService.SaveRssHistoryAsync(data)
                         .ConfigureAwait(false);
 
@@ -158,6 +165,8 @@ namespace WinTenBot.Tools
                     Log.Error(ex, "RSS Broadcaster error");
                 }
             }
+
+            return newRssCount;
         }
 
         public static async Task<string> FindUrlFeed(this string url)
@@ -169,12 +178,13 @@ namespace WinTenBot.Tools
 
             string feedUrl = "";
             var urlCount = urls.Count();
-            
+
             if (urlCount == 1) // no url - probably the url is already the right feed url
                 feedUrl = url;
             else if (urlCount == 1)
                 feedUrl = urls.First().Url;
-            else if (urlCount == 2) // if 2 urls, then its usually a feed and a comments feed, so take the first per default
+            else if (urlCount == 2
+            ) // if 2 urls, then its usually a feed and a comments feed, so take the first per default
                 feedUrl = urls.First().Url;
 
             return feedUrl;
