@@ -43,6 +43,10 @@ namespace WinTenBot.Model
             PathCache = "Storage/Caches";
 
             OcrSpaceKey = GlobalConfiguration["OcrSpace:ApiKey"];
+
+            RavenDBCertPath = GlobalConfiguration["RavenDB:CertPath"];
+            RavenDBDatabase = GlobalConfiguration["RavenDB:DBName"];
+            RavenDBNodes = GlobalConfiguration.GetSection("RavenDB:Nodes").Get<List<string>>();
         }
 
         public static string ProductName { get; set; }
@@ -93,5 +97,9 @@ namespace WinTenBot.Model
         public static string TesseractTrainedData { get; set; }
 
         public static string OcrSpaceKey { get; set; }
+
+        public static string RavenDBCertPath { get; set; }
+        public static string RavenDBDatabase { get; set; }
+        public static List<string> RavenDBNodes { get; set; }
     }
 }

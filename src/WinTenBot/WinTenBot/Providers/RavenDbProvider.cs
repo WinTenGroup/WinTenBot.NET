@@ -2,7 +2,9 @@
 using Raven.Client.Documents;
 using Raven.Client.Documents.Linq;
 using Raven.Client.Documents.Session;
-using WinTenBot.IO;
+using Serilog;
+using WinTenBot.Common;
+using WinTenBot.Model;
 
 namespace WinTenBot.Providers
 {
@@ -12,21 +14,30 @@ namespace WinTenBot.Providers
 
         public static void InitDatabase()
         {
-            var clientCertificate = new X509Certificate2(@"C:\Users\Azhe Kun\Documents\Projeks\free.azhe403.client.certificate.pfx");
+            var certPath = BotSettings.RavenDBCertPath;
+            var dbName = BotSettings.RavenDBDatabase;
+            var nodes = BotSettings.RavenDBNodes;
+
+            Log.Information("Connecting to RavenDB Cloud");
+            Log.Debug("Nodes: {0}", nodes.ToJson(true));
+            Log.Debug("Cert: {0}", certPath);
+            Log.Debug("DBName: {0}", dbName);
+
+            var clientCertificate = new X509Certificate2(certPath);
             var documentStore = new DocumentStore()
             {
-                Urls = new[] {"https://a.free.azhe403.ravendb.cloud"},
-                Database = "zizi_cache_dev",
+                Urls = nodes.ToArray(),
+                Database = dbName,
                 Certificate = clientCertificate
             };
 
+            Log.Debug("Initializing client..");
             documentStore.Initialize();
             Store = documentStore;
         }
 
         public static IRavenQueryable<T> Query<T>()
         {
-            // var collectionName = typeof(T).Name.Pluralize();
             var session = Store.OpenSession();
             return session.Query<T>();
         }

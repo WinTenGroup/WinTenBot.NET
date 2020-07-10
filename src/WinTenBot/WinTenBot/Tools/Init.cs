@@ -22,7 +22,7 @@ namespace WinTenBot.Tools
             Log.Information($"Version: {BotSettings.ProductVersion}");
 
             LiteDbProvider.OpenDatabase();
-            // RavenDbProvider.InitDatabase();
+            RavenDbProvider.InitDatabase();
 
             BotSettings.DbConnectionString = BotSettings.DbConnectionString;
             DbMigration.ConnectionString = BotSettings.DbConnectionString;
