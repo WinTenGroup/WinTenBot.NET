@@ -21,15 +21,18 @@ namespace WinTenBot.Handlers.Commands.Core
             var partText = msg.Text.SplitText(" ").ToArray();
             var paramStart = partText.ValueOfIndex(1);
 
-            var botName = BotSettings.GlobalConfiguration["Engines:ProductName"];
-            var botVer = BotSettings.GlobalConfiguration["Engines:Version"];
-            var botCompany = BotSettings.GlobalConfiguration["Engines:Company"];
+            var botName = BotSettings.ProductName;
+            var botVer = BotSettings.ProductVersion;
+            var botCompany = BotSettings.ProductCompany;
+            var winTenDev = botCompany.MkUrl("https://t.me/WinTenDev");
+            var levelStandardUrl = "https://docs.zizi.azhe.info/glosarium/admin-dengan-level-standard";
+            var levelStandard = @"Level standard".MkUrl(levelStandardUrl);
 
             string sendText = $"🤖 {botName} {botVer}" +
-                              $"\nby {botCompany}." +
-                              $"\nAdalah bot debugging, manajemen grup yang di lengkapi dengan alat keamanan. " +
-                              $"Agar fungsi saya bekerja dengan fitur penuh, jadikan saya admin dengan level standard. " +
-                              $"\nSaran dan fitur bisa di ajukan di @WinTenGroup atau @TgBotID.";
+                              $"\nby {winTenDev}." +
+                              $"\n\nAdalah bot debugging dan manajemen grup yang di lengkapi dengan alat keamanan. " +
+                              $"Agar fungsi saya bekerja dengan fitur penuh, jadikan saya admin dengan {levelStandard}. " +
+                              $"\n\nSaran dan fitur bisa di ajukan di @WinTenDevSupport atau @TgBotID.";
 
             var urlStart = await _telegramService.GetUrlStart("start=help")
                 .ConfigureAwait(false);
@@ -72,7 +75,7 @@ namespace WinTenBot.Handlers.Commands.Core
                         });
                     }
 
-                    await _telegramService.SendTextAsync(sendText, keyboard)
+                    await _telegramService.SendTextAsync(sendText, keyboard, disableWebPreview: true)
                         .ConfigureAwait(false);
                     break;
             }
