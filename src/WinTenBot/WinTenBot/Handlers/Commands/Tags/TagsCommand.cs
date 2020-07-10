@@ -33,7 +33,7 @@ namespace WinTenBot.Handlers.Commands.Tags
                 .ConfigureAwait(false);
             await _telegramService.SendTextAsync("🔄 Loading tags..")
                 .ConfigureAwait(false);
-            var tagsData = await _tagsService.GetTagsByGroupAsync("*", msg.Chat.Id)
+            var tagsData = await _tagsService.GetTagsByGroupAsync(msg.Chat.Id)
                 .ConfigureAwait(false);
             var tagsStr = string.Empty;
 
