@@ -24,7 +24,7 @@ namespace WinTenBot.IO
                 Log.Error(ex, $"Error Deleting file {filePath}");
             }
         }
-        
+
         public static async Task WriteTextAsync(this string content, string filePath)
         {
             var cachePath = BotSettings.PathCache;
@@ -36,14 +36,14 @@ namespace WinTenBot.IO
 
             await File.WriteAllTextAsync(filePath, content)
                 .ConfigureAwait(false);
-            
+
             Log.Information("Writing file success..");
         }
 
         public static void WriteText(this string content, string filePath)
         {
             var cachePath = BotSettings.PathCache;
-            
+
             filePath = $"{cachePath}/{filePath}";
             Log.Information($"Writing content to {filePath}");
 
@@ -51,6 +51,11 @@ namespace WinTenBot.IO
 
             File.WriteAllText(filePath, content);
             Log.Information("Writing file success..");
+        }
+
+        public static long FileSize(string filePath)
+        {
+            return new FileInfo(filePath).Length;
         }
     }
 }
