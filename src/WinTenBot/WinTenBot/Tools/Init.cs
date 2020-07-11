@@ -5,6 +5,7 @@ using Serilog;
 using WinTenBot.Common;
 using WinTenBot.Model;
 using WinTenBot.Providers;
+using WinTenBot.Tools.GoogleCloud;
 
 namespace WinTenBot.Tools
 {
@@ -30,6 +31,8 @@ namespace WinTenBot.Tools
 
             DbMigration.RunMySqlMigration();
             SqlMigration.MigrateAll();
+
+            GoogleDrive.Auth();
 
             // Bot.Clients.Add("macosbot", new TelegramBotClient(Configuration["MacOsBot:ApiToken"]));
             // Bot.Clients.Add("zizibot", new TelegramBotClient(Configuration["ZiziBot:ApiToken"]));
