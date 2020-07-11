@@ -33,7 +33,7 @@ namespace WinTenBot.Handlers.Commands.Additional
                     return;
                 }
                 
-                if (chatId != 1272521285)
+                if (chatId != -1001272521285)
                 {
                     await _telegramService.SendTextAsync("Fitur Wget dapat di gunakan di grup @WinTenMirror")
                         .ConfigureAwait(false);
