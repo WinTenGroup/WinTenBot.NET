@@ -18,6 +18,11 @@ namespace WinTenBot.Common
         {
             return System.Convert.ToBoolean(obj);
         }
+        
+        public static double ToDouble(this long num)
+        {
+            return System.Convert.ToDouble(num);
+        }
 
         public static int ToInt(this object obj)
         {
