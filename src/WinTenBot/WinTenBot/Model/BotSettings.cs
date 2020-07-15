@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -12,42 +13,50 @@ namespace WinTenBot.Model
     {
         public static void FillSettings()
         {
-            ProductName = GlobalConfiguration["Engines:ProductName"];
-            ProductVersion = GlobalConfiguration["Engines:Version"];
-            ProductCompany = GlobalConfiguration["Engines:Company"];
+            try
+            {
+                ProductName = GlobalConfiguration["Engines:ProductName"];
+                ProductVersion = GlobalConfiguration["Engines:Version"];
+                ProductCompany = GlobalConfiguration["Engines:Company"];
 
-            Sudoers = GlobalConfiguration.GetSection("Sudoers").Get<List<string>>();
-            BotChannelLogs = GlobalConfiguration["CommonConfig:ChannelLogs"].ToInt64();
-            SpamWatchToken = GlobalConfiguration["CommonConfig:SpamWatchToken"];
+                Sudoers = GlobalConfiguration.GetSection("Sudoers").Get<List<string>>();
+                BotChannelLogs = GlobalConfiguration["CommonConfig:ChannelLogs"].ToInt64();
+                SpamWatchToken = GlobalConfiguration["CommonConfig:SpamWatchToken"];
 
-            DbConnectionString = GlobalConfiguration["CommonConfig:ConnectionString"];
+                DbConnectionString = GlobalConfiguration["CommonConfig:ConnectionString"];
 
-            GoogleCloudCredentialsPath = GlobalConfiguration["GoogleCloud:CredentialsPath"];
-            GoogleDriveAuth = GlobalConfiguration["GoogleCloud:DriveAuth"];
+                GoogleCloudCredentialsPath = GlobalConfiguration["GoogleCloud:CredentialsPath"];
+                GoogleDriveAuth = GlobalConfiguration["GoogleCloud:DriveAuth"];
 
-            HangfireMysqlDb = GlobalConfiguration["Hangfire:MySql"];
-            HangfireSqliteDb = GlobalConfiguration["Hangfire:Sqlite"];
-            HangfireLiteDb = GlobalConfiguration["Hangfire:LiteDb"];
+                HangfireMysqlDb = GlobalConfiguration["Hangfire:MySql"];
+                HangfireSqliteDb = GlobalConfiguration["Hangfire:Sqlite"];
+                HangfireLiteDb = GlobalConfiguration["Hangfire:LiteDb"];
 
-            SerilogLogglyToken = GlobalConfiguration["CommonConfig:LogglyToken"];
+                SerilogLogglyToken = GlobalConfiguration["CommonConfig:LogglyToken"];
 
-            DatadogApiKey = GlobalConfiguration["Datadog:ApiKey"];
-            DatadogHost = GlobalConfiguration["Datadog:Host"];
-            DatadogSource = GlobalConfiguration["Datadog:Source"];
-            DatadogTags = GlobalConfiguration.GetSection("Datadog:Tags").Get<List<string>>();
+                DatadogApiKey = GlobalConfiguration["Datadog:ApiKey"];
+                DatadogHost = GlobalConfiguration["Datadog:Host"];
+                DatadogSource = GlobalConfiguration["Datadog:Source"];
+                DatadogTags = GlobalConfiguration.GetSection("Datadog:Tags").Get<List<string>>();
 
-            IbmWatsonTranslateUrl = GlobalConfiguration["IbmConfig:Watson:TranslateUrl"];
-            IbmWatsonTranslateToken = GlobalConfiguration["IbmConfig:Watson:TranslateToken"];
+                IbmWatsonTranslateUrl = GlobalConfiguration["IbmConfig:Watson:TranslateUrl"];
+                IbmWatsonTranslateToken = GlobalConfiguration["IbmConfig:Watson:TranslateToken"];
 
-            LearningDataSetPath = @"Storage\Learning\".EnsureDirectory();
-            TesseractTrainedData = @"Storage\Data\Tesseract\";
-            PathCache = "Storage/Caches";
+                LearningDataSetPath = @"Storage\Learning\".EnsureDirectory();
+                TesseractTrainedData = @"Storage\Data\Tesseract\";
+                PathCache = "Storage/Caches";
 
-            OcrSpaceKey = GlobalConfiguration["OcrSpace:ApiKey"];
+                OcrSpaceKey = GlobalConfiguration["OcrSpace:ApiKey"];
 
-            RavenDBCertPath = GlobalConfiguration["RavenDB:CertPath"];
-            RavenDBDatabase = GlobalConfiguration["RavenDB:DBName"];
-            RavenDBNodes = GlobalConfiguration.GetSection("RavenDB:Nodes").Get<List<string>>();
+                RavenDBCertPath = GlobalConfiguration["RavenDB:CertPath"];
+                RavenDBDatabase = GlobalConfiguration["RavenDB:DBName"];
+                RavenDBNodes = GlobalConfiguration.GetSection("RavenDB:Nodes").Get<List<string>>();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(@"Error Loading Settings");
+                Console.WriteLine($@"{ex.ToJson(true)}");
+            }
         }
 
         public static string ProductName { get; set; }
