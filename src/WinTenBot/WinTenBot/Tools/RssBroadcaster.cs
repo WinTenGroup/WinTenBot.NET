@@ -5,12 +5,14 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CodeHollow.FeedReader;
+using Hangfire;
 using Serilog;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Types.Enums;
 using WinTenBot.Common;
 using WinTenBot.Model;
 using WinTenBot.Services;
+using WinTenBot.Telegram;
 
 namespace WinTenBot.Tools
 {
@@ -163,10 +165,29 @@ namespace WinTenBot.Tools
                 catch (Exception ex)
                 {
                     Log.Error(ex, "RSS Broadcaster error");
+                    var exMessage = ex.Message;
+                    if (exMessage.Contains("bot was blocked by the user"))
+                    {
+                        Log.Information("Seem need clearing all RSS Settings and unregister Cron completely!");
+                        Log.Debug("Deleting all RSS Settings");
+                        await rssService.DeleteAllByChatId(chatId).ConfigureAwait(false);
+                        
+                        UnRegRSS(chatId);
+                    }
                 }
             }
 
             return newRssCount;
+        }
+
+        public static void UnRegRSS(long chatId)
+        {
+            var baseId = "rss";
+            var reduceChatId = chatId.ToInt64().ReduceChatId();
+            var recurringId = $"{baseId}-{reduceChatId}";
+            
+            Log.Debug("Deleting RSS Cron {0}", chatId);
+            RecurringJob.RemoveIfExists(recurringId);
         }
 
         public static async Task<string> FindUrlFeed(this string url)

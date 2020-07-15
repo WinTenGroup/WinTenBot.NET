@@ -135,6 +135,19 @@ namespace WinTenBot.Services
             return delete.ToBool();
         }
 
+        public async Task<int> DeleteAllByChatId(long chatId)
+        {
+            var delete = await new Query(rssSettingTable)
+                .Where("chat_id", chatId)
+                .ExecForMysql()
+                .DeleteAsync()
+                .ConfigureAwait(false);
+
+            Log.Information("Deleted RSS {0} Settings {1} rows", chatId, delete);
+
+            return delete;
+        }
+
         public async Task DeleteDuplicateAsync()
         {
             var duplicate = await rssSettingTable.MysqlDeleteDuplicateRowAsync("url_feed")
