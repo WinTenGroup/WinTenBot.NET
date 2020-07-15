@@ -95,6 +95,12 @@ namespace WinTenBot.Telegram
 
             var mappedWords = query.ToJson().MapObject<List<WordFilter>>();
 
+            if (words == null)
+            {
+                Log.Information("Scan message skipped because Words is null");
+                return false;
+            }
+
             var partedWord = words.Split(new[] {'\n', '\r', ' ', '\t'},
                 StringSplitOptions.RemoveEmptyEntries);
             foreach (var word in partedWord)
