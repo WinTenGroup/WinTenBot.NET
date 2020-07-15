@@ -337,9 +337,16 @@ namespace WinTenBot.Services
 
         public async Task AnswerCallbackQueryAsync(string text)
         {
-            var callbackQueryId = Context.Update.CallbackQuery.Id;
-            await Client.AnswerCallbackQueryAsync(callbackQueryId, text)
-                .ConfigureAwait(false);
+            try
+            {
+                var callbackQueryId = Context.Update.CallbackQuery.Id;
+                await Client.AnswerCallbackQueryAsync(callbackQueryId, text)
+                    .ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                Log.Error(e, "Error Answer Callback");
+            }
         }
 
         public void ResetTime()
