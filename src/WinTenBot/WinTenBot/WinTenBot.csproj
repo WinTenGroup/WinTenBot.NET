@@ -13,6 +13,7 @@
         <PackageReference Include="CodeHollow.FeedReader" Version="1.2.1" />
         <PackageReference Include="CsvHelper" Version="15.0.5" />
         <PackageReference Include="Datadog.Trace" Version="1.18.2" />
+        <PackageReference Include="DotNetZip" Version="1.13.8" />
         <PackageReference Include="EasyEncrypt" Version="2.2.1" />
         <PackageReference Include="FluentMigrator" Version="3.2.7" />
         <PackageReference Include="FluentMigrator.Runner" Version="3.2.7" />
