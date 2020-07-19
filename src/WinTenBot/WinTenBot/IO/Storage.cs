@@ -31,14 +31,15 @@ namespace WinTenBot.IO
 
                 if (filteredFiles.Length > 0)
                 {
-                    Log.Information($"Found {filteredFiles.Length} of {files.Length}");
+                    Log.Information("Found {0} of {1}", filteredFiles.Length, files.Length);
                     foreach (var fileInfo in filteredFiles)
                     {
                         var filePath = fileInfo.FullName;
-                        Log.Information($"Uploading file {filePath}");
-                        await using var fileStream = File.OpenRead(filePath);
+                        var zipFile = filePath.CreateZip();
+                        Log.Information("Uploading file {0}", zipFile);
+                        await using var fileStream = File.OpenRead(zipFile);
 
-                        var media = new InputOnlineFile(fileStream, fileInfo.Name);
+                        var media = new InputOnlineFile(fileStream, zipFile);
                         await botClient.SendDocumentAsync(channelTarget, media)
                             .ConfigureAwait(false);
 
@@ -46,6 +47,7 @@ namespace WinTenBot.IO
                         await fileStream.DisposeAsync().ConfigureAwait(false);
 
                         filePath.DeleteFile();
+                        zipFile.DeleteFile();
                     }
                 }
                 else
