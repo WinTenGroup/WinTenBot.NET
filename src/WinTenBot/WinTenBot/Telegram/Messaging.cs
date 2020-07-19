@@ -175,11 +175,19 @@ namespace WinTenBot.Telegram
         {
             var message = telegramService.MessageOrEdited;
             var chatId = message.Chat.Id;
+            var fromId = message.From.Id;
             var msgId = message.MessageId;
 
             if (message.Photo != null)
             {
                 Log.Information("");
+
+                var isSafe = await telegramService.IsSafeMemberAsync().ConfigureAwait(false);
+                if (isSafe)
+                {
+                    Log.Information("Scan photo skipped because UserId {0} is SafeMember", fromId);
+                    return;
+                }
 
                 var fileName = $"{chatId}/ocr-{msgId}.jpg";
                 Log.Information("Preparing photo");
@@ -200,8 +208,15 @@ namespace WinTenBot.Telegram
                 Log.Information($"Message {message.MessageId} IsMustDelete: {isMustDelete}");
 
                 if (isMustDelete)
+                {
                     await telegramService.DeleteAsync(message.MessageId)
                         .ConfigureAwait(false);
+                }
+                else
+                {
+                    await telegramService.VerifySafeMemberAsync()
+                        .ConfigureAwait(false);
+                }
 
                 savedFile.GetDirectory().RemoveFiles("ocr");
             }
