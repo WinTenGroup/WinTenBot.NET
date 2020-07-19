@@ -1,6 +1,10 @@
-﻿using System.Security.Cryptography.X509Certificates;
+﻿using System.IO;
+using System.Security.Cryptography.X509Certificates;
+using System.Threading.Tasks;
 using Raven.Client.Documents;
 using Raven.Client.Documents.Linq;
+using Raven.Client.Documents.Operations;
+using Raven.Client.Documents.Queries;
 using Raven.Client.Documents.Session;
 using Serilog;
 using WinTenBot.Common;
@@ -22,6 +26,12 @@ namespace WinTenBot.Providers
             Log.Debug("Nodes: {0}", nodes.ToJson(true));
             Log.Debug("Cert: {0}", certPath);
             Log.Debug("DBName: {0}", dbName);
+
+            if (!File.Exists(certPath))
+            {
+                Log.Error("File {0} is missing. RavenDB Disabled", certPath);
+                return;
+            }
 
             var clientCertificate = new X509Certificate2(certPath);
             var documentStore = new DocumentStore()
