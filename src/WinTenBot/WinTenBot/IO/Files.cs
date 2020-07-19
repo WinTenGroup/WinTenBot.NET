@@ -25,6 +25,15 @@ namespace WinTenBot.IO
             }
         }
 
+        public static string ReplaceExt(this string fileName, string toExt)
+        {
+            // var fileExt = Path.GetExtension(fileName);
+            // var newFile = fileName.Replace(fileExt,toExt);
+            // return newFile;
+            
+            return Path.ChangeExtension(fileName, toExt);
+        }
+
         public static async Task WriteTextAsync(this string content, string filePath)
         {
             var cachePath = BotSettings.PathCache;
