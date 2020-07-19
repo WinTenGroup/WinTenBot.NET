@@ -21,13 +21,13 @@ namespace WinTenBot.Common
             var flushInterval = TimeSpan.FromSeconds(1);
             var rollingInterval = RollingInterval.Day;
             var datadogKey = BotSettings.DatadogApiKey;
-            var rollingFile = 50 * 1024 * 1024;
+            // var rollingFile = 50 * 1024 * 1024;
 
             var serilogConfig = new LoggerConfiguration()
                 .Enrich.FromLogContext()
                 .WriteTo.Async(a =>
                     a.File(logPath, rollingInterval: rollingInterval, flushToDiskInterval: flushInterval,
-                        shared: true, fileSizeLimitBytes: rollingFile, outputTemplate: consoleTemplate))
+                        shared: true, outputTemplate: consoleTemplate))
                 .WriteTo.Async(a => 
                     a.Console(theme: SystemConsoleTheme.Colored, outputTemplate: consoleTemplate));
             
