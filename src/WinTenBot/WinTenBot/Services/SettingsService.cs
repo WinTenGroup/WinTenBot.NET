@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using Serilog;
+using SqlKata;
+using SqlKata.Execution;
+using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Serilog;
-using SqlKata;
-using SqlKata.Execution;
 using Telegram.Bot.Types;
 using WinTenBot.Common;
 using WinTenBot.IO;
@@ -30,7 +30,7 @@ namespace WinTenBot.Services
 
         public async Task<bool> IsSettingExist()
         {
-            var where = new Dictionary<string, object>() {{"chat_id", Message.Chat.Id}};
+            var where = new Dictionary<string, object>() { { "chat_id", Message.Chat.Id } };
 
             var data = await new Query(baseTable)
                 .Where(where)
@@ -150,7 +150,6 @@ namespace WinTenBot.Services
                 });
             }
 
-
             //
             // listBtn.Add(new CallBackButton()
             // {
@@ -170,7 +169,7 @@ namespace WinTenBot.Services
         public async Task<int> SaveSettingsAsync(Dictionary<string, object> data)
         {
             var chatId = data["chat_id"];
-            var where = new Dictionary<string, object>() {{"chat_id", chatId}};
+            var where = new Dictionary<string, object>() { { "chat_id", chatId } };
 
             Log.Debug($"Checking settings for {chatId}");
             var check = await new Query(baseTable)
@@ -208,8 +207,8 @@ namespace WinTenBot.Services
 
         public async Task UpdateCell(string key, object value)
         {
-            var where = new Dictionary<string, object>() {{"chat_id", Message.Chat.Id}};
-            var data = new Dictionary<string, object>() {{key, value}};
+            var where = new Dictionary<string, object>() { { "chat_id", Message.Chat.Id } };
+            var data = new Dictionary<string, object>() { { key, value } };
 
             await new Query(baseTable)
                 .Where(where)
@@ -230,8 +229,10 @@ namespace WinTenBot.Services
                     .ConfigureAwait(false);
             }
 
-            return await cachePath.ReadCacheAsync<ChatSetting>()
+            var cache = await cachePath.ReadCacheAsync<ChatSetting>()
                 .ConfigureAwait(false);
+
+            return cache ?? new ChatSetting();
         }
 
         public async Task UpdateCache()
