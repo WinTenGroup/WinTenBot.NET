@@ -20,6 +20,7 @@
         <PackageReference Include="Flurl.Http" Version="2.4.2" />
         <PackageReference Include="Google.Apis.Drive.v3" Version="1.48.0.1995" />
         <PackageReference Include="Google.Cloud.Firestore" Version="2.1.0" />
+        <PackageReference Include="Google.Cloud.VideoIntelligence.V1" Version="2.0.0" />
         <PackageReference Include="Google.Cloud.Vision.V1" Version="2.0.0" />
         <PackageReference Include="GoogleTranslateFreeApi" Version="1.1.1" />
         <PackageReference Include="Hangfire.AspNetCore" Version="1.7.11" />

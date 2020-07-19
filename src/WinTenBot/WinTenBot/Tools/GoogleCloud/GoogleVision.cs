@@ -1,15 +1,22 @@
 ﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using Google.Cloud.VideoIntelligence.V1;
 using Google.Cloud.Vision.V1;
+using Google.Protobuf;
 using Serilog;
 using WinTenBot.Common;
 using WinTenBot.IO;
 using WinTenBot.Model;
+using Feature = Google.Cloud.VideoIntelligence.V1.Feature;
 
 namespace WinTenBot.Tools.GoogleCloud
 {
     public static class GoogleVision
     {
         private static ImageAnnotatorClient Client { get; set; }
+        private static VideoIntelligenceServiceClient VideoIntelligenceService { get; set; }
 
         private static ImageAnnotatorClient MakeClient()
         {
@@ -21,6 +28,12 @@ namespace WinTenBot.Tools.GoogleCloud
             };
 
             var client = clientBuilder.Build();
+
+            VideoIntelligenceService = new VideoIntelligenceServiceClientBuilder()
+            {
+                CredentialsPath = credPath
+            }.Build();
+
             return client;
         }
 
@@ -52,11 +65,36 @@ namespace WinTenBot.Tools.GoogleCloud
             Log.Information($"Google SafeSearch file {filePath}");
             Log.Debug("Loading file into memory");
             var image = Image.FromFile(filePath);
-            
+
             Log.Debug("Perform SafeSearch detection");
             var response = Client.DetectSafeSearch(image);
 
             return response;
+        }
+
+        public static async Task VideoIntelligenceAsync(string filePath)
+        {
+            Log.Information("Starting Google VideoIntelligence");
+
+            Log.Debug("Loading content");
+            var fileBytes = await File.ReadAllBytesAsync(filePath).ConfigureAwait(false);
+            var protoBuff = ByteString.CopyFrom(fileBytes);
+            
+            Log.Debug("Creating request");
+            var request = new AnnotateVideoRequest()
+            {
+                InputContent = protoBuff,
+                Features = {Feature.TextDetection}
+            };
+
+            Log.Debug("Annotating video");
+            var operation = await (await VideoIntelligenceService.AnnotateVideoAsync(request)
+                    .ConfigureAwait(false)).PollUntilCompletedAsync()
+                .ConfigureAwait(false);
+
+            Log.Debug("OperationResult: {0}", operation.Result.ToJson(true));
+            var annotationResult = operation.Result.AnnotationResults.First();
+            var text = annotationResult.TextAnnotations.First();
         }
 
         private static void PrintAnnotation(IReadOnlyList<EntityAnnotation> entityAnnotations)
