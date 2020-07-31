@@ -66,5 +66,10 @@ namespace WinTenBot.IO
         {
             return new FileInfo(filePath).Length;
         }
+        
+        public static bool IsFileExist(this string filePath)
+        {
+            return File.Exists(filePath);
+        }
     }
 }
