@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
@@ -30,19 +31,26 @@ namespace WinTenBot.Extensions
 
             var updateManager = new UpdatePollingManager<TBot>(botBuilder, new BotServiceProvider(app));
 
+#pragma warning disable CA2008 // Do not create tasks without passing a TaskScheduler
             Task.Run(async () =>
                 {
-                    await Task.Delay(startAfter, cancellationToken);
-                    await updateManager.RunAsync(cancellationToken: cancellationToken);
+                    await Task.Delay(startAfter, cancellationToken)
+                        .ConfigureAwait(false);
+                    await updateManager.RunAsync(cancellationToken: cancellationToken)
+                        .ConfigureAwait(false);
                 }, cancellationToken)
                 .ContinueWith(t =>
                 {
+                    Log.Error(t.Exception.Demystify(), "Error Starting Bot.");
+
                     // ToDo use logger
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine(t.Exception);
-                    Console.ResetColor();
+                    // Console.ForegroundColor = ConsoleColor.Red;
+                    // Console.WriteLine(t.Exception);
+                    // Console.ResetColor();
+
                     throw t.Exception;
                 }, TaskContinuationOptions.OnlyOnFaulted);
+#pragma warning restore CA2008 // Do not create tasks without passing a TaskScheduler
 
             return app;
         }
