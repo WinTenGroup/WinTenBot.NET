@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
@@ -82,7 +83,7 @@ namespace WinTenBot.Common
                     webRequest.Method = "HEAD";
                     webRequest.AllowAutoRedirect = true;
                     webResponse = (HttpWebResponse) webRequest.GetResponse();
-                    var statusCode = (int)webResponse.StatusCode;
+                    var statusCode = (int) webResponse.StatusCode;
                     Log.Debug("Response: {0}", webResponse.ToJson(true));
 
                     if (statusCode >= 300 && statusCode <= 399)
@@ -102,7 +103,7 @@ namespace WinTenBot.Common
 
                         Log.Debug("Finish redirect.");
                     }
-                    
+
                     newUrl = webResponse.ResponseUri.AbsoluteUri;
 
                     // switch (resp.StatusCode)
@@ -151,13 +152,15 @@ namespace WinTenBot.Common
                         webResponse.Close();
                 }
             } while (maxRedirCount-- > 0);
-            
+
             Log.Debug("Redirected URL: {0}", url);
             return url;
         }
 
         public static Uri GetAutoRedirectedUrl(this string url)
         {
+            if (!IsNeedRedirect(url)) return new Uri(url);
+            
             var webRequest = (HttpWebRequest) HttpWebRequest.Create(url);
             webRequest.Method = "HEAD";
             webRequest.AllowAutoRedirect = true;
@@ -166,8 +169,33 @@ namespace WinTenBot.Common
             Log.Debug("Response: {0}", webResponse.ToJson(true));
 
             return webResponse.ResponseUri;
+
         }
-        
+
+        public static bool IsNeedRedirect(string url)
+        {
+            var uri = new Uri(url);
+            Log.Debug("Uri: {0}", uri.Host.ToJson(true));
+
+            var skipRedirect = new List<string>()
+            {
+                "soft98.ir"
+            };
+
+            var needRedirect = false;
+            var host = uri.Host;
+            foreach (var skip in skipRedirect)
+            {
+                if (!host.Contains(skip, StringComparison.CurrentCulture))
+                {
+                    needRedirect = true;
+                }
+            }
+
+            Log.Debug("Is {0} need redirect {1}", host, needRedirect);
+            return needRedirect;
+        }
+
         // public static bool MakeRequest(Uri url)
         // {
         //     using var client = new HttpClient(new HttpClientHandler()
