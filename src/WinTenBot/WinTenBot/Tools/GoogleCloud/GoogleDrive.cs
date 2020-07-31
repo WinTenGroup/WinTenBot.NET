@@ -28,7 +28,7 @@ namespace WinTenBot.Tools.GoogleCloud
         {
             Log.Information("Initializing GoogleDrive client.");
             var googleCred = BotSettings.GoogleDriveAuth.SanitizeSlash();
-            
+
             Log.Debug("GoogleDrive cred {0}", googleCred);
             using var stream = new FileStream(googleCred, FileMode.Open, FileAccess.Read);
 
@@ -74,6 +74,15 @@ namespace WinTenBot.Tools.GoogleCloud
         public static void UploadFile(this TelegramService telegramService, string filePath)
         {
             Log.Information("Starting upload {0} to Drive", filePath);
+
+            if (!filePath.IsFileExist())
+            {
+                Log.Information("File {0} is not exist, file skipped.");
+                var notExist = "Sesuatu telah terjadi. File tidak tersedia.";
+                telegramService.EditAsync(notExist).Wait();
+                return;
+            }
+
             var fromNameLink = telegramService.Message.From.GetNameLink();
             var fileName = Path.GetFileName(filePath);
             var fileSize = Files.FileSize(filePath).ToDouble().SizeFormat();
