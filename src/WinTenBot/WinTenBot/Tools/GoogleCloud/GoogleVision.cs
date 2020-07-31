@@ -97,7 +97,7 @@ namespace WinTenBot.Tools.GoogleCloud
             var text = annotationResult.TextAnnotations.First();
         }
 
-        private static void PrintAnnotation(IReadOnlyList<EntityAnnotation> entityAnnotations)
+        private static void  PrintAnnotation(IReadOnlyList<EntityAnnotation> entityAnnotations)
         {
             foreach (var annotation in entityAnnotations)
             {
