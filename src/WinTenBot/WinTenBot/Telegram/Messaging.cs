@@ -90,6 +90,7 @@ namespace WinTenBot.Telegram
             var isMust = false;
             var query = await new Query("word_filter")
                 .ExecForSqLite(true)
+                .Where("is_global", 1)
                 .GetAsync()
                 .ConfigureAwait(false);
 
