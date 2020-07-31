@@ -21,25 +21,28 @@ namespace WinTenBot.IO
 
             return dirPath;
         }
-        
-        public static long DirSize(string path) 
-        {    
+
+        public static long DirSize(this string path)
+        {
             long size = 0;
 
             var d = new DirectoryInfo(path);
             // Add file sizes.
             var fis = d.GetFiles();
-            foreach (var fi in fis) 
-            {      
-                size += fi.Length;    
+            foreach (var fi in fis)
+            {
+                size += fi.Length;
             }
+
             // Add subdirectory sizes.
             var dis = d.GetDirectories();
-            foreach (var unused in dis) 
+            foreach (var unused in dis)
             {
-                size += DirSize(path);   
+                size += DirSize(unused.FullName);
             }
-            return size;  
+
+            Log.Information($"{path} size is {size}");
+            return size;
         }
 
         public static string SanitizeSlash(this string path)
@@ -58,7 +61,7 @@ namespace WinTenBot.IO
             Log.Information($"Deleting files in {path}");
             var files = Directory.GetFiles(path)
                 .Where(file => file.Contains(filter, StringComparison.CurrentCulture));
-            
+
             foreach (var file in files)
             {
                 File.Delete(file);
