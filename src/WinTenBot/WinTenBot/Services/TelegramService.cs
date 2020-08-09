@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -507,34 +508,47 @@ namespace WinTenBot.Services
 
         public async Task RestrictMemberAsync(int userId, bool unMute = false, DateTime until = default)
         {
-            var chatId = Message.Chat.Id;
-            var untilDate = until;
-            if (until == default)
+            try
             {
-                untilDate = DateTime.UtcNow.AddDays(366);
+                var chatId = Message.Chat.Id;
+                var untilDate = until;
+                if (until == default)
+                {
+                    untilDate = DateTime.UtcNow.AddDays(366);
+                }
+
+                Log.Information($"Restricting member on {chatId} until {untilDate}");
+                Log.Information($"UserId: {userId}, IsMute: {unMute}");
+
+                var permission = new ChatPermissions
+                {
+                    CanSendMessages = unMute,
+                    CanSendMediaMessages = unMute,
+                    CanSendOtherMessages = unMute,
+                    CanAddWebPagePreviews = unMute,
+                    CanChangeInfo = unMute,
+                    CanInviteUsers = unMute,
+                    CanPinMessages = unMute,
+                    CanSendPolls = unMute
+                };
+
+                Log.Debug($"ChatPermissions: {permission.ToJson(true)}");
+
+                if (unMute) untilDate = DateTime.UtcNow;
+
+                await Client.RestrictChatMemberAsync(chatId, userId, permission, untilDate)
+                    .ConfigureAwait(false);
             }
-
-            Log.Information($"Restricting member on {chatId} until {untilDate}");
-            Log.Information($"UserId: {userId}, IsMute: {unMute}");
-
-            var permission = new ChatPermissions
+            catch (Exception ex)
             {
-                CanSendMessages = unMute,
-                CanSendMediaMessages = unMute,
-                CanSendOtherMessages = unMute,
-                CanAddWebPagePreviews = unMute,
-                CanChangeInfo = unMute,
-                CanInviteUsers = unMute,
-                CanPinMessages = unMute,
-                CanSendPolls = unMute
-            };
-
-            Log.Debug($"ChatPermissions: {permission.ToJson(true)}");
-
-            if (unMute) untilDate = DateTime.UtcNow;
-
-            await Client.RestrictChatMemberAsync(chatId, userId, permission, untilDate)
-                .ConfigureAwait(false);
+                Log.Error(ex.Demystify(),"Error restrict member");
+                var exceptionMsg = ex.Message;
+                if (exceptionMsg.Contains("CHAT_ADMIN_REQUIRED"))
+                {
+                    await SendTextAsync("Sepertinya saya harus menjadi Admin di Grup ini.")
+                        .ConfigureAwait(false);
+                }
+            }
         }
 
         #endregion
