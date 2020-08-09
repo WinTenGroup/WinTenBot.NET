@@ -36,7 +36,7 @@ namespace WinTenBot.IO
             var dataTable = json.MapObject<T>();
 
             // var dataTable = json.ToDataTable();
-            Log.Information("Loaded cache items");
+            Log.Information("Loaded cache items: {0}", fileJson);
             return dataTable;
         }
 
