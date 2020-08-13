@@ -8,6 +8,7 @@ using WinTenBot.Common;
 using WinTenBot.Interfaces;
 using WinTenBot.Model;
 using WinTenBot.Providers;
+using WinTenBot.Tools;
 
 namespace WinTenBot.Services
 {
@@ -117,6 +118,8 @@ namespace WinTenBot.Services
             data.ForEach(y => liteDb.DeleteMany(x => x.ChatId == y.ChatId));
 
             var insertBulk = liteDb.InsertBulk(data);
+
+            message.SetChatCache("tags", data);
         }
     }
 }
