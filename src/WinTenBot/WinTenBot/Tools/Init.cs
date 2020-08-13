@@ -24,6 +24,7 @@ namespace WinTenBot.Tools
 
             LiteDbProvider.OpenDatabase();
             RavenDbProvider.InitDatabase();
+            MonkeyCacheUtil.SetupCache();
 
             BotSettings.DbConnectionString = BotSettings.DbConnectionString;
             DbMigration.ConnectionString = BotSettings.DbConnectionString;
