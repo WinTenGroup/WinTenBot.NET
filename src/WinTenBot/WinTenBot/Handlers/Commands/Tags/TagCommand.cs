@@ -99,11 +99,14 @@ namespace WinTenBot.Handlers.Commands.Tags
                 {"from_id", msg.From.Id},
                 {"tag", slugTag.Trim()},
                 {"btn_data", buttonData},
-                {"content", content}
+                {"content", content},
+                {"file_id", ""}
             };
 
             if (repFileId.IsNotNullOrEmpty())
             {
+                data.Remove("file_id");
+                
                 data.Add("file_id", repFileId);
                 data.Add("type_data", repMsg.Type);
             }
