@@ -12,6 +12,7 @@ using WinTenBot.Common;
 using WinTenBot.Model;
 using WinTenBot.Providers;
 using WinTenBot.Services;
+using WinTenBot.Tools;
 
 namespace WinTenBot.Telegram
 {
@@ -90,25 +91,51 @@ namespace WinTenBot.Telegram
                 var fromFName = message.From.FirstName;
                 var fromLName = message.From.LastName;
                 var chatId = message.Chat.Id;
+                var botUser = await telegramService.GetMeAsync()
+                    .ConfigureAwait(false);
 
                 Log.Information("Starting SangMata check..");
 
-                var query = await new Query("hit_activity")
-                    .ExecForMysql(true)
-                    .Where("from_id", fromId)
-                    .Where("chat_id", chatId)
-                    .OrderByDesc("timestamp")
-                    .Limit(1)
-                    .GetAsync()
-                    .ConfigureAwait(false);
+                // var query = await new Query("hit_activity")
+                //     .ExecForMysql(true)
+                //     .Where("from_id", fromId)
+                //     .Where("chat_id", chatId)
+                //     .OrderByDesc("timestamp")
+                //     .Limit(1)
+                //     .GetAsync()
+                //     .ConfigureAwait(false);
 
-                if (!query.Any())
+                // if (!query.Any())
+                // {
+                //     Log.Information($"This may first Hit from User {fromId}");
+                //     return;
+                // }
+
+                // var hitActivity = query.ToJson().MapObject<List<HitActivity>>().FirstOrDefault();
+                
+                var hitActivity = telegramService.GetChatCache<HitActivity>(fromId.ToString());
+                if (hitActivity == null)
                 {
-                    Log.Information($"This may first Hit from User {fromId}");
+                    Log.Information($"This may first Hit from User {0}", fromId);
+                    
+                    telegramService.SetChatCache(fromId.ToString(), new HitActivity()
+                    {
+                        ViaBot = botUser.Username,
+                        MessageType = message.Type.ToString(),
+                        FromId = message.From.Id,
+                        FromFirstName = message.From.FirstName,
+                        FromLastName = message.From.LastName,
+                        FromUsername = message.From.Username,
+                        FromLangCode = message.From.LanguageCode,
+                        ChatId = message.Chat.Id.ToString(),
+                        ChatUsername = message.Chat.Username,
+                        ChatType = message.Chat.Type.ToString(),
+                        ChatTitle = message.Chat.Title,
+                        Timestamp = DateTime.Now
+                    });
+                    
                     return;
                 }
-
-                var hitActivity = query.ToJson().MapObject<List<HitActivity>>().FirstOrDefault();
 
                 Log.Debug($"SangMata: {hitActivity.ToJson(true)}");
 
@@ -140,8 +167,29 @@ namespace WinTenBot.Telegram
                 }
 
                 if (changesCount > 0)
+                {
                     await telegramService.SendTextAsync(msgBuild.ToString().Trim())
                         .ConfigureAwait(false);
+
+                    telegramService.SetChatCache(fromId.ToString(), new HitActivity()
+                    {
+                        ViaBot = botUser.Username,
+                        MessageType = message.Type.ToString(),
+                        FromId = message.From.Id,
+                        FromFirstName = message.From.FirstName,
+                        FromLastName = message.From.LastName,
+                        FromUsername = message.From.Username,
+                        FromLangCode = message.From.LanguageCode,
+                        ChatId = message.Chat.Id.ToString(),
+                        ChatUsername = message.Chat.Username,
+                        ChatType = message.Chat.Type.ToString(),
+                        ChatTitle = message.Chat.Title,
+                        Timestamp = DateTime.Now
+                    });
+                    Log.Debug("Complete update Cache");
+                }
+
+                Log.Information("MataZizi completed. Changes: {0}", changesCount);
             }
             catch (Exception ex)
             {
@@ -554,7 +602,7 @@ namespace WinTenBot.Telegram
                                    $"\nPeringatan ke {updatedStep} dari {warnLimit}";
 
                     if (updatedStep == warnLimit) sendText += "\n\n<b>Ini peringatan terakhir!</b>";
-                    
+
                     if (updatedStep > warnLimit)
                     {
                         var sendWarn = $"Batas peringatan telah di lampaui." +
