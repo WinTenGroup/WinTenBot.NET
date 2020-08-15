@@ -75,13 +75,13 @@ namespace WinTenBot.Services
                 "enable_fed_cas_ban",
                 "enable_fed_es2_ban",
                 "enable_fed_spamwatch",
-                "enable_find_notes",
+                // "enable_find_notes",
                 "enable_find_tags",
                 "enable_human_verification",
                 "enable_reply_notification",
                 "enable_warn_username",
                 "enable_welcome_message",
-                "enable_word_filter_group",
+                // "enable_word_filter_group",
                 "enable_word_filter_global",
             };
 
