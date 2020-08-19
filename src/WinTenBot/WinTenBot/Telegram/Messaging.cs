@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Serilog;
@@ -292,7 +293,7 @@ namespace WinTenBot.Telegram
                 }
 
                 var notesService = new NotesService();
-
+                
                 var selectedNotes = await notesService.GetNotesBySlug(message.Chat.Id, message.Text)
                     .ConfigureAwait(false);
                 if (selectedNotes.Count > 0)
@@ -325,6 +326,9 @@ namespace WinTenBot.Telegram
 
         public static async Task FindTagsAsync(this TelegramService telegramService)
         {
+            var sw = new Stopwatch();
+            sw.Start();
+            
             var message = telegramService.MessageOrEdited;
             var chatSettings = telegramService.CurrentSetting;
             if (!chatSettings.EnableFindTags)
@@ -351,13 +355,15 @@ namespace WinTenBot.Telegram
             Log.Debug("AllTags: {0}", allTags.ToJson(true));
             Log.Debug("First 5: {0}", limitedTags.ToJson(true));
             //            int count = 1;
+            var tags = telegramService.GetChatCache<List<CloudTag>>("tags");
             foreach (var split in limitedTags)
             {
                 var trimTag = split.TrimStart('#');
                 Log.Information("Processing : {0}", trimTag);
 
-                var tagData = await tagsService.GetTagByTag(message.Chat.Id, trimTag)
-                    .ConfigureAwait(false);
+                var tagData = tags.Where(x => x.Tag == trimTag).ToList();
+                // var tagData = await tagsService.GetTagByTag(message.Chat.Id, trimTag)
+                //     .ConfigureAwait(false);
                 Log.Debug("Data of tag: {0} {1}", trimTag, tagData.ToJson(true));
 
                 var content = tagData[0].Content;
@@ -388,6 +394,9 @@ namespace WinTenBot.Telegram
                 await telegramService.SendTextAsync("Due performance reason, we limit 5 batch call tags")
                     .ConfigureAwait(false);
             }
+            
+            Log.Information("Find Tags completed in {0}", sw.Elapsed);
+            sw.Stop();
         }
     }
 }

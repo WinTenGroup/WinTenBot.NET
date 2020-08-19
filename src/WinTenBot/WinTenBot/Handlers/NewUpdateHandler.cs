@@ -78,7 +78,7 @@ namespace WinTenBot.Handlers
 
             if (message.Text != null)
             {
-                nonAwaitTasks.Add(_telegramService.FindNotesAsync());
+                // nonAwaitTasks.Add(_telegramService.FindNotesAsync());
                 nonAwaitTasks.Add(_telegramService.FindTagsAsync());
             }
 

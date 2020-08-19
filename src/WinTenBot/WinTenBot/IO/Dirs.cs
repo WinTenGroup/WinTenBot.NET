@@ -8,16 +8,21 @@ namespace WinTenBot.IO
 {
     public static class Dirs
     {
-        public static string EnsureDirectory(this string dirPath)
+        public static string EnsureDirectory(this string dirPath, bool isDir = false)
         {
             Log.Debug("EnsuringDir: {0}", dirPath);
 
             var path = Path.GetDirectoryName(dirPath);
-            if (!path.IsNullOrEmpty())
+            if (isDir)
             {
-                Log.Debug("Creating directory..");
-                Directory.CreateDirectory(path);
+                path = dirPath;
             }
+
+            if (path.IsNullOrEmpty()) return dirPath;
+            if (Directory.Exists(path)) return dirPath;
+                
+            Log.Debug("Creating directory {0}..", path);
+            Directory.CreateDirectory(path);
 
             return dirPath;
         }

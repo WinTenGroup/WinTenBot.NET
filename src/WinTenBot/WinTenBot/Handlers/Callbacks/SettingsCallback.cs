@@ -78,6 +78,8 @@ namespace WinTenBot.Handlers.Callbacks
             await _telegramService.EditMessageCallback(editText, btnMarkup)
                 .ConfigureAwait(false);
 
+            await settingService.UpdateCache()
+                .ConfigureAwait(true);
             // var lastReplyMarkup = CallbackQuery.Message.ReplyMarkup.InlineKeyboard;
             // Log.Debug($"LastReplyMarkup: {lastReplyMarkup.ToJson(true)}");
         }

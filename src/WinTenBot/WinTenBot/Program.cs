@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -8,17 +10,20 @@ namespace WinTenBot
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             try
             {
                 Log.Information("Starting WebAPI..");
                 // BuildWebHost(args).Run();
-                CreateWebHostBuilder(args).Build().Run();
+                await CreateWebHostBuilder(args)
+                    .Build()
+                    .RunAsync()
+                    .ConfigureAwait(false);
             }
             catch (Exception ex)
             {
-                Log.Fatal(ex, "Host terminated unexpectedly");
+                Log.Fatal(ex.Demystify(), "Host terminated unexpectedly");
             }
             finally
             {
