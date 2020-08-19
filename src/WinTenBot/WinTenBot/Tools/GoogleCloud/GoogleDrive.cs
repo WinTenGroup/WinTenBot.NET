@@ -87,7 +87,7 @@ namespace WinTenBot.Tools.GoogleCloud
             var fileName = Path.GetFileName(filePath);
             var fileSize = Files.FileSize(filePath).ToDouble().SizeFormat();
             var mimeType = MimeTypesMap.GetMimeType(fileName);
-            var baseUpload = "https://drive.jovanzers.workers.dev/ZiziUpload/";
+            var baseUpload = "https://drive.jovanzers.workers.dev/2:/";
             var uploadedUrl = baseUpload + fileName;
             var swUpdater = new Stopwatch();
             swUpdater.Start();
