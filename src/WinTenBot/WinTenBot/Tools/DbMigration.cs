@@ -35,6 +35,7 @@ namespace WinTenBot.Tools
                     .ScanIn(typeof(CreateTableAfk).Assembly).For.Migrations()
                     .ScanIn(typeof(CreateTableChatSettings).Assembly).For.Migrations()
                     .ScanIn(typeof(CreateTableGlobalBan).Assembly).For.Migrations()
+                    .ScanIn(typeof(CreateTableHitActivity).Assembly).For.Migrations()
                     .ScanIn(typeof(CreateTableRssHistory).Assembly).For.Migrations()
                     .ScanIn(typeof(CreateTableRssSettings).Assembly).For.Migrations()
                     .ScanIn(typeof(CreateTableSafeMember).Assembly).For.Migrations()
