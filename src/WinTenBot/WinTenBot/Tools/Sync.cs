@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Serilog;
@@ -127,10 +128,11 @@ namespace WinTenBot.Tools
             await "fban_user".DeleteDuplicateRow("user_id")
                 .ConfigureAwait(false);
         }
-        
+
         public static async Task SyncWordToLocalAsync()
         {
-            // Log.Information("Getting data from MySql");
+            var sw = Stopwatch.StartNew();
+            Log.Information("Starting Sync Words filter");
             var cloudQuery = (await new Query("word_filter")
                 .ExecForMysql()
                 .GetAsync()
@@ -138,50 +140,71 @@ namespace WinTenBot.Tools
 
             var cloudWords = cloudQuery.ToJson().MapObject<List<WordFilter>>();
 
-            var localQuery = (await new Query("word_filter")
-                .ExecForSqLite()
-                .GetAsync()
-                .ConfigureAwait(false)).ToList();
-            var localWords = localQuery.ToJson().MapObject<List<WordFilter>>();
+            var jsonWords = "local-words".OpenJson();
 
+            Log.Debug("Getting Words Collections");
+            var wordCollection = jsonWords.GetCollection<WordFilter>();
 
-            var diffWords = cloudWords
-                .Where(c => localWords.All(l => l.Word != c.Word)).ToList();
-            Log.Debug($"DiffWords: {diffWords.Count} item(s)");
-
-            if (diffWords.Count == 0)
-            {
-                Log.Debug("Seem not need sync words to Local storage");
-                return;
-            }
-
-            Log.Information("Starting sync Words to Local");
-            var clearData = await new Query("word_filter")
-                .ExecForSqLite(true)
-                .DeleteAsync()
+            Log.Debug("Deleting old Words");
+            await wordCollection.DeleteManyAsync(x => x.Word != null)
                 .ConfigureAwait(false);
 
-            Log.Information($"Deleting local Word Filter: {clearData} rows");
+            Log.Debug("Inserting new Words");
+            await wordCollection.InsertManyAsync(cloudWords)
+                .ConfigureAwait(false);
 
-            foreach (var row in cloudWords)
-            {
-                var data = new Dictionary<string, object>()
-                {
-                    {"word", row.Word},
-                    {"is_global", row.IsGlobal},
-                    {"deep_filter", row.DeepFilter},
-                    {"from_id", row.FromId},
-                    {"chat_id", row.ChatId},
-                    {"created_at", row.CreatedAt}
-                };
+            Log.Information("Sync {0} Words complete in {1}", cloudWords.Count, sw.Elapsed);
 
-                var insert = await new Query("word_filter")
-                    .ExecForSqLite()
-                    .InsertAsync(data)
-                    .ConfigureAwait(false);
-            }
+            jsonWords.Dispose();
+            cloudQuery.Clear();
+            cloudWords.Clear();
+            sw.Stop();
+            
 
-            Log.Information($"Synced {cloudWords.Count} row(s)");
+            // var localQuery = (await new Query("word_filter")
+            //     .ExecForSqLite()
+            //     .GetAsync()
+            //     .ConfigureAwait(false)).ToList();
+            // var localWords = localQuery.ToJson().MapObject<List<WordFilter>>();
+            //
+            //
+            // var diffWords = cloudWords
+            //     .Where(c => localWords.All(l => l.Word != c.Word)).ToList();
+            // Log.Debug($"DiffWords: {diffWords.Count} item(s)");
+            //
+            // if (diffWords.Count == 0)
+            // {
+            //     Log.Debug("Seem not need sync words to Local storage");
+            //     return;
+            // }
+            //
+            // Log.Information("Starting sync Words to Local");
+            // var clearData = await new Query("word_filter")
+            //     .ExecForSqLite(true)
+            //     .DeleteAsync()
+            //     .ConfigureAwait(false);
+            //
+            // Log.Information($"Deleting local Word Filter: {clearData} rows");
+            //
+            // foreach (var row in cloudWords)
+            // {
+            //     var data = new Dictionary<string, object>()
+            //     {
+            //         {"word", row.Word},
+            //         {"is_global", row.IsGlobal},
+            //         {"deep_filter", row.DeepFilter},
+            //         {"from_id", row.FromId},
+            //         {"chat_id", row.ChatId},
+            //         {"created_at", row.CreatedAt}
+            //     };
+            //
+            //     var insert = await new Query("word_filter")
+            //         .ExecForSqLite()
+            //         .InsertAsync(data)
+            //         .ConfigureAwait(false);
+            // }
+            //
+            // Log.Information($"Synced {cloudWords.Count} row(s)");
         }
     }
 }
