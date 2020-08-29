@@ -24,7 +24,7 @@ namespace WinTenBot.Tools
             Log.Debug("MonkeyCache initialized.");
         }
 
-        public static void Add<T>(string key, T data)
+        public static void AddCache<T>(this T data, string key)
         {
             Log.Information("Adding Monkeys with key: {0}", key);
             Barrel.Current.Add(key, data, TimeSpan.FromDays(1));
@@ -52,7 +52,7 @@ namespace WinTenBot.Tools
             var msgId = msg.MessageId;
             var keyCache = $"{chatId}-{key}";
 
-            Add(keyCache, data);
+            AddCache(data, keyCache);
             return data;
         }
 

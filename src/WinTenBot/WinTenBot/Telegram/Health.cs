@@ -9,6 +9,7 @@ using Telegram.Bot.Types;
 using WinTenBot.Common;
 using WinTenBot.Model;
 using WinTenBot.Services;
+using WinTenBot.Tools;
 
 namespace WinTenBot.Telegram
 {
@@ -16,8 +17,12 @@ namespace WinTenBot.Telegram
     {
         public static async Task<string> GetUrlStart(this TelegramService telegramService, string param)
         {
+            Log.Debug("Getting Me");
             var bot = await telegramService.Client.GetMeAsync()
                 .ConfigureAwait(false);
+            
+            bot.AddCache("getme");
+            Log.Debug("Getting Bot Username");
             var username = bot.Username;
             return $"https://t.me/{username}?{param}";
         }
