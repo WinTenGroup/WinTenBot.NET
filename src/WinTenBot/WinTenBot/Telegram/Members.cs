@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
 using Serilog;
-using SqlKata;
-using SqlKata.Execution;
 using Telegram.Bot.Types;
-using Telegram.Bot.Types.ReplyMarkups;
 using WinTenBot.Common;
 using WinTenBot.Model;
-using WinTenBot.Providers;
 using WinTenBot.Services;
 using WinTenBot.Tools;
 
@@ -85,6 +81,7 @@ namespace WinTenBot.Telegram
         {
             try
             {
+                var sw = Stopwatch.StartNew();
                 var message = telegramService.MessageOrEdited;
                 var fromId = message.From.Id;
                 var fromUsername = message.From.Username;
@@ -112,12 +109,12 @@ namespace WinTenBot.Telegram
                 // }
 
                 // var hitActivity = query.ToJson().MapObject<List<HitActivity>>().FirstOrDefault();
-                
+
                 var hitActivity = telegramService.GetChatCache<HitActivity>(fromId.ToString());
                 if (hitActivity == null)
                 {
                     Log.Information($"This may first Hit from User {0}", fromId);
-                    
+
                     telegramService.SetChatCache(fromId.ToString(), new HitActivity()
                     {
                         ViaBot = botUser.Username,
@@ -133,7 +130,7 @@ namespace WinTenBot.Telegram
                         ChatTitle = message.Chat.Title,
                         Timestamp = DateTime.Now
                     });
-                    
+
                     return;
                 }
 
@@ -189,7 +186,7 @@ namespace WinTenBot.Telegram
                     Log.Debug("Complete update Cache");
                 }
 
-                Log.Information("MataZizi completed. Changes: {0}", changesCount);
+                Log.Information("MataZizi completed in {0}. Changes: {1}", sw.Elapsed, changesCount);
             }
             catch (Exception ex)
             {
