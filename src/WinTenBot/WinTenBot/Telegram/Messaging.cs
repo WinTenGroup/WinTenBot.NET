@@ -4,8 +4,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Serilog;
-using SqlKata;
-using SqlKata.Execution;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
@@ -13,7 +11,6 @@ using WinTenBot.Common;
 using WinTenBot.Enums;
 using WinTenBot.IO;
 using WinTenBot.Model;
-using WinTenBot.Providers;
 using WinTenBot.Services;
 using WinTenBot.Tools;
 using WinTenBot.Tools.GoogleCloud;
@@ -88,14 +85,23 @@ namespace WinTenBot.Telegram
 
         private static async Task<bool> IsMustDelete(string words)
         {
+            var sw = Stopwatch.StartNew();
             var isMust = false;
-            var query = await new Query("word_filter")
-                .ExecForSqLite(true)
-                .Where("is_global", 1)
-                .GetAsync()
-                .ConfigureAwait(false);
+            // var query = await new Query("word_filter")
+            //     .ExecForSqLite(true)
+            //     .Where("is_global", 1)
+            //     .GetAsync()
+            //     .ConfigureAwait(false);
+            //
+            // var mappedWords = query.ToJson().MapObject<List<WordFilter>>();
 
-            var mappedWords = query.ToJson().MapObject<List<WordFilter>>();
+            var jsonWords = "local-words".OpenJson();
+            var listWords = (await jsonWords.GetCollectionAsync<WordFilter>()
+                    .ConfigureAwait(false))
+                .AsQueryable()
+                .ToList();
+
+            jsonWords.Dispose();
 
             if (words == null)
             {
@@ -111,7 +117,7 @@ namespace WinTenBot.Telegram
                 if (forCompare.IsValidUrl()) forCompare = forCompare.ParseUrl().Path;
                 forCompare = forCompare.ToLowerCase().CleanExceptAlphaNumeric();
 
-                foreach (var wordFilter in mappedWords)
+                foreach (var wordFilter in listWords)
                 {
                     var isGlobal = wordFilter.IsGlobal;
                     var isDeep = wordFilter.DeepFilter;
@@ -122,19 +128,21 @@ namespace WinTenBot.Telegram
                         var distinctChar = forCompare.DistinctChar();
                         forFilter = forFilter.CleanExceptAlphaNumeric();
                         isMust = forCompare.Contains(forFilter);
-                        $"'{forCompare}' LIKE '{forFilter}' ? {isMust}. Global: {isGlobal}".LogDebug();
+                        Log.Debug("'{0}' LIKE '{1}' ? {2}. Global: {3}", forCompare, forFilter, isMust, isGlobal);
 
                         if (!isMust)
                         {
                             isMust = distinctChar.Contains(forFilter);
-                            $"'{distinctChar}' LIKE '{forFilter}' ? {isMust}. Global: {isGlobal}".LogDebug();
+                            Log.Debug(messageTemplate: "'{0}' LIKE '{1}' ? {2}. Global: {3}", distinctChar, forFilter,
+                                isMust, isGlobal);
                         }
                     }
                     else
                     {
                         forFilter = wordFilter.Word.ToLowerCase().CleanExceptAlphaNumeric();
                         if (forCompare == forFilter) isMust = true;
-                        $"'{forCompare}' == '{forFilter}' ? {isMust}. Deep: {isDeep}, Global: {isGlobal}".LogDebug();
+                        Log.Debug("'{0}' == '{1}' ? {2}. Deep: {3}, Global: {4}", forCompare, forFilter, isMust, isDeep,
+                            isGlobal);
                     }
 
                     if (!isMust) continue;
@@ -146,6 +154,10 @@ namespace WinTenBot.Telegram
                 Log.Information("Should break!");
                 break;
             }
+
+            listWords.Clear();
+
+            Log.Information("Check Message complete in {0}", sw.Elapsed);
 
             return isMust;
         }
@@ -293,7 +305,7 @@ namespace WinTenBot.Telegram
                 }
 
                 var notesService = new NotesService();
-                
+
                 var selectedNotes = await notesService.GetNotesBySlug(message.Chat.Id, message.Text)
                     .ConfigureAwait(false);
                 if (selectedNotes.Count > 0)
@@ -328,7 +340,7 @@ namespace WinTenBot.Telegram
         {
             var sw = new Stopwatch();
             sw.Start();
-            
+
             var message = telegramService.MessageOrEdited;
             var chatSettings = telegramService.CurrentSetting;
             if (!chatSettings.EnableFindTags)
@@ -394,7 +406,7 @@ namespace WinTenBot.Telegram
                 await telegramService.SendTextAsync("Due performance reason, we limit 5 batch call tags")
                     .ConfigureAwait(false);
             }
-            
+
             Log.Information("Find Tags completed in {0}", sw.Elapsed);
             sw.Stop();
         }
