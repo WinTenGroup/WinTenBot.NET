@@ -32,7 +32,7 @@ namespace WinTenBot.Handlers.Commands.Additional
                         .ConfigureAwait(false);
                     return;
                 }
-                
+
                 if (chatId != -1001272521285)
                 {
                     await _telegramService.SendTextAsync("Fitur Wget dapat di gunakan di grup @WinTenMirror")
@@ -40,7 +40,6 @@ namespace WinTenBot.Handlers.Commands.Additional
                     return;
                 }
             }
-
 
             if (param1.IsNullOrEmpty())
             {
@@ -52,9 +51,17 @@ namespace WinTenBot.Handlers.Commands.Additional
             await _telegramService.SendTextAsync($"Preparing download file " +
                                                  $"\nUrl: {param1}")
                 .ConfigureAwait(false);
-            // var saveFileName = Path.GetFileName(param1);
 
-            _telegramService.DownloadFile(param1);
+            if (param1.IsMegaUrl())
+            {
+                await MegaTransfer.DownloadFileAsync(_telegramService, param1)
+                    .ConfigureAwait(false);
+            }
+            else
+            {
+                await _telegramService.DownloadFile(param1)
+                    .ConfigureAwait(false);
+            }
         }
     }
 }
