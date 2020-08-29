@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using WinTenBot.Enums;
 
 namespace WinTenBot.Model
@@ -31,41 +31,41 @@ namespace WinTenBot.Model
         
         [JsonProperty("last_welcome_message_id")]
         public string LastWelcomeMessageId { get; set; }
-        
-        [JsonProperty("enable_afk_stat")]
-        public bool EnableAfkStat { get; set; }
+
+        [JsonProperty("enable_afk_stat")] 
+        public bool EnableAfkStat { get; set; } = true;
 
         [JsonProperty("enable_global_ban")]
-        public bool EnableGlobalBan { get; set; }
+        public bool EnableGlobalBan { get; set; } = true;
 
         [JsonProperty("enable_human_verification")]
-        public bool EnableHumanVerification { get; set; }
-        
-        [JsonProperty("enable_fed_cas_ban")]
-        public bool EnableFedCasBan { get; set; }
-        
-        [JsonProperty("enable_fed_es2_ban")]
-        public bool EnableFedEs2 { get; set; }
+        public bool EnableHumanVerification { get; set; } = true;
 
-        [JsonProperty("enable_fed_spamwatch")]
-        public bool EnableFedSpamWatch { get; set; }
-        
+        [JsonProperty("enable_fed_cas_ban")] 
+        public bool EnableFedCasBan { get; set; } = true;
+
+        [JsonProperty("enable_fed_es2_ban")] 
+        public bool EnableFedEs2 { get; set; } = true;
+
+        [JsonProperty("enable_fed_spamwatch")] 
+        public bool EnableFedSpamWatch { get; set; } = true;
+
         [JsonProperty("enable_find_notes")]
         public bool EnableFindNotes { get; set; }
-        
-        [JsonProperty("enable_find_tags")]
-        public bool EnableFindTags { get; set; }
+
+        [JsonProperty("enable_find_tags")] 
+        public bool EnableFindTags { get; set; } = true;
 
         [JsonProperty("enable_word_filter_group")]
-        public bool EnableWordFilterPerGroup { get; set; }
+        public bool EnableWordFilterPerGroup { get; set; } = true;
 
         [JsonProperty("enable_word_filter_global")]
-        public bool EnableWordFilterGroupWide { get; set; }
+        public bool EnableWordFilterGroupWide { get; set; } = true;
 
-        [JsonProperty("enable_warn_username")]
-        public bool EnableWarnUsername { get; set; }
+        [JsonProperty("enable_warn_username")] 
+        public bool EnableWarnUsername { get; set; } = true;
 
         [JsonProperty("enable_welcome_message")]
-        public bool EnableWelcomeMessage { get; set; }
+        public bool EnableWelcomeMessage { get; set; } = true;
     }
 }
