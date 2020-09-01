@@ -36,8 +36,8 @@ namespace WinTenBot
             return WebHost.CreateDefaultBuilder(args)
                 .ConfigureAppConfiguration((hostBuilder, configBuilder) => configBuilder
                     .AddJsonFile("appsettings.json", true, true)
-                    .AddJsonFile($"appsettings.{hostBuilder.HostingEnvironment.EnvironmentName}.json", true, true)
-                    .AddJsonFile("Storage/Config/security-base.json", true, true)
+                    // .AddJsonFile($"appsettings.{hostBuilder.HostingEnvironment.EnvironmentName}.json", true, true)
+                    // .AddJsonFile("Storage/Config/security-base.json", true, true)
                     .AddJsonEnvVar("QUICKSTART_SETTINGS", true)
                 ).UseStartup<Startup>()
                 .UseSerilog();
