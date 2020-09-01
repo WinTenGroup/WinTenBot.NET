@@ -38,6 +38,7 @@ namespace WinTenBot.Migrations.MySql
                 .WithColumn("enable_welcome_message").AsBoolean().WithDefaultValue(1)
                 .WithColumn("enable_word_filter_global").AsBoolean().WithDefaultValue(1)
                 .WithColumn("enable_word_filter_group").AsBoolean().WithDefaultValue(1)
+                .WithColumn("enable_zizi_mata").AsBoolean().WithDefaultValue(1)
                 .WithColumn("last_welcome_message_id").AsString(20).WithDefaultValue(-1)
                 .WithColumn("last_tags_message_id").AsString(20).WithDefaultValue(-1)
                 .WithColumn("rules_link").AsMySqlMediumText().WithDefaultValue("")

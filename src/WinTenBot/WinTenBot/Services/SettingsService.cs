@@ -83,6 +83,7 @@ namespace WinTenBot.Services
                 "enable_welcome_message",
                 // "enable_word_filter_group",
                 "enable_word_filter_global",
+                "enable_zizi_mata"
             };
 
             var data = await new Query(baseTable)

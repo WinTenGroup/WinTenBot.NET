@@ -67,5 +67,8 @@ namespace WinTenBot.Model
 
         [JsonProperty("enable_welcome_message")]
         public bool EnableWelcomeMessage { get; set; } = true;
+
+        [JsonProperty("enable_zizi_mata")]
+        public bool EnableZiziMata { get; set; } = true;
     }
 }
