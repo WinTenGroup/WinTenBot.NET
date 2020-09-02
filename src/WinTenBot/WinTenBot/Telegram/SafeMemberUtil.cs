@@ -111,7 +111,7 @@ namespace WinTenBot.Telegram
                 .GetAsync<SafeMember>()
                 .ConfigureAwait(false);
 
-            await RavenDbProvider.DeleteAll<SafeMember>().ConfigureAwait(false);
+            // await RavenDbProvider.DeleteAll<SafeMember>().ConfigureAwait(false);
             RavenDbProvider.Insert(safeClouds);
         }
     }
