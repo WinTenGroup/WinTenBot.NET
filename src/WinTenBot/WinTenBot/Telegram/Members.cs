@@ -14,7 +14,7 @@ namespace WinTenBot.Telegram
 {
     public static class Members
     {
-        public static string GetNameLink(int userId, string name)
+        public static string GetNameLink(this int userId, string name)
         {
             return $"<a href='tg://user?id={userId}'>{name}</a>";
         }
@@ -79,15 +79,25 @@ namespace WinTenBot.Telegram
 
         public static async Task CheckMataZiziAsync(this TelegramService telegramService)
         {
+            var sw = Stopwatch.StartNew();
+
             try
             {
-                var sw = Stopwatch.StartNew();
                 var message = telegramService.MessageOrEdited;
                 var fromId = message.From.Id;
                 var fromUsername = message.From.Username;
                 var fromFName = message.From.FirstName;
                 var fromLName = message.From.LastName;
                 var chatId = message.Chat.Id;
+
+                var chatSettings = telegramService.CurrentSetting;
+                if (!chatSettings.EnableZiziMata)
+                {
+                    Log.Information("MataZizi is disabled in this Group!. Completed in {0}", sw.Elapsed);
+                    sw.Stop();
+                    return;
+                }
+
                 var botUser = await telegramService.GetMeAsync()
                     .ConfigureAwait(false);
 
@@ -113,7 +123,7 @@ namespace WinTenBot.Telegram
                 var hitActivity = telegramService.GetChatCache<HitActivity>(fromId.ToString());
                 if (hitActivity == null)
                 {
-                    Log.Information($"This may first Hit from User {0}", fromId);
+                    Log.Information($"This may first Hit from User {0}. In {1}", fromId, sw.Elapsed);
 
                     telegramService.SetChatCache(fromId.ToString(), new HitActivity()
                     {
@@ -134,7 +144,7 @@ namespace WinTenBot.Telegram
                     return;
                 }
 
-                Log.Debug($"SangMata: {hitActivity.ToJson(true)}");
+                Log.Debug("ZiziMata: {0}", hitActivity.ToJson(true));
 
                 var changesCount = 0;
                 var msgBuild = new StringBuilder();
@@ -192,6 +202,8 @@ namespace WinTenBot.Telegram
             {
                 Log.Error(ex, "Error SangMata");
             }
+
+            sw.Stop();
         }
     }
 }
