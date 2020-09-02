@@ -41,9 +41,9 @@ namespace WinTenBot.Telegram
                 .ExecForMysql(true)
                 .InsertAsync(data)
                 .ConfigureAwait(false);
-            
+
             Log.Information($"Insert Hit: {insertHit}");
-            
+
             // var hitActivity = new HitActivity()
             // {
             //     ViaBot = botUser.Username,
@@ -131,7 +131,7 @@ namespace WinTenBot.Telegram
             var monthStr = DateTime.Now.ToString("yyyy-MM");
             statBuilder.AppendLine($"Stat Group: {chatId}");
 
-            await telegramService.SendTextAsync(statBuilder.ToString())
+            await telegramService.SendTextAsync(statBuilder.ToString().Trim())
                 .ConfigureAwait(false);
 
             var monthCount = await GetMonthlyStat(telegramService)
@@ -139,7 +139,7 @@ namespace WinTenBot.Telegram
             var monthRates = monthCount / 30;
             statBuilder.AppendLine($"This Month: {monthCount}");
             statBuilder.AppendLine($"Traffics: {monthRates} msg/day");
-            await telegramService.EditAsync(statBuilder.ToString())
+            await telegramService.EditAsync(statBuilder.ToString().Trim())
                 .ConfigureAwait(false);
 
             statBuilder.AppendLine();
@@ -149,7 +149,7 @@ namespace WinTenBot.Telegram
             var todayRates = todayCount / 24;
             statBuilder.AppendLine($"Today: {todayCount}");
             statBuilder.AppendLine($"Traffics: {todayRates} msg/hour");
-            await telegramService.EditAsync(statBuilder.ToString())
+            await telegramService.EditAsync(statBuilder.ToString().Trim())
                 .ConfigureAwait(false);
         }
 
