@@ -2,7 +2,7 @@
 
 namespace WinTenBot.Model
 {
-    class WarnUsernameHistory
+    public class WarnUsernameHistory
     {
         [JsonProperty("from_id")]
         public int FromId { get; set; }
@@ -24,5 +24,8 @@ namespace WinTenBot.Model
 
         [JsonProperty("created_at")]
         public string CreatedAt { get; set; }
+        
+        [JsonProperty("updated_at")]
+        public string UpdatedAt { get; set; }
     }
 }
