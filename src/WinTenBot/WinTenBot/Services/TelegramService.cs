@@ -506,8 +506,10 @@ namespace WinTenBot.Services
             return requestResult;
         }
 
-        public async Task RestrictMemberAsync(int userId, bool unMute = false, DateTime until = default)
+        public async Task<TelegramResult> RestrictMemberAsync(int userId, bool unMute = false, DateTime until = default)
         {
+            var tgResult = new TelegramResult();
+            
             try
             {
                 var chatId = Message.Chat.Id;
@@ -538,6 +540,8 @@ namespace WinTenBot.Services
 
                 await Client.RestrictChatMemberAsync(chatId, userId, permission, untilDate)
                     .ConfigureAwait(false);
+
+                tgResult.IsSuccess = true;
             }
             catch (Exception ex)
             {
@@ -548,7 +552,12 @@ namespace WinTenBot.Services
                     await SendTextAsync("Sepertinya saya harus menjadi Admin di Grup ini.")
                         .ConfigureAwait(false);
                 }
+
+                tgResult.IsSuccess = false;
+                tgResult.Exception = ex;
             }
+
+            return tgResult;
         }
 
         #endregion
