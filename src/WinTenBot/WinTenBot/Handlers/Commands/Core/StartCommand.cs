@@ -25,7 +25,8 @@ namespace WinTenBot.Handlers.Commands.Core
             var botVer = BotSettings.ProductVersion;
             var botCompany = BotSettings.ProductCompany;
             var winTenDev = botCompany.MkUrl("https://t.me/WinTenDev");
-            var levelStandardUrl = "https://docs.zizi.azhe.info/glosarium/admin-dengan-level-standard";
+            var levelStandardUrl = "https://docs.zizibot.azhe.space/glosarium/admin-dengan-level-standard";
+            var ziziDocs = "https://docs.zizibot.azhe.space";
             var levelStandard = @"Level standard".MkUrl(levelStandardUrl);
 
             string sendText = $"🤖 {botName} {botVer}" +
@@ -55,25 +56,26 @@ namespace WinTenBot.Handlers.Commands.Core
                     break;
 
                 default:
-                    var keyboard = new InlineKeyboardMarkup(
-                        InlineKeyboardButton.WithUrl("Dapatkan bantuan", urlStart)
-                    );
-
-                    if (_telegramService.IsPrivateChat())
+                    // var keyboard = new InlineKeyboardMarkup(
+                    //     InlineKeyboardButton.WithUrl("Dapatkan bantuan", ziziDocs)
+                    // );
+                    //
+                    // if (_telegramService.IsPrivateChat())
+                    // {
+                    
+                    var keyboard = new InlineKeyboardMarkup(new[]
                     {
-                        keyboard = new InlineKeyboardMarkup(new[]
+                        new[]
                         {
-                            new[]
-                            {
-                                InlineKeyboardButton.WithCallbackData("Bantuan", "help home"),
-                                InlineKeyboardButton.WithUrl("Pasang Username", "https://t.me/WinTenDev/29")
-                            },
-                            new[]
-                            {
-                                InlineKeyboardButton.WithUrl("Tambahkan ke Grup", urlAddTo)
-                            }
-                        });
-                    }
+                            InlineKeyboardButton.WithUrl("Bantuan", ziziDocs),
+                            InlineKeyboardButton.WithUrl("Pasang Username", "https://t.me/WinTenDev/29")
+                        },
+                        new[]
+                        {
+                            InlineKeyboardButton.WithUrl("Tambahkan ke Grup", urlAddTo)
+                        }
+                    });
+                    // }
 
                     await _telegramService.SendTextAsync(sendText, keyboard, disableWebPreview: true)
                         .ConfigureAwait(false);
