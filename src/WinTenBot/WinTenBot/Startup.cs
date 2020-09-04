@@ -131,7 +131,7 @@ namespace WinTenBot
                 .AddScoped<DebugCommand>()
                 .AddScoped<StartCommand>()
                 .AddScoped<IdCommand>()
-                .AddScoped<InfoCommand>()
+                .AddScoped<AboutCommand>()
                 .AddScoped<BotCommand>()
                 .AddScoped<GlobalReportCommand>();
 
@@ -270,7 +270,7 @@ namespace WinTenBot
                                     .UseCommand<IdCommand>("id")
                                     .UseCommand<ImportLearnCommand>("importlearn")
                                     .UseCommand<ImportRssCommand>("importrss")
-                                    .UseCommand<InfoCommand>("info")
+                                    .UseCommand<AboutCommand>("about")
                                     .UseCommand<KickCommand>("kick")
                                     .UseCommand<MediaFilterCommand>("mfil")
                                     .UseCommand<MigrateCommand>("migrate")

@@ -8,7 +8,7 @@ using WinTenBot.Telegram;
 
 namespace WinTenBot.Handlers.Commands.Core
 {
-    public class InfoCommand : CommandBase
+    public class AboutCommand : CommandBase
     {
         private TelegramService _telegramService;
 
