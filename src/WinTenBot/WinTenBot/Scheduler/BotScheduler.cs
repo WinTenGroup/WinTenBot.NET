@@ -14,7 +14,7 @@ namespace WinTenBot.Scheduler
             HangfireJobs.DeleteAllJobs();
 
             StartLogCleanupScheduler();
-            StartSyncWordFilter();
+            // StartSyncWordFilter();
             // StartCronFlushHitActivity();
             RssScheduler.InitScheduler();
 
