@@ -1,4 +1,4 @@
-name: .NET Core
+name: Zizi Bot
 
 on:
   push:
@@ -10,6 +10,9 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: src\WinTenBot\WinTenBot
 
     steps:
     - uses: actions/checkout@v2
