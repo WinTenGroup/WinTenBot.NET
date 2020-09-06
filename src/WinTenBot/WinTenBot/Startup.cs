@@ -21,6 +21,7 @@ using WinTenBot.Handlers.Commands.Chat;
 using WinTenBot.Handlers.Commands.Core;
 using WinTenBot.Handlers.Commands.GlobalBan;
 using WinTenBot.Handlers.Commands.Group;
+using WinTenBot.Handlers.Commands.Metrics;
 using WinTenBot.Handlers.Commands.Notes;
 using WinTenBot.Handlers.Commands.Rss;
 using WinTenBot.Handlers.Commands.Rules;
@@ -135,7 +136,10 @@ namespace WinTenBot
                 .AddScoped<BotCommand>()
                 .AddScoped<GlobalReportCommand>();
 
-            services.AddScoped<OutCommand>();
+            services.AddScoped<StatsCommand>();
+
+            services.AddScoped<OutCommand>()
+                .AddScoped<StorageCommand>();
 
             services.AddScoped<QrCommand>()
                 .AddScoped<OcrCommand>()
@@ -291,6 +295,8 @@ namespace WinTenBot
                                     .UseCommand<SettingsCommand>("settings")
                                     .UseCommand<SetWelcomeCommand>("setwelcome")
                                     .UseCommand<StartCommand>("start")
+                                    .UseCommand<StatsCommand>("stats")
+                                    .UseCommand<StorageCommand>("storage")
                                     .UseCommand<TagCommand>("tag")
                                     .UseCommand<TagsCommand>("notes")
                                     .UseCommand<TagsCommand>("tags")
