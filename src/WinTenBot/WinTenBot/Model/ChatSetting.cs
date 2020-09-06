@@ -29,6 +29,9 @@ namespace WinTenBot.Model
         [JsonProperty("last_tags_message_id")]
         public string LastTagsMessageId { get; set; }
         
+        [JsonProperty("last_warn_username_message_id")]
+        public string LastWarnUsernameMessageId { get; set; }
+        
         [JsonProperty("last_welcome_message_id")]
         public string LastWelcomeMessageId { get; set; }
 

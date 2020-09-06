@@ -1,5 +1,4 @@
-﻿using System;
-using FluentMigrator;
+﻿using FluentMigrator;
 using WinTenBot.Extensions;
 
 namespace WinTenBot.Migrations.MySql
@@ -39,8 +38,9 @@ namespace WinTenBot.Migrations.MySql
                 .WithColumn("enable_word_filter_global").AsBoolean().WithDefaultValue(1)
                 .WithColumn("enable_word_filter_group").AsBoolean().WithDefaultValue(1)
                 .WithColumn("enable_zizi_mata").AsBoolean().WithDefaultValue(1)
-                .WithColumn("last_welcome_message_id").AsString(20).WithDefaultValue(-1)
                 .WithColumn("last_tags_message_id").AsString(20).WithDefaultValue(-1)
+                .WithColumn("last_warn_username_message_id").AsString(20).WithDefaultValue(-1)
+                .WithColumn("last_welcome_message_id").AsString(20).WithDefaultValue(-1)
                 .WithColumn("rules_link").AsMySqlMediumText().WithDefaultValue("")
                 .WithColumn("rules_text").AsMySqlMediumText().WithDefaultValue("")
                 .WithColumn("warning_username_limit").AsInt16().WithDefaultValue(3)
