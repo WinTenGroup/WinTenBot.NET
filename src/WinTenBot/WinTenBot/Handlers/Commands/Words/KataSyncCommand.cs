@@ -7,7 +7,7 @@ using WinTenBot.Tools;
 
 namespace WinTenBot.Handlers.Commands.Words
 {
-    public class WordSyncCommand : CommandBase
+    public class KataSyncCommand : CommandBase
     {
         private TelegramService _telegramService;
 
