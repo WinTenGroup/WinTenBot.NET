@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using Serilog;
 using Telegram.Bot.Types;
 using WinTenBot.Common;
@@ -25,9 +26,11 @@ namespace WinTenBot.Handlers.Callbacks
         private async Task ExecuteVerifyAsync()
         {
             Log.Information("Executing Verify Callback");
-            
+
             var callbackData = CallbackQuery.Data;
+            var message = Telegram.Message;
             var fromId = CallbackQuery.From.Id;
+            var chatId = CallbackQuery.Message.Chat.Id;
 
             Log.Debug($"CallbackData: {callbackData} from {fromId}");
 
@@ -48,8 +51,23 @@ namespace WinTenBot.Handlers.Callbacks
                 {
                     await Telegram.RestrictMemberAsync(fromId, true)
                         .ConfigureAwait(false);
+
+                    var warnJson = await WarnUsernameUtil.GetWarnUsernameCollectionAsync()
+                        .ConfigureAwait(false);
+                    var isExist = warnJson.AsQueryable().Any(x => x.FromId == fromId);
+                    Log.Debug("Is UserId: {0} exist? => {1}", fromId, isExist);
+                    if (isExist)
+                    {
+                        var delete = await warnJson.DeleteManyAsync(x =>
+                                x.FromId == fromId && x.ChatId == chatId)
+                            .ConfigureAwait(false);
+                        Log.Debug("Deleting {0} result {1}", fromId, delete);
+                    }
+
                     answer = "Terima kasih sudah verifikasi Username!";
                 }
+
+                await Telegram.UpdateWarnMessageAsync().ConfigureAwait(false);
             }
             else if (fromId == callBackParam1.ToInt64())
             {
