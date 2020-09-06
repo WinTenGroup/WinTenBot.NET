@@ -18,15 +18,27 @@ namespace WinTenBot.Handlers
             _telegramService = new TelegramService(context);
             if (_telegramService.Context.Update.ChannelPost != null) return;
 
+            var chatSettings = _telegramService.CurrentSetting;
+
             var update = _telegramService.Context.Update;
-            
+
             $"NewUpdate: {update.ToJson(true)}".LogDebug();
 
             // Pre-Task is should be awaited.
             await EnqueuePreTask().ConfigureAwait(false);
 
-            // Next, do what bot should do.
-            await next(context, cancellationToken).ConfigureAwait(false);
+            if (chatSettings.EnableWarnUsername)
+            {
+                if (!_telegramService.IsNoUsername)
+                {
+                    // Next, do what bot should do.
+                    await next(context, cancellationToken).ConfigureAwait(false);
+                }
+            }
+            else
+            {
+                await next(context, cancellationToken).ConfigureAwait(false);
+            }
 
             // Last, do additional task which bot may do
             EnqueueBackgroundTask();
@@ -41,7 +53,7 @@ namespace WinTenBot.Handlers
 
             // var actions = new List<Action>();
             var shouldAwaitTasks = new List<Task>();
-            
+
             if (!_telegramService.IsPrivateChat())
             {
                 shouldAwaitTasks.Add(_telegramService.EnsureChatRestrictionAsync());

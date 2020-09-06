@@ -22,6 +22,7 @@ namespace WinTenBot.Services
 {
     public class TelegramService
     {
+        public bool IsNoUsername { get; set; }
         public ChatSetting CurrentSetting { get; set; }
         public IUpdateContext Context { get; set; }
         private string AppendText { get; set; }
@@ -59,6 +60,8 @@ namespace WinTenBot.Services
             {
                 TimeInit = Message.Date.GetDelay();
             }
+
+            IsNoUsername = MessageOrEdited.From.IsNoUsername();
         }
 
 
