@@ -10,6 +10,9 @@ namespace WinTenBot.Model
 
         [JsonProperty("member_count")]
         public long MemberCount { get; set; }
+        
+        [JsonProperty("event_log_chat_id")]
+        public long EventLogChatId { get; set; }
 
         [JsonProperty("welcome_message")]
         public string WelcomeMessage { get; set; }
