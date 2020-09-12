@@ -242,7 +242,10 @@ namespace WinTenBot.Telegram
 
             var updateResult = (await GetWarnUsernameHistory(message)
                     .ConfigureAwait(false))
+                .ToList()
+                .OrderBy(x=> x.StepCount)
                 .ToList();
+            
             var noUsernameCount = updateResult.Count;
 
             Log.Debug("No Username Count: {0}", noUsernameCount);
