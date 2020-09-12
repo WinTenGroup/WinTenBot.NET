@@ -28,7 +28,7 @@ namespace WinTenBot.Tools
             var mappedHistory = localHistory.ToJson().MapObject<List<RssHistory>>();
             Log.Information($"RSS History {prevDate} {mappedHistory.Count}");
 
-            Log.Information($"Migrating RSS History to Cloud");
+            Log.Information("Migrating RSS History to Cloud");
 
             var valuesInsert = new List<string>();
             foreach (var history in mappedHistory)
@@ -55,8 +55,8 @@ namespace WinTenBot.Tools
             var valuesStr = valuesInsert.MkJoin(", ");
             Log.Debug($"RssHistory: \n{valuesStr}");
 
-            var sqlInsert = $"INSERT INTO rss_history " +
-                            $"(url, rss_source, chat_id, title, publish_date, author, created_at) " +
+            var sqlInsert = "INSERT INTO rss_history " +
+                            "(url, rss_source, chat_id, title, publish_date, author, created_at) " +
                             $"VALUES {valuesInsert.MkJoin(", ")}";
 
             await sqlInsert.ExecForMysqlNonQueryAsync(printSql: true)
@@ -64,52 +64,75 @@ namespace WinTenBot.Tools
 
             // queryBase.ExecForMysql()
 
-            Log.Information($"RSS History migrated.");
+            Log.Information("RSS History migrated.");
         }
 
-        public static async Task SyncGBanToLocalAsync(bool cleanSync = false)
+        public static async Task<int> SyncGBanToLocalAsync(bool cleanSync = false)
         {
+            var sw = Stopwatch.StartNew();
             Log.Information("Getting FBam data..");
-            var cloudQuery = await new Query("global_bans")
-                .ExecForMysql()
-                .GetAsync()
-                .ConfigureAwait(false);
+            var cloudQuery = (await new Query("global_bans")
+                    .ExecForMysql()
+                    .GetAsync<GlobalBanData>()
+                    .ConfigureAwait(false))
+                .ToList();
 
             var mappedQuery = cloudQuery.ToJson(followProperty: true).MapObject<List<GlobalBanData>>();
-            Log.Information($"Gban User: {mappedQuery.Count} rows");
+            var rowCount = cloudQuery.Count;
+            Log.Information("GBan User: {0} rows", rowCount);
 
-            var valuesBuilder = new List<string>();
-            foreach (var globalBan in mappedQuery)
-            {
-                var values = new List<string>
-                {
-                    $"'{globalBan.UserId}'",
-                    $"'{globalBan.ReasonBan.SqlEscape().RemoveThisChar("[]'")}'",
-                    $"'{globalBan.BannedBy}'",
-                    $"'{globalBan.BannedFrom}'",
-                    $"'{globalBan.CreatedAt}'"
-                };
+            var jsonGBan = "gban-users".OpenJson();
 
-                valuesBuilder.Add($"({values.MkJoin(", ")})");
-            }
+            Log.Debug("Opening GBan collection");
+            var gBanCollection = await jsonGBan.GetCollectionAsync<GlobalBanData>().ConfigureAwait(false);
 
-            var insertCols = "(user_id,reason_ban,banned_by,banned_from,created_at)";
-            var insertVals = valuesBuilder;
+            Log.Debug("Deleting old data");
+            await gBanCollection.DeleteManyAsync(x => true).ConfigureAwait(false);
 
-            Log.Information("Values chunk by 1000 rows.");
-            var chunkInsert = insertVals.ChunkBy(1000);
+            Log.Debug("Inserting new data");
+            await gBanCollection.InsertManyAsync(cloudQuery).ConfigureAwait(false);
 
-            var step = 1;
-            foreach (var insert in chunkInsert)
-            {
-                var values = insert.MkJoin(",\n");
-                var insertSql = $"INSERT INTO fban_user {insertCols} VALUES \n{values}";
+            Log.Debug("GBanSync - Clearing Object..");
+            jsonGBan.Dispose();
+            // mappedQuery.Clear();
 
-                Log.Information($"Insert part {step++}");
-                await insertSql.ExecForSqLite(true)
-                    .ConfigureAwait(false);
-            }
+            Log.Debug("Complete sync GBan {0} items at {1}", rowCount, sw.Elapsed);
 
+            sw.Stop();
+
+            return rowCount;
+
+            // var valuesBuilder = new List<string>();
+            // foreach (var globalBan in mappedQuery)
+            // {
+            //     var values = new List<string>
+            //     {
+            //         $"'{globalBan.UserId}'",
+            //         $"'{globalBan.ReasonBan.SqlEscape().RemoveThisChar("[]'")}'",
+            //         $"'{globalBan.BannedBy}'",
+            //         $"'{globalBan.BannedFrom}'",
+            //         $"'{globalBan.CreatedAt}'"
+            //     };
+            //
+            //     valuesBuilder.Add($"({values.MkJoin(", ")})");
+            // }
+            //
+            // var insertCols = "(user_id,reason_ban,banned_by,banned_from,created_at)";
+            // var insertVals = valuesBuilder;
+            //
+            // Log.Information("Values chunk by 1000 rows.");
+            // var chunkInsert = insertVals.ChunkBy(1000);
+            //
+            // var step = 1;
+            // foreach (var insert in chunkInsert)
+            // {
+            //     var values = insert.MkJoin(",\n");
+            //     var insertSql = $"INSERT INTO fban_user {insertCols} VALUES \n{values}";
+            //
+            //     Log.Information($"Insert part {step++}");
+            //     await insertSql.ExecForSqLite(true)
+            //         .ConfigureAwait(false);
+            // }
 
             // foreach (var globalBan in mappedQuery)
             // {
@@ -125,8 +148,8 @@ namespace WinTenBot.Tools
             //         .InsertAsync(data);
             // }
 
-            await "fban_user".DeleteDuplicateRow("user_id")
-                .ConfigureAwait(false);
+            // await "fban_user".DeleteDuplicateRow("user_id")
+            // .ConfigureAwait(false);
         }
 
         public static async Task SyncWordToLocalAsync()
@@ -159,7 +182,6 @@ namespace WinTenBot.Tools
             cloudQuery.Clear();
             cloudWords.Clear();
             sw.Stop();
-            
 
             // var localQuery = (await new Query("word_filter")
             //     .ExecForSqLite()
