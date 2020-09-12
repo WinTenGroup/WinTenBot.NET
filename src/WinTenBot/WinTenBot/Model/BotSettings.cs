@@ -11,6 +11,56 @@ namespace WinTenBot.Model
 {
     public static class BotSettings
     {
+        public static string ProductName { get; set; }
+        public static string ProductVersion { get; set; }
+        public static string ProductCompany { get; set; }
+        public static ITelegramBotClient Client { get; set; }
+
+        public static Dictionary<string, ITelegramBotClient> Clients { get; set; } =
+            new Dictionary<string, ITelegramBotClient>();
+
+        public static string DbConnectionString { get; set; }
+
+        public static IConfiguration GlobalConfiguration { get; set; }
+
+        public static IWebHostEnvironment HostingEnvironment { get; set; }
+        public static bool IsDevelopment => HostingEnvironment.IsDevelopment();
+        public static bool IsStaging => HostingEnvironment.IsStaging();
+        public static bool IsProduction => HostingEnvironment.IsProduction();
+
+        public static string PathCache { get; set; }
+        public static string LearningDataSetPath { get; set; }
+
+        public static List<string> Sudoers { get; set; }
+        public static long BotChannelLogs { get; set; } = -1;
+        public static string SpamWatchToken { get; set; }
+
+        public static string GoogleZiziUploadUrl { get; set; }
+        public static string GoogleCloudCredentialsPath { get; set; }
+        public static string GoogleDriveAuth { get; set; }
+
+        public static string HangfireMysqlDb { get; set; }
+        public static string HangfireSqliteDb { get; set; }
+        public static string HangfireLiteDb { get; set; }
+
+        public static string SerilogLogglyToken { get; set; }
+
+        public static string DatadogApiKey { get; set; }
+        public static string DatadogHost { get; set; }
+        public static string DatadogSource { get; set; }
+        public static List<string> DatadogTags { get; set; }
+
+        public static string IbmWatsonTranslateUrl { get; set; }
+        public static string IbmWatsonTranslateToken { get; set; }
+
+        public static string TesseractTrainedData { get; set; }
+
+        public static string OcrSpaceKey { get; set; }
+
+        public static string RavenDBCertPath { get; set; }
+        public static string RavenDBDatabase { get; set; }
+        public static List<string> RavenDBNodes { get; set; }
+
         public static void FillSettings()
         {
             try
@@ -25,6 +75,7 @@ namespace WinTenBot.Model
 
                 DbConnectionString = GlobalConfiguration["CommonConfig:ConnectionString"];
 
+                GoogleZiziUploadUrl = GlobalConfiguration["GoogleCloud:DriveIndexUrl"];
                 GoogleCloudCredentialsPath = GlobalConfiguration["GoogleCloud:CredentialsPath"];
                 GoogleDriveAuth = GlobalConfiguration["GoogleCloud:DriveAuth"];
 
@@ -59,58 +110,9 @@ namespace WinTenBot.Model
             }
         }
 
-        public static string ProductName { get; set; }
-        public static string ProductVersion { get; set; }
-        public static string ProductCompany { get; set; }
-        public static ITelegramBotClient Client { get; set; }
-
-        public static Dictionary<string, ITelegramBotClient> Clients { get; set; } =
-            new Dictionary<string, ITelegramBotClient>();
-
-        public static string DbConnectionString { get; set; }
-
-        public static IConfiguration GlobalConfiguration { get; set; }
-
-        public static IWebHostEnvironment HostingEnvironment { get; set; }
-        public static bool IsDevelopment => HostingEnvironment.IsDevelopment();
-        public static bool IsStaging => HostingEnvironment.IsStaging();
-        public static bool IsProduction => HostingEnvironment.IsProduction();
-
         public static bool IsEnvironment(string envName)
         {
             return HostingEnvironment.IsEnvironment(envName);
         }
-
-        public static string PathCache { get; set; }
-        public static string LearningDataSetPath { get; set; }
-
-        public static List<string> Sudoers { get; set; }
-        public static long BotChannelLogs { get; set; }
-        public static string SpamWatchToken { get; set; }
-
-        public static string GoogleCloudCredentialsPath { get; set; }
-        public static string GoogleDriveAuth { get; set; }
-
-        public static string HangfireMysqlDb { get; set; }
-        public static string HangfireSqliteDb { get; set; }
-        public static string HangfireLiteDb { get; set; }
-
-        public static string SerilogLogglyToken { get; set; }
-
-        public static string DatadogApiKey { get; set; }
-        public static string DatadogHost { get; set; }
-        public static string DatadogSource { get; set; }
-        public static List<string> DatadogTags { get; set; }
-
-        public static string IbmWatsonTranslateUrl { get; set; }
-        public static string IbmWatsonTranslateToken { get; set; }
-
-        public static string TesseractTrainedData { get; set; }
-
-        public static string OcrSpaceKey { get; set; }
-
-        public static string RavenDBCertPath { get; set; }
-        public static string RavenDBDatabase { get; set; }
-        public static List<string> RavenDBNodes { get; set; }
     }
 }
