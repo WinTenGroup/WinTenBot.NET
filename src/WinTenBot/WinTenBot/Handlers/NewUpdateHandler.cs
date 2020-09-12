@@ -27,13 +27,17 @@ namespace WinTenBot.Handlers
             // Pre-Task is should be awaited.
             await EnqueuePreTask().ConfigureAwait(false);
 
-            if (chatSettings.EnableWarnUsername)
+            if (chatSettings.EnableWarnUsername && !_telegramService.IsPrivateChat())
             {
                 if (!_telegramService.IsNoUsername)
                 {
                     // Next, do what bot should do.
                     await next(context, cancellationToken).ConfigureAwait(false);
                 }
+            }
+            else if (_telegramService.IsPrivateChat())
+            {
+                await next(context, cancellationToken).ConfigureAwait(false);
             }
             else
             {
