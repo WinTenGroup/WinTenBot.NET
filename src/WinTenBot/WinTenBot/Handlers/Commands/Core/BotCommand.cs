@@ -1,10 +1,8 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstractions;
-using WinTenBot.Common;
 using WinTenBot.Services;
 using WinTenBot.Telegram;
-using WinTenBot.Tools;
 
 namespace WinTenBot.Handlers.Commands.Core
 {
@@ -19,19 +17,19 @@ namespace WinTenBot.Handlers.Commands.Core
             var isSudoer = _telegramService.IsSudoer();
             if (!isSudoer) return;
 
-            var param1 = _telegramService.Message.Text.Split(" ").ValueOfIndex(1);
-            switch (param1)
-            {
-                case "migrate":
-                    await _telegramService.SendTextAsync("Migrating ")
-                        .ConfigureAwait(false);
-                    SqlMigration.MigrateMysql();
-                    SqlMigration.MigrateSqlite();
-                    await _telegramService.SendTextAsync("Migrate complete ")
-                        .ConfigureAwait(false);
-
-                    break;
-            }
+            // var param1 = _telegramService.Message.Text.Split(" ").ValueOfIndex(1);
+            // switch (param1)
+            // {
+            //     case "migrate":
+            //         await _telegramService.SendTextAsync("Migrating ")
+            //             .ConfigureAwait(false);
+            //         SqlMigration.MigrateMysql();
+            //         // SqlMigration.MigrateSqlite();
+            //         await _telegramService.SendTextAsync("Migrate complete ")
+            //             .ConfigureAwait(false);
+            //
+            //         break;
+            // }
         }
     }
 }
