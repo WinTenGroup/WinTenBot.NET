@@ -41,8 +41,6 @@ namespace WinTenBot
 {
     public class Startup
     {
-        public IConfiguration Configuration { get; }
-
         public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             Configuration = configuration;
@@ -54,6 +52,8 @@ namespace WinTenBot
 
             Init.RunAll();
         }
+
+        public IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services)
         {
@@ -72,7 +72,8 @@ namespace WinTenBot
                 .AddScoped<IWeatherService, WeatherService>();
 
             services.AddScoped<GlobalBanCommand>()
-                .AddScoped<DeleteBanCommand>();
+                .AddScoped<DeleteBanCommand>()
+                .AddScoped<GlobalBanSyncCommand>();
 
             services.AddScoped<AddKataCommand>()
                 .AddScoped<KataSyncCommand>();
@@ -104,7 +105,8 @@ namespace WinTenBot
             services.AddScoped<AdminCommand>()
                 .AddScoped<PinCommand>()
                 .AddScoped<ReportCommand>()
-                .AddScoped<AfkCommand>();
+                .AddScoped<AfkCommand>()
+                .AddScoped<UsernameCommand>();
 
             services.AddScoped<KickCommand>()
                 .AddScoped<BanCommand>()
@@ -162,7 +164,7 @@ namespace WinTenBot
                     // config.UseStorage(HangfireJobs.GetLiteDbStorage())
                     // config.UseStorage(HangfireJobs.GetRedisStorage())
                     .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
-                    .UseHeartbeatPage(checkInterval: TimeSpan.FromSeconds(5))
+                    .UseHeartbeatPage(TimeSpan.FromSeconds(5))
                     .UseSimpleAssemblyNameTypeSerializer()
                     .UseRecommendedSerializerSettings()
                     .UseSerilogLogProvider()
@@ -214,9 +216,9 @@ namespace WinTenBot
                 WorkerCount = Environment.ProcessorCount * 2
             };
 
-            app.UseHangfireServer(serverOptions, additionalProcesses: new[]
+            app.UseHangfireServer(serverOptions, new[]
             {
-                new ProcessMonitor(checkInterval: TimeSpan.FromSeconds(1))
+                new ProcessMonitor(TimeSpan.FromSeconds(1))
             });
 
             app.Run(async context =>
@@ -253,64 +255,66 @@ namespace WinTenBot
                         .UseWhen(When.NewTextMessage, txtBranch => txtBranch
                                 .UseWhen<PingHandler>(When.PingReceived)
                                 .UseWhen(When.NewCommand, cmdBranch => cmdBranch
-                                    .UseCommand<AboutCommand>("about")
-                                    .UseCommand<AddKataCommand>("kata")
-                                    .UseCommand<AddKataCommand>("wfil")
-                                    .UseCommand<AddNotesCommand>("addfilter")
-                                    .UseCommand<AdminCommand>("admin")
-                                    .UseCommand<AfkCommand>("afk")
-                                    .UseCommand<BanCommand>("ban")
-                                    .UseCommand<BotCommand>("bot")
-                                    .UseCommand<CatCommand>("cat")
-                                    .UseCommand<CovidCommand>("covid")
-                                    .UseCommand<DebugCommand>("dbg")
-                                    .UseCommand<DeleteBanCommand>("dban")
-                                    .UseCommand<DelRssCommand>("delrss")
-                                    .UseCommand<DemoteCommand>("demote")
-                                    .UseCommand<ExportRssCommand>("exportrss")
-                                    .UseCommand<GlobalBanCommand>("fban")
-                                    .UseCommand<GlobalBanCommand>("gban")
-                                    .UseCommand<GlobalReportCommand>("greport")
-                                    .UseCommand<HelpCommand>("help")
-                                    .UseCommand<IdCommand>("id")
-                                    .UseCommand<ImportLearnCommand>("importlearn")
-                                    .UseCommand<ImportRssCommand>("importrss")
-                                    .UseCommand<KataSyncCommand>("ksync")
-                                    .UseCommand<KickCommand>("kick")
-                                    .UseCommand<LearnCommand>("learn")
-                                    .UseCommand<MediaFilterCommand>("mfil")
-                                    .UseCommand<MigrateCommand>("migrate")
-                                    .UseCommand<NotesCommand>("filters")
-                                    .UseCommand<OcrCommand>("ocr")
-                                    .UseCommand<OutCommand>("out")
-                                    .UseCommand<PinCommand>("pin")
-                                    .UseCommand<PredictCommand>("predict")
-                                    .UseCommand<PromoteCommand>("promote")
-                                    .UseCommand<QrCommand>("qr")
-                                    .UseCommand<ReportCommand>("report")
-                                    .UseCommand<ResetSettingsCommand>("rsettings")
-                                    .UseCommand<RssCtlCommand>("rssctl")
-                                    .UseCommand<RssInfoCommand>("rssinfo")
-                                    .UseCommand<RssPullCommand>("rsspull")
-                                    .UseCommand<RulesCommand>("rules")
-                                    .UseCommand<SetRssCommand>("setrss")
-                                    .UseCommand<SettingsCommand>("settings")
-                                    .UseCommand<SetWelcomeCommand>("setwelcome")
-                                    .UseCommand<StartCommand>("start")
-                                    .UseCommand<StatsCommand>("stats")
-                                    .UseCommand<StorageCommand>("storage")
-                                    .UseCommand<TagCommand>("tag")
-                                    .UseCommand<TagsCommand>("notes")
-                                    .UseCommand<TagsCommand>("tags")
-                                    .UseCommand<TestCommand>("test")
-                                    .UseCommand<TranslateCommand>("tr")
-                                    .UseCommand<UntagCommand>("untag")
-                                    .UseCommand<WarnCommand>("warn")
-                                    .UseCommand<WelcomeButtonCommand>("welbtn")
-                                    .UseCommand<WelcomeCommand>("welcome")
-                                    .UseCommand<WelcomeDocumentCommand>("weldoc")
-                                    .UseCommand<WelcomeMessageCommand>("welmsg")
-                                    .UseCommand<WgetCommand>("wget")
+                                        .UseCommand<AboutCommand>("about")
+                                        .UseCommand<AddKataCommand>("kata")
+                                        .UseCommand<AddKataCommand>("wfil")
+                                        .UseCommand<AddNotesCommand>("addfilter")
+                                        .UseCommand<AdminCommand>("admin")
+                                        .UseCommand<AfkCommand>("afk")
+                                        .UseCommand<BanCommand>("ban")
+                                        .UseCommand<BotCommand>("bot")
+                                        .UseCommand<CatCommand>("cat")
+                                        .UseCommand<CovidCommand>("covid")
+                                        .UseCommand<DebugCommand>("dbg")
+                                        .UseCommand<DeleteBanCommand>("dban")
+                                        .UseCommand<DelRssCommand>("delrss")
+                                        .UseCommand<DemoteCommand>("demote")
+                                        .UseCommand<ExportRssCommand>("exportrss")
+                                        .UseCommand<GlobalBanCommand>("fban")
+                                        .UseCommand<GlobalBanCommand>("gban")
+                                        .UseCommand<GlobalReportCommand>("greport")
+                                        .UseCommand<GlobalBanSyncCommand>("gbansync")
+                                        .UseCommand<HelpCommand>("help")
+                                        .UseCommand<IdCommand>("id")
+                                        .UseCommand<ImportLearnCommand>("importlearn")
+                                        .UseCommand<ImportRssCommand>("importrss")
+                                        .UseCommand<KataSyncCommand>("ksync")
+                                        .UseCommand<KickCommand>("kick")
+                                        .UseCommand<LearnCommand>("learn")
+                                        .UseCommand<MediaFilterCommand>("mfil")
+                                        .UseCommand<MigrateCommand>("migrate")
+                                        .UseCommand<NotesCommand>("filters")
+                                        .UseCommand<OcrCommand>("ocr")
+                                        .UseCommand<OutCommand>("out")
+                                        .UseCommand<PinCommand>("pin")
+                                        .UseCommand<PredictCommand>("predict")
+                                        .UseCommand<PromoteCommand>("promote")
+                                        .UseCommand<QrCommand>("qr")
+                                        .UseCommand<ReportCommand>("report")
+                                        .UseCommand<ResetSettingsCommand>("rsettings")
+                                        .UseCommand<RssCtlCommand>("rssctl")
+                                        .UseCommand<RssInfoCommand>("rssinfo")
+                                        .UseCommand<RssPullCommand>("rsspull")
+                                        .UseCommand<RulesCommand>("rules")
+                                        .UseCommand<SetRssCommand>("setrss")
+                                        .UseCommand<SettingsCommand>("settings")
+                                        .UseCommand<SetWelcomeCommand>("setwelcome")
+                                        .UseCommand<StartCommand>("start")
+                                        .UseCommand<StatsCommand>("stats")
+                                        .UseCommand<StorageCommand>("storage")
+                                        .UseCommand<TagCommand>("tag")
+                                        .UseCommand<TagsCommand>("notes")
+                                        .UseCommand<TagsCommand>("tags")
+                                        .UseCommand<TestCommand>("test")
+                                        .UseCommand<TranslateCommand>("tr")
+                                        .UseCommand<UntagCommand>("untag")
+                                        .UseCommand<UsernameCommand>("username")
+                                        .UseCommand<WarnCommand>("warn")
+                                        .UseCommand<WelcomeButtonCommand>("welbtn")
+                                        .UseCommand<WelcomeCommand>("welcome")
+                                        .UseCommand<WelcomeDocumentCommand>("weldoc")
+                                        .UseCommand<WelcomeMessageCommand>("welmsg")
+                                        .UseCommand<WgetCommand>("wget")
                                     // .UseCommand<PingCommand>("ping")
                                 )
                                 .Use<GenericMessageHandler>()
