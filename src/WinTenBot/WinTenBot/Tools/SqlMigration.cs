@@ -38,23 +38,23 @@ namespace WinTenBot.Tools
             }
         }
 
-        public static void MigrateSqlite()
-        {
-            var path = Environment.CurrentDirectory + @"/Storage/SQL/Sqlite";
-            var listFiles = Directory.GetFiles(path);
-            foreach (var file in listFiles)
-            {
-                var filePath = file.SanitizeSlash();
-                Log.Information($"Migrating => {filePath}");
-                var sql = File.ReadAllText(file); 
-                sql.ExecForSqLite(true);
-            }
-        }
+        // public static void MigrateSqlite()
+        // {
+        //     var path = Environment.CurrentDirectory + @"/Storage/SQL/Sqlite";
+        //     var listFiles = Directory.GetFiles(path);
+        //     foreach (var file in listFiles)
+        //     {
+        //         var filePath = file.SanitizeSlash();
+        //         Log.Information($"Migrating => {filePath}");
+        //         var sql = File.ReadAllText(file);
+        //         sql.ExecForSqLite(true);
+        //     }
+        // }
 
         public static void MigrateAll()
         {
             MigrateMysql();
-            MigrateSqlite();
+            // MigrateSqlite();
         }
 
         public static void RunMigration()
