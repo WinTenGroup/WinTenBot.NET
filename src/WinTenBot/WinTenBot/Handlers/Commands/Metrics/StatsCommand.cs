@@ -14,6 +14,9 @@ namespace WinTenBot.Handlers.Commands.Metrics
             CancellationToken cancellationToken)
         {
             _telegramService = new TelegramService(context);
+
+            if (!await _telegramService.IsBeta().ConfigureAwait(false)) return;
+
             var chatId = _telegramService.Message.Chat.Id;
 
             await _telegramService.GetStat().ConfigureAwait(false);
