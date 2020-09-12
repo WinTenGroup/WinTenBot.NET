@@ -22,7 +22,7 @@ namespace WinTenBot.Handlers
 
             var update = _telegramService.Context.Update;
 
-            $"NewUpdate: {update.ToJson(true)}".LogDebug();
+            Log.Debug("NewUpdate: {0}", update.ToJson(true));
 
             // Pre-Task is should be awaited.
             await EnqueuePreTask().ConfigureAwait(false);
