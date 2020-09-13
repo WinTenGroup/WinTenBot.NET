@@ -69,16 +69,23 @@ namespace WinTenBot.Providers
 
         public static async Task<bool> IsCasBanAsync(this User user)
         {
-            var userId = user.Id;
-            var url = "https://api.cas.chat/check".SetQueryParam("user_id", userId);
-            var resp = await url.GetJsonAsync<CasBan>()
-                .ConfigureAwait(false);
+            try
+            {
+                var userId = user.Id;
+                var url = "https://api.cas.chat/check".SetQueryParam("user_id", userId);
+                var resp = await url.GetJsonAsync<CasBan>()
+                    .ConfigureAwait(false);
 
-            Log.Debug("CasBan Response", resp);
+                Log.Debug("CasBan Response", resp);
 
-            var isBan = resp.Ok;
-            Log.Information($"UserId: {userId} is CAS ban: {isBan}");
-            return isBan;
+                var isBan = resp.Ok;
+                Log.Information($"UserId: {userId} is CAS ban: {isBan}");
+                return isBan;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }
