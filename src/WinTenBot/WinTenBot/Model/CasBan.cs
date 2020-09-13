@@ -1,20 +1,27 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace WinTenBot.Model
 {
     public class CasBan
     {
-        [JsonProperty("ok")] public bool Ok { get; set; }
+        [JsonProperty("ok")] 
+        public bool Ok { get; set; }
 
-        [JsonProperty("result")] public Result Result { get; set; }
+        [JsonProperty("result")] 
+        public Result Result { get; set; }
     }
 
-    public partial class Result
+    public class Result
     {
-        [JsonProperty("offenses")] public long Offenses { get; set; }
+        [JsonProperty("offenses")] 
+        public long Offenses { get; set; }
 
-        [JsonProperty("messages")] public string[] Messages { get; set; }
+        [JsonProperty("messages")] 
+        public List<string> Messages { get; set; }
 
-        [JsonProperty("time_added")] public long TimeAdded { get; set; }
+        [JsonProperty("time_added")]
+        public DateTimeOffset TimeAdded { get; set; }
     }
 }
