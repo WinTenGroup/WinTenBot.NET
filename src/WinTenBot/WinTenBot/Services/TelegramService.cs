@@ -137,6 +137,11 @@ namespace WinTenBot.Services
                 chatTarget = customChatId;
             }
 
+            if (replyToMsgId == -1)
+            {
+                replyToMsgId = Message.MessageId;
+            }
+
             Message send = null;
             try
             {
