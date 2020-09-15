@@ -274,7 +274,7 @@ namespace WinTenBot.Telegram
                     $"Terdapat {noUsernameCount} Anggota yang belum memasang Username" +
                     $"\n\n{nameLinks}\n" +
                     "\nMasing-masing telah di mute berdasarkan <a href='https://t.me/WinTenDev/41'>Step Mute</a> " +
-                    $"silakan segera pasang Username lalu tekan Verifikasi agar tidak di mute.";
+                    $"silakan segera pasang Username dan jangan lupa tekan tombol Verifikasi di bawah ini.";
 
                 var urlStart = await telegramService.GetUrlStart("start=set-username")
                     .ConfigureAwait(false);

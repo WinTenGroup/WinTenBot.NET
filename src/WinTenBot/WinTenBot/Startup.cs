@@ -238,11 +238,12 @@ namespace WinTenBot
                     .Use<ExceptionHandler>()
                     // .Use<CustomUpdateLogger>()
                     .UseWhen<WebhookLogger>(When.Webhook)
-                    .UseWhen<NewUpdateHandler>(When.NewUpdate)
 
                     //.UseWhen<UpdateMembersList>(When.MembersChanged)
                     .UseWhen<NewChatMembersEvent>(When.NewChatMembers)
                     .UseWhen<LeftChatMemberEvent>(When.LeftChatMember)
+                    
+                    .UseWhen<NewUpdateHandler>(When.NewUpdate)
 
                     //.UseWhen(When.MembersChanged, memberChanged => memberChanged
                     //    .UseWhen(When.MembersChanged, cmdBranch => cmdBranch
