@@ -1,11 +1,12 @@
-
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29519.87
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WinTenBot", "WinTenBot\WinTenBot.csproj", "{07FCA677-7F76-42B7-8C1D-DA47BCD9F360}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZiziHook", "ZiziHook\ZiziHook.csproj", "{B495ECAA-0A5A-4458-B82C-48AA7DFFCEBA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZiziHook", "ZiziHook\ZiziHook.csproj", "{B495ECAA-0A5A-4458-B82C-48AA7DFFCEBA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WinTenApi", "WinTenApi\WinTenApi.csproj", "{B913A17B-1C14-47DB-8284-B61EC2C0151B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,12 +22,16 @@ Global
 		{B495ECAA-0A5A-4458-B82C-48AA7DFFCEBA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B495ECAA-0A5A-4458-B82C-48AA7DFFCEBA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B495ECAA-0A5A-4458-B82C-48AA7DFFCEBA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B913A17B-1C14-47DB-8284-B61EC2C0151B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B913A17B-1C14-47DB-8284-B61EC2C0151B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B913A17B-1C14-47DB-8284-B61EC2C0151B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B913A17B-1C14-47DB-8284-B61EC2C0151B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		RESX_ShowPerformanceTraces = True
 		SolutionGuid = {AFE8345E-016B-4B6D-A95A-3D62AEF8BA8A}
+		RESX_ShowPerformanceTraces = True
 	EndGlobalSection
 EndGlobal
