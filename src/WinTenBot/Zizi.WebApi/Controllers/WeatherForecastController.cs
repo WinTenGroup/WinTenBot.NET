@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using WinTenApi.Models;
+using Zizi.WebApi.Models;
 
-namespace WinTenApi.Controllers
+namespace Zizi.WebApi.Controllers
 {
     [ApiController]
     [Route("[controller]")]

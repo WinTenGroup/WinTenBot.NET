@@ -1,6 +1,6 @@
-﻿namespace WinTenApi.Models
+﻿namespace Zizi.WebApi.Models
 {
-    public abstract class TopTrendActivity
+    public class TopTrendActivity
     {
         public string ChatId { get; set; }
         public string ChatTitle { get; set; }

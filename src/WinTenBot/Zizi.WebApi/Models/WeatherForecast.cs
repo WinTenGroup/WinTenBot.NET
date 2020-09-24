@@ -1,6 +1,6 @@
 using System;
 
-namespace WinTenApi.Models
+namespace Zizi.WebApi.Models
 {
     public class WeatherForecast
     {

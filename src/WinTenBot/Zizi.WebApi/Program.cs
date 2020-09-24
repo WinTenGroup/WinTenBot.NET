@@ -1,19 +1,27 @@
 using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.SystemConsole.Themes;
+using Zizi.WebApi.Helpers;
 
-namespace WinTenApi
+namespace Zizi.WebApi
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             SetupSerilog();
 
-            CreateHostBuilder(args).Build().Run();
+            Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
+            
+            MonkeyHelper.SetupCache();
+
+            await CreateHostBuilder(args)
+                .Build()
+                .RunAsync();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

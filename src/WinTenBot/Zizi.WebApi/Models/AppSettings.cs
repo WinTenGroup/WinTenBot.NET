@@ -1,4 +1,4 @@
-﻿namespace WinTenApi.Models
+﻿namespace Zizi.WebApi.Models
 {
     public class AppSettings
     {

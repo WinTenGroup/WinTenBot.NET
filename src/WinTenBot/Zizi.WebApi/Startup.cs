@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MySqlConnector;
 
-namespace WinTenApi
+namespace Zizi.WebApi
 {
     public class Startup
     {
@@ -20,9 +20,10 @@ namespace WinTenApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddScoped<IDbConnection>(_ => 
+            services.AddScoped<IDbConnection>(_ =>
                 new MySqlConnection(Configuration.GetConnectionString("MysqlDatabaseConnectionString")));
             services.AddControllers();
+            services.AddCors();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -36,13 +37,11 @@ namespace WinTenApi
             // app.UseHttpsRedirection();
 
             app.UseRouting();
-
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+            app.UseCors(builder => { builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader(); });
+
+            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
     }
 }

@@ -6,9 +6,9 @@ using Canducci.SqlKata.Dapper.Extensions.SoftBuilder;
 using Canducci.SqlKata.Dapper.MySql;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
-using WinTenApi.Models;
+using Zizi.WebApi.Models;
 
-namespace WinTenApi.Controllers
+namespace Zizi.WebApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -28,12 +28,12 @@ namespace WinTenApi.Controllers
 
             var model = await _dbConnection
                 .SoftBuild()
-                .From("zizibot.view_top_hit_activity_last_30d")
+                .From("zizibot_data.view_top_hit_activity_last_30d")
                 .ListAsync<TopTrendActivity>();
-            stopwatch.Stop();
-
-            Log.Information($"Elapsed. {stopwatch.Elapsed}");
             var topTrendActivities = model.ToList();
+            
+            stopwatch.Stop();
+            Log.Information($"Elapsed. {stopwatch.Elapsed}");
 
             return Json(new
             {
