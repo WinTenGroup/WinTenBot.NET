@@ -2,9 +2,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Serilog;
-using ZiziHook.Utils;
+using Zizi.Hook.Utils;
 
-namespace ZiziHook
+namespace Zizi.Hook
 {
     public class Program
     {

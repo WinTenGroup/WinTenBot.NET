@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ZiziHook.Models
+namespace Zizi.Hook.Models
 {
     public class About
     {

@@ -5,7 +5,7 @@ using Serilog;
 using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
 
-namespace ZiziHook.Services
+namespace Zizi.Hook.Services
 {
     public class TelegramService : ITelegramService
     {

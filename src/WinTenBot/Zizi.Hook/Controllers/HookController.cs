@@ -3,12 +3,12 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
-using ZiziHook.Models.Github;
-using ZiziHook.Services;
+using Zizi.Hook.Models.Github;
+using Zizi.Hook.Services;
 
 #endregion
 
-namespace ZiziHook.Controllers
+namespace Zizi.Hook.Controllers
 {
     [ApiController]
     [Route("/")]

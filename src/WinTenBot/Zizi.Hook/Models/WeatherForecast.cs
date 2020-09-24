@@ -1,6 +1,6 @@
 using System;
 
-namespace ZiziHook.Models
+namespace Zizi.Hook.Models
 {
     public class WeatherForecast
     {

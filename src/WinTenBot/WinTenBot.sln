@@ -4,7 +4,7 @@ VisualStudioVersion = 16.0.29519.87
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WinTenBot", "WinTenBot\WinTenBot.csproj", "{07FCA677-7F76-42B7-8C1D-DA47BCD9F360}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZiziHook", "ZiziHook\ZiziHook.csproj", "{B495ECAA-0A5A-4458-B82C-48AA7DFFCEBA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zizi.Hook", "Zizi.Hook\Zizi.Hook.csproj", "{B495ECAA-0A5A-4458-B82C-48AA7DFFCEBA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WinTenApi", "WinTenApi\WinTenApi.csproj", "{B913A17B-1C14-47DB-8284-B61EC2C0151B}"
 EndProject

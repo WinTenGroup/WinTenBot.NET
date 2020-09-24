@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 
-namespace ZiziHook.Models.Github
+namespace Zizi.Hook.Models.Github
 {
     public class Repository
     {

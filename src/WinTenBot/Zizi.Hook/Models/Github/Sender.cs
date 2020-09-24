@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 #endregion
 
-namespace ZiziHook.Models.Github
+namespace Zizi.Hook.Models.Github
 {
     public class Sender
     {

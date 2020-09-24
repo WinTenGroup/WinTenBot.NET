@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace ZiziHook.Utils
+namespace Zizi.Hook.Utils
 {
     public static class FileUtil
     {
