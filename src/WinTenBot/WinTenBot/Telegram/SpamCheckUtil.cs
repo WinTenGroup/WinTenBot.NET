@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Serilog;
 using Telegram.Bot.Types;
 using WinTenBot.Providers;
@@ -51,6 +50,7 @@ namespace WinTenBot.Telegram
             Log.Information("Starting check in Cas Ban");
             var message = telegramService.MessageOrEdited;
             var user = message.From;
+            var userId = user.Id;
 
             // var settingService = new SettingsService(message);
             var chatSettings = telegramService.CurrentSetting;
@@ -65,12 +65,26 @@ namespace WinTenBot.Telegram
             Log.Information($"{user} is CAS ban: {isBan}");
             if (isBan)
             {
-                var sendText = $"{user} is banned in CAS!";
+                var sendText = $"{user} di blokir di CAS!" +
+                               $"\nUntuk detil lebih lanjut, silakan kunjungi alamat berikut." +
+                               $"\nhttps://cas.chat/query?u={userId}" +
+                               $"\n\nUntuk verifikasi bahwa ini kesalahan silakan kunjungi alamat berikut." +
+                               $"\nhttps://t.me/cas_discussion";
+                var isAdminGroup = await telegramService.IsAdminGroup().ConfigureAwait(false);
+                if (!isAdminGroup)
+                {
+                    await telegramService.KickMemberAsync(user)
+                        .ConfigureAwait(false);
+
+                    await telegramService.UnbanMemberAsync(user)
+                        .ConfigureAwait(false);
+                }
+                else
+                {
+                    sendText = $"{user} di blokir di CAS, namun tidak bisa memblokirnya karena Admin di Grup ini";
+                }
+
                 await telegramService.SendTextAsync(sendText)
-                    .ConfigureAwait(false);
-                await telegramService.KickMemberAsync(user)
-                    .ConfigureAwait(false);
-                await telegramService.UnbanMemberAsync(user)
                     .ConfigureAwait(false);
             }
 
