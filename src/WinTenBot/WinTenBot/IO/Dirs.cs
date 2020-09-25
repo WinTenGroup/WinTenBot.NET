@@ -20,7 +20,7 @@ namespace WinTenBot.IO
 
             if (path.IsNullOrEmpty()) return dirPath;
             if (Directory.Exists(path)) return dirPath;
-                
+
             Log.Debug("Creating directory {0}..", path);
             Directory.CreateDirectory(path);
 
@@ -71,6 +71,12 @@ namespace WinTenBot.IO
             {
                 File.Delete(file);
             }
+        }
+
+        public static bool IsDirectory(this string path)
+        {
+            var fa = File.GetAttributes(path);
+            return (fa & FileAttributes.Directory) != 0;
         }
     }
 }
