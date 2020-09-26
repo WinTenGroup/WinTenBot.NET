@@ -17,6 +17,7 @@ namespace WinTenBot.Services
     public class GlobalBanService
     {
         private string fbanTable = "global_bans";
+        private const string GBanAdminTable = "gban_admin";
 
         private string fileJson = "fban_user.json";
 
@@ -165,6 +166,22 @@ namespace WinTenBot.Services
             var dataTable = await fileJson.ReadCacheAsync<DataTable>()
                 .ConfigureAwait(false);
             return dataTable;
+        }
+
+        public async Task RegisterAdminAsync(GBanAdminItem gBanAdminItem)
+        {
+            var querySql = new Query(GBanAdminTable)
+                .ExecForMysql()
+                .Where("user_id", gBanAdminItem.UserId);
+
+            var get = await querySql.GetAsync().ConfigureAwait(false);
+            if (get.Any())
+            {
+                await querySql.InsertAsync(new Dictionary<string, object>()
+                {
+                    {"", ""}
+                }).ConfigureAwait(false);
+            }
         }
     }
 }

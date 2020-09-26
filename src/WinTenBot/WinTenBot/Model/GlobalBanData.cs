@@ -1,27 +1,64 @@
-﻿using System.Text.Json.Serialization;
+﻿using System;
+using Newtonsoft.Json;
+using SqlKata;
 
 namespace WinTenBot.Model
 {
-    public class GlobalBanData
+    public class GBanAdminItem
     {
-        [JsonPropertyName("id")]
+        [Ignore]
+        [JsonProperty("id")]
         public long Id { get; set; }
 
-        [JsonPropertyName("user_id")]
-        public int UserId { get; set; }
+        [Column("user_id")]
+        [JsonProperty("user_id")]
+        public long UserId { get; set; }
 
-        [JsonPropertyName("reason_ban")]
-        public string ReasonBan { get; set; }
+        [Column("username")]
+        [JsonProperty("username")]
+        public string Username { get; set; }
 
-        [JsonPropertyName("banned_by")]
-        public int BannedBy { get; set; }
+        [Column("promoted_by")]
+        [JsonProperty("promoted_by")]
+        public long PromotedBy { get; set; }
 
-        [JsonPropertyName("banned_from")]
-        public long BannedFrom { get; set; }
+        [Column("promoted_from")]
+        [JsonProperty("promoted_from")]
+        public long PromotedFrom { get; set; }
 
-        [JsonPropertyName("created_at")]
-        public string CreatedAt { get; set; }
+        [Column("is_banned")]
+        [JsonProperty("is_banned")]
+        public bool IsBanned { get; set; }
 
+        [Column("created_at")]
+        [JsonProperty("created_at")]
+        public DateTime CreatedAt { get; set; }
     }
 
+    public class GlobalBanData
+    {
+        [Column("id")]
+        [JsonProperty("id")]
+        public long Id { get; set; }
+
+        [Column("user_id")]
+        [JsonProperty("user_id")]
+        public int UserId { get; set; }
+
+        [Column("reason_ban")]
+        [JsonProperty("reason_ban")]
+        public string ReasonBan { get; set; }
+
+        [Column("banned_by")]
+        [JsonProperty("banned_by")]
+        public int BannedBy { get; set; }
+
+        [Column("banned_from")]
+        [JsonProperty("banned_from")]
+        public long BannedFrom { get; set; }
+
+        [Column("created_at")]
+        [JsonProperty("created_at")]
+        public string CreatedAt { get; set; }
+    }
 }

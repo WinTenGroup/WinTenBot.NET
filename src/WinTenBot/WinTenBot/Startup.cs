@@ -73,7 +73,8 @@ namespace WinTenBot
 
             services.AddScoped<GlobalBanCommand>()
                 .AddScoped<DeleteBanCommand>()
-                .AddScoped<GlobalBanSyncCommand>();
+                .AddScoped<GlobalBanSyncCommand>()
+                .AddScoped<GBanRegisterCommand>();
 
             services.AddScoped<AddKataCommand>()
                 .AddScoped<KataSyncCommand>();
@@ -271,6 +272,7 @@ namespace WinTenBot
                                         .UseCommand<DelRssCommand>("delrss")
                                         .UseCommand<DemoteCommand>("demote")
                                         .UseCommand<ExportRssCommand>("exportrss")
+                                        .UseCommand<GBanRegisterCommand>("gbanreg")
                                         .UseCommand<GlobalBanCommand>("fban")
                                         .UseCommand<GlobalBanCommand>("gban")
                                         .UseCommand<GlobalReportCommand>("greport")
