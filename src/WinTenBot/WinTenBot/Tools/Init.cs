@@ -19,8 +19,8 @@ namespace WinTenBot.Tools
             BotSettings.FillSettings();
             Logger.SetupLogger();
 
-            Log.Information($"Name: {BotSettings.ProductName}");
-            Log.Information($"Version: {BotSettings.ProductVersion}");
+            Log.Information("Name: {0}", BotSettings.ProductName);
+            Log.Information("Version: {0}", BotSettings.ProductVersion);
 
             LiteDbProvider.OpenDatabase();
             RavenDbProvider.InitDatabase();
