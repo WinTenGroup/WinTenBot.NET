@@ -83,10 +83,11 @@ namespace WinTenBot.Telegram
             return messageLink;
         }
 
-        private static async Task<bool> IsMustDelete(string words)
+        private static async Task<TelegramResult> IsMustDelete(string words)
         {
             var sw = Stopwatch.StartNew();
             var isMust = false;
+            var telegramResult = new TelegramResult();
             // var query = await new Query("word_filter")
             //     .ExecForSqLite(true)
             //     .Where("is_global", 1)
@@ -99,6 +100,7 @@ namespace WinTenBot.Telegram
             var listWords = (await jsonWords.GetCollectionAsync<WordFilter>()
                     .ConfigureAwait(false))
                 .AsQueryable()
+                .Where(x => x.IsGlobal == true)
                 .ToList();
 
             jsonWords.Dispose();
@@ -106,7 +108,7 @@ namespace WinTenBot.Telegram
             if (words == null)
             {
                 Log.Information("Scan message skipped because Words is null");
-                return false;
+                return telegramResult;
             }
 
             var partedWord = words.Split(new[] {'\n', '\r', ' ', '\t'},
@@ -146,6 +148,8 @@ namespace WinTenBot.Telegram
                     }
 
                     if (!isMust) continue;
+                    telegramResult.Notes = $"Filter: {forFilter}, Kata: {forCompare}";
+                    telegramResult.IsSuccess = true;
                     Log.Information("Break check now!");
                     break;
                 }
@@ -159,7 +163,7 @@ namespace WinTenBot.Telegram
 
             Log.Information("Check Message complete in {0}", sw.Elapsed);
 
-            return isMust;
+            return telegramResult;
         }
 
         private static async Task ScanMessageAsync(this TelegramService telegramService)
@@ -170,14 +174,21 @@ namespace WinTenBot.Telegram
             var text = message.Text ?? message.Caption;
             if (!text.IsNullOrEmpty())
             {
-                var isMustDelete = await IsMustDelete(text)
+                var result = await IsMustDelete(text)
                     .ConfigureAwait(false);
+                var isMustDelete = result.IsSuccess;
 
-                Log.Information($"Message {msgId} IsMustDelete: {isMustDelete}");
+                Log.Information("Message {0} IsMustDelete: {1}", msgId, isMustDelete);
 
                 if (isMustDelete)
+                {
+                    Log.Debug("Result: {0}", result.ToJson(true));
+                    var note = "Pesan di Obrolan di hapus karena terdeteksi filter Kata.\n" + result.Notes;
+                    await telegramService.SendEventAsync(note)
+                        .ConfigureAwait(false);
                     await telegramService.DeleteAsync(message.MessageId)
                         .ConfigureAwait(false);
+                }
             }
             else
             {
@@ -216,10 +227,11 @@ namespace WinTenBot.Telegram
                 // Log.Debug($"SafeSearch: {safeSearch.ToJson(true)}");
 
                 Log.Information("Scanning message..");
-                var isMustDelete = await IsMustDelete(ocr)
+                var result = await IsMustDelete(ocr)
                     .ConfigureAwait(false);
+                var isMustDelete = result.IsSuccess;
 
-                Log.Information($"Message {message.MessageId} IsMustDelete: {isMustDelete}");
+                Log.Information("Message {0} IsMustDelete: {1}", message.MessageId, isMustDelete);
 
                 if (isMustDelete)
                 {
