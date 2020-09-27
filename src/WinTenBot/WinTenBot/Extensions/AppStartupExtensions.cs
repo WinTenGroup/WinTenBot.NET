@@ -69,9 +69,9 @@ namespace WinTenBot.Extensions
                 var webhookPath = options.Value.WebhookPath;
 
                 var url = new Uri(new Uri(options.Value.WebhookDomain), $"{webhookPath}/{botToken}/webhook");
-                Log.Information($"Url WebHook: {url}");
+                Log.Information("Url WebHook: {0}", url);
 
-                logger.LogInformation($"Setting WebHook for bot {typeof(TBot).Name} to URL {url}");
+                Log.Information("Setting WebHook for bot {0} to URL {1}", typeof(TBot).Name, url);
 
                 bot.Client.SetWebhookAsync(url.AbsoluteUri)
                     .GetAwaiter().GetResult();
