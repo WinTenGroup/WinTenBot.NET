@@ -19,7 +19,7 @@ namespace WinTenBot.I18n {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Lang {
@@ -61,7 +61,7 @@ namespace WinTenBot.I18n {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Tidak ada konfigurasi pesan welcome, pesan default akan di terapkan.
+        ///   Looks up a localized string similar to Tidak ada konfigurasi pesan welcome, pesan default akan diterapkan..
         /// </summary>
         public static string WelcomeNoSettings {
             get {
@@ -70,7 +70,7 @@ namespace WinTenBot.I18n {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Perintah /welcome hanya untuk grup saja.
+        ///   Looks up a localized string similar to Perintah /welcome hanya untuk grup saja..
         /// </summary>
         public static string WelcomeOnlyGroup {
             get {
