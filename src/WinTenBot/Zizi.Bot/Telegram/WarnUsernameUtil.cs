@@ -65,12 +65,26 @@ namespace Zizi.Bot.Telegram
                     return;
                 }
 
+                var isBotAdmin = await telegramService.IsBotAdmin().ConfigureAwait(false);
+                if (!isBotAdmin)
+                {
+                    Log.Information("This bot IsNot Admin in {0}, so Warn Username disabled.", message.Chat);
+                    return;
+                }
+
                 var noUsername = fromUser.IsNoUsername();
 
                 Log.Information("{0} IsNoUsername: {1}", fromUser, noUsername);
 
                 if (noUsername)
                 {
+                    var isFromAdmin = await telegramService.IsAdminGroup().ConfigureAwait(false);
+                    if (isFromAdmin)
+                    {
+                        Log.Information("This UserID {0} Is Admin in {1}, so Warn Username disabled.", fromId, message.Chat.Id);
+                        return;
+                    }
+
                     var settingsService = new SettingsService(message);
                     var updateResult = (await UpdateWarnUsernameStat(message)
                             .ConfigureAwait(false))
@@ -243,9 +257,9 @@ namespace Zizi.Bot.Telegram
             var updateResult = (await GetWarnUsernameHistory(message)
                     .ConfigureAwait(false))
                 .ToList()
-                .OrderBy(x=> x.StepCount)
+                .OrderBy(x => x.StepCount)
                 .ToList();
-            
+
             var noUsernameCount = updateResult.Count;
 
             Log.Debug("No Username Count: {0}", noUsernameCount);
