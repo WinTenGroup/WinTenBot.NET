@@ -20,17 +20,19 @@ namespace Zizi.Bot.Handlers.Commands.Core
             var sendText = "Untuk mendapatkan bantuan klik tombol dibawah ini";
             var urlStart = await _telegramService.GetUrlStart("start=help")
                 .ConfigureAwait(false);
+            var ziziDocs = "https://docs.zizibot.azhe.space";
+
             var keyboard = new InlineKeyboardMarkup(
-                InlineKeyboardButton.WithUrl("Dapatkan bantuan", urlStart)
+                InlineKeyboardButton.WithUrl("Dapatkan bantuan", ziziDocs)
             );
 
-            if (_telegramService.IsPrivateChat())
-            {
-                sendText = await "home".LoadInBotDocs()
-                    .ConfigureAwait(false);
-                keyboard = await "Storage/Buttons/home.json".JsonToButton()
-                    .ConfigureAwait(false);
-            }
+            // if (_telegramService.IsPrivateChat())
+            // {
+            //     sendText = await "home".LoadInBotDocs()
+            //         .ConfigureAwait(false);
+            //     keyboard = await "Storage/Buttons/home.json".JsonToButton()
+            //         .ConfigureAwait(false);
+            // }
 
             await _telegramService.SendTextAsync(sendText, keyboard)
                 .ConfigureAwait(false);
