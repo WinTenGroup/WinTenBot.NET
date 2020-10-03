@@ -24,6 +24,20 @@ namespace Zizi.Bot.Telegram
                 return false;
             }
 
+            var isBotAdmin = await telegramService.IsBotAdmin().ConfigureAwait(false);
+            if (!isBotAdmin)
+            {
+                Log.Information("This bot IsNot Admin in {0}, so ES2 check disabled.", message.Chat);
+                return false;
+            }
+
+            var isFromAdmin = await telegramService.IsAdminGroup().ConfigureAwait(false);
+            if (isFromAdmin)
+            {
+                Log.Information("This UserID {0} Is Admin in {1}, so ES2 check disabled.", user.Id, message.Chat.Id);
+                return false;
+            }
+
             if (userTarget != null) user = userTarget;
 
             var messageId = message.MessageId;
@@ -57,6 +71,20 @@ namespace Zizi.Bot.Telegram
             if (!chatSettings.EnableFedCasBan)
             {
                 Log.Information("Fed Cas Ban is disabled in this Group!");
+                return false;
+            }
+
+            var isBotAdmin = await telegramService.IsBotAdmin().ConfigureAwait(false);
+            if (!isBotAdmin)
+            {
+                Log.Information("This bot IsNot Admin in {0}, so CAS check disabled.", message.Chat);
+                return false;
+            }
+
+            var isFromAdmin = await telegramService.IsAdminGroup().ConfigureAwait(false);
+            if (isFromAdmin)
+            {
+                Log.Information("This UserID {0} Is Admin in {1}, so CAS check disabled.", user.Id, message.Chat.Id);
                 return false;
             }
 
@@ -97,6 +125,7 @@ namespace Zizi.Bot.Telegram
             Log.Information("Starting Run SpamWatch");
 
             var message = telegramService.MessageOrEdited;
+            var user = message.From;
             // var settingService = new SettingsService(message);
             var chatSettings = telegramService.CurrentSetting;
             if (!chatSettings.EnableFedSpamWatch)
@@ -105,7 +134,20 @@ namespace Zizi.Bot.Telegram
                 return false;
             }
 
-            var user = message.From;
+            var isBotAdmin = await telegramService.IsBotAdmin().ConfigureAwait(false);
+            if (!isBotAdmin)
+            {
+                Log.Information("This bot IsNot Admin in {0}, so SpamWatch check disabled.", message.Chat);
+                return false;
+            }
+
+            var isFromAdmin = await telegramService.IsAdminGroup().ConfigureAwait(false);
+            if (isFromAdmin)
+            {
+                Log.Information("This UserID {0} Is Admin in {1}, so SpamWatch check disabled.", user.Id, message.Chat.Id);
+                return false;
+            }
+            
             var spamWatch = await user.Id.CheckSpamWatch()
                 .ConfigureAwait(false);
             isBan = spamWatch.IsBan;
