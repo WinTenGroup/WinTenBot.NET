@@ -10,7 +10,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zizi.WebApi", "Zizi.WebApi\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zizi.Portal", "Zizi.Portal\Zizi.Portal.csproj", "{74B777B9-764C-4192-9896-74667D1701A3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zizi.Core", "ZIzi.Core\Zizi.Core.csproj", "{6BDF1EED-884B-4341-B103-738364252BE8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zizi.Core", "Zizi.Core\Zizi.Core.csproj", "{6BDF1EED-884B-4341-B103-738364252BE8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
