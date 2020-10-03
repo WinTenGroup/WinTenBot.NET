@@ -19,7 +19,6 @@ namespace Zizi.Bot.Telegram
         private const string JsonName = "warn-username";
         private const string tableName = "warn_username_history";
 
-
         public static bool IsNoUsername(this User user)
         {
             var userId = user.Id;
@@ -109,10 +108,8 @@ namespace Zizi.Bot.Telegram
                     //     "\nMasing-masing telah di mute berdasarkan <a href='https://t.me/WinTenDev/41'>Step Count</a> " +
                     //     $"silakan segera pasang Username lalu tekan Verifikasi agar tidak di senyapkan.";
 
-
                     // $"\nPeringatan ke {updatedStep} dari {warnLimit}";
                     // $"\nAnda telah di mute selama {addMinutes} menit (sampai dengan {muteTime}), " +
-
 
                     // if (updatedStep == warnLimit) sendText += "\n\n<b>Ini peringatan terakhir!</b>";
 
@@ -122,7 +119,6 @@ namespace Zizi.Bot.Telegram
 
                     // foreach (var usernameHistory in updateResult)
                     // {
-
                     var updatedStep = currentUser.StepCount;
                     // var lastMessageId = orderDescFirst.LastWarnMessageId;
 
@@ -252,7 +248,6 @@ namespace Zizi.Bot.Telegram
         {
             var message = telegramService.Message;
             var callback = telegramService.CallbackQuery;
-
 
             var updateResult = (await GetWarnUsernameHistory(message)
                     .ConfigureAwait(false))
@@ -390,7 +385,6 @@ namespace Zizi.Bot.Telegram
                 //     .UpdateAsync(update)
                 //     .ConfigureAwait(false);
 
-
                 var insertHit = await warnUsername.UpdateOneAsync(x =>
                         x.FromId == fromId && x.ChatId == chatId,
                     new WarnUsernameHistory()
@@ -443,7 +437,6 @@ namespace Zizi.Bot.Telegram
             //         .ConfigureAwait(false))
             //     .AsQueryable()
             //     .Where(x => x.FromId == fromId && x.ChatId == chatId);
-
 
             return (await GetWarnUsernameCollectionAsync().ConfigureAwait(false))
                 .AsQueryable()
