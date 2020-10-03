@@ -4,7 +4,7 @@ using Hangfire;
 using Hangfire.MySql.Core;
 using Hangfire.Storage;
 using Serilog;
-using Zizi.Bot.Model;
+using Zizi.Bot.Models;
 
 namespace Zizi.Bot.Tools
 {

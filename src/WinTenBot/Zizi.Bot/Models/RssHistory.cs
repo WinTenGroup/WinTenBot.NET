@@ -1,7 +1,6 @@
-﻿using System.Text.Json.Serialization;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
-namespace Zizi.Bot.Model
+namespace Zizi.Bot.Models
 {
     public class RssHistory
     {

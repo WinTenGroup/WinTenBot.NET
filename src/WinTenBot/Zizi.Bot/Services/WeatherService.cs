@@ -3,7 +3,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Zizi.Bot.Interfaces;
-using Zizi.Bot.Model;
+using Zizi.Bot.Models;
 
 namespace Zizi.Bot.Services
 {

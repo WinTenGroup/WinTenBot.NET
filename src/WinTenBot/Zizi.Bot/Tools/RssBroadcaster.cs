@@ -10,8 +10,8 @@ using Serilog;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Types.Enums;
 using Zizi.Bot.Common;
+using Zizi.Bot.Models;
 using Zizi.Bot.Telegram;
-using Zizi.Bot.Model;
 using Zizi.Bot.Services;
 
 namespace Zizi.Bot.Tools

@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstractions;
 using Telegram.Bot.Types.ReplyMarkups;
 using Zizi.Bot.Common;
+using Zizi.Bot.Models;
 using Zizi.Bot.Telegram;
-using Zizi.Bot.Model;
 using Zizi.Bot.Services;
 
 namespace Zizi.Bot.Handlers.Commands.Core

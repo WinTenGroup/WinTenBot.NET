@@ -9,7 +9,7 @@ using SqlKata;
 using SqlKata.Execution;
 using Telegram.Bot.Types;
 using Zizi.Bot.Common;
-using Zizi.Bot.Model;
+using Zizi.Bot.Models;
 
 namespace Zizi.Bot.Providers
 {

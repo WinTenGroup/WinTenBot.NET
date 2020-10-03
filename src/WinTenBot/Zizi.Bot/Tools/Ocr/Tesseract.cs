@@ -1,7 +1,7 @@
 ﻿using Serilog;
 using Tesseract;
 using Zizi.Bot.Common;
-using Zizi.Bot.Model;
+using Zizi.Bot.Models;
 
 namespace Zizi.Bot.Tools.Ocr
 {

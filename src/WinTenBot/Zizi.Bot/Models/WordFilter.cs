@@ -1,7 +1,7 @@
 using System;
 using System.Text.Json.Serialization;
 
-namespace Zizi.Bot.Model
+namespace Zizi.Bot.Models
 {
     public class WordFilter
     {

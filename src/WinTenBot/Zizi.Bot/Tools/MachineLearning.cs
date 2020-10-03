@@ -9,7 +9,7 @@ using SqlKata;
 using SqlKata.Execution;
 using Zizi.Bot.Providers;
 using Zizi.Bot.Common;
-using Zizi.Bot.Model;
+using Zizi.Bot.Models;
 using Zizi.Bot.Services;
 
 namespace Zizi.Bot.Tools

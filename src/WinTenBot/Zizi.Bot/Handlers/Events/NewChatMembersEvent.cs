@@ -10,7 +10,7 @@ using Telegram.Bot.Types.ReplyMarkups;
 using Zizi.Bot.Providers;
 using Zizi.Bot.Common;
 using Zizi.Bot.Enums;
-using Zizi.Bot.Model;
+using Zizi.Bot.Models;
 using Zizi.Bot.Services;
 using Zizi.Bot.Telegram;
 

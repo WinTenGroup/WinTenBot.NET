@@ -4,8 +4,8 @@ using System.Threading.Tasks;
 using Serilog;
 using SqlKata;
 using SqlKata.Execution;
+using Zizi.Bot.Models;
 using Zizi.Bot.Providers;
-using Zizi.Bot.Model;
 using Zizi.Bot.Services;
 
 namespace Zizi.Bot.Telegram

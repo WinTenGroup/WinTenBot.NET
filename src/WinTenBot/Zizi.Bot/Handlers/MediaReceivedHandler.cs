@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using Telegram.Bot.Framework.Abstractions;
+using Zizi.Bot.Models;
 using Zizi.Bot.Telegram;
-using Zizi.Bot.Model;
 using Zizi.Bot.Services;
 
 namespace Zizi.Bot.Handlers

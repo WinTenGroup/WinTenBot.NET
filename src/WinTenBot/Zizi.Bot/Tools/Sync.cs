@@ -7,8 +7,8 @@ using Serilog;
 using SqlKata;
 using SqlKata.Execution;
 using Zizi.Bot.Common;
+using Zizi.Bot.Models;
 using Zizi.Bot.Providers;
-using Zizi.Bot.Model;
 
 namespace Zizi.Bot.Tools
 {

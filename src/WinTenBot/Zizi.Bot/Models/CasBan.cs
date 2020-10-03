@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace Zizi.Bot.Model
+namespace Zizi.Bot.Models
 {
     public class CasBan
     {

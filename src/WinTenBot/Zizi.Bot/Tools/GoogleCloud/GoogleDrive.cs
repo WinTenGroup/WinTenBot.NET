@@ -12,7 +12,7 @@ using Serilog;
 using Zizi.Bot.Common;
 using Zizi.Bot.Telegram;
 using Zizi.Bot.IO;
-using Zizi.Bot.Model;
+using Zizi.Bot.Models;
 using Zizi.Bot.Services;
 using File = Google.Apis.Drive.v3.Data.File;
 

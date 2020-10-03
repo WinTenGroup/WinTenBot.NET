@@ -5,8 +5,8 @@ using Flurl.Http;
 using Serilog;
 using Zizi.Bot.Common;
 using Zizi.Bot.IO;
-using Zizi.Bot.Model.Lmao;
-using CovidAll = Zizi.Bot.Model.CovidAll;
+using Zizi.Bot.Models.Lmao;
+using CovidAll = Zizi.Bot.Models.CovidAll;
 
 namespace Zizi.Bot.Tools
 {
@@ -32,7 +32,7 @@ namespace Zizi.Bot.Tools
                 .ConfigureAwait(false);
 
             Log.Information($"Loading cache from {CacheFilename}");
-            var covidAll = await CacheFilename.ReadCacheAsync<Model.CovidAll>()
+            var covidAll = await CacheFilename.ReadCacheAsync<CovidAll>()
                 .ConfigureAwait(false);
 
             // Log.Information($"CovidAll: {covidAll.ToJson(true)}");
@@ -68,7 +68,7 @@ namespace Zizi.Bot.Tools
         {
             Log.Information("Send request API.");
             var url = "https://corona.lmao.ninja/v2/all";
-            var covid = await url.GetJsonAsync<Model.Lmao.CovidAll>()
+            var covid = await url.GetJsonAsync<Models.Lmao.CovidAll>()
                 .ConfigureAwait(false);
 
             Log.Information("Building result");
@@ -156,7 +156,7 @@ namespace Zizi.Bot.Tools
             if (!CacheFilename.IsFileCacheExist())
             {
                 Log.Information($"Getting information from {urlApi}");
-                var covidAll = await urlApi.GetJsonAsync<Model.CovidAll>()
+                var covidAll = await urlApi.GetJsonAsync<CovidAll>()
                     .ConfigureAwait(false);
 
                 await covidAll.WriteCacheAsync(CacheFilename)

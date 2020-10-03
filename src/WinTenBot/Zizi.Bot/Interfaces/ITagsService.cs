@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Zizi.Bot.Model;
+using Zizi.Bot.Models;
 
 namespace Zizi.Bot.Interfaces
 {

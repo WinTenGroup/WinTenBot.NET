@@ -8,7 +8,7 @@ using Raven.Client.Documents.Queries;
 using Raven.Client.Documents.Session;
 using Serilog;
 using Zizi.Bot.Common;
-using Zizi.Bot.Model;
+using Zizi.Bot.Models;
 
 namespace Zizi.Bot.Providers
 {

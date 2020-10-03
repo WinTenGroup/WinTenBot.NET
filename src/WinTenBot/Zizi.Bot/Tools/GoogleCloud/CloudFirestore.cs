@@ -3,7 +3,7 @@ using Google.Cloud.Firestore;
 using Serilog;
 using Zizi.Bot.IO;
 using Zizi.Bot.Common;
-using Zizi.Bot.Model;
+using Zizi.Bot.Models;
 
 namespace Zizi.Bot.Tools.GoogleCloud
 {

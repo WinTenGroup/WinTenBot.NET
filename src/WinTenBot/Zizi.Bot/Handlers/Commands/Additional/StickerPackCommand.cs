@@ -11,7 +11,7 @@ using Zizi.Bot.Common;
 using Zizi.Bot.IO;
 using Zizi.Bot.Telegram;
 using Zizi.Bot.Enums;
-using Zizi.Bot.Model;
+using Zizi.Bot.Models;
 using Zizi.Bot.Services;
 
 namespace Zizi.Bot.Handlers.Commands.Additional

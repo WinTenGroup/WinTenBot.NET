@@ -8,7 +8,7 @@ using Google.Protobuf;
 using Serilog;
 using Zizi.Bot.Common;
 using Zizi.Bot.IO;
-using Zizi.Bot.Model;
+using Zizi.Bot.Models;
 using Feature = Google.Cloud.VideoIntelligence.V1.Feature;
 
 namespace Zizi.Bot.Tools.GoogleCloud

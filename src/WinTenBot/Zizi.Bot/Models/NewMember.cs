@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace Zizi.Bot.Model
+namespace Zizi.Bot.Models
 {
     public class NewMember
     {

@@ -1,4 +1,4 @@
-﻿namespace Zizi.Bot.Model
+﻿namespace Zizi.Bot.Models
 {
     public class OcrResult
     {

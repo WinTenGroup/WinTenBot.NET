@@ -6,7 +6,7 @@ using Flurl.Http;
 using Newtonsoft.Json;
 using Serilog;
 using Zizi.Bot.Common;
-using Zizi.Bot.Model;
+using Zizi.Bot.Models;
 
 namespace Zizi.Bot.Tools.Ocr
 {

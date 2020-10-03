@@ -6,7 +6,7 @@ using HangfireBasicAuthenticationFilter;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
-using Zizi.Bot.Model;
+using Zizi.Bot.Models;
 using Zizi.Bot.Scheduler;
 using Zizi.Bot.Tools;
 

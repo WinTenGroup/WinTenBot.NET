@@ -7,7 +7,7 @@ using Telegram.Bot.Types;
 using Zizi.Bot.Common;
 using Zizi.Bot.Tools;
 using Zizi.Bot.Interfaces;
-using Zizi.Bot.Model;
+using Zizi.Bot.Models;
 using Zizi.Bot.Providers;
 
 namespace Zizi.Bot.Services

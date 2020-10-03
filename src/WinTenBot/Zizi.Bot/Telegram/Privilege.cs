@@ -4,7 +4,7 @@ using Serilog;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Zizi.Bot.Common;
-using Zizi.Bot.Model;
+using Zizi.Bot.Models;
 using Zizi.Bot.Services;
 
 namespace Zizi.Bot.Telegram

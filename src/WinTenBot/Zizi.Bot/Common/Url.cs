@@ -5,7 +5,7 @@ using System.IO;
 using System.Net;
 using Serilog;
 using Zizi.Bot.IO;
-using Zizi.Bot.Model;
+using Zizi.Bot.Models;
 
 namespace Zizi.Bot.Common
 {

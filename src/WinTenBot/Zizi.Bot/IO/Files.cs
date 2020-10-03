@@ -2,7 +2,7 @@
 using System.IO;
 using System.Threading.Tasks;
 using Serilog;
-using Zizi.Bot.Model;
+using Zizi.Bot.Models;
 
 namespace Zizi.Bot.IO
 {

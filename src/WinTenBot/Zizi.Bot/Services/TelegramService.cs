@@ -14,7 +14,7 @@ using Telegram.Bot.Types.ReplyMarkups;
 using Zizi.Bot.Common;
 using Zizi.Bot.IO;
 using Zizi.Bot.Enums;
-using Zizi.Bot.Model;
+using Zizi.Bot.Models;
 using Zizi.Bot.Telegram;
 using File = System.IO.File;
 

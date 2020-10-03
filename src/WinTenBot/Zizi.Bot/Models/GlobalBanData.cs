@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using SqlKata;
 
-namespace Zizi.Bot.Model
+namespace Zizi.Bot.Models
 {
     public class GBanAdminItem
     {

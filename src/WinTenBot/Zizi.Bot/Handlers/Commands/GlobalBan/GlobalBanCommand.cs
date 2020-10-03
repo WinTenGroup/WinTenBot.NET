@@ -4,8 +4,8 @@ using System.Threading.Tasks;
 using Serilog;
 using Telegram.Bot.Framework.Abstractions;
 using Zizi.Bot.Common;
+using Zizi.Bot.Models;
 using Zizi.Bot.Telegram;
-using Zizi.Bot.Model;
 using Zizi.Bot.Services;
 using Zizi.Bot.Tools;
 

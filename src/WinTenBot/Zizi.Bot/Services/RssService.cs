@@ -6,9 +6,9 @@ using SqlKata;
 using SqlKata.Execution;
 using Telegram.Bot.Types;
 using Zizi.Bot.Common;
+using Zizi.Bot.Models;
 using Zizi.Bot.Providers;
 using Zizi.Bot.Tools;
-using Zizi.Bot.Model;
 
 namespace Zizi.Bot.Services
 {

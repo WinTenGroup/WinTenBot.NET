@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Serilog;
 using SqlKata;
 using SqlKata.Execution;
-using Zizi.Bot.Model;
+using Zizi.Bot.Models;
 using Zizi.Bot.Providers;
 using Zizi.Bot.Services;
 

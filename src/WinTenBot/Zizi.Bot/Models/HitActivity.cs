@@ -1,7 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json;
 
-namespace Zizi.Bot.Model
+namespace Zizi.Bot.Models
 {
    public partial class HitActivity
     {

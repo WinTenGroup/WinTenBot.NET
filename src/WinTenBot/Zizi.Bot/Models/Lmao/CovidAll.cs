@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Zizi.Bot.Model.Lmao
+namespace Zizi.Bot.Models.Lmao
 {
     public partial class CovidAll
     {

@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using Zizi.Bot.Enums;
 
-namespace Zizi.Bot.Model
+namespace Zizi.Bot.Models
 {
     public class CloudTag
     {

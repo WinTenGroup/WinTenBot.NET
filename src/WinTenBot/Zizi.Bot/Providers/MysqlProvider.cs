@@ -6,7 +6,7 @@ using Serilog;
 using SqlKata;
 using SqlKata.Compilers;
 using SqlKata.Execution;
-using Zizi.Bot.Model;
+using Zizi.Bot.Models;
 
 namespace Zizi.Bot.Providers
 {

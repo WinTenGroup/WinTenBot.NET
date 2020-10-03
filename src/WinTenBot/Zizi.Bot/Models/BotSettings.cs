@@ -7,7 +7,7 @@ using Telegram.Bot;
 using Zizi.Bot.Common;
 using Zizi.Bot.IO;
 
-namespace Zizi.Bot.Model
+namespace Zizi.Bot.Models
 {
     public static class BotSettings
     {
