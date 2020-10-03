@@ -5,11 +5,10 @@ using System.Threading.Tasks;
 using Flurl;
 using Flurl.Http;
 using Serilog;
-using SqlKata;
-using SqlKata.Execution;
 using Telegram.Bot.Types;
 using Zizi.Bot.Common;
 using Zizi.Bot.Models;
+using Zizi.Bot.Tools;
 
 namespace Zizi.Bot.Providers
 {
@@ -55,14 +54,27 @@ namespace Zizi.Bot.Providers
 
         public static async Task<bool> CheckGBan(this int userId)
         {
-            var query = await new Query("fban_user")
-                .Where("user_id", userId)
-                .ExecForSqLite(true)
-                .GetAsync()
-                .ConfigureAwait(false);
+            // var query = await new Query("fban_user")
+            //     .Where("user_id", userId)
+            //     .ExecForSqLite(true)
+            //     .GetAsync()
+            //     .ConfigureAwait(false);
 
-            var isGBan = query.Any();
-            Log.Information($"UserId {userId} isGBan : {isGBan}");
+            var jsonGBan = "gban-users".OpenJson();
+
+            Log.Debug("Opening GBan collection");
+            var gBanCollection = await jsonGBan.GetCollectionAsync<GlobalBanData>().ConfigureAwait(false);
+
+            var allBan = gBanCollection.AsQueryable().ToList();
+            Log.Debug("Loaded ES2 Ban: {0}", allBan.Count);
+
+            var findBan = allBan.Where(x => x.UserId == userId).ToList();
+
+            var isGBan = findBan.Any();
+            Log.Information("UserId {0} is ES2 GBan? {1}", userId, isGBan);
+            
+            jsonGBan.Dispose();
+            allBan.Clear();
 
             return isGBan;
         }
