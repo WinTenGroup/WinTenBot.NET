@@ -23,16 +23,14 @@ namespace Zizi.Bot.Telegram
                 Log.Information("Fed ES2 Ban is disabled in this Group!");
                 return false;
             }
-
-            var isBotAdmin = await telegramService.IsBotAdmin().ConfigureAwait(false);
-            if (!isBotAdmin)
+            
+            if (!telegramService.IsBotAdmin)
             {
                 Log.Information("This bot IsNot Admin in {0}, so ES2 check disabled.", message.Chat);
                 return false;
             }
-
-            var isFromAdmin = await telegramService.IsAdminGroup().ConfigureAwait(false);
-            if (isFromAdmin)
+            
+            if (telegramService.IsFromAdmin)
             {
                 Log.Information("This UserID {0} Is Admin in {1}, so ES2 check disabled.", user.Id, message.Chat.Id);
                 return false;
@@ -73,16 +71,14 @@ namespace Zizi.Bot.Telegram
                 Log.Information("Fed Cas Ban is disabled in this Group!");
                 return false;
             }
-
-            var isBotAdmin = await telegramService.IsBotAdmin().ConfigureAwait(false);
-            if (!isBotAdmin)
+            
+            if (!telegramService.IsBotAdmin)
             {
                 Log.Information("This bot IsNot Admin in {0}, so CAS check disabled.", message.Chat);
                 return false;
             }
-
-            var isFromAdmin = await telegramService.IsAdminGroup().ConfigureAwait(false);
-            if (isFromAdmin)
+            
+            if (telegramService.IsFromAdmin)
             {
                 Log.Information("This UserID {0} Is Admin in {1}, so CAS check disabled.", user.Id, message.Chat.Id);
                 return false;
@@ -133,16 +129,14 @@ namespace Zizi.Bot.Telegram
                 Log.Information("Fed SpamWatch is disabled in this Group!");
                 return false;
             }
-
-            var isBotAdmin = await telegramService.IsBotAdmin().ConfigureAwait(false);
-            if (!isBotAdmin)
+            
+            if (!telegramService.IsBotAdmin)
             {
                 Log.Information("This bot IsNot Admin in {0}, so SpamWatch check disabled.", message.Chat);
                 return false;
             }
-
-            var isFromAdmin = await telegramService.IsAdminGroup().ConfigureAwait(false);
-            if (isFromAdmin)
+            
+            if (telegramService.IsFromAdmin)
             {
                 Log.Information("This UserID {0} Is Admin in {1}, so SpamWatch check disabled.", user.Id, message.Chat.Id);
                 return false;
