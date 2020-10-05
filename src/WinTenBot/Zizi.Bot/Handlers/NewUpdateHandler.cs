@@ -18,6 +18,9 @@ namespace Zizi.Bot.Handlers
             _telegramService = new TelegramService(context);
             if (_telegramService.Context.Update.ChannelPost != null) return;
 
+            _telegramService.IsBotAdmin = await _telegramService.IsBotAdmin().ConfigureAwait(false);
+            _telegramService.IsFromAdmin = await _telegramService.IsAdminGroup().ConfigureAwait(false);
+
             var chatSettings = _telegramService.CurrentSetting;
 
             var update = _telegramService.Context.Update;

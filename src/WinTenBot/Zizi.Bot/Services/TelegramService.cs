@@ -23,6 +23,8 @@ namespace Zizi.Bot.Services
     public class TelegramService
     {
         public bool IsNoUsername { get; set; }
+        public bool IsBotAdmin { get; set; }
+        public bool IsFromAdmin { get; set; }
         public ChatSetting CurrentSetting { get; set; }
         public IUpdateContext Context { get; set; }
         private string AppendText { get; set; }
