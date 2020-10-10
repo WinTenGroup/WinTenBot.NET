@@ -17,25 +17,28 @@ namespace Zizi.Bot.Tools
             Log.Debug($"Migrating :{filePath}");
             await filePath.ExecuteFileForSqLite().ConfigureAwait(false);
         }
-
+        
         public static void MigrateMysql()
         {
             var path = Environment.CurrentDirectory + @"/Storage/SQL/MySql";
+            Log.Information("Prepare migrating from SQL: {0}", path);
             var listFiles = Directory.GetFiles(path).Where(f => f.EndsWith(".sql"));
             foreach (var file in listFiles)
             {
                 var filePath = file.SanitizeSlash();
                 if (filePath.Contains("obs"))
                 {
-                    Log.Information($"Skip => {filePath} because obsolete");
+                    Log.Debug($"Skip => {filePath} because obsolete");
                 }
                 else
                 {
-                    Log.Information($"Migrating => {filePath}");
+                    Log.Debug($"Migrating => {filePath}");
                     var sql = File.ReadAllText(file);
                     sql.ExecForMysqlNonQuery(true);
                 }
             }
+            
+            Log.Information("SQL Migration finish.");
         }
 
         // public static void MigrateSqlite()
