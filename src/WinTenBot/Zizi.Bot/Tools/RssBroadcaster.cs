@@ -72,7 +72,7 @@ namespace Zizi.Bot.Tools
 
             foreach (var rssFeed in rssFeeds.Items)
             {
-                // Log.Debug("Rss from url {0} => {1}", rssUrl, rssFeed.ToJson(true));
+                Log.Debug("Rss from url {0} => {1}", rssUrl, rssFeed.ToJson(true));
 
                 // Prevent flood in first time;
                 // if (castLimit == castStep)
@@ -81,15 +81,20 @@ namespace Zizi.Bot.Tools
                 //     break;
                 // }
 
-                var whereHistory = new Dictionary<string, object>()
-                {
-                    ["chat_id"] = chatId,
-                    ["rss_source"] = rssUrl
-                };
+                // var whereHistory = new Dictionary<string, object>()
+                // {
+                //     ["chat_id"] = chatId,
+                //     ["rss_source"] = rssUrl
+                // };
 
                 Log.Debug("Getting last history for {0} url {1}", chatId, rssUrl);
-                var rssHistory = await rssService.GetRssHistory(whereHistory)
-                    .ConfigureAwait(false);
+                // var rssHistory = await rssService.GetRssHistory(whereHistory)
+                // .ConfigureAwait(false);
+                var rssHistory = await rssService.GetRssHistory(new RssHistory()
+                {
+                    ChatId = chatId,
+                    RssSource = rssUrl
+                }).ConfigureAwait(false);
                 var lastRssHistory = rssHistory.LastOrDefault();
 
                 // if (!rssHistory.Any()) break;
@@ -97,8 +102,8 @@ namespace Zizi.Bot.Tools
                 {
                     Log.Debug("Last send feed {0} => {1}", rssUrl, lastRssHistory.PublishDate);
 
-                    var lastArticleDate = DateTime.Parse(lastRssHistory.PublishDate);
-                    var currentArticleDate = rssFeed.PublishingDate.Value;
+                    var lastArticleDate = lastRssHistory.PublishDate;
+                    var currentArticleDate = rssFeed.PublishingDate;
 
                     if (currentArticleDate < lastArticleDate)
                     {
@@ -124,8 +129,13 @@ namespace Zizi.Bot.Tools
                     {"url", rssFeed.Link}
                 };
 
-                var isExist = await rssService.IsExistInHistory(where)
-                    .ConfigureAwait(false);
+                // var isExist = await rssService.IsExistInHistory(where).ConfigureAwait(false);
+                var isExist = await rssService.IsExistInHistory(new RssHistory()
+                {
+                    ChatId = chatId,
+                    Url = rssFeed.Link
+                }).ConfigureAwait(false);
+
                 if (isExist)
                 {
                     Log.Information($"This feed has sent to {chatId}");
@@ -139,20 +149,31 @@ namespace Zizi.Bot.Tools
                     await BotSettings.Client.SendTextMessageAsync(chatId, sendText, ParseMode.Html)
                         .ConfigureAwait(false);
 
-                    var data = new Dictionary<string, object>()
-                    {
-                        {"url", rssFeed.Link},
-                        {"rss_source", rssUrl},
-                        {"chat_id", chatId},
-                        {"title", rssFeed.Title},
-                        {"publish_date", rssFeed.PublishingDate.ToString()},
-                        {"author", rssFeed.Author},
-                        {"created_at", DateTime.Now.ToString(CultureInfo.InvariantCulture)}
-                    };
-
                     Log.Debug($"Writing to RSS History");
-                    await rssService.SaveRssHistoryAsync(data)
-                        .ConfigureAwait(false);
+                    // var data = new Dictionary<string, object>()
+                    // {
+                    //     {"url", rssFeed.Link},
+                    //     {"rss_source", rssUrl},
+                    //     {"chat_id", chatId},
+                    //     {"title", rssFeed.Title},
+                    //     {"publish_date", rssFeed.PublishingDate.ToString()},
+                    //     {"author", rssFeed.Author},
+                    //     {"created_at", DateTime.Now.ToString(CultureInfo.InvariantCulture)}
+                    // };
+                    //
+                    // await rssService.SaveRssHistoryAsync(data)
+                    //     .ConfigureAwait(false);
+
+                    await rssService.SaveRssHistoryAsync(new RssHistory()
+                    {
+                        Url = rssFeed.Link,
+                        RssSource = rssUrl,
+                        ChatId = chatId,
+                        Title = rssFeed.Title,
+                        PublishDate = rssFeed.PublishingDate ?? DateTime.Now,
+                        Author = rssFeed.Author ?? "N/A",
+                        CreatedAt = DateTime.Now
+                    }).ConfigureAwait(false);
 
                     // castStep++;
                     newRssCount++;
@@ -171,7 +192,7 @@ namespace Zizi.Bot.Tools
                         Log.Information("Seem need clearing all RSS Settings and unregister Cron completely!");
                         Log.Debug("Deleting all RSS Settings");
                         await rssService.DeleteAllByChatId(chatId).ConfigureAwait(false);
-                        
+
                         UnRegRSS(chatId);
                     }
                 }
@@ -185,7 +206,7 @@ namespace Zizi.Bot.Tools
             var baseId = "rss";
             var reduceChatId = chatId.ToInt64().ReduceChatId();
             var recurringId = $"{baseId}-{reduceChatId}";
-            
+
             Log.Debug("Deleting RSS Cron {0}", chatId);
             RecurringJob.RemoveIfExists(recurringId);
         }

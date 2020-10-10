@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Serilog;
@@ -16,6 +17,7 @@ namespace Zizi.Bot.Services
     {
         private Message _message;
         private string baseTable = "rss_history";
+        private string baseTable2 = "RssHistory";
         private string rssSettingTable = "rss_settings";
 
         public RssService()
@@ -27,11 +29,32 @@ namespace Zizi.Bot.Services
             _message = message;
         }
 
+        [Obsolete("Please use RssHistory as parameter")]
         public async Task<bool> IsExistInHistory(Dictionary<string, object> where)
         {
             var data = await new Query(baseTable)
                 .Where(where)
                 .ExecForSqLite(true)
+                .GetAsync()
+                .ConfigureAwait(false);
+
+            var isExist = data.Any();
+            Log.Information($"Check RSS History: {isExist}");
+
+            return isExist;
+        }
+        
+        public async Task<bool> IsExistInHistory(RssHistory rssHistory)
+        {
+            var where = new Dictionary<string, object>()
+            {
+                {"ChatId", rssHistory.ChatId},
+                {"Url", rssHistory.Url}
+            };
+            
+            var data = await new Query(baseTable2)
+                .Where(where)
+                .ExecForMysql(true)
                 .GetAsync()
                 .ConfigureAwait(false);
 
@@ -62,10 +85,11 @@ namespace Zizi.Bot.Services
                 .ExecForMysql()
                 .InsertAsync(data)
                 .ConfigureAwait(false);
-            
+
             return insert.ToBool();
         }
-
+        
+        [Obsolete("Please use RssHistory as parameter")]
         public async Task<bool> SaveRssHistoryAsync(Dictionary<string, object> data)
         {
             var insert = await new Query(baseTable)
@@ -74,6 +98,16 @@ namespace Zizi.Bot.Services
                 .ConfigureAwait(false);
 
             return insert.ToBool();
+        }
+
+        public async Task<int> SaveRssHistoryAsync(RssHistory rssHistory)
+        {
+            var insert = await new Query(baseTable2)
+                .ExecForMysql(true)
+                .InsertAsync(rssHistory)
+                .ConfigureAwait(false);
+
+            return insert;
         }
 
         public async Task<List<RssSetting>> GetRssSettingsAsync(long chatId = -1)
@@ -90,7 +124,7 @@ namespace Zizi.Bot.Services
                 .ConfigureAwait(false);
 
             var mapped = data.ToJson().MapObject<List<RssSetting>>();
-            Log.Debug("RSSData: {0}" , mapped.ToJson(true));
+            Log.Debug("RSSData: {0}", mapped.ToJson(true));
 
             return mapped;
         }
@@ -109,11 +143,29 @@ namespace Zizi.Bot.Services
             Log.Information($"Get List ChatID: {data.Count()}");
             return mapped;
         }
-
+        
+        [Obsolete("Please use RssHistory as parameter")]
         public async Task<List<RssHistory>> GetRssHistory(Dictionary<string, object> where)
         {
             var query = await new Query(baseTable)
                 .ExecForSqLite()
+                .Where(where)
+                .GetAsync()
+                .ConfigureAwait(false);
+
+            return query.ToJson().MapObject<List<RssHistory>>();
+        }
+        
+        public async Task<List<RssHistory>> GetRssHistory(RssHistory rssHistory)
+        {
+            var where = new Dictionary<string, object>()
+            {
+                ["ChatId"] = rssHistory.ChatId,
+                ["RssSource"] = rssHistory.RssSource
+            };
+            
+            var query = await new Query(baseTable2)
+                .ExecForMysql(true)
                 .Where(where)
                 .GetAsync()
                 .ConfigureAwait(false);
