@@ -23,7 +23,7 @@ namespace Zizi.Bot.Providers
             return factory;
         }
 
-        public static Query ExecForMysql(this Query query, bool printSql = false)
+        public static Query ExecForMysql(this Query query, bool printSql = true)
         {
             var connection = new MySqlConnection(BotSettings.DbConnectionString);
             var factory = new QueryFactory(connection, new MySqlCompiler());
