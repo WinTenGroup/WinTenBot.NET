@@ -3,15 +3,16 @@
     // Use hover for the description of the existing attributes
     // For further information visit https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md
     "version": "0.2.0",
-    "configurations": [{
-            "name": ".NET Core Launch (web)",
+    "configurations": [
+        {
+            "name": "Debug Zizi.Bot",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/src/WinTenBot/WinTenBot/bin/Debug/netcoreapp3.1/WinTenBot.dll",
+            "program": "${workspaceFolder}/src/WinTenBot/Zizi.Bot/bin/Debug/net5.0/Zizi.Bot.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/src/WinTenBot/WinTenBot",
+            "cwd": "${workspaceFolder}/src/WinTenBot/Zizi.Bot",
             "stopAtEntry": false,
             "justMyCode": false,
             // Enable launching a web browser when ASP.NET Core starts. For more information: https://aka.ms/VSCode-CS-LaunchJson-WebBrowser
