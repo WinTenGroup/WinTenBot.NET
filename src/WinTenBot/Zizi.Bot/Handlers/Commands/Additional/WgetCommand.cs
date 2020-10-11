@@ -57,6 +57,10 @@ namespace Zizi.Bot.Handlers.Commands.Additional
                 await MegaTransfer.DownloadFileAsync(_telegramService, param1)
                     .ConfigureAwait(false);
             }
+            else if (param1.IsUptoboxUrl())
+            {
+                await _telegramService.DownloadUrlAsync().ConfigureAwait(false);
+            }
             else
             {
                 await _telegramService.DownloadFile(param1)
