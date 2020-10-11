@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Diagnostics;
+using System.Threading.Tasks;
 using Serilog;
 using Telegram.Bot.Types;
 using Zizi.Bot.Providers;
@@ -11,9 +12,8 @@ namespace Zizi.Bot.Telegram
         public static async Task<bool> CheckGlobalBanAsync(this TelegramService telegramService,
             User userTarget = null)
         {
-            Log.Information("Starting check Global Ban");
-
             var message = telegramService.MessageOrEdited;
+            var sw = Stopwatch.StartNew();
             var user = message.From;
 
             // var settingService = new SettingsService(message);
@@ -23,18 +23,24 @@ namespace Zizi.Bot.Telegram
                 Log.Information("Fed ES2 Ban is disabled in this Group!");
                 return false;
             }
-            
+
             if (!telegramService.IsBotAdmin)
             {
-                Log.Information("This bot IsNot Admin in {0}, so ES2 check disabled.", message.Chat);
+                Log.Information("This bot IsNot Admin in {0}, so ES2 check disabled. Time: {1}", message.Chat.Id, sw.Elapsed);
+                sw.Stop();
+
                 return false;
             }
-            
+
             if (telegramService.IsFromAdmin)
             {
-                Log.Information("This UserID {0} Is Admin in {1}, so ES2 check disabled.", user.Id, message.Chat.Id);
+                Log.Information("This UserID {0} Is Admin in {1}, so ES2 check disabled. Time: {2}", user.Id, message.Chat.Id, sw.Elapsed);
+                sw.Stop();
+
                 return false;
             }
+
+            Log.Information("Starting check Global Ban");
 
             if (userTarget != null) user = userTarget;
 
@@ -53,14 +59,16 @@ namespace Zizi.Bot.Telegram
                     .ConfigureAwait(false);
             }
 
+            sw.Stop();
+
             return isBan;
         }
 
         public static async Task<bool> CheckCasBanAsync(this TelegramService telegramService)
         {
             bool isBan;
-            Log.Information("Starting check in Cas Ban");
             var message = telegramService.MessageOrEdited;
+            var sw = Stopwatch.StartNew();
             var user = message.From;
             var userId = user.Id;
 
@@ -68,21 +76,27 @@ namespace Zizi.Bot.Telegram
             var chatSettings = telegramService.CurrentSetting;
             if (!chatSettings.EnableFedCasBan)
             {
-                Log.Information("Fed Cas Ban is disabled in this Group!");
+                Log.Information("Fed CAS Ban is disabled in this Group!");
                 return false;
             }
-            
+
             if (!telegramService.IsBotAdmin)
             {
-                Log.Information("This bot IsNot Admin in {0}, so CAS check disabled.", message.Chat);
+                Log.Information("This bot IsNot Admin in {0}, so CAS check disabled. Time: {1}", message.Chat.Id, sw.Elapsed);
+                sw.Stop();
+
                 return false;
             }
-            
+
             if (telegramService.IsFromAdmin)
             {
-                Log.Information("This UserID {0} Is Admin in {1}, so CAS check disabled.", user.Id, message.Chat.Id);
+                Log.Information("This UserID {0} Is Admin in {1}, so CAS check disabled. Time: {2}", user.Id, message.Chat.Id, sw.Elapsed);
+                sw.Stop();
+
                 return false;
             }
+
+            Log.Information("Starting check in Cas Ban");
 
             isBan = await user.IsCasBanAsync()
                 .ConfigureAwait(false);
@@ -112,15 +126,17 @@ namespace Zizi.Bot.Telegram
                     .ConfigureAwait(false);
             }
 
+            sw.Stop();
+
             return isBan;
         }
 
         public static async Task<bool> CheckSpamWatchAsync(this TelegramService telegramService)
         {
             bool isBan;
-            Log.Information("Starting Run SpamWatch");
 
             var message = telegramService.MessageOrEdited;
+            var sw = Stopwatch.StartNew();
             var user = message.From;
             // var settingService = new SettingsService(message);
             var chatSettings = telegramService.CurrentSetting;
@@ -129,19 +145,25 @@ namespace Zizi.Bot.Telegram
                 Log.Information("Fed SpamWatch is disabled in this Group!");
                 return false;
             }
-            
+
             if (!telegramService.IsBotAdmin)
             {
-                Log.Information("This bot IsNot Admin in {0}, so SpamWatch check disabled.", message.Chat);
+                Log.Information("This bot IsNot Admin in {0}, so SpamWatch check disabled. Time: {1}", message.Chat.Id, sw.Elapsed);
+                sw.Stop();
+
                 return false;
             }
-            
+
             if (telegramService.IsFromAdmin)
             {
-                Log.Information("This UserID {0} Is Admin in {1}, so SpamWatch check disabled.", user.Id, message.Chat.Id);
+                Log.Information("This UserID {0} Is Admin in {1}, so SpamWatch check disabled. Time: {2}", user.Id, message.Chat.Id, sw.Elapsed);
+                sw.Stop();
+
                 return false;
             }
-            
+
+            Log.Information("Starting Run SpamWatch");
+
             var spamWatch = await user.Id.CheckSpamWatch()
                 .ConfigureAwait(false);
             isBan = spamWatch.IsBan;
@@ -160,6 +182,8 @@ namespace Zizi.Bot.Telegram
                 await telegramService.UnbanMemberAsync(user)
                     .ConfigureAwait(false);
             }
+
+            sw.Stop();
 
             return isBan;
         }
