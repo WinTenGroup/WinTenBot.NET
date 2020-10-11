@@ -1,4 +1,3 @@
-using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -6,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
+using System;
 using Telegram.Bot;
 using Telegram.Bot.Framework;
 using Zizi.Bot.Bots;
@@ -21,10 +21,12 @@ namespace Zizi.Bot
     public class Startup
     {
         public IConfiguration Configuration { get; }
-        
+        private IWebHostEnvironment Environment { get; set; }
+
         public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             Configuration = configuration;
+            Environment = env;
 
             BotSettings.GlobalConfiguration = Configuration;
             BotSettings.HostingEnvironment = env;
@@ -41,6 +43,8 @@ namespace Zizi.Bot
                 .Configure<BotOptions<ZiziBot>>(Configuration.GetSection("ZiziBot"))
                 .Configure<CustomBotOptions<ZiziBot>>(Configuration.GetSection("ZiziBot"))
                 .AddScoped<IWeatherService, WeatherService>();
+
+            services.AddMapConfiguration(Configuration, Environment);
 
             services.AddGeneralEvents();
             services.AddGroupEvents();
