@@ -39,6 +39,8 @@ namespace Zizi.Bot.Models
         public static string GoogleCloudCredentialsPath { get; set; }
         public static string GoogleDriveAuth { get; set; }
 
+        public static string UptoboxToken { get; set; }
+
         public static string HangfireBaseUrl { get; set; }
         public static string HangfireUsername { get; set; }
         public static string HangfirePassword { get; set; }
@@ -68,9 +70,9 @@ namespace Zizi.Bot.Models
         {
             try
             {
-                ProductName = GlobalConfiguration["Engines:ProductName"];
-                ProductVersion = GlobalConfiguration["Engines:Version"];
-                ProductCompany = GlobalConfiguration["Engines:Company"];
+                ProductName = GlobalConfiguration["EnginesConfig:ProductName"];
+                ProductVersion = GlobalConfiguration["EnginesConfig:Version"];
+                ProductCompany = GlobalConfiguration["EnginesConfig:Company"];
 
                 Sudoers = GlobalConfiguration.GetSection("Sudoers").Get<List<string>>();
                 BotChannelLogs = GlobalConfiguration["CommonConfig:ChannelLogs"].ToInt64();
@@ -78,23 +80,25 @@ namespace Zizi.Bot.Models
 
                 DbConnectionString = GlobalConfiguration["CommonConfig:ConnectionString"];
 
-                GoogleZiziUploadUrl = GlobalConfiguration["GoogleCloud:DriveIndexUrl"];
-                GoogleCloudCredentialsPath = GlobalConfiguration["GoogleCloud:CredentialsPath"];
-                GoogleDriveAuth = GlobalConfiguration["GoogleCloud:DriveAuth"];
+                GoogleZiziUploadUrl = GlobalConfiguration["GoogleCloudConfig:DriveIndexUrl"];
+                GoogleCloudCredentialsPath = GlobalConfiguration["GoogleCloudConfig:CredentialsPath"];
+                GoogleDriveAuth = GlobalConfiguration["GoogleCloudConfig:DriveAuth"];
 
-                HangfireBaseUrl = GlobalConfiguration["Hangfire:BaseUrl"];
-                HangfireUsername = GlobalConfiguration["Hangfire:Username"];
-                HangfirePassword = GlobalConfiguration["Hangfire:Password"];
-                HangfireMysqlDb = GlobalConfiguration["Hangfire:MySql"];
-                HangfireSqliteDb = GlobalConfiguration["Hangfire:Sqlite"];
-                HangfireLiteDb = GlobalConfiguration["Hangfire:LiteDb"];
+                UptoboxToken = GlobalConfiguration["UptoboxConfig:Token"];
+
+                HangfireBaseUrl = GlobalConfiguration["HangfireConfig:BaseUrl"];
+                HangfireUsername = GlobalConfiguration["HangfireConfig:Username"];
+                HangfirePassword = GlobalConfiguration["HangfireConfig:Password"];
+                HangfireMysqlDb = GlobalConfiguration["HangfireConfig:MySql"];
+                HangfireSqliteDb = GlobalConfiguration["HangfireConfig:Sqlite"];
+                HangfireLiteDb = GlobalConfiguration["HangfireConfig:LiteDb"];
 
                 SerilogLogglyToken = GlobalConfiguration["CommonConfig:LogglyToken"];
 
-                DatadogApiKey = GlobalConfiguration["Datadog:ApiKey"];
-                DatadogHost = GlobalConfiguration["Datadog:Host"];
-                DatadogSource = GlobalConfiguration["Datadog:Source"];
-                DatadogTags = GlobalConfiguration.GetSection("Datadog:Tags").Get<List<string>>();
+                DatadogApiKey = GlobalConfiguration["DatadogConfig:ApiKey"];
+                DatadogHost = GlobalConfiguration["DatadogConfig:Host"];
+                DatadogSource = GlobalConfiguration["DatadogConfig:Source"];
+                DatadogTags = GlobalConfiguration.GetSection("DatadogConfig:Tags").Get<List<string>>();
 
                 IbmWatsonTranslateUrl = GlobalConfiguration["IbmConfig:Watson:TranslateUrl"];
                 IbmWatsonTranslateToken = GlobalConfiguration["IbmConfig:Watson:TranslateToken"];
@@ -103,11 +107,11 @@ namespace Zizi.Bot.Models
                 TesseractTrainedData = @"Storage\Data\Tesseract\";
                 PathCache = "Storage/Caches";
 
-                OcrSpaceKey = GlobalConfiguration["OcrSpace:ApiKey"];
+                OcrSpaceKey = GlobalConfiguration["OcrSpaceConfig:ApiKey"];
 
-                RavenDBCertPath = GlobalConfiguration["RavenDB:CertPath"];
-                RavenDBDatabase = GlobalConfiguration["RavenDB:DBName"];
-                RavenDBNodes = GlobalConfiguration.GetSection("RavenDB:Nodes").Get<List<string>>();
+                RavenDBCertPath = GlobalConfiguration["RavenDBConfig:CertPath"];
+                RavenDBDatabase = GlobalConfiguration["RavenDBConfig:DBName"];
+                RavenDBNodes = GlobalConfiguration.GetSection("RavenDBConfig:Nodes").Get<List<string>>();
             }
             catch (Exception ex)
             {
