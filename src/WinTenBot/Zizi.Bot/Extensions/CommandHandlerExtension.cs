@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using Zizi.Bot.Handlers.Commands.Additional;
 using Zizi.Bot.Handlers.Commands.Chat;
 using Zizi.Bot.Handlers.Commands.Core;
