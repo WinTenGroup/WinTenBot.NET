@@ -45,6 +45,18 @@ namespace Zizi.Bot.Tools
             return keys;
         }
 
+        public static bool IsChatCacheExist(this TelegramService telegramService, string key)
+        {
+            var msg = telegramService.Message;
+            var chatId = msg.Chat.Id.ReduceChatId();
+            var keyCache = $"{chatId}-{key}";
+
+            var isExist = Barrel.Current.Exists(keyCache);
+            Log.Debug("MonkeyCache key {0} is exist?",key);
+
+            return isExist;
+        }
+
         public static T SetChatCache<T>(this Message msg, string key, T data)
         {
             // var msg = telegramService.Message;
