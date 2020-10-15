@@ -1,23 +1,34 @@
-﻿using System.Collections.Generic;
+﻿using Serilog;
+using SqlKata.Execution;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Serilog;
 using Telegram.Bot.Framework.Abstractions;
 using Zizi.Bot.Common;
-using Zizi.Bot.Telegram;
+using Zizi.Bot.Models.Settings;
 using Zizi.Bot.Services;
+using Zizi.Bot.Telegram;
 
 namespace Zizi.Bot.Handlers
 {
     public class NewUpdateHandler : IUpdateHandler
     {
         private TelegramService _telegramService;
+        private AppConfig AppConfig { get; set; }
+        private QueryFactory QueryFactory { get; set; }
+
+        public NewUpdateHandler(AppConfig appConfig, QueryFactory queryFactory)
+        {
+            AppConfig = appConfig;
+            QueryFactory = queryFactory;
+        }
 
         public async Task HandleAsync(IUpdateContext context, UpdateDelegate next, CancellationToken cancellationToken)
         {
             _telegramService = new TelegramService(context);
             if (_telegramService.Context.Update.ChannelPost != null) return;
 
+            _telegramService.AppConfig = AppConfig;
             _telegramService.IsBotAdmin = await _telegramService.IsBotAdmin().ConfigureAwait(false);
             _telegramService.IsFromAdmin = await _telegramService.IsAdminChat().ConfigureAwait(false);
 
