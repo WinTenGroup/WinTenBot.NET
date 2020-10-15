@@ -46,6 +46,8 @@ namespace Zizi.Bot
 
             services.AddMapConfiguration(Configuration, Environment);
 
+            services.AddSqlKataMysql(Configuration.GetConnectionString("MySql"));
+
             services.AddGeneralEvents();
             services.AddGroupEvents();
 
