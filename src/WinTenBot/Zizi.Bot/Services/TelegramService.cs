@@ -12,11 +12,12 @@ using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.InputFiles;
 using Telegram.Bot.Types.ReplyMarkups;
 using Zizi.Bot.Common;
-using Zizi.Bot.IO;
 using Zizi.Bot.Enums;
+using Zizi.Bot.IO;
 using Zizi.Bot.Models;
 using Zizi.Bot.Telegram;
 using File = System.IO.File;
+using Zizi.Bot.Models.Settings;
 
 namespace Zizi.Bot.Services
 {
@@ -25,6 +26,7 @@ namespace Zizi.Bot.Services
         public bool IsNoUsername { get; set; }
         public bool IsBotAdmin { get; set; }
         public bool IsFromAdmin { get; set; }
+        public AppConfig AppConfig { get; set; }
         public ChatSetting CurrentSetting { get; set; }
         public IUpdateContext Context { get; set; }
         private string AppendText { get; set; }
@@ -46,9 +48,9 @@ namespace Zizi.Bot.Services
             Client = updateContext.Bot.Client;
             EditedMessage = updateContext.Update.EditedMessage;
 
-            Message = updateContext.Update.CallbackQuery != null
-                ? updateContext.Update.CallbackQuery.Message
-                : updateContext.Update.Message;
+            Message = updateContext.Update.CallbackQuery != null ?
+                updateContext.Update.CallbackQuery.Message :
+                updateContext.Update.Message;
 
             if (updateContext.Update.CallbackQuery != null)
                 CallbackQuery = updateContext.Update.CallbackQuery;
@@ -65,7 +67,6 @@ namespace Zizi.Bot.Services
 
             IsNoUsername = MessageOrEdited.From.IsNoUsername();
         }
-
 
         public async Task<string> GetMentionAdminsStr()
         {
@@ -119,7 +120,6 @@ namespace Zizi.Bot.Services
                 .ConfigureAwait(false);
             return chat;
         }
-
 
         #region Message
 
@@ -345,7 +345,6 @@ namespace Zizi.Bot.Services
                 .ConfigureAwait(false);
         }
 
-
         public async Task AnswerCallbackQueryAsync(string text)
         {
             try
@@ -519,7 +518,7 @@ namespace Zizi.Bot.Services
         public async Task<TelegramResult> RestrictMemberAsync(int userId, bool unMute = false, DateTime until = default)
         {
             var tgResult = new TelegramResult();
-            
+
             try
             {
                 var chatId = Message.Chat.Id;
@@ -555,7 +554,7 @@ namespace Zizi.Bot.Services
             }
             catch (Exception ex)
             {
-                Log.Error(ex.Demystify(),"Error restrict member");
+                Log.Error(ex.Demystify(), "Error restrict member");
                 var exceptionMsg = ex.Message;
                 if (exceptionMsg.Contains("CHAT_ADMIN_REQUIRED"))
                 {

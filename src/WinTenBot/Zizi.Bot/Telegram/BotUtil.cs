@@ -12,7 +12,7 @@ namespace Zizi.Bot.Telegram
             var chat = message.Chat;
 
             var me = await telegramService.GetMeAsync().ConfigureAwait(false);
-            var isBotAdmin = await telegramService.IsAdminGroup(me.Id).ConfigureAwait(false);
+            var isBotAdmin = await telegramService.IsAdminChat(me.Id).ConfigureAwait(false);
             Log.Debug("Is {0} Admin on Chat {1}? {2}", me.Username, chat.Id, isBotAdmin);
 
             return isBotAdmin;
