@@ -29,6 +29,12 @@ namespace Zizi.Bot.Handlers.Commands.Welcome
                 return;
             }
             
+            if (!await _telegramService.IsAdminGroup()
+                .ConfigureAwait(false))
+            {
+                return;
+            }
+            
             await _telegramService.SendTextAsync("/setwelcome sudah di pisah menjadi /welmsg, /welbtn dan /weldoc")
                 .ConfigureAwait(false);
             return;
