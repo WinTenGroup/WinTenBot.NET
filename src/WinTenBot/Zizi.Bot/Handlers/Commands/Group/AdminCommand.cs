@@ -50,6 +50,8 @@ namespace Zizi.Bot.Handlers.Commands.Group
 
             await _telegramService.EditAsync(sendText)
                 .ConfigureAwait(false);
+
+            await _telegramService.UpdateCacheAdminAsync().ConfigureAwait(false);
         }
     }
 }

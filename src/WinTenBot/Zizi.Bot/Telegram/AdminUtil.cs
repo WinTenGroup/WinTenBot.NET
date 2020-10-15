@@ -13,19 +13,31 @@ namespace Zizi.Bot.Telegram
     {
         private const string CacheKey = "admin-group";
 
-        public static async Task<ChatMember[]> GetChatAdmin(this TelegramService telegramService)
+        public static async Task UpdateCacheAdminAsync(this TelegramService telegramService)
         {
             var client = telegramService.Client;
             var message = telegramService.Message;
             var chatId = message.Chat.Id;
+            var admins = await client.GetChatAdministratorsAsync(chatId)
+                .ConfigureAwait(false);
+
+            telegramService.SetChatCache(CacheKey, admins);
+        }
+        
+        public static async Task<ChatMember[]> GetChatAdmin(this TelegramService telegramService)
+        {
+            var message = telegramService.Message;
+            // var client = telegramService.Client;
+            // var chatId = message.Chat.Id;
 
             var cacheExist = telegramService.IsChatCacheExist(CacheKey);
             if (!cacheExist)
             {
-                var admins = await client.GetChatAdministratorsAsync(chatId)
-                    .ConfigureAwait(false);
+                await telegramService.UpdateCacheAdminAsync().ConfigureAwait(false);
+                // var admins = await client.GetChatAdministratorsAsync(chatId)
+                    // .ConfigureAwait(false);
 
-                telegramService.SetChatCache(CacheKey, admins);
+                // telegramService.SetChatCache(CacheKey, admins);
             }
 
             var chatMembers = telegramService.GetChatCache<ChatMember[]>(CacheKey);
