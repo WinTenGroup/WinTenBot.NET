@@ -20,7 +20,7 @@ namespace Zizi.Bot.Tools
         
         public static void MigrateMysql()
         {
-            var path = Environment.CurrentDirectory + @"/Storage/SQL/MySql";
+            var path = Path.Combine(Environment.CurrentDirectory, "Storage/SQL/MySql").SanitizeSlash();
             Log.Information("Prepare migrating from SQL: {0}", path);
             var listFiles = Directory.GetFiles(path).Where(f => f.EndsWith(".sql"));
             foreach (var file in listFiles)
