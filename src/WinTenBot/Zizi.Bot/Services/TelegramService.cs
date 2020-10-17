@@ -15,9 +15,9 @@ using Zizi.Bot.Common;
 using Zizi.Bot.Enums;
 using Zizi.Bot.IO;
 using Zizi.Bot.Models;
+using Zizi.Bot.Models.Settings;
 using Zizi.Bot.Telegram;
 using File = System.IO.File;
-using Zizi.Bot.Models.Settings;
 
 namespace Zizi.Bot.Services
 {
@@ -48,9 +48,7 @@ namespace Zizi.Bot.Services
             Client = updateContext.Bot.Client;
             EditedMessage = updateContext.Update.EditedMessage;
 
-            Message = updateContext.Update.CallbackQuery != null ?
-                updateContext.Update.CallbackQuery.Message :
-                updateContext.Update.Message;
+            Message = updateContext.Update.CallbackQuery != null ? updateContext.Update.CallbackQuery.Message : updateContext.Update.Message;
 
             if (updateContext.Update.CallbackQuery != null)
                 CallbackQuery = updateContext.Update.CallbackQuery;
@@ -130,6 +128,7 @@ namespace Zizi.Bot.Services
 
             if (sendText.IsNotNullOrEmpty())
             {
+                sendText = sendText.HtmlEncode();
                 sendText += $"\n\n⏱ <code>{TimeInit} s</code> | ⌛️ <code>{TimeProc} s</code>";
             }
 
@@ -245,6 +244,7 @@ namespace Zizi.Bot.Services
 
             if (sendText.IsNotNullOrEmpty())
             {
+                sendText = sendText.HtmlEncode();
                 sendText += $"\n\n⏱ <code>{TimeInit} s</code> | ⌛️ <code>{TimeProc} s</code>";
             }
 
@@ -260,7 +260,6 @@ namespace Zizi.Bot.Services
                     replyMarkup: replyMarkup,
                     disableWebPagePreview: disableWebPreview
                 ).ConfigureAwait(false);
-
                 EditedMessageId = edit.MessageId;
             }
             catch (MessageIsNotModifiedException exception)
@@ -569,6 +568,6 @@ namespace Zizi.Bot.Services
             return tgResult;
         }
 
-        #endregion
+        #endregion Member Exec
     }
 }
