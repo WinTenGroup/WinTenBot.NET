@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Serilog;
@@ -18,11 +19,8 @@ namespace Zizi.Bot.Handlers
             }
             catch (Exception e)
             {
-                Log.Error(e,"Exception Handler");
-                // Console.BackgroundColor = ConsoleColor.Black;
-                // Console.ForegroundColor = ConsoleColor.Red;
-                Log.Error("An error occured in handling update {0}.{1}{2}", u.Id, Environment.NewLine, e);
-                // Console.ResetColor();
+                Log.Error(e.Demystify(), "Exception Handler");
+                Log.Error("An error occured in handling update {0}", u.Id);
             }
         }
     }

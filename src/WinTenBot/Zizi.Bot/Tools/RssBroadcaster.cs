@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
@@ -43,7 +44,7 @@ namespace Zizi.Bot.Tools
                 }
                 catch (Exception ex)
                 {
-                    Log.Error(ex, "Broadcasting RSS Feed.");
+                    Log.Error(ex.Demystify(), "Broadcasting RSS Feed.");
                     Thread.Sleep(4000);
                 }
 
@@ -181,11 +182,11 @@ namespace Zizi.Bot.Tools
                 catch (ChatNotFoundException chatNotFoundException)
                 {
                     Log.Information($"May Bot not added in {chatId}.");
-                    Log.Error(chatNotFoundException, "Chat Not Found");
+                    Log.Error(chatNotFoundException.Demystify(), "Chat Not Found");
                 }
                 catch (Exception ex)
                 {
-                    Log.Error(ex, "RSS Broadcaster error");
+                    Log.Error(ex.Demystify(), "RSS Broadcaster error");
                     var exMessage = ex.Message;
                     if (exMessage.Contains("bot was blocked by the user"))
                     {
@@ -243,7 +244,7 @@ namespace Zizi.Bot.Tools
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Validating RSS Feed");
+                Log.Error(ex.Demystify(), "Validating RSS Feed");
             }
 
             Log.Debug($"{url} IsValidUrlFeed: {isValid}");
