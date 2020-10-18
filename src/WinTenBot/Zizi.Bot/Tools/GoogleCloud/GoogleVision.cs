@@ -52,7 +52,10 @@ namespace Zizi.Bot.Tools.GoogleCloud
             var response = Client.DetectText(image);
 
             Log.Information($"ResponseCount: {response.Count}");
-            if (response.Count != 0) return response[0].Description;
+            if (response.Count != 0)
+            {
+                return response[0].Description.HtmlEncode();
+            }
 
             Log.Information("Seem no string result.");
             return null;
