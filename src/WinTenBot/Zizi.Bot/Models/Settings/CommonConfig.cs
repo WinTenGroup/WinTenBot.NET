@@ -5,6 +5,7 @@ namespace Zizi.Bot.Models.Settings
         public const string Name = "CommonConfig";
 
         public string ChannelLogs { get; set; }
+        public string ConnectionString { get; set; }
         public string SpamWatchToken { get; set; }
         public bool IsRestricted { get; set; }
     }
