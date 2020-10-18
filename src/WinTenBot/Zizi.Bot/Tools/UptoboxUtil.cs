@@ -60,7 +60,7 @@ namespace Zizi.Bot.Tools
             return waiting.LinkData.DlLink;
         }
 
-        public static async Task DownloadUrlAsync(this TelegramService telegramService)
+        public static async Task<string> DownloadUrlAsync(this TelegramService telegramService, bool withoutDownload = false)
         {
             try
             {
@@ -76,17 +76,24 @@ namespace Zizi.Bot.Tools
                 if (!isPremium)
                 {
                     Log.Information("Uptobox can't be continue because Token isn't premium.");
-                    return;
+                    return null;
                 }
 
                 var fileId = param1.Replace("https://uptobox.com/", "", StringComparison.InvariantCulture).Trim();
                 var downloadLink = await GetDownloadLinkAsync(fileId).ConfigureAwait(false);
 
-                await telegramService.DownloadFile(downloadLink).ConfigureAwait(false);
+                if (!withoutDownload)
+                {
+                    await telegramService.DownloadFile(downloadLink).ConfigureAwait(false);
+                }
+
+                return downloadLink;
             }
             catch
             {
-                await telegramService.EditAsync("Terjadi kesalahan ketika mengunduh file dari Uptobox. Pastikan kembali tautan.").ConfigureAwait(false);
+                await telegramService.EditAsync("Terjadi kesalahan ketika mengunduh file dari Uptobox. Pastikan kembali tautan.")
+                    .ConfigureAwait(false);
+                return null;
             }
         }
     }
