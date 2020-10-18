@@ -8,11 +8,11 @@ using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 using Zizi.Bot.Common;
-using Zizi.Bot.IO;
-using Zizi.Bot.Tools;
 using Zizi.Bot.Enums;
+using Zizi.Bot.IO;
 using Zizi.Bot.Models;
 using Zizi.Bot.Services;
+using Zizi.Bot.Tools;
 using Zizi.Bot.Tools.GoogleCloud;
 
 namespace Zizi.Bot.Telegram
@@ -186,6 +186,7 @@ namespace Zizi.Bot.Telegram
                     var note = "Pesan di Obrolan di hapus karena terdeteksi filter Kata.\n" + result.Notes;
                     await telegramService.SendEventAsync(note)
                         .ConfigureAwait(false);
+                    
                     await telegramService.DeleteAsync(message.MessageId)
                         .ConfigureAwait(false);
                 }
@@ -235,6 +236,11 @@ namespace Zizi.Bot.Telegram
 
                 if (isMustDelete)
                 {
+                    Log.Debug("Result: {0}", result.ToJson(true));
+                    var note = "Pesan gambar di Obrolan di hapus karena terdeteksi filter Kata.\n" + result.Notes;
+                    await telegramService.SendEventAsync(note)
+                        .ConfigureAwait(false);
+                    
                     await telegramService.DeleteAsync(message.MessageId)
                         .ConfigureAwait(false);
                 }
