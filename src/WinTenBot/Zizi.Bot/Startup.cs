@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -5,7 +6,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
-using System;
 using Telegram.Bot;
 using Telegram.Bot.Framework;
 using Zizi.Bot.Bots;
@@ -46,6 +46,8 @@ namespace Zizi.Bot
 
             services.AddMapConfiguration(Configuration, Environment);
 
+            services.AddFluentMigration(Configuration.GetConnectionString("MySql"));
+
             services.AddSqlKataMysql(Configuration.GetConnectionString("MySql"));
 
             services.AddGeneralEvents();
@@ -71,6 +73,8 @@ namespace Zizi.Bot
         {
             var configureBot = CommandBuilderExtension.ConfigureBot();
             BotSettings.HostingEnvironment = env;
+
+            app.UseFluentMigration();
 
             app.UseSerilogRequestLogging();
 
