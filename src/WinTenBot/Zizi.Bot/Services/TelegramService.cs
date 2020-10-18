@@ -128,7 +128,6 @@ namespace Zizi.Bot.Services
 
             if (sendText.IsNotNullOrEmpty())
             {
-                sendText = sendText.HtmlEncode();
                 sendText += $"\n\n⏱ <code>{TimeInit} s</code> | ⌛️ <code>{TimeProc} s</code>";
             }
 
@@ -244,7 +243,6 @@ namespace Zizi.Bot.Services
 
             if (sendText.IsNotNullOrEmpty())
             {
-                sendText = sendText.HtmlEncode();
                 sendText += $"\n\n⏱ <code>{TimeInit} s</code> | ⌛️ <code>{TimeProc} s</code>";
             }
 
