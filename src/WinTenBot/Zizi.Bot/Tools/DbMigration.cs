@@ -6,6 +6,7 @@ using Zizi.Bot.Migrations.MySql;
 
 namespace Zizi.Bot.Tools
 {
+    [Obsolete("Soon this Migrator will be merged with main DI.")]
     public static class DbMigration
     {
         public static string ConnectionString { get; set; }

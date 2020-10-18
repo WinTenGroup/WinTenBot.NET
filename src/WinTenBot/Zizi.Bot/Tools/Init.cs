@@ -30,7 +30,7 @@ namespace Zizi.Bot.Tools
             DbMigration.ConnectionString = BotSettings.DbConnectionString;
 
 
-            DbMigration.RunMySqlMigration();
+            // DbMigration.RunMySqlMigration();
             SqlMigration.MigrateAll();
 
             GoogleDrive.Auth();
