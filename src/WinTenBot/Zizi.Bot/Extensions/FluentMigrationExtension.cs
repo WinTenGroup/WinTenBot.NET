@@ -1,11 +1,11 @@
 ﻿using System;
+using System.Reflection;
 using FluentMigrator.Builders;
 using FluentMigrator.Infrastructure;
 using FluentMigrator.Runner;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
-using Zizi.Bot.Migrations.MySql;
 using Zizi.Bot.Models.Settings;
 
 namespace Zizi.Bot.Extensions
@@ -16,18 +16,20 @@ namespace Zizi.Bot.Extensions
         {
             services.AddFluentMigratorCore()
                 .ConfigureRunner(rb => rb
-                    .AddMySql5()
-                    .WithGlobalConnectionString(connectionString)
-                    .ScanIn(typeof(CreateTableAfk).Assembly).For.Migrations()
-                    .ScanIn(typeof(CreateTableChatSettings).Assembly).For.Migrations()
-                    .ScanIn(typeof(CreateTableGlobalBan).Assembly).For.Migrations()
-                    .ScanIn(typeof(CreateTableHitActivity).Assembly).For.Migrations()
-                    .ScanIn(typeof(CreateTableRssHistory).Assembly).For.Migrations()
-                    .ScanIn(typeof(CreateTableRssSettings).Assembly).For.Migrations()
-                    .ScanIn(typeof(CreateTableSafeMember).Assembly).For.Migrations()
-                    .ScanIn(typeof(CreateTableSpells).Assembly).For.Migrations()
-                    .ScanIn(typeof(CreateTableTags).Assembly).For.Migrations()
-                    .ScanIn(typeof(CreateTableWordsLearning).Assembly).For.Migrations()
+                        .AddMySql5()
+                        .WithGlobalConnectionString(connectionString)
+                        .ScanIn(Assembly.GetExecutingAssembly()).For.All()
+
+                    // .ScanIn(typeof(CreateTableAfk).Assembly).For.Migrations()
+                    // .ScanIn(typeof(CreateTableChatSettings).Assembly).For.Migrations()
+                    // .ScanIn(typeof(CreateTableGlobalBan).Assembly).For.Migrations()
+                    // .ScanIn(typeof(CreateTableHitActivity).Assembly).For.Migrations()
+                    // .ScanIn(typeof(CreateTableRssHistory).Assembly).For.Migrations()
+                    // .ScanIn(typeof(CreateTableRssSettings).Assembly).For.Migrations()
+                    // .ScanIn(typeof(CreateTableSafeMember).Assembly).For.Migrations()
+                    // .ScanIn(typeof(CreateTableSpells).Assembly).For.Migrations()
+                    // .ScanIn(typeof(CreateTableTags).Assembly).For.Migrations()
+                    // .ScanIn(typeof(CreateTableWordsLearning).Assembly).For.Migrations()
                 )
                 .AddLogging(lb => lb.AddSerilog());
 
@@ -43,12 +45,13 @@ namespace Zizi.Bot.Extensions
 
             if (appConfig == null) return app;
             if (runner == null) return app;
-            
+
+            runner.ListMigrations();
             runner.MigrateUp();
 
             return app;
         }
-        
+
         public static TNext AsMySqlText<TNext>(this IColumnTypeSyntax<TNext> createTableColumnAsTypeSyntax)
             where TNext : IFluentSyntax
         {
