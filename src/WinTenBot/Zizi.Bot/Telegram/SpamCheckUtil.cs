@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Serilog;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.ReplyMarkups;
 using Zizi.Bot.Providers;
 using Zizi.Bot.Services;
 
@@ -26,7 +27,8 @@ namespace Zizi.Bot.Telegram
 
             if (!telegramService.IsBotAdmin)
             {
-                Log.Information("This bot IsNot Admin in {0}, so ES2 check disabled. Time: {1}", message.Chat.Id, sw.Elapsed);
+                Log.Information("This bot IsNot Admin in {0}, so ES2 check disabled. Time: {1}", message.Chat.Id,
+                    sw.Elapsed);
                 sw.Stop();
 
                 return false;
@@ -34,7 +36,8 @@ namespace Zizi.Bot.Telegram
 
             if (telegramService.IsFromAdmin)
             {
-                Log.Information("This UserID {0} Is Admin in {1}, so ES2 check disabled. Time: {2}", user.Id, message.Chat.Id, sw.Elapsed);
+                Log.Information("This UserID {0} Is Admin in {1}, so ES2 check disabled. Time: {2}", user.Id,
+                    message.Chat.Id, sw.Elapsed);
                 sw.Stop();
 
                 return false;
@@ -82,7 +85,7 @@ namespace Zizi.Bot.Telegram
 
             if (!telegramService.IsBotAdmin)
             {
-                Log.Information("This bot IsNot Admin in {0}, so CAS check disabled. Time: {1}", message.Chat.Id, sw.Elapsed);
+                Log.Information("This bot IsNot Admin in {0}, CAS disabled. Time: {1}", message.Chat.Id, sw.Elapsed);
                 sw.Stop();
 
                 return false;
@@ -90,7 +93,7 @@ namespace Zizi.Bot.Telegram
 
             if (telegramService.IsFromAdmin)
             {
-                Log.Information("This UserID {0} Is Admin in {1}, so CAS check disabled. Time: {2}", user.Id, message.Chat.Id, sw.Elapsed);
+                Log.Information("This UserID {0} Is Admin in {1}, CAS disabled. Time: {2}", user.Id, message.Chat.Id, sw.Elapsed);
                 sw.Stop();
 
                 return false;
@@ -103,11 +106,18 @@ namespace Zizi.Bot.Telegram
             Log.Information($"{user} is CAS ban: {isBan}");
             if (isBan)
             {
+                var replyMarkup = new InlineKeyboardMarkup(new[]
+                {
+                    new[]
+                    {
+                        InlineKeyboardButton.WithUrl("CAS Query", $"https://cas.chat/query?u={userId}"),
+                        InlineKeyboardButton.WithUrl("CAS Discuss", "https://t.me/cas_discussion")
+                    }
+                });
+
                 var sendText = $"{user} di blokir di CAS!" +
-                               $"\nUntuk detil lebih lanjut, silakan kunjungi alamat berikut." +
-                               $"\nhttps://cas.chat/query?u={userId}" +
-                               $"\n\nUntuk verifikasi bahwa ini kesalahan silakan kunjungi alamat berikut." +
-                               $"\nhttps://t.me/cas_discussion";
+                               $"\nUntuk detil lebih lanjut, silakan buka <b>CAS Query</b>" +
+                               $"\n\nUntuk mengajukan buka blokir silakan masuk ke <b>CAS Discuss</b>.";
                 var isAdminGroup = await telegramService.IsAdminGroup().ConfigureAwait(false);
                 if (!isAdminGroup)
                 {
@@ -122,7 +132,7 @@ namespace Zizi.Bot.Telegram
                     sendText = $"{user} di blokir di CAS, namun tidak bisa memblokirnya karena Admin di Grup ini";
                 }
 
-                await telegramService.SendTextAsync(sendText)
+                await telegramService.SendTextAsync(sendText, replyMarkup)
                     .ConfigureAwait(false);
             }
 
@@ -148,7 +158,8 @@ namespace Zizi.Bot.Telegram
 
             if (!telegramService.IsBotAdmin)
             {
-                Log.Information("This bot IsNot Admin in {0}, so SpamWatch check disabled. Time: {1}", message.Chat.Id, sw.Elapsed);
+                Log.Information("This bot IsNot Admin in {0}, so SpamWatch check disabled. Time: {1}", message.Chat.Id,
+                    sw.Elapsed);
                 sw.Stop();
 
                 return false;
@@ -156,7 +167,8 @@ namespace Zizi.Bot.Telegram
 
             if (telegramService.IsFromAdmin)
             {
-                Log.Information("This UserID {0} Is Admin in {1}, so SpamWatch check disabled. Time: {2}", user.Id, message.Chat.Id, sw.Elapsed);
+                Log.Information("This UserID {0} Is Admin in {1}, so SpamWatch check disabled. Time: {2}", user.Id,
+                    message.Chat.Id, sw.Elapsed);
                 sw.Stop();
 
                 return false;
