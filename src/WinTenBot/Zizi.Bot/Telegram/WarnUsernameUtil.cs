@@ -9,8 +9,8 @@ using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
 using Zizi.Bot.Common;
 using Zizi.Bot.Models;
-using Zizi.Bot.Tools;
 using Zizi.Bot.Services;
+using Zizi.Bot.Tools;
 
 namespace Zizi.Bot.Telegram
 {
@@ -256,6 +256,7 @@ namespace Zizi.Bot.Telegram
                 .ToList();
 
             var noUsernameCount = updateResult.Count;
+            var listLimit = 10;
 
             Log.Debug("No Username Count: {0}", noUsernameCount);
 
@@ -276,12 +277,28 @@ namespace Zizi.Bot.Telegram
                         var step = x.StepCount;
                         var nameL = id.GetNameLink(x.FirstName + $" (Step mute {step})");
                         return nameL;
-                    });
+                    }).Take(listLimit);
+
+                var diff = 0;
+
+                if (noUsernameCount > listLimit)
+                {
+                    diff = noUsernameCount - listLimit;
+                }
+
+                var mentionAll = CreateMentionAll(updateResult);
 
                 var nameLinks = string.Join("\n", listNoUsername);
                 var sendText =
                     $"Terdapat {noUsernameCount} Anggota yang belum memasang Username" +
-                    $"\n\n{nameLinks}\n" +
+                    $"\n\n{nameLinks}\n";
+
+                if (diff > 0)
+                {
+                    sendText += $"dan {diff} lainnya.{mentionAll}\n";
+                }
+
+                sendText +=
                     "\nMasing-masing telah di mute berdasarkan <a href='https://t.me/WinTenDev/41'>Step Mute</a> " +
                     $"silakan segera pasang Username dan jangan lupa tekan tombol Verifikasi di bawah ini.";
 
@@ -512,6 +529,20 @@ namespace Zizi.Bot.Telegram
             //     .ConfigureAwait(false);
 
             Log.Information("Update lastWarn: {0}. In {1}", insertHit, sw.Elapsed);
+        }
+
+        private static string CreateMentionAll(IEnumerable<WarnUsernameHistory> warnUsernameHistories)
+        {
+            var mentionAll = string.Empty;
+            foreach (var usernameHistory in warnUsernameHistories)
+            {
+                var userId = usernameHistory.FromId;
+                var nameLink = userId.GetNameLink("&#8203;");
+
+                mentionAll += $"{nameLink}";
+            }
+
+            return mentionAll;
         }
     }
 }
