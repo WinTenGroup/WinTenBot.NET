@@ -7,7 +7,10 @@ namespace Zizi.Bot.Models.Settings
         public EnginesConfig EnginesConfig { get; set; }
         public List<string> Sudoers { get; set; }
         public List<string> RestrictArea { get; set; }
+
         public CommonConfig CommonConfig { get; set; }
+        public ConnectionStrings ConnectionStrings { get; set; }
+        public DatabaseConfig DatabaseConfig { get; set; }
         public DataDogConfig DataDogConfig { get; set; }
         public EnvironmentConfig EnvironmentConfig { get; set; }
         public GoogleCloudConfig GoogleCloudConfig { get; set; }
