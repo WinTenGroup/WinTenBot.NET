@@ -1,5 +1,6 @@
 ﻿using System;
 using Hangfire;
+using Hangfire.Dashboard.Dark;
 using Hangfire.Heartbeat;
 using Hangfire.Heartbeat.Server;
 using HangfireBasicAuthenticationFilter;
@@ -20,15 +21,16 @@ namespace Zizi.Bot.Extensions
                 .AddHangfire(config =>
                 {
                     config
+                        .UseSerilogLogProvider()
                         .UseStorage(HangfireJobs.GetMysqlStorage())
                         // config.UseStorage(HangfireJobs.GetSqliteStorage())
                         // config.UseStorage(HangfireJobs.GetLiteDbStorage())
                         // config.UseStorage(HangfireJobs.GetRedisStorage())
                         .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+                        .UseDarkDashboard()
                         .UseHeartbeatPage(TimeSpan.FromSeconds(5))
                         .UseSimpleAssemblyNameTypeSerializer()
                         .UseRecommendedSerializerSettings()
-                        .UseSerilogLogProvider()
                         .UseColouredConsoleLogProvider();
                 });
         }
