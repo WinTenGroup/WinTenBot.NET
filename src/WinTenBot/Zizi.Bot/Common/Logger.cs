@@ -13,9 +13,9 @@ namespace Zizi.Bot.Common
         {
             // var consoleStamp = "[{Timestamp:yyyy-MM-dd HH:mm:ss.ffff zzz}";
             // var outputTemplate = $"{consoleStamp} {{Level:u3}}] {{Message:lj}}{{NewLine}}{{Exception}}";
-            
-            var templateBase = $"{{Level:u3}}] {{Message:lj}}{{NewLine}}{{Exception}}";
-            var consoleTemplate = $"[{{Timestamp:HH:mm:ss.fffff zzz}} {templateBase}";
+
+            var templateBase = $"[{{Level:u3}}] {{Message:lj}}{{NewLine}}{{Exception}}";
+            var consoleTemplate = $"{{Timestamp:HH:mm:ss.fffff}} {templateBase}";
             var fileTemplate = $"[{{Timestamp:yyyy-MM-dd HH:mm:ss.ffff zzz}} {templateBase}";
             var logPath = "Storage/Logs/ZiziBot-.log";
             var flushInterval = TimeSpan.FromSeconds(1);
@@ -28,12 +28,12 @@ namespace Zizi.Bot.Common
                 .WriteTo.Async(a =>
                     a.File(logPath, rollingInterval: rollingInterval, flushToDiskInterval: flushInterval,
                         shared: true, outputTemplate: consoleTemplate))
-                .WriteTo.Async(a => 
+                .WriteTo.Async(a =>
                     a.Console(theme: SystemConsoleTheme.Colored, outputTemplate: consoleTemplate));
-            
-                // .WriteTo.Console(theme: SystemConsoleTheme.Colored, outputTemplate: consoleTemplate);
-                // .WriteTo.File(logPath, rollingInterval: rollingInterval, flushToDiskInterval: flushInterval,
-                    // shared: true, fileSizeLimitBytes: rollingFile, outputTemplate: consoleTemplate);
+
+            // .WriteTo.Console(theme: SystemConsoleTheme.Colored, outputTemplate: consoleTemplate);
+            // .WriteTo.File(logPath, rollingInterval: rollingInterval, flushToDiskInterval: flushInterval,
+            // shared: true, fileSizeLimitBytes: rollingFile, outputTemplate: consoleTemplate);
 
             if (BotSettings.IsProduction)
             {
