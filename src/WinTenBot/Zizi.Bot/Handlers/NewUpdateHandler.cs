@@ -58,6 +58,11 @@ namespace Zizi.Bot.Handlers
                 await next(context, cancellationToken).ConfigureAwait(false);
             }
 
+            if (_telegramService.MessageOrEdited.Text == null)
+            {
+                await next(context, cancellationToken).ConfigureAwait(false);
+            }
+
             // Last, do additional task which bot may do
             EnqueueBackgroundTask();
         }

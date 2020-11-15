@@ -1,4 +1,4 @@
-﻿using Telegram.Bot.Framework;
+using Telegram.Bot.Framework;
 using Telegram.Bot.Framework.Abstractions;
 using Zizi.Bot.Handlers;
 using Zizi.Bot.Handlers.Commands.Additional;
@@ -27,10 +27,10 @@ namespace Zizi.Bot.Extensions
                     // .Use<CustomUpdateLogger>()
                     .UseWhen<WebhookLogger>(When.Webhook)
 
+                    .UseWhen<NewUpdateHandler>(When.NewUpdate)
                     //.UseWhen<UpdateMembersList>(When.MembersChanged)
                     .UseWhen<NewChatMembersEvent>(When.NewChatMembers)
                     .UseWhen<LeftChatMemberEvent>(When.LeftChatMember)
-                    .UseWhen<NewUpdateHandler>(When.NewUpdate)
 
                     //.UseWhen(When.MembersChanged, memberChanged => memberChanged
                     //    .UseWhen(When.MembersChanged, cmdBranch => cmdBranch
