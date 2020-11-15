@@ -256,7 +256,7 @@ namespace Zizi.Bot.Telegram
                 .ToList();
 
             var noUsernameCount = updateResult.Count;
-            var listLimit = 10;
+            var listLimit = 5;
 
             Log.Debug("No Username Count: {0}", noUsernameCount);
 
