@@ -17,7 +17,7 @@ using Zizi.Bot.Services;
 
 namespace Zizi.Bot.Tools
 {
-    public static class RssBroadcaster
+    public static class RssFeedUtil
     {
         public static async Task<int> ExecBroadcasterAsync(long chatId)
         {
@@ -58,11 +58,13 @@ namespace Zizi.Bot.Tools
             return newRssCount;
         }
 
+        [AutomaticRetry(Attempts = 3, OnAttemptsExceeded = AttemptsExceededAction.Delete)]
         public static async Task<int> ExecuteUrlAsync(long chatId, string rssUrl)
         {
             int newRssCount = 0;
             var rssService = new RssService();
 
+            Log.Information("Reading feed from {0}. Url: {1}", chatId, rssUrl);
             var rssFeeds = await FeedReader.ReadAsync(rssUrl)
                 .ConfigureAwait(false);
 
@@ -73,7 +75,7 @@ namespace Zizi.Bot.Tools
 
             foreach (var rssFeed in rssFeeds.Items)
             {
-                Log.Debug("Rss from url {0} => {1}", rssUrl, rssFeed.ToJson(true));
+                // Log.Debug("Rss from url {0} => {1}", rssUrl, rssFeed.ToJson(true));
 
                 // Prevent flood in first time;
                 // if (castLimit == castStep)

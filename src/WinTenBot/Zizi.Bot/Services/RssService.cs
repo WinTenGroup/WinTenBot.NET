@@ -43,7 +43,7 @@ namespace Zizi.Bot.Services
 
             return isExist;
         }
-        
+
         public async Task<bool> IsExistInHistory(RssHistory rssHistory)
         {
             var where = new Dictionary<string, object>()
@@ -51,7 +51,7 @@ namespace Zizi.Bot.Services
                 {"ChatId", rssHistory.ChatId},
                 {"Url", rssHistory.Url}
             };
-            
+
             var data = await new Query(baseTable2)
                 .Where(where)
                 .ExecForMysql(true)
@@ -88,7 +88,7 @@ namespace Zizi.Bot.Services
 
             return insert.ToBool();
         }
-        
+
         [Obsolete("Please use RssHistory as parameter")]
         public async Task<bool> SaveRssHistoryAsync(Dictionary<string, object> data)
         {
@@ -129,6 +129,19 @@ namespace Zizi.Bot.Services
             return mapped;
         }
 
+        public async Task<List<RssSetting>> GetAllRssSettingsAsync()
+        {
+            var data = await new Query(rssSettingTable)
+                .ExecForMysql()
+                .GetAsync()
+                .ConfigureAwait(false);
+
+            var mapped = data.ToJson().MapObject<List<RssSetting>>();
+            Log.Debug("RSSData: {0}", mapped.ToJson(true));
+
+            return mapped;
+        }
+
         public async Task<List<RssSetting>> GetListChatIdAsync()
         {
             var data = await new Query(rssSettingTable)
@@ -143,7 +156,7 @@ namespace Zizi.Bot.Services
             Log.Information($"Get List ChatID: {data.Count()}");
             return mapped;
         }
-        
+
         [Obsolete("Please use RssHistory as parameter")]
         public async Task<List<RssHistory>> GetRssHistory(Dictionary<string, object> where)
         {
@@ -155,7 +168,7 @@ namespace Zizi.Bot.Services
 
             return query.ToJson().MapObject<List<RssHistory>>();
         }
-        
+
         public async Task<List<RssHistory>> GetRssHistory(RssHistory rssHistory)
         {
             var where = new Dictionary<string, object>()
@@ -163,7 +176,7 @@ namespace Zizi.Bot.Services
                 ["ChatId"] = rssHistory.ChatId,
                 ["RssSource"] = rssHistory.RssSource
             };
-            
+
             var query = await new Query(baseTable2)
                 .ExecForMysql(true)
                 .Where(where)
