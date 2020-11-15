@@ -22,9 +22,9 @@ namespace Zizi.Bot.Tools
             }
         }
 
-        public static MySqlStorage GetMysqlStorage()
+        public static MySqlStorage GetMysqlStorage(string connectionStr)
         {
-            var connectionString = BotSettings.HangfireMysqlDb;
+            // var connectionString = BotSettings.HangfireMysqlDb;
 
             var options = new MySqlStorageOptions
             {
@@ -35,8 +35,9 @@ namespace Zizi.Bot.Tools
                 PrepareSchemaIfNecessary = true,
                 DashboardJobListLimit = 50000,
                 TransactionTimeout = TimeSpan.FromMinutes(1),
+                TablePrefix = "_hangfire"
             };
-            var storage = new MySqlStorage(connectionString, options);
+            var storage = new MySqlStorage(connectionStr, options);
             return storage;
         }
 
