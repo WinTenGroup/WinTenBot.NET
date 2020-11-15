@@ -33,7 +33,7 @@ namespace Zizi.Bot.Tools.GoogleCloud
             using var stream = new FileStream(googleCred, FileMode.Open, FileAccess.Read);
 
             Log.Debug("Authorizing client..");
-            var credPath = Path.Combine("Storage", "Common", "gdrive-auth-token.json").SanitizeSlash()
+            var credPath = Path.Combine("Storage", "Common", "gdrive-auth-token-store").SanitizeSlash()
                 .EnsureDirectory();
             var credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
                 GoogleClientSecrets.Load(stream).Secrets,
