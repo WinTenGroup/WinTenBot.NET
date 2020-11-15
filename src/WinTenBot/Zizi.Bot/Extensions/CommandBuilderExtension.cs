@@ -1,4 +1,4 @@
-using Telegram.Bot.Framework;
+﻿using Telegram.Bot.Framework;
 using Telegram.Bot.Framework.Abstractions;
 using Zizi.Bot.Handlers;
 using Zizi.Bot.Handlers.Commands.Additional;
@@ -49,6 +49,7 @@ namespace Zizi.Bot.Extensions
                                         .UseCommand<AddNotesCommand>("addfilter")
                                         .UseCommand<AdminCommand>("admin")
                                         .UseCommand<AfkCommand>("afk")
+                                        .UseCommand<AllDebridCommand>("ad")
                                         .UseCommand<BanCommand>("ban")
                                         .UseCommand<BotCommand>("bot")
                                         .UseCommand<CatCommand>("cat")
