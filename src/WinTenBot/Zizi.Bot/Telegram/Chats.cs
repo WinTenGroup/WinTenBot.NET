@@ -7,6 +7,7 @@ using Serilog;
 using Zizi.Bot.Common;
 using Zizi.Bot.Models;
 using Zizi.Bot.Services;
+using String = System.String;
 
 namespace Zizi.Bot.Telegram
 {
@@ -50,7 +51,7 @@ namespace Zizi.Bot.Telegram
                 {"chat_title", message.Chat.Title ?? @"N\A"},
                 {"chat_type", message.Chat.Type.ToString()}
             };
-            
+
             var saveSettings = await settingsService.SaveSettingsAsync(data)
                 .ConfigureAwait(false);
             Log.Debug($"Ensure Settings: {saveSettings}");
@@ -63,7 +64,10 @@ namespace Zizi.Bot.Telegram
 
         public static bool IsRestricted()
         {
-            return BotSettings.GlobalConfiguration["CommonConfig:IsRestricted"].ToBool();
+            var isRestricted = BotSettings.GlobalConfiguration["CommonConfig:IsRestricted"].ToBool();
+            Log.Debug("Global Restriction: {0}", isRestricted);
+
+            return isRestricted;
         }
 
         public static bool CheckRestriction(this long chatId)
@@ -71,17 +75,15 @@ namespace Zizi.Bot.Telegram
             try
             {
                 var isRestricted = false;
-                var globalRestrict = IsRestricted();
                 var sudoers = BotSettings.GlobalConfiguration.GetSection("RestrictArea").Get<List<string>>();
                 var match = sudoers.FirstOrDefault(x => x == chatId.ToString());
 
-                Log.Information($@"Global Restriction: {globalRestrict}");
-                if (match == null && globalRestrict)
+                if (match == null)
                 {
                     isRestricted = true;
                 }
 
-                Log.Information($"ChatId: {chatId} IsRestricted: {isRestricted}");
+                Log.Information("ChatId: {0} IsRestricted: {1}", chatId, isRestricted);
                 return isRestricted;
             }
             catch (Exception ex)
@@ -98,7 +100,10 @@ namespace Zizi.Bot.Telegram
             var message = telegramService.MessageOrEdited;
             var chatId = message.Chat.Id;
 
-            if (!chatId.CheckRestriction()) return false;
+            var globalRestrict = IsRestricted();
+            var isRestricted = chatId.CheckRestriction();
+
+            if (!isRestricted && globalRestrict) return false;
 
             Log.Information("I must leave right now!");
             var msgOut = $"Sepertinya saya salah alamat, saya pamit dulu..";
