@@ -38,16 +38,15 @@ namespace Zizi.Bot
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMapConfiguration(Configuration, Environment);
+
             services
                 .AddTransient<ZiziBot>()
                 .Configure<BotOptions<ZiziBot>>(Configuration.GetSection("ZiziBot"))
                 .Configure<CustomBotOptions<ZiziBot>>(Configuration.GetSection("ZiziBot"))
                 .AddScoped<IWeatherService, WeatherService>();
 
-            services.AddMapConfiguration(Configuration, Environment);
-
             services.AddFluentMigration(Configuration.GetConnectionString("MySql"));
-
             services.AddSqlKataMysql(Configuration.GetConnectionString("MySql"));
 
             services.AddGeneralEvents();
