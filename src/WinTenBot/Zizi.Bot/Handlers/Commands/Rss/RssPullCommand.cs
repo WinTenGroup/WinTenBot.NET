@@ -36,7 +36,7 @@ namespace Zizi.Bot.Handlers.Commands.Rss
                         .ConfigureAwait(false);
                     // await "Sedang memeriksa RSS feed baru..".SendTextAsync();
 
-                    var newRssCount = await RssBroadcaster.ExecBroadcasterAsync(chatId)
+                    var newRssCount = await RssFeedUtil.ExecBroadcasterAsync(chatId)
                         .ConfigureAwait(false);
                     if (newRssCount == 0)
                     {
