@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
@@ -17,6 +18,7 @@ using Zizi.Bot.IO;
 using Zizi.Bot.Models;
 using Zizi.Bot.Models.Settings;
 using Zizi.Bot.Telegram;
+using Zizi.Bot.Tools;
 using File = System.IO.File;
 
 namespace Zizi.Bot.Services
@@ -25,15 +27,28 @@ namespace Zizi.Bot.Services
     {
         public bool IsNoUsername { get; set; }
         public bool IsBotAdmin { get; set; }
+        public bool IsFromSudo { get; set; }
         public bool IsFromAdmin { get; set; }
+        public bool IsPrivateChat { get; set; }
+
+        public bool IsChatRestricted { get; set; }
+
         public AppConfig AppConfig { get; set; }
         public ChatSetting CurrentSetting { get; set; }
         public IUpdateContext Context { get; set; }
         private string AppendText { get; set; }
         public ITelegramBotClient Client { get; set; }
+
+        public Message AnyMessage { get; set; }
         public Message Message { get; set; }
         public Message EditedMessage { get; set; }
+        public Message CallbackMessage { get; set; }
         public Message MessageOrEdited { get; set; }
+
+        public int FromId { get; set; }
+        public long ChatId { get; set; }
+
+        public string[] MessageTextParts { get; set; }
         public CallbackQuery CallbackQuery { get; set; }
         public int SentMessageId { get; internal set; }
         public Message SentMessage { get; set; }
@@ -46,24 +61,42 @@ namespace Zizi.Bot.Services
         {
             Context = updateContext;
             Client = updateContext.Bot.Client;
+            var update = updateContext.Update;
+
             EditedMessage = updateContext.Update.EditedMessage;
+
+            AnyMessage = update.Message;
+            if (update.EditedMessage != null)
+                AnyMessage = update.EditedMessage;
+
+            // if (update.CallbackQuery?.Message != null)
+            //     AnyMessage = update.CallbackQuery.Message;
 
             Message = updateContext.Update.CallbackQuery != null ? updateContext.Update.CallbackQuery.Message : updateContext.Update.Message;
 
-            if (updateContext.Update.CallbackQuery != null)
-                CallbackQuery = updateContext.Update.CallbackQuery;
+            if (updateContext.Update.CallbackQuery != null) CallbackQuery = updateContext.Update.CallbackQuery;
 
             MessageOrEdited = Message ?? EditedMessage;
-
-            var settingService = new SettingsService(MessageOrEdited);
-            CurrentSetting = settingService.ReadCache().Result;
 
             if (Message != null)
             {
                 TimeInit = Message.Date.GetDelay();
             }
 
-            IsNoUsername = MessageOrEdited.From.IsNoUsername();
+            FromId = AnyMessage.From.Id;
+            ChatId = AnyMessage.Chat.Id;
+
+            var settingService = new SettingsService(AnyMessage);
+            CurrentSetting = settingService.ReadCache().Result;
+
+            CheckIsPrivateChat();
+            var result = CheckIsBotAdmin().Result;
+
+            if (AnyMessage != null) IsNoUsername = AnyMessage.From.IsNoUsername();
+            if (AnyMessage != null) IsChatRestricted = AnyMessage.Chat.Id.CheckRestriction();
+            if (AnyMessage != null) IsFromSudo = AnyMessage.From.Id.IsSudoer();
+
+            if (AnyMessage.Text != null) MessageTextParts = AnyMessage.Text.SplitText(" ").ToArray();
         }
 
         public async Task<string> GetMentionAdminsStr()
@@ -117,6 +150,59 @@ namespace Zizi.Bot.Services
             var chat = await BotSettings.Client.GetChatAsync(Message.Chat.Id)
                 .ConfigureAwait(false);
             return chat;
+        }
+
+        // public async Task<ChatMember[]> GetChatAdmin()
+        // {
+        //     // var message = telegramService.Message;
+        //     // var client = telegramService.Client;
+        //     var chatId = AnyMessage.Chat.Id;
+        //
+        //
+        //     // var cacheExist = telegramService.IsChatCacheExist(CacheKey);
+        //     var cacheExist = MonkeyCacheUtil.IsCacheExist("");
+        //     if (!cacheExist)
+        //     {
+        //         await Client.UpdateCacheAdminAsync(chatId).ConfigureAwait(false);
+        //         // var admins = await client.GetChatAdministratorsAsync(chatId)
+        //         // .ConfigureAwait(false);
+        //
+        //         // telegramService.SetChatCache(CacheKey, admins);
+        //     }
+        //
+        //     var chatMembers = telegramService.GetChatCache<ChatMember[]>(CacheKey);
+        //     // Log.Debug("ChatMemberAdmin: {0}", chatMembers.ToJson(true));
+        //
+        //     return chatMembers;
+        // }
+
+        private async Task<bool> CheckIsBotAdmin()
+        {
+            var chat = AnyMessage.Chat;
+            var chatId = chat.Id;
+
+            var me = await Client.GetMeAsync().ConfigureAwait(false);
+
+            if (IsPrivateChat) return false;
+
+            // var isBotAdmin = await telegramService.IsAdminChat(me.Id).ConfigureAwait(false);
+            var isBotAdmin = await Client.IsAdminChat(chatId, me.Id).ConfigureAwait(false);
+            Log.Debug("Is {0} Admin on Chat {1}? {2}", me.Username, chatId, isBotAdmin);
+
+            IsBotAdmin = isBotAdmin;
+
+            return isBotAdmin;
+        }
+
+        private bool CheckIsPrivateChat()
+        {
+            var chat = AnyMessage.Chat;
+            var isPrivate = chat.Type == ChatType.Private;
+
+            Log.Debug("Chat {0} IsPrivateChat => {1}", chat.Id, isPrivate);
+            IsPrivateChat = isPrivate;
+
+            return isPrivate;
         }
 
         #region Message
