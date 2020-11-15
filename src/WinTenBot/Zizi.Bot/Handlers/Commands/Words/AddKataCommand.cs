@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Serilog;
 using Telegram.Bot.Framework.Abstractions;
 using Zizi.Bot.Common;
 using Zizi.Bot.Telegram;
@@ -30,8 +31,9 @@ namespace Zizi.Bot.Handlers.Commands.Words
             var isSudoer = _telegramService.IsSudoer();
             var isAdmin = await _telegramService.IsAdminGroup()
                 .ConfigureAwait(false);
-            if (!isSudoer && !isAdmin)
+            if (!isSudoer)
             {
+                Log.Information("Currently add Kata is limited only Sudo.");
                 return;
             }
 
@@ -40,7 +42,7 @@ namespace Zizi.Bot.Handlers.Commands.Words
                 word = word.ParseUrl().Path;
             }
 
-            var where = new Dictionary<string, object>() { { "word", word } };
+            var where = new Dictionary<string, object>() {{"word", word}};
 
             if (paramOption.IsContains("-"))
             {
@@ -82,12 +84,12 @@ namespace Zizi.Bot.Handlers.Commands.Words
                 {
                     var save = await _wordFilterService.SaveWordAsync(word, isGlobalBlock)
                         .ConfigureAwait(false);
-                    
+
                     await _telegramService.AppendTextAsync("Sinkronisasi Kata ke cache")
                         .ConfigureAwait(false);
                     await Sync.SyncWordToLocalAsync()
                         .ConfigureAwait(false);
-                    
+
                     await _telegramService.AppendTextAsync("Kata berhasil di tambahkan")
                         .ConfigureAwait(false);
                 }
