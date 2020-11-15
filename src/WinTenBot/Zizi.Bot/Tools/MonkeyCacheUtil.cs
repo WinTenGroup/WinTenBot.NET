@@ -24,6 +24,14 @@ namespace Zizi.Bot.Tools
             Log.Debug("MonkeyCache initialized.");
         }
 
+        public static bool IsCacheExist(string key)
+        {
+            var isExist = Barrel.Current.Exists(key);
+            Log.Debug("MonkeyCache key {0} is exist? {1}", key, isExist);
+
+            return isExist;
+        }
+
         public static void AddCache<T>(this T data, string key)
         {
             Log.Information("Adding Monkeys with key: {0}", key);
@@ -47,12 +55,12 @@ namespace Zizi.Bot.Tools
 
         public static bool IsChatCacheExist(this TelegramService telegramService, string key)
         {
-            var msg = telegramService.Message;
+            var msg = telegramService.AnyMessage;
             var chatId = msg.Chat.Id.ReduceChatId();
             var keyCache = $"{chatId}-{key}";
 
             var isExist = Barrel.Current.Exists(keyCache);
-            Log.Debug("MonkeyCache key {0} is exist?",key);
+            Log.Debug("MonkeyCache key {0} is exist? {1}", key, isExist);
 
             return isExist;
         }
@@ -72,13 +80,13 @@ namespace Zizi.Bot.Tools
         {
             var msg = telegramService.Message;
             msg.SetChatCache(key, data);
-            
+
             // var chatId = msg.Chat.Id.ReduceChatId();
             // var msgId = msg.MessageId;
             // var keyCache = $"{chatId}-{key}";
             //
             // Add(keyCache, data);
-            
+
             return data;
         }
 
@@ -103,7 +111,7 @@ namespace Zizi.Bot.Tools
             // var keyCache = $"{chatId}-{key}";
 
             // var data = Get<T>(keyCache);
-            
+
             return data;
         }
     }
