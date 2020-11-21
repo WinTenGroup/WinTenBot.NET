@@ -103,7 +103,7 @@ namespace Zizi.Bot.Telegram
             var globalRestrict = IsRestricted();
             var isRestricted = chatId.CheckRestriction();
 
-            if (!isRestricted && globalRestrict) return false;
+            if (!isRestricted || !globalRestrict) return false;
 
             Log.Information("I must leave right now!");
             var msgOut = $"Sepertinya saya salah alamat, saya pamit dulu..";
