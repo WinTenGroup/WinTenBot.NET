@@ -37,7 +37,7 @@ namespace Zizi.Bot.Tools.Ocr
                     .ConfigureAwait(false);
 
                 Log.Information($"OCR: {postResult.StatusCode}");
-                var json = await postResult.Content.ReadAsStringAsync()
+                var json = await postResult.GetStringAsync()
                     .ConfigureAwait(false);
 
                 var map = JsonConvert.DeserializeObject<OcrResult>(json);

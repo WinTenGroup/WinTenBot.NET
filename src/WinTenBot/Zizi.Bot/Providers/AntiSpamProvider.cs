@@ -31,7 +31,8 @@ namespace Zizi.Bot.Providers
             }
             catch (FlurlHttpException ex)
             {
-                var callHttpStatus = ex.Call.HttpStatus;
+                var callHttpStatus = ex.Call.HttpResponseMessage.StatusCode;
+                // var callHttpStatus = ex.Call.HttpStatus;
                 Log.Information("StatusCode: {0}", callHttpStatus);
                 switch (callHttpStatus)
                 {
@@ -72,7 +73,7 @@ namespace Zizi.Bot.Providers
 
             var isGBan = findBan.Any();
             Log.Information("UserId {0} is ES2 GBan? {1}", userId, isGBan);
-            
+
             jsonGBan.Dispose();
             allBan.Clear();
 
