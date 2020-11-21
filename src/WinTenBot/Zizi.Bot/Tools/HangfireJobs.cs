@@ -1,10 +1,10 @@
-﻿using System;
-using System.Data;
-using Hangfire;
+﻿using Hangfire;
 using Hangfire.MySql.Core;
 using Hangfire.Storage;
 using Serilog;
-using Zizi.Bot.Models;
+using System;
+using System.Data;
+using System.Linq;
 
 namespace Zizi.Bot.Tools
 {
@@ -12,14 +12,20 @@ namespace Zizi.Bot.Tools
     {
         public static void DeleteAllJobs()
         {
-            using var connection = JobStorage.Current.GetConnection();
-            foreach (var recurringJob in connection.GetRecurringJobs())
+            Log.Information("Deleting previous Hangfire jobs..");
+            var connection = JobStorage.Current.GetConnection();
+            var recurringJobs = connection.GetRecurringJobs();
+
+            var numOfJobs = recurringJobs.Count;
+
+            foreach (var recurringJobId in recurringJobs.Select(recurringJob => recurringJob.Id))
             {
-                var recurringJobId = recurringJob.Id;
-                Log.Information($"Deleting {recurringJobId}");
+                Log.Debug("Deleting jobId: {0}", recurringJobId);
 
                 RecurringJob.RemoveIfExists(recurringJobId);
             }
+
+            Log.Information("Hangfire jobs succesfully deleted. Total: {0}", numOfJobs);
         }
 
         public static MySqlStorage GetMysqlStorage(string connectionStr)
@@ -73,12 +79,12 @@ namespace Zizi.Bot.Tools
         // {
         //     var connStr = "127.0.0.1:6379,password=azhe1234";
         //     Log.Information($"Hangfire Redis: {connStr}");
-        //     
+        //
         //     var options = new RedisStorageOptions()
         //     {
         //         Db = (int)RedisMap.HangfireStorage
         //     };
-        //     
+        //
         //     var storage = new RedisStorage(connStr,options);
         //     return storage;
         //
