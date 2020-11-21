@@ -15,24 +15,22 @@ jobs:
         working-directory: ./src/WinTenBot/Zizi.Bot
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 3.1.301
-    - name: Install dependencies
-      run: dotnet restore
-    - name: Build
-      run: dotnet build --configuration Release --no-restore
-    - name: Test
-      run: dotnet test --no-restore --verbosity normal
-      
-    - name: Upload a Build Artifact
-      uses: actions/upload-artifact@v2.1.4
-      with:
-        # Artifact name
-        name: zizibot-net3.1-build.zip
-        # optional, default is artifact
-        # A file, directory or wildcard pattern that describes what to upload
-        path: bin/Release
-        # The desired behavior if no files are found using the provided path.
+      - uses: actions/checkout@v2
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 5.0
+      - name: Install dependencies
+        run: dotnet restore
+      - name: Build
+        run: dotnet publish -r linux-x64 -c Release --self-contained=false /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true
+
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v2.1.4
+        with:
+          # Artifact name
+          name: zizibot-net3.1-build.zip
+          # optional, default is artifact
+          # A file, directory or wildcard pattern that describes what to upload
+          path: bin/Release
+          # The desired behavior if no files are found using the provided path.
