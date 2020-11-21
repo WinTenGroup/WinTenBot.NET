@@ -27,6 +27,15 @@ namespace Zizi.Bot.Handlers.Commands.Additional
                 AppConfig = _appConfig
             };
 
+            var allDebrid = _appConfig.AllDebridConfig;
+            var isEnabled = allDebrid.IsEnabled;
+
+            if (!isEnabled)
+            {
+                Log.Warning("AllDebrid feature is disabled on AppSettings");
+                return;
+            }
+
             var txtParts = _telegramService.MessageTextParts;
             var urlParam = txtParts.ValueOfIndex(1);
 
