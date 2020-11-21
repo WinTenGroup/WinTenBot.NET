@@ -48,6 +48,7 @@ namespace Zizi.Bot
 
             services.AddFluentMigration(Configuration.GetConnectionString("MySql"));
             services.AddSqlKataMysql(Configuration.GetConnectionString("MySql"));
+            services.AddLiteDb();
 
             services.AddGeneralEvents();
             services.AddGroupEvents();

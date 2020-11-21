@@ -1,10 +1,13 @@
-﻿using System.Security.Cryptography.X509Certificates;
+﻿using System;
+using System.Security.Cryptography.X509Certificates;
+using LiteDB.Async;
 using Microsoft.Extensions.DependencyInjection;
 using MySql.Data.MySqlClient;
 using Raven.Client.Documents;
 using Serilog;
 using SqlKata.Compilers;
 using SqlKata.Execution;
+using Zizi.Bot.IO;
 using Zizi.Bot.Models.Settings;
 
 namespace Zizi.Bot.Extensions
@@ -46,6 +49,19 @@ namespace Zizi.Bot.Extensions
                 documentStore.Initialize();
 
                 return documentStore;
+            });
+
+            return services;
+        }
+
+        public static IServiceCollection AddLiteDb(this IServiceCollection services)
+        {
+            services.AddScoped(provider =>
+            {
+                var dbName = "Storage/Data/Local_LiteDB.db".EnsureDirectory();
+                var connectionString = $"Filename={dbName};Connection=shared;";
+
+                return new LiteDatabaseAsync(connectionString);
             });
 
             return services;
