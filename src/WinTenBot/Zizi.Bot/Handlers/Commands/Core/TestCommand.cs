@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Serilog;
 using Telegram.Bot.Framework.Abstractions;
+using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
 using Zizi.Bot.Common;
 using Zizi.Bot.Telegram;
@@ -26,91 +27,99 @@ namespace Zizi.Bot.Handlers.Commands.Core
             var msg = _telegramService.Message;
             var msgId = msg.MessageId;
 
-            if (fromId.IsSudoer())
+            if (!fromId.IsSudoer())
             {
-                Log.Information("Test started..");
-                await _telegramService.SendTextAsync("Sedang mengetes sesuatu")
-                    .ConfigureAwait(false);
-
-
-                msg.AddCache($"anu-{msgId}");
-                msg.MessageId.AddCache($"anu");
-                _telegramService.SetChatCache("settings", msg);
-
-                var keys = MonkeyCacheUtil.GetKeys();
-                Log.Debug("Keys: {0}", keys.ToJson(true));
-
-                var data = MonkeyCacheUtil.Get<string>("anu");
-                Log.Debug("Data: {0}", data.ToJson(true));
-
-
-                // Telegram.Metrics.FlushHitActivity();
-
-                // var data = await new Query("rss_history")
-                //     .Where("chat_id", chatId)
-                //     .ExecForMysql()
-                //     .GetAsync();
-                //
-                // var rssHistories = data
-                //     .ToJson()
-                //     .MapObject<List<RssHistory>>();
-                //
-                // ConsoleHelper.WriteLine(data.GetType());
-                // // ConsoleHelper.WriteLine(data.ToJson(true));
-                //
-                // ConsoleHelper.WriteLine(rssHistories.GetType());
-                // // ConsoleHelper.WriteLine(rssHistories.ToJson(true));
-                //
-                // ConsoleHelper.WriteLine("Test completed..");
-
-                // await "This test".LogToChannel();
-
-                // await RssHelper.SyncRssHistoryToCloud();
-                // await BotHelper.ClearLog();
-
-                // await SyncHelper.SyncGBanToLocalAsync();
-                // var greet = TimeHelper.GetTimeGreet();
-
-                var inlineKeyboard = new InlineKeyboardMarkup(new[]
-                {
-                    // new[]
-                    // {
-                    // InlineKeyboardButton.WithCallbackData("Warn Username Limit", "info warn-username-limit"),
-                    // InlineKeyboardButton.WithCallbackData("-", "callback-set warn_username_limit 3"),
-                    // InlineKeyboardButton.WithCallbackData("4", "info setelah"),
-                    // InlineKeyboardButton.WithCallbackData("+", "callback-set warn_username_limit 5")
-                    // },
-                    new[]
-                    {
-                        // InlineKeyboardButton.WithCallbackData("Warn Username Limit", "info warn-username-limit"),
-                        InlineKeyboardButton.WithCallbackData("-", "callback-set warn_username_limit 3"),
-                        InlineKeyboardButton.WithCallbackData("4", "info setelah"),
-                        InlineKeyboardButton.WithCallbackData("+", "callback-set warn_username_limit 5")
-                    }
-                });
-
-                // await _telegramService.EditAsync("Warn Username Limit", inlineKeyboard);
-
-                // LearningHelper.Setup2();
-                // LearningHelper.Predict();
-
-
-                // if (msg.ReplyToMessage != null)
-                // {
-                //     var repMsg = msg.ReplyToMessage;
-                //     var repMsgText = repMsg.Text;
-                //
-                //     Log.Information("Predicting message");
-                //     var isSpam = MachineLearning.PredictMessage(repMsgText);
-                //     await _telegramService.EditAsync($"IsSpam: {isSpam}")
-                //         .ConfigureAwait(false);
-                //
-                //     return;
-                // }
-
-                await _telegramService.EditAsync("Complete")
-                    .ConfigureAwait(false);
+                Log.Warning("Test only for Sudo!");
+                return;
             }
+
+            var jsonCache = _telegramService.GetChatCollection<Message>("msg");
+            jsonCache.InsertOne(msg);
+
+            Log.Information("Test started..");
+            await _telegramService.SendTextAsync("Sedang mengetes sesuatu")
+                .ConfigureAwait(false);
+
+            var id = String.GenerateUniqueId();
+
+            // msg.AddCache($"anu-{msgId}");
+            // msg.MessageId.AddCache($"anu");
+            // _telegramService.SetChatCache("settings", msg);
+
+            // var keys = MonkeyCacheUtil.GetKeys();
+            // Log.Debug("Keys: {0}", keys.ToJson(true));
+
+            // var data = MonkeyCacheUtil.Get<string>("anu");
+            // Log.Debug("Data: {0}", data.ToJson(true));
+
+
+            // Telegram.Metrics.FlushHitActivity();
+
+            // var data = await new Query("rss_history")
+            //     .Where("chat_id", chatId)
+            //     .ExecForMysql()
+            //     .GetAsync();
+            //
+            // var rssHistories = data
+            //     .ToJson()
+            //     .MapObject<List<RssHistory>>();
+            //
+            // ConsoleHelper.WriteLine(data.GetType());
+            // // ConsoleHelper.WriteLine(data.ToJson(true));
+            //
+            // ConsoleHelper.WriteLine(rssHistories.GetType());
+            // // ConsoleHelper.WriteLine(rssHistories.ToJson(true));
+            //
+            // ConsoleHelper.WriteLine("Test completed..");
+
+            // await "This test".LogToChannel();
+
+            // await RssHelper.SyncRssHistoryToCloud();
+            // await BotHelper.ClearLog();
+
+            // await SyncHelper.SyncGBanToLocalAsync();
+            // var greet = TimeHelper.GetTimeGreet();
+
+            var inlineKeyboard = new InlineKeyboardMarkup(new[]
+            {
+                // new[]
+                // {
+                // InlineKeyboardButton.WithCallbackData("Warn Username Limit", "info warn-username-limit"),
+                // InlineKeyboardButton.WithCallbackData("-", "callback-set warn_username_limit 3"),
+                // InlineKeyboardButton.WithCallbackData("4", "info setelah"),
+                // InlineKeyboardButton.WithCallbackData("+", "callback-set warn_username_limit 5")
+                // },
+                new[]
+                {
+                    // InlineKeyboardButton.WithCallbackData("Warn Username Limit", "info warn-username-limit"),
+                    InlineKeyboardButton.WithCallbackData("-", "callback-set warn_username_limit 3"),
+                    InlineKeyboardButton.WithCallbackData("4", "info setelah"),
+                    InlineKeyboardButton.WithCallbackData("+", "callback-set warn_username_limit 5")
+                }
+            });
+
+            // await _telegramService.EditAsync("Warn Username Limit", inlineKeyboard);
+
+            // LearningHelper.Setup2();
+            // LearningHelper.Predict();
+
+
+            // if (msg.ReplyToMessage != null)
+            // {
+            //     var repMsg = msg.ReplyToMessage;
+            //     var repMsgText = repMsg.Text;
+            //
+            //     Log.Information("Predicting message");
+            //     var isSpam = MachineLearning.PredictMessage(repMsgText);
+            //     await _telegramService.EditAsync($"IsSpam: {isSpam}")
+            //         .ConfigureAwait(false);
+            //
+            //     return;
+            // }
+
+            await _telegramService.EditAsync("Complete")
+                .ConfigureAwait(false);
+
 
             // else
             // {
