@@ -69,8 +69,8 @@ namespace Zizi.Bot.Services
             if (update.EditedMessage != null)
                 AnyMessage = update.EditedMessage;
 
-            // if (update.CallbackQuery?.Message != null)
-            //     AnyMessage = update.CallbackQuery.Message;
+            if (update.CallbackQuery?.Message != null)
+                AnyMessage = update.CallbackQuery.Message;
 
             Message = updateContext.Update.CallbackQuery != null ? updateContext.Update.CallbackQuery.Message : updateContext.Update.Message;
 
@@ -83,20 +83,22 @@ namespace Zizi.Bot.Services
                 TimeInit = Message.Date.GetDelay();
             }
 
-            FromId = AnyMessage.From.Id;
-            ChatId = AnyMessage.Chat.Id;
+            if (AnyMessage != null)
+            {
+                FromId = AnyMessage.From.Id;
+                ChatId = AnyMessage.Chat.Id;
+                IsNoUsername = AnyMessage.From.IsNoUsername();
+                IsChatRestricted = ChatId.CheckRestriction();
+                IsFromSudo = FromId.IsSudoer();
+
+                if (AnyMessage.Text != null) MessageTextParts = AnyMessage.Text.SplitText(" ").ToArray();
+
+                CheckIsPrivateChat();
+                var result = CheckIsBotAdmin().Result;
+            }
 
             var settingService = new SettingsService(AnyMessage);
             CurrentSetting = settingService.ReadCache().Result;
-
-            CheckIsPrivateChat();
-            var result = CheckIsBotAdmin().Result;
-
-            if (AnyMessage != null) IsNoUsername = AnyMessage.From.IsNoUsername();
-            if (AnyMessage != null) IsChatRestricted = AnyMessage.Chat.Id.CheckRestriction();
-            if (AnyMessage != null) IsFromSudo = AnyMessage.From.Id.IsSudoer();
-
-            if (AnyMessage.Text != null) MessageTextParts = AnyMessage.Text.SplitText(" ").ToArray();
         }
 
         public async Task<string> GetMentionAdminsStr()
