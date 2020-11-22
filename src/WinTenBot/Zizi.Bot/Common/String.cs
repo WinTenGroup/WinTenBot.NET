@@ -15,7 +15,7 @@ namespace Zizi.Bot.Common
     {
         public static List<string> SplitText(this string text, string delimiter)
         {
-            return text.Split(delimiter).ToList();
+            return text?.Split(delimiter).ToList();
         }
 
         public static string ResolveVariable(this string input, object parameters)
@@ -235,10 +235,10 @@ namespace Zizi.Bot.Common
         {
             return new string(str.ToCharArray().Distinct().ToArray());
         }
-        
+
         public static string SizeFormat(this double size, string suffix = null)
         {
-            string[] norm = { "B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
+            string[] norm = {"B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"};
             int count = norm.Length - 1;
             // var size = bytes;
             int x = 0;
@@ -257,14 +257,14 @@ namespace Zizi.Bot.Common
             var builder = new StringBuilder();
             Enumerable
                 .Range(65, 26)
-                .Select(e => ((char)e).ToString())
-                .Concat(Enumerable.Range(97, 26).Select(e => ((char)e).ToString()))
+                .Select(e => ((char) e).ToString())
+                .Concat(Enumerable.Range(97, 26).Select(e => ((char) e).ToString()))
                 .Concat(Enumerable.Range(0, 10).Select(e => e.ToString()))
                 .OrderBy(e => Guid.NewGuid())
                 .Take(11)
                 .ToList()
                 .ForEach(e => builder.Append(e));
-            
+
             var id = builder.ToString();
 
             return id;
