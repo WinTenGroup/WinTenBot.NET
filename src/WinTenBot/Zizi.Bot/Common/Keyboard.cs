@@ -11,9 +11,9 @@ namespace Zizi.Bot.Common
 {
     public static class Keyboard
     {
-        public static Dictionary<string,string> StringToDict(string buttonStr)
+        public static Dictionary<string, string> StringToDict(string buttonStr)
         {
-            var dict = new Dictionary<string,string>();
+            var dict = new Dictionary<string, string>();
             var splitWelcomeButton = buttonStr.Split(',').ToList();
             foreach (var button in splitWelcomeButton)
             {
@@ -28,9 +28,10 @@ namespace Zizi.Bot.Common
 
             return dict;
         }
+
         public static InlineKeyboardMarkup CreateInlineKeyboardButton(Dictionary<string, string> buttonList, int columns)
         {
-            int rows = (int)Math.Ceiling(buttonList.Count / (double)columns);
+            int rows = (int) Math.Ceiling(buttonList.Count / (double) columns);
             InlineKeyboardButton[][] buttons = new InlineKeyboardButton[rows][];
 
             for (int i = 0; i < buttons.Length; i++)
@@ -40,13 +41,14 @@ namespace Zizi.Bot.Common
                     .Take(columns)
                     .Select(direction =>
                     {
-                        if(direction.Value.CheckUrlValid())
+                        if (direction.Value.CheckUrlValid())
                             return InlineKeyboardButton.WithUrl(direction.Key, direction.Value);
                         else
                             return InlineKeyboardButton.WithCallbackData(direction.Key, direction.Value);
                     })
                     .ToArray();
             }
+
             return new InlineKeyboardMarkup(buttons);
         }
 
@@ -71,7 +73,7 @@ namespace Zizi.Bot.Common
             }
 
             var replyMarkup = json.ToDataTable();
-            
+
             var btnList = new List<InlineKeyboardButton>();
 
             foreach (DataRow row in replyMarkup.Rows)
@@ -80,13 +82,13 @@ namespace Zizi.Bot.Common
                 var data = row["data"].ToString();
                 if (data.CheckUrlValid())
                 {
-                    Log.Information($"Appending Text: '{btnText}', Url: '{data}'.");
+                    Log.Debug($"Appending Text: '{btnText}', Url: '{data}'.");
                     btnList.Add(InlineKeyboardButton.WithUrl(btnText, data));
                 }
                 else
                 {
-                    Log.Information($"Appending Text: '{btnText}', Data: '{data}'.");
-                    btnList.Add(InlineKeyboardButton.WithCallbackData(btnText,data));
+                    Log.Debug($"Appending Text: '{btnText}', Data: '{data}'.");
+                    btnList.Add(InlineKeyboardButton.WithCallbackData(btnText, data));
                 }
             }
 
@@ -96,7 +98,7 @@ namespace Zizi.Bot.Common
             //     .GroupBy(x => x.Index / chunk)
             //     .Select(grp => grp.Select(x => x.Value).ToArray())
             //     .ToArray();
-            
+
             return new InlineKeyboardMarkup(btnList.ChunkBy(chunk));
         }
     }
