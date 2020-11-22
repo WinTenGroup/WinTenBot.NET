@@ -38,7 +38,7 @@ namespace Zizi.Bot.Extensions
                     //        )
                     //    )
                     .UseWhen<PinnedMessageEvent>(When.NewPinnedMessage)
-                    .UseWhen<MediaReceivedHandler>(When.MediaReceived)
+                    // .UseWhen<MediaReceivedHandler>(When.MediaReceived)
                     .UseWhen(When.NewOrEditedMessage, msgBranch => msgBranch
                         .UseWhen(When.NewTextMessage, txtBranch => txtBranch
                                 .UseWhen<PingHandler>(When.PingReceived)
