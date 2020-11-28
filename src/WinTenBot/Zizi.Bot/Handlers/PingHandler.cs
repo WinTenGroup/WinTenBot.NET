@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstractions;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
-using Zizi.Bot.Telegram;
 using Zizi.Bot.Services;
+using Zizi.Bot.Telegram;
 
 namespace Zizi.Bot.Handlers
 {
@@ -27,8 +27,8 @@ namespace Zizi.Bot.Handlers
             if (msg.Chat.Type == ChatType.Private && isSudoer)
             {
                 sendText += "\n🎛 <b>Engine info.</b>";
-                var getWebHookInfo = await _telegramService.Client.GetWebhookInfoAsync(cancellationToken);
-                if (getWebHookInfo.Url == "")
+                var getWebHookInfo = await _telegramService.GetWebhookInfo().ConfigureAwait(false);
+                if (string.IsNullOrEmpty(getWebHookInfo.Url))
                 {
                     sendText += "\n\n<i>Bot run in Poll mode.</i>";
                 }
@@ -45,7 +45,7 @@ namespace Zizi.Bot.Handlers
                 }
             }
 
-            await _telegramService.SendTextAsync(sendText, keyboard);
+            await _telegramService.SendTextAsync(sendText, keyboard).ConfigureAwait(false);
         }
     }
 }
