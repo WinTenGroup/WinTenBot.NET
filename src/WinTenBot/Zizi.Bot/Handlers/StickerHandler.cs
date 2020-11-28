@@ -2,9 +2,8 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstractions;
-using Telegram.Bot.Types;
-using Zizi.Bot.Providers;
 using Zizi.Bot.Services;
+using Zizi.Bot.Telegram;
 
 namespace Zizi.Bot.Handlers
 {
@@ -16,23 +15,22 @@ namespace Zizi.Bot.Handlers
         {
             _telegramService = new TelegramService(context);
 
-            Message msg = context.Update.Message;
-            Sticker incomingSticker = msg.Sticker;
+            var msg = context.Update.Message;
+            var incomingSticker = msg.Sticker;
 
-            var chat = await _telegramService.GetChat();
+            var chat = await _telegramService.GetChat().ConfigureAwait(false);
             var stickerSetName = chat.StickerSetName ?? "EvilMinds";
-            StickerSet evilMindsSet = await context.Bot.Client.GetStickerSetAsync(stickerSetName, cancellationToken);
+            var stickerSet = await _telegramService.GetStickerSet(stickerSetName).ConfigureAwait(false);
 
-            Sticker similarEvilMindSticker = evilMindsSet.Stickers.FirstOrDefault(
+            var similarSticker = stickerSet.Stickers.FirstOrDefault(
                 sticker => incomingSticker.Emoji.Contains(sticker.Emoji)
             );
 
-            Sticker replySticker = similarEvilMindSticker ?? evilMindsSet.Stickers.First();
+            var replySticker = similarSticker ?? stickerSet.Stickers.First();
 
-            await context.Bot.Client.SendStickerAsync(
-                msg.Chat,
-                replySticker.FileId,
-                replyToMessageId: msg.MessageId, cancellationToken: cancellationToken);
+            var stickerFileId = replySticker.FileId;
+
+            await _telegramService.SendSticker(stickerFileId).ConfigureAwait(false);
         }
     }
 }
