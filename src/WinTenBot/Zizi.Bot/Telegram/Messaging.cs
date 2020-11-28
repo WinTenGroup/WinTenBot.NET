@@ -49,7 +49,7 @@ namespace Zizi.Bot.Telegram
         {
             var partsMsg = message.Split(' ');
             var text = message;
-            if (withoutCmd && message.StartsWith("/"))
+            if (withoutCmd && message.StartsWith("/", StringComparison.CurrentCulture))
             {
                 text = message.TrimStart(partsMsg[0].ToCharArray());
             }
@@ -79,14 +79,14 @@ namespace Zizi.Bot.Telegram
                 messageLink = $"https://t.me/c/{trimmedChatId}/{messageId}";
             }
 
-            Log.Information($"MessageLink: {messageLink}");
+            Log.Debug("MessageLink: {0}", messageLink);
             return messageLink;
         }
 
         private static async Task<TelegramResult> IsMustDelete(string words)
         {
             var sw = Stopwatch.StartNew();
-            var isMust = false;
+            var isShould = false;
             var telegramResult = new TelegramResult();
             // var query = await new Query("word_filter")
             //     .ExecForSqLite(true)
@@ -100,7 +100,7 @@ namespace Zizi.Bot.Telegram
             var listWords = (await jsonWords.GetCollectionAsync<WordFilter>()
                     .ConfigureAwait(false))
                 .AsQueryable()
-                .Where(x => x.IsGlobal == true)
+                .Where(x => x.IsGlobal)
                 .ToList();
 
             jsonWords.Dispose();
@@ -113,10 +113,11 @@ namespace Zizi.Bot.Telegram
 
             var partedWord = words.Split(new[] {'\n', '\r', ' ', '\t'},
                 StringSplitOptions.RemoveEmptyEntries);
+
+            Log.Debug("Message Lists: {0}", partedWord.ToJson(true));
             foreach (var word in partedWord)
             {
                 var forCompare = word;
-                if (forCompare.IsValidUrl()) forCompare = forCompare.ParseUrl().Path;
                 forCompare = forCompare.ToLowerCase().CleanExceptAlphaNumeric();
 
                 foreach (var wordFilter in listWords)
@@ -125,36 +126,34 @@ namespace Zizi.Bot.Telegram
                     var isDeep = wordFilter.DeepFilter;
 
                     var forFilter = wordFilter.Word.ToLowerCase();
-                    if (forFilter.EndsWith("*"))
+                    if (forFilter.EndsWith("*", StringComparison.CurrentCulture))
                     {
                         var distinctChar = forCompare.DistinctChar();
                         forFilter = forFilter.CleanExceptAlphaNumeric();
-                        isMust = forCompare.Contains(forFilter);
-                        Log.Debug("'{0}' LIKE '{1}' ? {2}. Global: {3}", forCompare, forFilter, isMust, isGlobal);
+                        isShould = forCompare.Contains(forFilter);
+                        Log.Debug("'{0}' LIKE '{1}' ? {2}. Global: {3}", forCompare, forFilter, isShould, isGlobal);
 
-                        if (!isMust)
+                        if (!isShould)
                         {
-                            isMust = distinctChar.Contains(forFilter);
-                            Log.Debug(messageTemplate: "'{0}' LIKE '{1}' ? {2}. Global: {3}", distinctChar, forFilter,
-                                isMust, isGlobal);
+                            isShould = distinctChar.Contains(forFilter);
+                            Log.Debug(messageTemplate: "'{0}' LIKE '{1}' ? {2}. Global: {3}", distinctChar, forFilter, isShould, isGlobal);
                         }
                     }
                     else
                     {
                         forFilter = wordFilter.Word.ToLowerCase().CleanExceptAlphaNumeric();
-                        if (forCompare == forFilter) isMust = true;
-                        Log.Debug("'{0}' == '{1}' ? {2}. Deep: {3}, Global: {4}", forCompare, forFilter, isMust, isDeep,
-                            isGlobal);
+                        if (forCompare == forFilter) isShould = true;
+                        Log.Debug("'{0}' == '{1}' ? {2}. Deep: {3}, Global: {4}", forCompare, forFilter, isShould, isDeep, isGlobal);
                     }
 
-                    if (!isMust) continue;
+                    if (!isShould) continue;
                     telegramResult.Notes = $"Filter: {forFilter}, Kata: {forCompare}";
                     telegramResult.IsSuccess = true;
                     Log.Information("Break check now!");
                     break;
                 }
 
-                if (!isMust) continue;
+                if (!isShould) continue;
                 Log.Information("Should break!");
                 break;
             }
@@ -174,8 +173,7 @@ namespace Zizi.Bot.Telegram
             var text = message.Text ?? message.Caption;
             if (!text.IsNullOrEmpty())
             {
-                var result = await IsMustDelete(text)
-                    .ConfigureAwait(false);
+                var result = await IsMustDelete(text).ConfigureAwait(false);
                 var isMustDelete = result.IsSuccess;
 
                 Log.Information("Message {0} IsMustDelete: {1}", msgId, isMustDelete);
@@ -186,7 +184,7 @@ namespace Zizi.Bot.Telegram
                     var note = "Pesan di Obrolan di hapus karena terdeteksi filter Kata.\n" + result.Notes;
                     await telegramService.SendEventAsync(note)
                         .ConfigureAwait(false);
-                    
+
                     await telegramService.DeleteAsync(message.MessageId)
                         .ConfigureAwait(false);
                 }
@@ -240,7 +238,7 @@ namespace Zizi.Bot.Telegram
                     var note = "Pesan gambar di Obrolan di hapus karena terdeteksi filter Kata.\n" + result.Notes;
                     await telegramService.SendEventAsync(note)
                         .ConfigureAwait(false);
-                    
+
                     await telegramService.DeleteAsync(message.MessageId)
                         .ConfigureAwait(false);
                 }
