@@ -18,7 +18,7 @@ using Zizi.Bot.Handlers.Events;
 
 namespace Zizi.Bot.Extensions
 {
-    public class CommandBuilderExtension
+    public static class CommandBuilderExtension
     {
         public static IBotBuilder ConfigureBot()
         {
@@ -26,7 +26,6 @@ namespace Zizi.Bot.Extensions
                     .Use<ExceptionHandler>()
                     // .Use<CustomUpdateLogger>()
                     .UseWhen<WebhookLogger>(When.Webhook)
-
                     .UseWhen<NewUpdateHandler>(When.NewUpdate)
                     //.UseWhen<UpdateMembersList>(When.MembersChanged)
                     .UseWhen<NewChatMembersEvent>(When.NewChatMembers)
