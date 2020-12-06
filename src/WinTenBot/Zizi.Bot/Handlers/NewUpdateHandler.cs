@@ -1,8 +1,8 @@
-﻿using Serilog;
-using SqlKata.Execution;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Serilog;
+using SqlKata.Execution;
 using Telegram.Bot.Framework.Abstractions;
 using Zizi.Bot.Common;
 using Zizi.Bot.Models.Settings;
@@ -34,9 +34,8 @@ namespace Zizi.Bot.Handlers
 
             var chatSettings = _telegramService.CurrentSetting;
 
-            var update = _telegramService.Context.Update;
-
-            Log.Debug("NewUpdate: {0}", update.ToJson(true));
+            Log.Debug("NewUpdate MessageType: {0}", _telegramService.AnyMessage.Type);
+            Log.Debug("NewUpdate: {0}", _telegramService.Context.Update.ToJson(true));
 
             // Pre-Task is should be awaited.
             await EnqueuePreTask().ConfigureAwait(false);
@@ -95,7 +94,7 @@ namespace Zizi.Bot.Handlers
                 shouldAwaitTasks.Add(_telegramService.CheckMessageAsync());
             }
 
-            Log.Information("Awaiting should await task..");
+            Log.Debug("Awaiting should await task..");
 
             await Task.WhenAll(shouldAwaitTasks.ToArray())
                 .ConfigureAwait(false);
@@ -107,7 +106,7 @@ namespace Zizi.Bot.Handlers
             var message = _telegramService.MessageOrEdited;
 
             //Exec nonAwait Tasks
-            Log.Information("Running nonAwait task..");
+            Log.Debug("Running nonAwait task..");
             nonAwaitTasks.Add(_telegramService.EnsureChatHealthAsync());
             nonAwaitTasks.Add(_telegramService.AfkCheckAsync());
 
