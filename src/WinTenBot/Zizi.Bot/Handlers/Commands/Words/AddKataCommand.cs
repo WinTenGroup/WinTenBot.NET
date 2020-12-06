@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Serilog;
+using SqlKata.Execution;
 using Telegram.Bot.Framework.Abstractions;
 using Zizi.Bot.Common;
 using Zizi.Bot.Telegram;
@@ -14,6 +15,12 @@ namespace Zizi.Bot.Handlers.Commands.Words
     {
         private TelegramService _telegramService;
         private WordFilterService _wordFilterService;
+        private QueryFactory _queryFactory;
+
+        public AddKataCommand(QueryFactory queryFactory)
+        {
+            _queryFactory = queryFactory;
+        }
 
         public override async Task HandleAsync(IUpdateContext context, UpdateDelegate next, string[] args,
             CancellationToken cancellationToken)
@@ -87,7 +94,7 @@ namespace Zizi.Bot.Handlers.Commands.Words
 
                     await _telegramService.AppendTextAsync("Sinkronisasi Kata ke cache")
                         .ConfigureAwait(false);
-                    await SyncUtil.SyncWordToLocalAsync()
+                    await _queryFactory.SyncWordToLocalAsync()
                         .ConfigureAwait(false);
 
                     await _telegramService.AppendTextAsync("Kata berhasil di tambahkan")
