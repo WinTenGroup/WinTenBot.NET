@@ -12,7 +12,7 @@ using Zizi.Bot.Providers;
 
 namespace Zizi.Bot.Tools
 {
-    public static class Sync
+    public static class SyncUtil
     {
         public static async Task SyncRssHistoryToCloud()
         {

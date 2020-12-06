@@ -40,7 +40,7 @@ namespace Zizi.Bot.Scheduler
             Log.Debug("Starting cron Sync Word Filter to Local Storage");
             RecurringJob.RemoveIfExists(jobId);
             RecurringJob.AddOrUpdate(jobId, () =>
-                Sync.SyncWordToLocalAsync(), Cron.Minutely);
+                SyncUtil.SyncWordToLocalAsync(), Cron.Minutely);
             RecurringJob.Trigger(jobId);
         }
 

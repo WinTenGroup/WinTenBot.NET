@@ -87,7 +87,7 @@ namespace Zizi.Bot.Handlers.Commands.Words
 
                     await _telegramService.AppendTextAsync("Sinkronisasi Kata ke cache")
                         .ConfigureAwait(false);
-                    await Sync.SyncWordToLocalAsync()
+                    await SyncUtil.SyncWordToLocalAsync()
                         .ConfigureAwait(false);
 
                     await _telegramService.AppendTextAsync("Kata berhasil di tambahkan")

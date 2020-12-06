@@ -59,7 +59,7 @@ namespace Zizi.Bot.Handlers.Commands.GlobalBan
 
             await _telegramService.EditAsync("Memperbarui Cache..")
                 .ConfigureAwait(false);
-            await Sync.SyncGBanToLocalAsync()
+            await SyncUtil.SyncGBanToLocalAsync()
                 .ConfigureAwait(false);
 
             await _telegramService.EditAsync("Misi berhasil.")

@@ -21,7 +21,7 @@ namespace Zizi.Bot.Handlers.Commands.GlobalBan
             await _telegramService.SendTextAsync("Sedang sinkronisasi..")
                 .ConfigureAwait(false);
 
-            var rowCount = await Sync.SyncGBanToLocalAsync()
+            var rowCount = await SyncUtil.SyncGBanToLocalAsync()
                 .ConfigureAwait(false);
 
             await _telegramService.EditAsync($"Sinkronisasi sebanyak {rowCount} selesai")
