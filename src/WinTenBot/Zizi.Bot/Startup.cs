@@ -49,6 +49,7 @@ namespace Zizi.Bot
             services.AddFluentMigration(Configuration.GetConnectionString("MySql"));
             services.AddSqlKataMysql(Configuration.GetConnectionString("MySql"));
             services.AddLiteDb();
+            services.AddRavenDb();
 
             services.AddGeneralEvents();
             services.AddGroupEvents();
@@ -77,6 +78,8 @@ namespace Zizi.Bot
             app.UseFluentMigration();
 
             app.UseSerilogRequestLogging();
+
+            app.UseEmbeddedRavenDBServer();
 
             if (env.IsDevelopment())
             {
