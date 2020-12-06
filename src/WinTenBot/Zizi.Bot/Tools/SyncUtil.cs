@@ -163,22 +163,26 @@ namespace Zizi.Bot.Tools
 
             var cloudWords = cloudQuery.ToJson().MapObject<List<WordFilter>>();
 
-            var jsonWords = "local-words".OpenJson();
+            var collection = LiteDbProvider.GetCollections<WordFilter>();
+            collection.DeleteAll();
+            collection.Insert(cloudWords);
 
-            Log.Debug("Getting Words Collections");
-            var wordCollection = jsonWords.GetCollection<WordFilter>();
+            // var jsonWords = "local-words".OpenJson();
 
-            Log.Debug("Deleting old Words");
-            await wordCollection.DeleteManyAsync(x => x.Word != null)
-                .ConfigureAwait(false);
+            // Log.Debug("Getting Words Collections");
+            // var wordCollection = jsonWords.GetCollection<WordFilter>();
 
-            Log.Debug("Inserting new Words");
-            await wordCollection.InsertManyAsync(cloudWords)
-                .ConfigureAwait(false);
+            // Log.Debug("Deleting old Words");
+            // await wordCollection.DeleteManyAsync(x => x.Word != null)
+                // .ConfigureAwait(false);
+
+            // Log.Debug("Inserting new Words");
+            // await wordCollection.InsertManyAsync(cloudWords)
+                // .ConfigureAwait(false);
 
             Log.Information("Sync {0} Words complete in {1}", cloudWords.Count, sw.Elapsed);
 
-            jsonWords.Dispose();
+            // jsonWords.Dispose();
             cloudQuery.Clear();
             cloudWords.Clear();
             sw.Stop();
@@ -227,6 +231,48 @@ namespace Zizi.Bot.Tools
             // }
             //
             // Log.Information($"Synced {cloudWords.Count} row(s)");
+        }
+
+        public static async Task SyncWordToLocalAsync(this QueryFactory factory)
+        {
+            var sw = Stopwatch.StartNew();
+            Log.Information("Starting Sync Words filter");
+
+            var wordFilters = (await factory.FromQuery(new Query("word_filter"))
+                .GetAsync<WordFilter>()
+                .ConfigureAwait(false)).ToList();
+
+            // var cloudQuery = (await new Query("word_filter")
+                // .ExecForMysql()
+                // .GetAsync()
+                // .ConfigureAwait(false)).ToList();
+
+            // var cloudWords = cloudQuery.ToJson().MapObject<List<WordFilter>>();
+
+            var collection = LiteDbProvider.GetCollections<WordFilter>();
+            collection.DeleteAll();
+            collection.Insert(wordFilters);
+
+            // var jsonWords = "local-words".OpenJson();
+
+            // Log.Debug("Getting Words Collections");
+            // var wordCollection = jsonWords.GetCollection<WordFilter>();
+
+            // Log.Debug("Deleting old Words");
+            // await wordCollection.DeleteManyAsync(x => x.Word != null)
+                // .ConfigureAwait(false);
+
+            // Log.Debug("Inserting new Words");
+            // await wordCollection.InsertManyAsync(cloudWords)
+                // .ConfigureAwait(false);
+
+            Log.Information("Sync {0} Words complete in {1}", wordFilters.Count, sw.Elapsed);
+
+            // jsonWords.Dispose();
+            // cloudQuery.Clear();
+            // cloudWords.Clear();
+            wordFilters.Clear();
+            sw.Stop();
         }
     }
 }
