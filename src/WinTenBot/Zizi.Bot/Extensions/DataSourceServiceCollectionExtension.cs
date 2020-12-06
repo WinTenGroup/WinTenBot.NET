@@ -1,14 +1,10 @@
-﻿using System;
-using System.Security.Cryptography.X509Certificates;
-using LiteDB.Async;
+﻿using LiteDB.Async;
 using Microsoft.Extensions.DependencyInjection;
 using MySql.Data.MySqlClient;
-using Raven.Client.Documents;
 using Serilog;
 using SqlKata.Compilers;
 using SqlKata.Execution;
 using Zizi.Bot.IO;
-using Zizi.Bot.Models.Settings;
 
 namespace Zizi.Bot.Extensions
 {
@@ -21,34 +17,12 @@ namespace Zizi.Bot.Extensions
             {
                 var compiler = new MySqlCompiler();
                 var connection = new MySqlConnection(connectionString);
-                return new QueryFactory(connection, compiler);
-            });
+                var factory = new QueryFactory(connection, compiler)
+                {
+                    Logger = sql => { Log.Debug($"MySqlExec: {sql}"); }
+                };
 
-            return services;
-        }
-
-        public static IServiceCollection AddRavenDb(this IServiceCollection services)
-        {
-            services.AddScoped(provider =>
-            {
-                var config = provider.GetService<AppConfig>();
-                var documentStore = new DocumentStore();
-
-                if (config == null) return documentStore;
-
-                var ravenDbConfig = config.RavenDBConfig;
-                var certPath = ravenDbConfig.CertPath;
-                var nodes = ravenDbConfig.Nodes;
-                var dbName = ravenDbConfig.DbName;
-
-                documentStore.Urls = nodes.ToArray();
-                documentStore.Database = dbName;
-                documentStore.Certificate = new X509Certificate2(certPath);
-
-                Log.Debug("Initializing client..");
-                documentStore.Initialize();
-
-                return documentStore;
+                return factory;
             });
 
             return services;
@@ -58,7 +32,9 @@ namespace Zizi.Bot.Extensions
         {
             services.AddScoped(provider =>
             {
-                var dbName = "Storage/Data/Local_LiteDB.db".EnsureDirectory();
+                var dbPath = "Storage/Data/Local_LiteDB.db";
+                Log.Debug("Loading LiteDB: {0}", dbPath);
+                var dbName = dbPath.EnsureDirectory();
                 var connectionString = $"Filename={dbName};Connection=shared;";
 
                 return new LiteDatabaseAsync(connectionString);
@@ -66,5 +42,21 @@ namespace Zizi.Bot.Extensions
 
             return services;
         }
+
+        // public static IServiceCollection AddArangoDb(this IServiceCollection services)
+        // {
+        //     services.AddScoped(x =>
+        //     {
+        //         var transport = HttpApiTransport.UsingBasicAuth(
+        //             new Uri("http://35.231.126.181:8529"),
+        //             "zizibot_data",
+        //             "zizibot",
+        //             "winten7768");
+        //
+        //         return new ArangoDBClient(transport);
+        //     });
+        //
+        //     return services;
+        // }
     }
 }
