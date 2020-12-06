@@ -11,6 +11,7 @@ using Zizi.Bot.Common;
 using Zizi.Bot.Enums;
 using Zizi.Bot.IO;
 using Zizi.Bot.Models;
+using Zizi.Bot.Providers;
 using Zizi.Bot.Services;
 using Zizi.Bot.Tools;
 using Zizi.Bot.Tools.GoogleCloud;
@@ -83,11 +84,8 @@ namespace Zizi.Bot.Telegram
             return messageLink;
         }
 
-        private static async Task<TelegramResult> IsMustDelete(string words)
+        public static async Task<List<WordFilter>> GetWordFiltersBase()
         {
-            var sw = Stopwatch.StartNew();
-            var isShould = false;
-            var telegramResult = new TelegramResult();
             // var query = await new Query("word_filter")
             //     .ExecForSqLite(true)
             //     .Where("is_global", 1)
@@ -96,20 +94,39 @@ namespace Zizi.Bot.Telegram
             //
             // var mappedWords = query.ToJson().MapObject<List<WordFilter>>();
 
-            var jsonWords = "local-words".OpenJson();
-            var listWords = (await jsonWords.GetCollectionAsync<WordFilter>()
-                    .ConfigureAwait(false))
-                .AsQueryable()
+
+            // var jsonWords = "local-words".OpenJson();
+            // var listWords = (await jsonWords.GetCollectionAsync<WordFilter>()
+            // .ConfigureAwait(false))
+            // .AsQueryable()
+            // .Where(x => x.IsGlobal)
+            // .ToList();
+
+            // jsonWords.Dispose();
+
+            var collection = await LiteDbProvider.GetCollectionsAsync<WordFilter>()
+                .ConfigureAwait(false);
+
+            var listWords = collection.Query()
                 .Where(x => x.IsGlobal)
                 .ToList();
 
-            jsonWords.Dispose();
+            return listWords;
+        }
+
+        private static async Task<TelegramResult> IsMustDelete(string words)
+        {
+            var sw = Stopwatch.StartNew();
+            var isShould = false;
+            var telegramResult = new TelegramResult();
 
             if (words == null)
             {
                 Log.Information("Scan message skipped because Words is null");
                 return telegramResult;
             }
+
+            var listWords = await GetWordFiltersBase().ConfigureAwait(false);
 
             var partedWord = words.Split(new[] {'\n', '\r', ' ', '\t'},
                 StringSplitOptions.RemoveEmptyEntries);
