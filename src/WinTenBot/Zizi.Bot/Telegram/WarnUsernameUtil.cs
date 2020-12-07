@@ -286,21 +286,19 @@ namespace Zizi.Bot.Telegram
                     diff = noUsernameCount - listLimit;
                 }
 
-                var mentionAll = CreateMentionAll(updateResult);
+                // var mentionAll = CreateMentionAll(updateResult);
 
-                var nameLinks = string.Join("\n", listNoUsername);
-                var sendText =
-                    $"Terdapat {noUsernameCount} Anggota yang belum memasang Username" +
-                    $"\n\n{nameLinks}\n";
+                // var nameLinks = string.Join("\n", listNoUsername);
+                var sendText = $"Terdapat {noUsernameCount} Anggota yang belum memasang Username.\n";
+                // $"\n\n{nameLinks}\n";
 
-                if (diff > 0)
-                {
-                    sendText += $"dan {diff} lainnya.{mentionAll}\n";
-                }
+                // if (diff > 0)
+                // {
+                //     sendText += $"dan {diff} lainnya.{mentionAll}\n";
+                // }
 
-                sendText +=
-                    "\nMasing-masing telah di mute berdasarkan <a href='https://t.me/WinTenDev/41'>Step Mute</a> " +
-                    $"silakan segera pasang Username dan jangan lupa tekan tombol Verifikasi di bawah ini.";
+                sendText += "\nMasing-masing telah di mute berdasarkan <a href='https://t.me/WinTenDev/41'>Step Mute</a> " +
+                            $"silakan segera pasang Username dan jangan lupa tekan tombol Verifikasi di bawah ini.";
 
                 var urlStart = await telegramService.GetUrlStart("start=set-username")
                     .ConfigureAwait(false);
@@ -333,7 +331,7 @@ namespace Zizi.Bot.Telegram
                 }
                 else
                 {
-                    await telegramService.SendTextAsync(sendText, inlineKeyboard, disableWebPreview: true)
+                    await telegramService.SendTextAsync(sendText, inlineKeyboard, disableWebPreview: true, replyToMsgId: 0)
                         .ConfigureAwait(false);
                 }
             }
