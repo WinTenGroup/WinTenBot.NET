@@ -6,6 +6,7 @@ using MonkeyCache;
 using MonkeyCache.FileStore;
 using Serilog;
 using Telegram.Bot.Types;
+using Zizi.Bot.Common;
 using Zizi.Bot.IO;
 using Zizi.Bot.Telegram;
 using Zizi.Bot.Services;
@@ -21,15 +22,23 @@ namespace Zizi.Bot.Tools
             Barrel.ApplicationId = "ZiziBot-Cache";
             BarrelUtils.SetBaseCachePath(cachePath);
 
-            Log.Debug("MonkeyCache initialized.");
+            Log.Debug("Deleting old MonkeyCache");
+            DeleteKeys();
+
+            Log.Information("MonkeyCache is ready.");
         }
 
         public static bool IsCacheExist(string key)
         {
             var isExist = Barrel.Current.Exists(key);
-            Log.Debug("MonkeyCache key {0} is exist? {1}", key, isExist);
+            var isExpired = Barrel.Current.IsExpired(key);
+            var expired = Barrel.Current.GetExpiration(key);
 
-            return isExist;
+            var isValid = isExist || !isExpired;
+
+            Log.Debug("MonkeyCache key {0} isExist {1} isExpired {2} until {3}", key, isExist, isExpired, expired);
+
+            return isValid;
         }
 
         public static void AddCache<T>(this T data, string key)
@@ -48,9 +57,19 @@ namespace Zizi.Bot.Tools
         {
             Log.Information("Getting all Monkeys Cache");
             var keys = Barrel.Current.GetKeys();
-            Log.Debug("Monkeys Count: {0}", keys.Count());
+            Log.Debug("MonKeys: {0}", keys.ToJson(true));
 
             return keys;
+        }
+
+        public static void DeleteKeys(string prefix = "")
+        {
+            var keys = GetKeys().Where(s => s.Contains(prefix));
+
+            if (prefix.IsNotNullOrEmpty()) keys = GetKeys();
+            Log.Debug("Deleting MonkeyCache following keys: {0}", keys.ToJson(true));
+
+            Barrel.Current.Empty(keys.ToArray());
         }
 
         public static bool IsChatCacheExist(this TelegramService telegramService, string key)
@@ -59,15 +78,13 @@ namespace Zizi.Bot.Tools
             var chatId = msg.Chat.Id.ReduceChatId();
             var keyCache = $"{chatId}-{key}";
 
-            var isExist = Barrel.Current.Exists(keyCache);
-            Log.Debug("MonkeyCache key {0} is exist? {1}", key, isExist);
+            var isValid = IsCacheExist(keyCache);
 
-            return isExist;
+            return isValid;
         }
 
         public static T SetChatCache<T>(this Message msg, string key, T data)
         {
-            // var msg = telegramService.Message;
             var chatId = msg.Chat.Id.ReduceChatId();
             var msgId = msg.MessageId;
             var keyCache = $"{chatId}-{key}";
@@ -78,21 +95,14 @@ namespace Zizi.Bot.Tools
 
         public static T SetChatCache<T>(this TelegramService telegramService, string key, T data)
         {
-            var msg = telegramService.Message;
+            var msg = telegramService.AnyMessage;
             msg.SetChatCache(key, data);
-
-            // var chatId = msg.Chat.Id.ReduceChatId();
-            // var msgId = msg.MessageId;
-            // var keyCache = $"{chatId}-{key}";
-            //
-            // Add(keyCache, data);
 
             return data;
         }
 
         public static T GetChatCache<T>(this Message msg, string key)
         {
-            // var msg = telegramService.Message;
             var chatId = msg.Chat.Id.ReduceChatId();
             var msgId = msg.MessageId;
             var keyCache = $"{chatId}-{key}";
@@ -103,14 +113,8 @@ namespace Zizi.Bot.Tools
 
         public static T GetChatCache<T>(this TelegramService telegramService, string key)
         {
-            var msg = telegramService.Message;
+            var msg = telegramService.AnyMessage;
             var data = msg.GetChatCache<T>(key);
-
-            // var chatId = msg.Chat.Id.ReduceChatId();
-            // var msgId = msg.MessageId;
-            // var keyCache = $"{chatId}-{key}";
-
-            // var data = Get<T>(keyCache);
 
             return data;
         }
