@@ -19,6 +19,7 @@ namespace Zizi.Bot.Migrations.MySql
                 .WithColumn("chat_type").AsString(100)
                 .WithColumn("members_count").AsInt64().WithDefaultValue(-1)
                 .WithColumn("event_log_chat_id").AsInt32().WithDefaultValue(0)
+                .WithColumn("is_admin").AsBoolean().WithDefaultValue(0)
                 .WithColumn("enable_bot").AsBoolean().WithDefaultValue(1)
                 .WithColumn("enable_afk_stats").AsBoolean().WithDefaultValue(1)
                 .WithColumn("enable_anti_malfiles").AsBoolean().WithDefaultValue(1)
