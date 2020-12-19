@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,8 +11,8 @@ using Telegram.Bot.Exceptions;
 using Telegram.Bot.Types.Enums;
 using Zizi.Bot.Common;
 using Zizi.Bot.Models;
-using Zizi.Bot.Telegram;
 using Zizi.Bot.Services;
+using Zizi.Bot.Telegram;
 
 namespace Zizi.Bot.Tools
 {
@@ -118,7 +117,7 @@ namespace Zizi.Bot.Tools
                     Log.Debug("CurrentArticleDate: {0}", currentArticleDate);
                 }
 
-                Log.Information("Prepare sending article.");
+                Log.Debug("Prepare sending article.");
 
                 var titleLink = $"{rssTitle} - {rssFeed.Title}".MkUrl(rssFeed.Link);
                 var category = rssFeed.Categories.MkJoin(", ");
@@ -141,11 +140,11 @@ namespace Zizi.Bot.Tools
 
                 if (isExist)
                 {
-                    Log.Information($"This feed has sent to {chatId}");
+                    Log.Information("Last article from feed '{0}' has sent to {1}", rssUrl, chatId);
                     break;
                 }
 
-                Log.Information($"Sending feed to {chatId}");
+                Log.Information("Sending article from feed {0} to {1}", rssUrl, chatId);
 
                 try
                 {
@@ -183,7 +182,7 @@ namespace Zizi.Bot.Tools
                 }
                 catch (ChatNotFoundException chatNotFoundException)
                 {
-                    Log.Information($"May Bot not added in {chatId}.");
+                    Log.Information("May Bot not added in {0}.", chatId);
                     Log.Error(chatNotFoundException.Demystify(), "Chat Not Found");
                 }
                 catch (Exception ex)
@@ -192,7 +191,7 @@ namespace Zizi.Bot.Tools
                     var exMessage = ex.Message;
                     if (exMessage.Contains("bot was blocked by the user"))
                     {
-                        Log.Information("Seem need clearing all RSS Settings and unregister Cron completely!");
+                        Log.Warning("Seem need clearing all RSS Settings and unregister Cron completely!");
                         Log.Debug("Deleting all RSS Settings");
                         await rssService.DeleteAllByChatId(chatId).ConfigureAwait(false);
 
@@ -216,10 +215,10 @@ namespace Zizi.Bot.Tools
 
         public static async Task<string> FindUrlFeed(this string url)
         {
-            Log.Information($"Scanning {url} ..");
+            Log.Information("Scanning {0} ..", url);
             var urls = await FeedReader.GetFeedUrlsFromUrlAsync(url)
                 .ConfigureAwait(false);
-            Log.Information($"UrlFeeds: {urls.ToJson()}");
+            Log.Debug("UrlFeeds: {0}", urls.ToJson());
 
             string feedUrl = "";
             var urlCount = urls.Count();
@@ -249,7 +248,7 @@ namespace Zizi.Bot.Tools
                 Log.Error(ex.Demystify(), "Validating RSS Feed");
             }
 
-            Log.Debug($"{url} IsValidUrlFeed: {isValid}");
+            Log.Debug("{0} IsValidUrlFeed: {1}", url, isValid);
 
             return isValid;
         }

@@ -59,7 +59,7 @@ namespace Zizi.Bot.Services
                 .ConfigureAwait(false);
 
             var isExist = data.Any();
-            Log.Information($"Check RSS History: {isExist}");
+            Log.Debug($"Check RSS History: {isExist}");
 
             return isExist;
         }
