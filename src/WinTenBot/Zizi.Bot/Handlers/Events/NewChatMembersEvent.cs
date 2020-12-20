@@ -42,7 +42,8 @@ namespace Zizi.Bot.Handlers.Events
             }
 
             var newMembers = msg.NewChatMembers;
-            var isBootAdded = await newMembers.IsBotAdded().ConfigureAwait(false);
+            // var isBootAdded = await newMembers.IsBotAdded().ConfigureAwait(false);
+            var isBootAdded = await _telegramService.IsBotAdded(newMembers).ConfigureAwait(false);
             if (isBootAdded)
             {
                 var isRestricted = await _telegramService.EnsureChatRestrictionAsync()
