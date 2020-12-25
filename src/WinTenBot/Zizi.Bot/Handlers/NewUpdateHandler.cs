@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using Serilog;
+using SqlKata.Execution;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
-using Serilog;
-using SqlKata.Execution;
 using Telegram.Bot.Framework.Abstractions;
 using Zizi.Bot.Common;
 using Zizi.Bot.Models.Settings;
@@ -57,11 +58,6 @@ namespace Zizi.Bot.Handlers
                 await next(context, cancellationToken).ConfigureAwait(false);
             }
 
-            if (_telegramService.MessageOrEdited.Text == null)
-            {
-                await next(context, cancellationToken).ConfigureAwait(false);
-            }
-
             // Last, do additional task which bot may do
             EnqueueBackgroundTask();
         }
@@ -69,6 +65,7 @@ namespace Zizi.Bot.Handlers
         private async Task EnqueuePreTask()
         {
             Log.Information("Enqueue pre tasks");
+            var sw = Stopwatch.StartNew();
 
             var message = _telegramService.MessageOrEdited;
             var callbackQuery = _telegramService.CallbackQuery;
@@ -98,6 +95,9 @@ namespace Zizi.Bot.Handlers
 
             await Task.WhenAll(shouldAwaitTasks.ToArray())
                 .ConfigureAwait(false);
+
+            Log.Debug("All preTask completed in {0}", sw.Elapsed);
+            sw.Stop();
         }
 
         private void EnqueueBackgroundTask()
