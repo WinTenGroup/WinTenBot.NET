@@ -62,6 +62,13 @@ namespace Zizi.Bot.Tools
             return keys;
         }
 
+        public static void DeleteExpired()
+        {
+            Log.Information("Deleting Expired MonkeyCache");
+            Barrel.Current.EmptyExpired();
+            Log.Debug("Delete done.");
+        }
+
         public static void DeleteKeys(string prefix = "")
         {
             var keys = GetKeys().Where(s => s.Contains(prefix));
@@ -70,6 +77,7 @@ namespace Zizi.Bot.Tools
             Log.Debug("Deleting MonkeyCache following keys: {0}", keys.ToJson(true));
 
             Barrel.Current.Empty(keys.ToArray());
+            Log.Debug("Delete done.");
         }
 
         public static bool IsChatCacheExist(this TelegramService telegramService, string key)
