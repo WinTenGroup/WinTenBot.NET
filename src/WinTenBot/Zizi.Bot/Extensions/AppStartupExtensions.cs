@@ -55,27 +55,23 @@ namespace Zizi.Bot.Extensions
             return app;
         }
 
-        public static IApplicationBuilder EnsureWebhookSet<TBot>(
-            this IApplicationBuilder app
-        )
-            where TBot : IBot
+        public static IApplicationBuilder EnsureWebhookSet<TBot>(this IApplicationBuilder app) where TBot : IBot
         {
-            using (var scope = app.ApplicationServices.CreateScope())
-            {
-                var logger = scope.ServiceProvider.GetRequiredService<ILogger<Startup>>();
-                var bot = scope.ServiceProvider.GetRequiredService<TBot>();
-                var options = scope.ServiceProvider.GetRequiredService<IOptions<CustomBotOptions<TBot>>>();
-                var botToken = options.Value.ApiToken;
-                var webhookPath = options.Value.WebhookPath;
+            using var scope = app.ApplicationServices.CreateScope();
+            // var logger = scope.ServiceProvider.GetRequiredService<ILogger<Startup>>();
+            var bot = scope.ServiceProvider.GetRequiredService<TBot>();
+            var options = scope.ServiceProvider.GetRequiredService<IOptions<CustomBotOptions<TBot>>>();
 
-                var url = new Uri(new Uri(options.Value.WebhookDomain), $"{webhookPath}/{botToken}/webhook");
-                Log.Information("Url WebHook: {0}", url);
+            var botToken = options.Value.ApiToken;
+            var webhookPath = options.Value.WebhookPath;
 
-                Log.Information("Setting WebHook for bot {0} to URL {1}", typeof(TBot).Name, url);
+            var url = new Uri(new Uri(options.Value.WebhookDomain), $"{webhookPath}/{botToken}/webhook");
+            Log.Information("Url WebHook: {0}", url);
 
-                bot.Client.SetWebhookAsync(url.AbsoluteUri)
-                    .GetAwaiter().GetResult();
-            }
+            Log.Information("Setting WebHook for bot {0} to URL {1}", typeof(TBot).Name, url);
+
+            bot.Client.SetWebhookAsync(url.AbsoluteUri)
+                .GetAwaiter().GetResult();
 
             return app;
         }
