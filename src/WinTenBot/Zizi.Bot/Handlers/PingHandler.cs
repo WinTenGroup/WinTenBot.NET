@@ -38,9 +38,9 @@ namespace Zizi.Bot.Handlers
                                 $"\nUrl WebHook: {getWebHookInfo.Url}" +
                                 $"\nUrl Custom Cert: {getWebHookInfo.HasCustomCertificate}" +
                                 $"\nAllowed Updates: {getWebHookInfo.AllowedUpdates}" +
-                                $"\nPending Count: {getWebHookInfo.PendingUpdateCount}" +
-                                $"\nMaxConnection: {getWebHookInfo.MaxConnections}" +
-                                $"\nLast Error: {getWebHookInfo.LastErrorDate}" +
+                                $"\nPending Count: {(getWebHookInfo.PendingUpdateCount - 1)}" +
+                                $"\nMax Connection: {getWebHookInfo.MaxConnections}" +
+                                $"\nLast Error: {getWebHookInfo.LastErrorDate:yyyy-MM-dd}" +
                                 $"\nError Message: {getWebHookInfo.LastErrorMessage}";
                 }
             }
