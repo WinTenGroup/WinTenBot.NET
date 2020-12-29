@@ -13,6 +13,7 @@ namespace Zizi.Bot.Scheduler
         {
             HangfireJobs.DeleteAllJobs();
 
+            MonkeyCacheRemover();
             StartLogCleanupScheduler();
             // StartSyncWordFilter();
             // StartCronFlushHitActivity();
@@ -30,6 +31,15 @@ namespace Zizi.Bot.Scheduler
             RecurringJob.RemoveIfExists(jobId);
             // RecurringJob.AddOrUpdate(jobId, () => Storage.ClearLogs(path, "Zizi", true), Cron.Hourly);
             RecurringJob.AddOrUpdate(jobId, () => Storage.ClearLog(), Cron.Hourly);
+            RecurringJob.Trigger(jobId);
+        }
+
+        private static void MonkeyCacheRemover()
+        {
+            const string jobId = "monkey-cache-remover";
+            Log.Debug("Starting cron Monkey Cache Remover. ID: {0}", jobId);
+            RecurringJob.RemoveIfExists(jobId);
+            RecurringJob.AddOrUpdate(jobId, () => MonkeyCacheUtil.DeleteExpired(), Cron.Daily);
             RecurringJob.Trigger(jobId);
         }
 
