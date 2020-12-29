@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
@@ -154,21 +154,21 @@ namespace Zizi.Bot.Telegram
 
                 if (fromUsername != hitActivity.FromUsername)
                 {
-                    Log.Information("Username changed detected!");
+                    Log.Debug("Username changed detected!");
                     msgBuild.AppendLine($"Mengubah Username menjadi @{fromUsername}");
                     changesCount++;
                 }
 
                 if (fromFName != hitActivity.FromFirstName)
                 {
-                    Log.Information("First Name changed detected!");
+                    Log.Debug("First Name changed detected!");
                     msgBuild.AppendLine($"Mengubah nama depan menjadi {fromFName}");
                     changesCount++;
                 }
 
                 if (fromLName != hitActivity.FromLastName)
                 {
-                    Log.Information("Last Name changed detected!");
+                    Log.Debug("Last Name changed detected!");
                     msgBuild.AppendLine($"Mengubah nama belakang menjadi {fromLName}");
                     changesCount++;
                 }

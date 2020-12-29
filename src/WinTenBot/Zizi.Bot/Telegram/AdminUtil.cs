@@ -53,7 +53,7 @@ namespace Zizi.Bot.Telegram
             }
 
             var chatMembers = telegramService.GetChatCache<ChatMember[]>(BaseCacheKey);
-            Log.Debug("ChatMemberAdmin: {0}", chatMembers.ToJson(true));
+            // Log.Debug("ChatMemberAdmin: {0}", chatMembers.ToJson(true));
 
             return chatMembers;
         }
@@ -69,7 +69,7 @@ namespace Zizi.Bot.Telegram
             }
 
             var chatMembers = MonkeyCacheUtil.Get<ChatMember[]>(keyCache);
-            Log.Debug("ChatMemberAdmin: {0}", chatMembers.ToJson(true));
+            // Log.Debug("ChatMemberAdmin: {0}", chatMembers.ToJson(true));
 
             return chatMembers;
         }
@@ -87,7 +87,9 @@ namespace Zizi.Bot.Telegram
 
             var isAdmin = chatMembers.Any(admin => userId == admin.User.Id);
 
-            Log.Information("UserId {0} IsAdmin: {1}. Time: {2}", userId, isAdmin, sw.Elapsed);
+            // Log.Information("UserId {0} IsAdmin: {1}. Time: {2}", userId, isAdmin, sw.Elapsed);
+            Log.Debug("Is UserID {0} Admin on Chat {1}? {2}. Time: {3}", userId, message.Chat.Id, isAdmin, sw.Elapsed);
+
             sw.Stop();
 
             return isAdmin;
@@ -102,7 +104,8 @@ namespace Zizi.Bot.Telegram
 
             var isAdmin = chatMembers.Any(admin => userId == admin.User.Id);
 
-            Log.Information("UserId {0} IsAdmin: {1}. Time: {2}", userId, isAdmin, sw.Elapsed);
+            Log.Debug("Check UserID {0} Admin on Chat {1}? {2}. Time: {3}", userId, chatId, isAdmin, sw.Elapsed);
+
             sw.Stop();
 
             return isAdmin;
