@@ -51,8 +51,7 @@ namespace Zizi.Bot.Scheduler
         public static void RegisterFeed(long chatId, string urlFeed)
         {
             var reducedChatId = chatId.ReduceChatId();
-            var encryptedUrl = urlFeed.AesEncrypt();
-            var unique = String.GenerateUniqueId();
+            var unique = String.GenerateUniqueId(5);
 
             var baseId = "rss";
             var cronInMinute = 1;
@@ -79,8 +78,7 @@ namespace Zizi.Bot.Scheduler
             Log.Information("Creating Jobs for {0}", chatId);
 
             RecurringJob.RemoveIfExists(recurringId);
-            RecurringJob.AddOrUpdate(recurringId, ()
-                => RssFeedUtil.ExecBroadcasterAsync(chatId), $"*/{cronInMinute} * * * *");
+            RecurringJob.AddOrUpdate(recurringId, () => RssFeedUtil.ExecBroadcasterAsync(chatId), $"*/{cronInMinute} * * * *");
             RecurringJob.Trigger(recurringId);
 
             Log.Information("Registering RSS Scheduler for {0} complete.", chatId);
