@@ -1,6 +1,9 @@
-# WinTenBot.NET
+# Zizi Bot .NET
 
-Official repository Zizi.Bot, written in .NET
+[![CodeFactor](https://www.codefactor.io/repository/github/wintendev/wintenbot.net/badge)](https://www.codefactor.io/repository/github/wintendev/wintenbot.net)
+[![License](https://img.shields.io/github/license/WinTenDev/WinTenBot.NET?label=License&color=brightgreen&cacheSeconds=3600)](./LICENSE)
+
+Official repository Zizi Bot, written in .NET
 
 # Preparation
 
