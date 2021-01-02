@@ -11,7 +11,7 @@ namespace Zizi.Bot.Scheduler
     {
         public static void StartScheduler()
         {
-            HangfireJobs.DeleteAllJobs();
+            HangfireUtil.DeleteAllJobs();
 
             MonkeyCacheRemover();
             StartLogCleanupScheduler();

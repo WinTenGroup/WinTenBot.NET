@@ -32,7 +32,7 @@ namespace Zizi.Bot.Extensions
                 {
                     config
                         .UseSerilogLogProvider()
-                        .UseStorage(HangfireJobs.GetMysqlStorage(connStr))
+                        .UseStorage(HangfireUtil.GetMysqlStorage(connStr))
                         // .UseStorage(HangfireJobs.GetSqliteStorage())
                         // .UseStorage(HangfireJobs.GetLiteDbStorage())
                         // .UseStorage(HangfireJobs.GetRedisStorage())

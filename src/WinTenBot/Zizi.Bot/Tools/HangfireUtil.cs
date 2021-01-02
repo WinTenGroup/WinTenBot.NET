@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace Zizi.Bot.Tools
 {
-    public static class HangfireJobs
+    public static class HangfireUtil
     {
         public static void DeleteAllJobs()
         {

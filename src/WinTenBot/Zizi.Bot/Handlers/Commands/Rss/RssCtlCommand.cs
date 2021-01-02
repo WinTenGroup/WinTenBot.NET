@@ -42,7 +42,7 @@ namespace Zizi.Bot.Handlers.Commands.Rss
                     case "stop":
                         await _telegramService.AppendTextAsync("Stopping RSS Service")
                             .ConfigureAwait(false);
-                            HangfireJobs.DeleteAllJobs();
+                            HangfireUtil.DeleteAllJobs();
                         await _telegramService.AppendTextAsync("Stop successfully.")
                             .ConfigureAwait(false);
                         break;
