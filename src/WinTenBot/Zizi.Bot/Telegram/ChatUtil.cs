@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Humanizer;
 using Serilog;
 using Zizi.Bot.Common;
 using Zizi.Bot.Services;
@@ -23,7 +24,7 @@ namespace Zizi.Bot.Telegram
 
         public static async Task EnsureChatHealthAsync(this TelegramService telegramService)
         {
-            Log.Debug("Ensuring chat health..");
+            Log.Information("Ensuring chat health..");
 
             var message = telegramService.Message;
             var chatId = message.Chat.Id;
@@ -32,24 +33,18 @@ namespace Zizi.Bot.Telegram
                 Message = message
             };
 
-            var isExist = await settingsService.IsSettingExist().ConfigureAwait(false);
-            if (isExist)
-            {
-                Log.Debug("Settings for chatId {0} is exist, done.", chatId);
-                return;
-            }
-
-            Log.Information("preparing restore health on chatId {0}..", chatId);
+            Log.Information("Preparing restore health on chatId {0}..", chatId);
             var data = new Dictionary<string, object>()
             {
                 {"chat_id", chatId},
                 {"chat_title", message.Chat.Title ?? @"N\A"},
-                {"chat_type", message.Chat.Type.ToString()}
+                {"chat_type", message.Chat.Type.Humanize()},
+                {"is_admin", telegramService.IsBotAdmin}
             };
 
             var saveSettings = await settingsService.SaveSettingsAsync(data)
                 .ConfigureAwait(false);
-            Log.Debug($"Ensure Settings: {saveSettings}");
+            Log.Debug("Ensure Settings: {0}", saveSettings);
 
             await settingsService.UpdateCache()
                 .ConfigureAwait(false);
