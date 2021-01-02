@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
@@ -37,11 +37,11 @@ namespace Zizi.Bot.Telegram
 
         public static async Task AfkCheckAsync(this TelegramService telegramService)
         {
+            var sw = Stopwatch.StartNew();
             Log.Information("Starting check AFK");
 
             var message = telegramService.MessageOrEdited;
 
-            // var settingService = new SettingsService(message);
             var chatSettings = telegramService.CurrentSetting;
             if (!chatSettings.EnableAfkStat)
             {
@@ -75,6 +75,9 @@ namespace Zizi.Bot.Telegram
                 await afkService.SaveAsync(data).ConfigureAwait(false);
                 await afkService.UpdateCacheAsync().ConfigureAwait(false);
             }
+
+            Log.Debug("AFK check completed. In {0}", sw.Elapsed);
+            sw.Stop();
         }
 
         public static async Task CheckMataZiziAsync(this TelegramService telegramService)
@@ -102,23 +105,6 @@ namespace Zizi.Bot.Telegram
                     .ConfigureAwait(false);
 
                 Log.Information("Starting SangMata check..");
-
-                // var query = await new Query("hit_activity")
-                //     .ExecForMysql(true)
-                //     .Where("from_id", fromId)
-                //     .Where("chat_id", chatId)
-                //     .OrderByDesc("timestamp")
-                //     .Limit(1)
-                //     .GetAsync()
-                //     .ConfigureAwait(false);
-
-                // if (!query.Any())
-                // {
-                //     Log.Information($"This may first Hit from User {fromId}");
-                //     return;
-                // }
-
-                // var hitActivity = query.ToJson().MapObject<List<HitActivity>>().FirstOrDefault();
 
                 var hitActivity = telegramService.GetChatCache<HitActivity>(fromId.ToString());
                 if (hitActivity == null)
