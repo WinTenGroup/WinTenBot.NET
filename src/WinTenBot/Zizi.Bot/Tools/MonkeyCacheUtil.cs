@@ -32,9 +32,9 @@ namespace Zizi.Bot.Tools
         {
             var isExist = Barrel.Current.Exists(key);
             var isExpired = Barrel.Current.IsExpired(key);
-            var expired = Barrel.Current.GetExpiration(key);
+            var expired = Barrel.Current.GetExpiration(key)?.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss tt zz");
 
-            var isValid = isExist || !isExpired;
+            var isValid = isExist && !isExpired;
 
             Log.Debug("MonkeyCache key {0} isExist {1} isExpired {2} until {3}", key, isExist, isExpired, expired);
 
