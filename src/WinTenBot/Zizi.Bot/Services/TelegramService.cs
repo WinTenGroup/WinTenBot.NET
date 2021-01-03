@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
@@ -18,7 +17,6 @@ using Zizi.Bot.IO;
 using Zizi.Bot.Models;
 using Zizi.Bot.Models.Settings;
 using Zizi.Bot.Telegram;
-using Zizi.Bot.Tools;
 using File = System.IO.File;
 
 namespace Zizi.Bot.Services
@@ -267,6 +265,12 @@ namespace Zizi.Bot.Services
             catch (ApiRequestException apiRequestException)
             {
                 Log.Error(apiRequestException, $"SendMessage Ex1");
+
+                if (apiRequestException.Message.Contains("Forbidden"))
+                {
+                    Log.Warning("Bot Forbidden. {0}", apiRequestException.Message);
+                    return send;
+                }
 
                 try
                 {
