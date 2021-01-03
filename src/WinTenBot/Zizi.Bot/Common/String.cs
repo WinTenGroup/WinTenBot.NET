@@ -46,8 +46,8 @@ namespace Zizi.Bot.Common
 
         public static async Task ToFile(this string content, string path)
         {
-            Log.Information($"Writing file to {path}");
-            await File.WriteAllTextAsync(path, content);
+            Log.Debug("Writing file to {0}", path);
+            await File.WriteAllTextAsync(path, content).ConfigureAwait(false);
 
             //            var sw = new StreamWriter(path);
             //            sw.Write(content);
@@ -252,7 +252,7 @@ namespace Zizi.Bot.Common
             return string.Format($"{Math.Round(size, 2)} {norm[x]}{suffix}", MidpointRounding.AwayFromZero);
         }
 
-        public static string GenerateUniqueId()
+        public static string GenerateUniqueId(int lengthId = 11)
         {
             var builder = new StringBuilder();
             Enumerable
@@ -261,7 +261,7 @@ namespace Zizi.Bot.Common
                 .Concat(Enumerable.Range(97, 26).Select(e => ((char) e).ToString()))
                 .Concat(Enumerable.Range(0, 10).Select(e => e.ToString()))
                 .OrderBy(e => Guid.NewGuid())
-                .Take(11)
+                .Take(lengthId)
                 .ToList()
                 .ForEach(e => builder.Append(e));
 
