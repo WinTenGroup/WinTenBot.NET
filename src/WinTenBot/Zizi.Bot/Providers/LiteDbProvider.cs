@@ -11,9 +11,16 @@ namespace Zizi.Bot.Providers
     {
         private static LiteDatabase LiteDb { get; set; }
 
-        public static void OpenDatabase(string dbName = "Local_LiteDB.db")
+        private static string GetDbName(string dbName = "Local_LiteDB.db")
         {
-            var fileName = Path.Combine("Storage", "Common", dbName).EnsureDirectory();
+            Log.Debug("Getting LiteDB FileName: {0}", dbName);
+            var fileName = Path.Combine("Storage", "Data", dbName).EnsureDirectory();
+            return fileName;
+        }
+
+        public static void InitializeLiteDb(string dbName = "Local_LiteDB.db")
+        {
+            var fileName = GetDbName();
             var connBuild = new ConnectionString()
             {
                 Filename = fileName,
