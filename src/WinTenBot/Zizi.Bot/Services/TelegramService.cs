@@ -149,7 +149,7 @@ namespace Zizi.Bot.Services
             var chatId = Message.Chat.Id;
             var memberCount = await Client.GetChatMembersCountAsync(chatId)
                 .ConfigureAwait(false);
-            $"Member count on {chatId} is {memberCount}".LogInfo();
+            Log.Debug("Member count on {0} is {1}", chatId, memberCount);
 
             return memberCount;
         }
@@ -230,7 +230,7 @@ namespace Zizi.Bot.Services
 
         #region Message
 
-        public async Task<Message> SendTextAsync(string sendText, InlineKeyboardMarkup replyMarkup = null,
+        public async Task<Message> SendTextAsync(string sendText, IReplyMarkup replyMarkup = null,
             int replyToMsgId = -1, long customChatId = -1, bool disableWebPreview = false)
         {
             TimeProc = Message.Date.GetDelay();
