@@ -44,7 +44,7 @@ namespace Zizi.Bot.Tools
         public static void AddCache<T>(this T data, string key)
         {
             Log.Information("Adding Monkeys with key: {0}", key);
-            Barrel.Current.Add(key, data, TimeSpan.FromDays(1));
+            Barrel.Current.Add(key, data, TimeSpan.FromMinutes(1));
         }
 
         public static T Get<T>(string key)
