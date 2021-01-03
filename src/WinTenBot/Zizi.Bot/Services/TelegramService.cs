@@ -94,7 +94,9 @@ namespace Zizi.Bot.Services
                 if (AnyMessage.Text != null) MessageTextParts = AnyMessage.Text.SplitText(" ").ToArray();
 
                 CheckIsPrivateChat();
-                var result = CheckIsBotAdmin().Result;
+
+                CheckBotAdmin().GetAwaiter();
+                CheckFromAdmin().GetAwaiter();
             }
 
             var settingService = new SettingsService(AnyMessage);
@@ -178,22 +180,36 @@ namespace Zizi.Bot.Services
         //     return chatMembers;
         // }
 
-        private async Task<bool> CheckIsBotAdmin()
+        private async Task CheckBotAdmin()
         {
+            Log.Debug("Starting check is Bot Admin.");
+
             var chat = AnyMessage.Chat;
             var chatId = chat.Id;
+            var from = AnyMessage.From;
 
             var me = await Client.GetMeAsync().ConfigureAwait(false);
 
-            if (IsPrivateChat) return false;
+            if (IsPrivateChat) return;
 
-            // var isBotAdmin = await telegramService.IsAdminChat(me.Id).ConfigureAwait(false);
             var isBotAdmin = await Client.IsAdminChat(chatId, me.Id).ConfigureAwait(false);
-            Log.Debug("Is {0} Admin on Chat {1}? {2}", me.Username, chatId, isBotAdmin);
 
             IsBotAdmin = isBotAdmin;
+        }
 
-            return isBotAdmin;
+        private async Task CheckFromAdmin()
+        {
+            Log.Debug("Starting check is From Admin.");
+
+            var chat = AnyMessage.Chat;
+            var chatId = chat.Id;
+            var from = AnyMessage.From;
+
+            if (IsPrivateChat) return;
+
+            var isFromAdmin = await Client.IsAdminChat(chatId, from.Id);
+
+            IsFromAdmin = isFromAdmin;
         }
 
         private bool CheckIsPrivateChat()
