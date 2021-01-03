@@ -10,6 +10,7 @@ using Serilog;
 using Zizi.Bot.Models;
 using Zizi.Bot.Models.Settings;
 using Zizi.Bot.Scheduler;
+using Zizi.Bot.Services.HangfireJobs;
 using Zizi.Bot.Tools;
 
 namespace Zizi.Bot.Extensions
@@ -79,6 +80,17 @@ namespace Zizi.Bot.Extensions
 
             BotScheduler.StartScheduler();
 
+
+            return app;
+        }
+
+        public static IApplicationBuilder RegisterHangfireAdminChecker(this IApplicationBuilder app)
+        {
+            var jobId = "admin-checker";
+
+            Log.Debug("Registering Hangfire Admin checker");
+            RecurringJob.AddOrUpdate<ChatService>(jobId, chatService => chatService.CheckBotAdminOnGroup(), Cron.Daily);
+            Log.Debug("Hangfire Admin checker successfully registered with ID: {0}", jobId);
 
             return app;
         }

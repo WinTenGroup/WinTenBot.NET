@@ -14,6 +14,7 @@ using Zizi.Bot.Interfaces;
 using Zizi.Bot.Models;
 using Zizi.Bot.Options;
 using Zizi.Bot.Services;
+using Zizi.Bot.Services.HangfireJobs;
 using Zizi.Bot.Tools;
 
 namespace Zizi.Bot
@@ -43,8 +44,10 @@ namespace Zizi.Bot
             services
                 .AddTransient<ZiziBot>()
                 .Configure<BotOptions<ZiziBot>>(Configuration.GetSection("ZiziBot"))
-                .Configure<CustomBotOptions<ZiziBot>>(Configuration.GetSection("ZiziBot"))
-                .AddScoped<IWeatherService, WeatherService>();
+                .Configure<CustomBotOptions<ZiziBot>>(Configuration.GetSection("ZiziBot"));
+
+            services.AddScoped<IWeatherService, WeatherService>()
+                .AddScoped<ChatService>();
 
             services.AddFluentMigration(Configuration.GetConnectionString("MySql"));
             services.AddSqlKataMysql(Configuration.GetConnectionString("MySql"));
@@ -99,6 +102,7 @@ namespace Zizi.Bot
             }
 
             app.UseHangfireDashboardAndServer();
+            app.RegisterHangfireAdminChecker();
 
             app.Run(async context =>
                 await context.Response.WriteAsync("Hello World!")
