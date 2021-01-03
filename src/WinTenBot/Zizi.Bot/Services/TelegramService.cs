@@ -59,6 +59,8 @@ namespace Zizi.Bot.Services
 
         public TelegramService(IUpdateContext updateContext)
         {
+            var sw = Stopwatch.StartNew();
+
             Context = updateContext;
             Client = updateContext.Bot.Client;
             var update = updateContext.Update;
@@ -101,6 +103,9 @@ namespace Zizi.Bot.Services
 
             var settingService = new SettingsService(AnyMessage);
             CurrentSetting = settingService.ReadCache().Result;
+
+            Log.Debug("TelegramService complete in {0}", sw.Elapsed);
+            sw.Stop();
         }
 
         public async Task<string> GetMentionAdminsStr()
