@@ -14,6 +14,8 @@ namespace Zizi.Bot.Models
         [JsonProperty("event_log_chat_id")]
         public long EventLogChatId { get; set; }
 
+        public bool IsAdmin { get; set; }
+
         [JsonProperty("welcome_message")]
         public string WelcomeMessage { get; set; }
 
