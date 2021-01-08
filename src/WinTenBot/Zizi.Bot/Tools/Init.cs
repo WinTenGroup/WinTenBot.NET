@@ -22,7 +22,7 @@ namespace Zizi.Bot.Tools
             Log.Information("Name: {0}", BotSettings.ProductName);
             Log.Information("Version: {0}", BotSettings.ProductVersion);
 
-            LiteDbProvider.OpenDatabase();
+            LiteDbProvider.InitializeLiteDb();
             RavenDbProvider.InitDatabase();
             MonkeyCacheUtil.SetupCache();
 
