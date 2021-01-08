@@ -16,5 +16,20 @@ namespace Zizi.Bot.Telegram
         {
             return client.GetWebhookInfoAsync();
         }
+
+        public static async Task NotifyPendingCount(this TelegramService telegramService, int pendingLimit = 100)
+        {
+            var webhookInfo = await telegramService.GetWebhookInfo();
+
+            var pendingCount = webhookInfo.PendingUpdateCount;
+            if (pendingCount != pendingLimit)
+            {
+                await telegramService.SendEventCoreAsync($"Pending Count larger than {pendingLimit}", repToMsgId: 0);
+            }
+            else
+            {
+                Log.Information("Pending count is under {0}", pendingLimit);
+            }
+        }
     }
 }

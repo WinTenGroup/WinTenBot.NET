@@ -79,7 +79,8 @@ namespace Zizi.Bot
             BotSettings.HostingEnvironment = env;
 
             app.UseFluentMigration();
-
+            app.ConfigureNewtonsoftJson();
+            app.ConfigureDapper();
             app.UseSerilogRequestLogging();
 
             app.UseEmbeddedRavenDBServer();

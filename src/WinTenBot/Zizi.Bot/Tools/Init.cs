@@ -13,8 +13,8 @@ namespace Zizi.Bot.Tools
     {
         public static void RunAll()
         {
-            DefaultTypeMap.MatchNamesWithUnderscores = true;
-            ConfigureNewtonsoftJson();
+            // DefaultTypeMap.MatchNamesWithUnderscores = true;
+            // ConfigureNewtonsoftJson();
 
             BotSettings.FillSettings();
             Logger.SetupLogger();
