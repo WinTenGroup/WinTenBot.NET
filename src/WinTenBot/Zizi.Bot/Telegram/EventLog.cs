@@ -24,13 +24,13 @@ namespace Zizi.Bot.Telegram
 
             foreach (var chatId in listLogTarget)
             {
-                await telegramService.SendEventCoreAsync(text, chatId, true, replyToMsgId: repToMsgId)
+                await telegramService.SendEventCoreAsync(text, chatId, true, repToMsgId: repToMsgId)
                     .ConfigureAwait(false);
             }
         }
 
         public static async Task SendEventCoreAsync(this TelegramService telegramService, string additionalText = "N/A",
-            long customChatId = 0, bool disableWebPreview = false, int replyToMsgId = -1)
+            long customChatId = 0, bool disableWebPreview = false, int repToMsgId = -1)
         {
             var message = telegramService.MessageOrEdited;
             var chatTitle = message.Chat.Title ?? message.From.FirstName;
@@ -47,7 +47,7 @@ namespace Zizi.Bot.Telegram
                           $"\n\n#{message.Type} => #ID{chatId.ToString().TrimStart('-')}";
 
             await telegramService
-                .SendTextAsync(sendLog, customChatId: customChatId, disableWebPreview: disableWebPreview, replyToMsgId: replyToMsgId)
+                .SendTextAsync(sendLog, customChatId: customChatId, disableWebPreview: disableWebPreview, replyToMsgId: repToMsgId)
                 .ConfigureAwait(false);
         }
     }
