@@ -54,6 +54,8 @@ namespace Zizi.Bot.Handlers.Commands.Tags
 
                 await _telegramService.EditAsync(sendText)
                     .ConfigureAwait(false);
+                await _tagsService.UpdateCacheAsync(msg)
+                    .ConfigureAwait(false);
                 return;
             }
             else
