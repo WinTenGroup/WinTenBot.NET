@@ -1,6 +1,3 @@
-using Dapper;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using Serilog;
 using Zizi.Bot.Common;
 using Zizi.Bot.Models;
@@ -50,18 +47,19 @@ namespace Zizi.Bot.Tools
         //         .UseColouredConsoleLogProvider();
         // }
 
-        private static void ConfigureNewtonsoftJson()
-        {
-            var contractResolver = new DefaultContractResolver()
-            {
-                NamingStrategy = new SnakeCaseNamingStrategy()
-            };
-
-            JsonConvert.DefaultSettings = () => new JsonSerializerSettings()
-            {
-                DateTimeZoneHandling = DateTimeZoneHandling.Local,
-                ContractResolver = contractResolver
-            };
-        }
+        // private static void ConfigureNewtonsoftJson()
+        // {
+        //     var contractResolver = new DefaultContractResolver()
+        //     {
+        //         NamingStrategy = new SnakeCaseNamingStrategy()
+        //     };
+        //
+        //     JsonConvert.DefaultSettings = () => new JsonSerializerSettings()
+        //     {
+        //         DateTimeZoneHandling = DateTimeZoneHandling.Local,
+        //         ContractResolver = contractResolver,
+        //         ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+        //     };
+        // }
     }
 }
