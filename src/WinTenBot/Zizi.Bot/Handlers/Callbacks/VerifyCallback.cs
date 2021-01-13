@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Serilog;
 using Telegram.Bot.Types;
@@ -49,19 +50,55 @@ namespace Zizi.Bot.Handlers.Callbacks
                 }
                 else
                 {
-                    await Telegram.RestrictMemberAsync(fromId, true)
-                        .ConfigureAwait(false);
-
                     var warnJson = await WarnUsernameUtil.GetWarnUsernameCollectionAsync()
                         .ConfigureAwait(false);
-                    var isExist = warnJson.AsQueryable().Any(x => x.FromId == fromId);
-                    Log.Debug("Is UserId: {0} exist? => {1}", fromId, isExist);
-                    if (isExist)
+                    var listWarns = warnJson.AsQueryable().ToList();
+
+                    foreach (var warn in listWarns)
                     {
-                        var delete = await warnJson.DeleteManyAsync(x =>
-                                x.FromId == fromId && x.ChatId == chatId)
-                            .ConfigureAwait(false);
-                        Log.Debug("Deleting {0} result {1}", fromId, delete);
+                        var userId = warn.FromId;
+                        var isExist = listWarns.Any(x => x.FromId == userId);
+                        Log.Debug("Is UserId: {0} exist? => {1}", userId, isExist);
+
+                        try
+                        {
+                            var chatMember = await Telegram.Client.GetChatMemberAsync(chatId, userId);
+
+                            if (chatMember.User.IsNoUsername())
+                            {
+                                Log.Debug("User {0} does not set an Username", userId);
+                            }
+                            else
+                            {
+                                await Telegram.RestrictMemberAsync(fromId, true)
+                                    .ConfigureAwait(false);
+
+
+                                if (isExist)
+                                {
+                                    var delete = await warnJson.DeleteManyAsync(x =>
+                                            x.FromId == userId && x.ChatId == chatId)
+                                        .ConfigureAwait(false);
+                                    Log.Debug("Deleting {0} result {1}", userId, delete);
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.Error(ex, "Error Occured.");
+
+                            if (ex.Message.Contains("user not found"))
+                            {
+                                Log.Debug("Maybe UserID '{0}' has leave from ChatID '{1}' ", userId, chatId);
+                                if (isExist)
+                                {
+                                    var delete = await warnJson.DeleteManyAsync(x =>
+                                            x.FromId == userId && x.ChatId == chatId)
+                                        .ConfigureAwait(false);
+                                    Log.Debug("Deleting {0} result {1}", userId, delete);
+                                }
+                            }
+                        }
                     }
 
                     answer = "Terima kasih sudah verifikasi Username!";
