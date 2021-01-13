@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Humanizer;
 using Serilog;
+using Telegram.Bot.Types.Enums;
 using Zizi.Bot.Common;
 using Zizi.Bot.Services;
 
@@ -48,6 +49,36 @@ namespace Zizi.Bot.Telegram
 
             await settingsService.UpdateCache()
                 .ConfigureAwait(false);
+        }
+
+        public static bool IsPrivateChat(this TelegramService telegramService)
+        {
+            var messageOrEdited = telegramService.MessageOrEdited;
+            var chat = messageOrEdited.Chat;
+            var isPrivate = chat.Type == ChatType.Private;
+
+            Log.Debug("Chat {0} IsPrivateChat => {1}", chat.Id, isPrivate);
+            return isPrivate;
+        }
+
+        public static bool IsGroupChat(this TelegramService telegramService)
+        {
+            var messageOrEdited = telegramService.MessageOrEdited;
+            var chat = messageOrEdited.Chat;
+            var isGroupChat = chat.Type == ChatType.Group || chat.Type == ChatType.Supergroup;
+
+            Log.Debug("Chat {0} IsGroupChat => {1}", chat.Id, isGroupChat);
+            return isGroupChat;
+        }
+
+        public static bool IsChannel(this TelegramService telegramService)
+        {
+            var messageOrEdited = telegramService.MessageOrEdited;
+            var chat = messageOrEdited.Chat;
+            var isChannel = chat.Type == ChatType.Channel;
+
+            Log.Debug("Chat {0} IsChannel => {1}", chat.Id, isChannel);
+            return isChannel;
         }
     }
 }

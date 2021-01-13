@@ -46,19 +46,9 @@ namespace Zizi.Bot.Telegram
         {
             var isAdmin = await IsAdminGroup(telegramService)
                 .ConfigureAwait(false);
-            var isPrivateChat = IsPrivateChat(telegramService);
+            var isPrivateChat = telegramService.IsPrivateChat();
 
             return isAdmin || isPrivateChat;
-        }
-
-        public static bool IsPrivateChat(this TelegramService telegramService)
-        {
-            var messageOrEdited = telegramService.MessageOrEdited;
-            var chat = messageOrEdited.Chat;
-            var isPrivate = chat.Type == ChatType.Private;
-
-            Log.Debug("Chat {0} IsPrivateChat => {1}", chat.Id, isPrivate);
-            return isPrivate;
         }
 
         public static async Task<bool> IsAdminGroup(this TelegramService telegramService, int userId = -1)
@@ -70,7 +60,7 @@ namespace Zizi.Bot.Telegram
             var fromId = message.From.Id;
             var isAdmin = false;
 
-            if (IsPrivateChat(telegramService)) return false;
+            if (telegramService.IsPrivateChat()) return false;
             if (userId >= 0) fromId = userId;
 
             var admins = await client.GetChatAdministratorsAsync(chatId)
