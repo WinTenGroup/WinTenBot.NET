@@ -83,7 +83,7 @@ namespace Zizi.Bot
             app.ConfigureDapper();
             app.UseSerilogRequestLogging();
 
-            app.UseEmbeddedRavenDBServer();
+            // app.UseEmbeddedRavenDBServer();
 
             if (env.IsDevelopment())
             {
