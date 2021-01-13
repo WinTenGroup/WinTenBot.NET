@@ -338,12 +338,17 @@ src/WinTenBot/WinTenBot/Storage/Caches/
 src/WinTenBot/WinTenBot/Storage/MonkeyCache/
 src/WinTenBot/WinTenBot/Storage/JsonCache/
 src/WinTenBot/WinTenBot/Storage/Learning/
-
 src/WinTenBot/WinTenBot/appsettings.json
-src/WinTenBot/Zizi.Hook/appsettings.json
-src/WinTenBot/Zizi.WebApi/appsettings.json
-src/WinTenBot/Zizi.Portal/appsettings.json
 
-src/WinTenBot/Zizi.Bot/Storage/MonkeyCache/
-src/WinTenBot/Zizi.Bot/Storage/JsonCache/
-src/WinTenBot/Zizi.Bot/Storage/Common/
+/src/WinTenBot/Zizi.Hook/appsettings.json
+/src/WinTenBot/Zizi.WebApi/appsettings.json
+/src/WinTenBot/Zizi.Portal/appsettings.json
+
+/src/WinTenBot/Zizi.Bot/Storage/MonkeyCache/
+/src/WinTenBot/Zizi.Bot/Storage/JsonCache/
+/src/WinTenBot/Zizi.Bot/Storage/Common/
+/src/WinTenBot/Zizi.Bot/Storage/MachineLearning/
+
+/src/WinTenBot/Zizi.Mirror/Storage/Common/
+/src/WinTenBot/Zizi.Mirror/Storage/Data/
+/src/WinTenBot/Zizi.Mirror/appsettings.json
