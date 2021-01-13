@@ -11,6 +11,8 @@ namespace Zizi.Bot.Telegram
 {
     public static class BotUtil
     {
+        private const string GetMeCacheKey = "getme";
+
         public static async Task<bool> IsBotAdmin(this TelegramService telegramService)
         {
             var message = telegramService.MessageOrEdited;
@@ -35,10 +37,37 @@ namespace Zizi.Bot.Telegram
             return $"https://t.me/{username}?{param}";
         }
 
+        public static async Task<string> GetUrlStart(this ITelegramBotClient botClient, string param)
+        {
+            var getMe = await botClient.GetMe();
+
+            var username = getMe.Username;
+            return $"https://t.me/{username}?{param}";
+        }
+
         public static async Task<User> GetMeAsync(this TelegramService telegramService)
         {
             return await telegramService.Client.GetMeAsync()
                 .ConfigureAwait(false);
+        }
+
+        public static async Task<User> GetMe(this ITelegramBotClient botClient)
+        {
+            Log.Debug("Request GetMe");
+
+            var isCacheExist = MonkeyCacheUtil.IsCacheExist(GetMeCacheKey);
+            if (!isCacheExist)
+            {
+                Log.Debug("Request GetMe API");
+                var getMe = await botClient.GetMeAsync()
+                    .ConfigureAwait(false);
+
+                Log.Debug("Updating cache");
+                getMe.AddCache(GetMeCacheKey);
+            }
+
+            var fromCache = MonkeyCacheUtil.Get<User>(GetMeCacheKey);
+            return fromCache;
         }
 
         public static async Task<bool> IsBeta(this TelegramService telegramService)
