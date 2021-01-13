@@ -1,4 +1,4 @@
-﻿using Telegram.Bot.Framework;
+using Telegram.Bot.Framework;
 using Telegram.Bot.Framework.Abstractions;
 using Zizi.Bot.Handlers;
 using Zizi.Bot.Handlers.Commands.Additional;
@@ -52,6 +52,7 @@ namespace Zizi.Bot.Extensions
                                         .UseCommand<BanCommand>("ban")
                                         .UseCommand<BotCommand>("bot")
                                         .UseCommand<CatCommand>("cat")
+                                        .UseCommand<CheckResiCommand>("resi")
                                         .UseCommand<CovidCommand>("covid")
                                         .UseCommand<DebugCommand>("dbg")
                                         .UseCommand<DeleteBanCommand>("dban")

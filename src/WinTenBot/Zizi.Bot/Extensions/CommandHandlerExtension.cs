@@ -26,6 +26,7 @@ namespace Zizi.Bot.Extensions
                 .AddScoped<CovidCommand>()
                 .AddScoped<WgetCommand>()
                 .AddScoped<AllDebridCommand>()
+                .AddScoped<CheckResiCommand>()
                 .AddScoped<StickerPackCommand>();
         }
 

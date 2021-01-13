@@ -18,6 +18,7 @@ namespace Zizi.Bot.Models.Settings
         public DataDogConfig DataDogConfig { get; set; }
         
         public AllDebridConfig AllDebridConfig { get; set; }
+        public PigooraConfig PigooraConfig { get; set; }
         public GoogleCloudConfig GoogleCloudConfig { get; set; }
         public OcrSpaceConfig OcrSpaceConfig { get; set; }
         public UptoboxConfig UptoboxConfig { get; set; }
