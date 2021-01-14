@@ -48,7 +48,7 @@ namespace Zizi.Bot.Handlers.Commands.Core
                                    $"\nAllowed Updates: {getWebHookInfo.AllowedUpdates}" +
                                    $"\nPending Count: {getWebHookInfo.PendingUpdateCount}" +
                                    $"\nMaxConnection: {getWebHookInfo.MaxConnections}" +
-                                   $"\nLast Error: {getWebHookInfo.LastErrorDate}" +
+                                   $"\nLast Error: {getWebHookInfo.LastErrorDate:yyyy-MM-dd hh:mm:ss zz}" +
                                    $"\nError Message: {getWebHookInfo.LastErrorMessage}";
 
                     await _telegramService.AppendTextAsync(hookInfo, keyboard)
