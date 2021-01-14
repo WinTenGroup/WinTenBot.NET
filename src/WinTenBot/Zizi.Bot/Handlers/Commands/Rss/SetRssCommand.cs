@@ -70,7 +70,8 @@ namespace Zizi.Bot.Handlers.Commands.Rss
                         await _rssService.SaveRssSettingAsync(data);
 
                         await _telegramService.AppendTextAsync("Memastikan Scheduler sudah berjalan");
-                        chatId.RegisterScheduler();
+                        RssScheduler.RegisterFeed(chatId, url);
+                        // chatId.RegisterScheduler();
 
                         await _telegramService.AppendTextAsync($"Tautan berhasil di simpan");
                     }
