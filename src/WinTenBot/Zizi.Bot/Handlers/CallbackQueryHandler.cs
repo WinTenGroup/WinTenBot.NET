@@ -27,6 +27,12 @@ namespace Zizi.Bot.Handlers
 
             switch (partsCallback[0]) // Level 0
             {
+                case "pong":
+                case "PONG":
+                    var pingResult = new PingCallback(_telegramService);
+                    Log.Information("PingResult: {0}", pingResult.ToJson(true));
+                    break;
+
                 case "action":
                     var callbackResult = new ActionCallback(_telegramService);
                     Log.Information($"ActionResult: {callbackResult.ToJson(true)}");
