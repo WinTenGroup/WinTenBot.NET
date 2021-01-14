@@ -51,7 +51,7 @@ namespace Zizi.Bot
                 .AddScoped<CekResiService>();
 
             services.AddFluentMigration(Configuration.GetConnectionString("MySql"));
-            services.AddSqlKataMysql(Configuration.GetConnectionString("MySql"));
+            services.AddSqlKataMysql();
             services.AddLiteDb();
             services.AddRavenDb();
 
