@@ -4,6 +4,8 @@
         <RuntimeIdentifiers>win-x64;linux-x64</RuntimeIdentifiers>
         <LangVersion>8</LangVersion>
         <UserSecretsId>355a95b3-d179-4f20-9437-b61e4ca8946b</UserSecretsId>
+        <AssemblyVersion>3.2021.01</AssemblyVersion>
+        <FileVersion>3.2021.01</FileVersion>
     </PropertyGroup>
     <ItemGroup>
         <Folder Include="wwwroot\" />

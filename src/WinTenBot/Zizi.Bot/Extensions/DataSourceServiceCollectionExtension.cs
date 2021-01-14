@@ -45,21 +45,5 @@ namespace Zizi.Bot.Extensions
 
             return services;
         }
-
-        // public static IServiceCollection AddArangoDb(this IServiceCollection services)
-        // {
-        //     services.AddScoped(x =>
-        //     {
-        //         var transport = HttpApiTransport.UsingBasicAuth(
-        //             new Uri("http://35.231.126.181:8529"),
-        //             "zizibot_data",
-        //             "zizibot",
-        //             "winten7768");
-        //
-        //         return new ArangoDBClient(transport);
-        //     });
-        //
-        //     return services;
-        // }
     }
 }
