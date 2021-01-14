@@ -35,7 +35,7 @@ namespace Zizi.Bot.Handlers.Commands.Additional
             }
 
             await _telegramService.EditAsync("🔍 Sedang memeriksa nomor Resi");
-            var runCekResi = await _cekResiService.RunCekResi(resi);
+            var runCekResi = await _cekResiService.GetResi(resi);
             Log.Debug("Check Results: {0}", runCekResi.ToJson(true));
 
             // Log.Debug("Filtering result.");
