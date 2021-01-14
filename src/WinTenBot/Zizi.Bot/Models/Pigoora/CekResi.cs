@@ -41,11 +41,11 @@ namespace Zizi.Bot.Models.Pigoora
         [JsonProperty("pod_receiver")]
         public string PodReceiver { get; set; }
 
-        [JsonProperty("pod_date")]
-        public DateTimeOffset PodDate { get; set; }
+        [JsonProperty("pod_date", NullValueHandling = NullValueHandling.Ignore)]
+        public DateTime PodDate { get; set; }
 
-        [JsonProperty("pod_time")]
-        public DateTimeOffset PodTime { get; set; }
+        [JsonProperty("pod_time", NullValueHandling = NullValueHandling.Ignore)]
+        public DateTime PodTime { get; set; }
     }
 
     public partial class Details
