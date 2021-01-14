@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Threading.Tasks;
 using Hangfire;
 using Hangfire.Dashboard.Dark;
 using Hangfire.Heartbeat;
@@ -78,9 +79,9 @@ namespace Zizi.Bot.Extensions
                 new ProcessMonitor(TimeSpan.FromSeconds(1))
             });
 
-            BotScheduler.StartScheduler();
+            Task.Run(BotScheduler.StartScheduler);
 
-
+            Log.Information("Hangfire is Running.");
             return app;
         }
 
