@@ -1,4 +1,4 @@
-﻿using Serilog;
+using Serilog;
 using SqlKata.Execution;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -41,22 +41,32 @@ namespace Zizi.Bot.Handlers
             // Pre-Task is should be awaited.
             await EnqueuePreTask().ConfigureAwait(false);
 
-            if (chatSettings.EnableWarnUsername && !_telegramService.IsPrivateChat())
+            if (chatSettings.EnableWarnUsername && _telegramService.IsGroupChat())
             {
-                if (!_telegramService.IsNoUsername)
+                Log.Debug("Await next condition 1. is enable Warn Username && is Group Chat.");
+                if (!_telegramService.IsNoUsername || _telegramService.MessageOrEdited.Text == null)
                 {
                     // Next, do what bot should do.
+                    Log.Debug("Await next condition on sub condition 1. is has Username || MessageText == null");
                     await next(context, cancellationToken).ConfigureAwait(false);
                 }
             }
             else if (_telegramService.IsPrivateChat())
             {
+                Log.Debug("Await next condition 2. if private chat");
                 await next(context, cancellationToken).ConfigureAwait(false);
             }
             else
             {
+                Log.Debug("Await next else condition.");
                 await next(context, cancellationToken).ConfigureAwait(false);
             }
+
+            //
+            // if (_telegramService.MessageOrEdited.Text == null)
+            // {
+            //     await next(context, cancellationToken).ConfigureAwait(false);
+            // }
 
             // Last, do additional task which bot may do
             EnqueueBackgroundTask();
@@ -99,6 +109,7 @@ namespace Zizi.Bot.Handlers
             Log.Debug("All preTask completed in {0}", sw.Elapsed);
             sw.Stop();
         }
+
 
         private void EnqueueBackgroundTask()
         {
