@@ -290,6 +290,8 @@ namespace Zizi.Bot.Services
 
             if (send != null) SentMessageId = send.MessageId;
 
+            Log.Information("Sent Message Text: {0}", send.MessageId);
+
             return send;
         }
 
@@ -455,12 +457,12 @@ namespace Zizi.Bot.Services
                 .ConfigureAwait(false);
         }
 
-        public async Task AnswerCallbackQueryAsync(string text)
+        public async Task AnswerCallbackQueryAsync(string text, bool showAlert = false)
         {
             try
             {
                 var callbackQueryId = Context.Update.CallbackQuery.Id;
-                await Client.AnswerCallbackQueryAsync(callbackQueryId, text)
+                await Client.AnswerCallbackQueryAsync(callbackQueryId, text, showAlert: showAlert)
                     .ConfigureAwait(false);
             }
             catch (Exception e)
