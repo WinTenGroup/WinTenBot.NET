@@ -58,7 +58,9 @@ namespace Zizi.Bot.Handlers.Commands.Core
                 },
                 new[]
                 {
-                    InlineKeyboardButton.WithUrl("💰 Donate", "http://paypal.me/Azhe403")
+                    InlineKeyboardButton.WithUrl("💰 Donate", "http://paypal.me/Azhe403"),
+                    InlineKeyboardButton.WithUrl("💰 Dana.ID", "https://link.dana.id/qr/5xcp0ma"),
+                    InlineKeyboardButton.WithUrl("💰 Saweria", "https://saweria.co/azhe403")
                 }
             });
 
