@@ -5,6 +5,7 @@ using Flurl.Http;
 using Serilog;
 using Zizi.Bot.Models.Pigoora;
 using Zizi.Bot.Models.Settings;
+using Zizi.Bot.Tools;
 
 namespace Zizi.Bot.Services
 {
@@ -23,8 +24,18 @@ namespace Zizi.Bot.Services
             return new List<string> {"sicepat", "jne", "jnt", "ninja", "pos"};
         }
 
-        public void GetResi(string resi)
+        public async Task<CekResi> GetResi(string resi)
         {
+            var isValid = MonkeyCacheUtil.IsCacheExist(resi);
+            if (!isValid)
+            {
+                var cekResi = await RunCekResi(resi);
+                cekResi.AddCache(resi);
+            }
+
+            var cacheResi = MonkeyCacheUtil.Get<CekResi>(resi);
+            return cacheResi;
+
         }
 
         public async Task<CekResi> RunCekResi(string resi)
