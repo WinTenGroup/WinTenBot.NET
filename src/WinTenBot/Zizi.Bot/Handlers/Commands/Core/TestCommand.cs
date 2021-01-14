@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Serilog;
 using Telegram.Bot.Framework.Abstractions;
@@ -23,6 +24,7 @@ namespace Zizi.Bot.Handlers.Commands.Core
             _rssService = new RssService(context.Update.Message);
 
             var chatId = _telegramService.Message.Chat.Id;
+            var chatType = _telegramService.Message.Chat.Type;
             var fromId = _telegramService.Message.From.Id;
             var msg = _telegramService.Message;
             var msgId = msg.MessageId;
