@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using Hangfire;
 using Hangfire.Dashboard.Dark;
@@ -71,7 +71,7 @@ namespace Zizi.Bot.Extensions
 
             var serverOptions = new BackgroundJobServerOptions
             {
-                WorkerCount = Environment.ProcessorCount * 2
+                WorkerCount = Environment.ProcessorCount * 4
             };
 
             app.UseHangfireServer(serverOptions, new[]
