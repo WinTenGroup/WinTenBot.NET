@@ -1,4 +1,4 @@
-using Serilog;
+﻿using Serilog;
 using SqlKata.Execution;
 using System.Collections.Generic;
 using System.Diagnostics;
