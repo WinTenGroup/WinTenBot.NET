@@ -55,7 +55,7 @@ namespace Zizi.Bot.Extensions
                                         .UseCommand<CheckResiCommand>("resi")
                                         .UseCommand<CovidCommand>("covid")
                                         .UseCommand<DebugCommand>("dbg")
-                                        .UseCommand<DeleteBanCommand>("dban")
+                                        .UseCommand<DeleteBanCommand>("ungban")
                                         .UseCommand<DelRssCommand>("delrss")
                                         .UseCommand<DemoteCommand>("demote")
                                         .UseCommand<ExportRssCommand>("exportrss")
