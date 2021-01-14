@@ -5,7 +5,10 @@ using Hangfire;
 using Serilog;
 using SqlKata;
 using SqlKata.Execution;
+using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Types.ReplyMarkups;
 using Zizi.Bot.Models;
+using Zizi.Bot.Telegram;
 
 namespace Zizi.Bot.Services.HangfireJobs
 {
@@ -23,8 +26,11 @@ namespace Zizi.Bot.Services.HangfireJobs
         {
             Log.Information("Starting Check bot is Admin on all Group!");
             var botClient = BotSettings.Client;
+            var urlAddTo = await botClient.GetUrlStart("startgroup=new");
+
             var chatGroups = _queryFactory.FromQuery(new Query("group_settings"))
                 .WhereNot("chat_type", "Private")
+                .WhereNot("chat_type", "0")
                 .Get<ChatSetting>();
 
             foreach (var chatGroup in chatGroups)
@@ -33,11 +39,27 @@ namespace Zizi.Bot.Services.HangfireJobs
                 var isAdmin = chatGroup.IsAdmin;
                 Log.Debug("Bot is Admin on {0}? {1}", chatId, isAdmin);
 
+                var me = await botClient.GetMeAsync();
+                var isAdminChat = await botClient.IsAdminChat(long.Parse(chatId), me.Id);
+
                 if (isAdmin) continue;
 
                 Log.Debug("Doing leave chat from {0}", chatId);
                 try
                 {
+                    var msgLeave = "Sepertinya saya bukan admin di grup ini, saya akan meninggalkan grup. Sampai jumpa!" +
+                                   "\n\nTerima kasih sudah menggunakan @MissZiziBot, silakan undang saya kembali jika diperlukan.";
+
+                    var inlineKeyboard = new InlineKeyboardMarkup(new[]
+                    {
+                        new[]
+                        {
+                            InlineKeyboardButton.WithUrl("👥 Dukungan Grup", "https://t.me/WinTenDev")
+                            // InlineKeyboardButton.WithUrl("↖️ Tambahkan ke Grup", urlAddTo)
+                        }
+                    });
+
+                    await botClient.SendTextMessageAsync(chatId, msgLeave, ParseMode.Html, replyMarkup: inlineKeyboard);
                     await botClient.LeaveChatAsync(chatId);
                 }
                 catch (Exception ex)
