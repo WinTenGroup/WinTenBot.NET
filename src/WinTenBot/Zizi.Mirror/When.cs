@@ -10,15 +10,21 @@ namespace Zizi.Mirror
         public static bool NewCommand(IUpdateContext context)
         {
             var isNewCommand = false;
-            if (context.Update.Message != null)
+            var anyMessage = context.Update.Message ?? context.Update.EditedMessage;
+            if (anyMessage.Text != null)
             {
-                isNewCommand = context.Update.Message.Text.StartsWith("/");
+                isNewCommand = anyMessage.Text.StartsWith("/");
             }
 
-            if (context.Update.EditedMessage != null)
-            {
-                isNewCommand = context.Update.EditedMessage.Text.StartsWith("/");
-            }
+            // if (context.Update.Message != null)
+            // {
+            // isNewCommand = context.Update.Message.Text.StartsWith("/");
+            // }
+
+            // if (context.Update.EditedMessage != null)
+            // {
+            // isNewCommand = context.Update.EditedMessage.Text.StartsWith("/");
+            // }
 
             return isNewCommand;
             // return context.Update.Message?.Entities?.First()?.Type == MessageEntityType.BotCommand;
