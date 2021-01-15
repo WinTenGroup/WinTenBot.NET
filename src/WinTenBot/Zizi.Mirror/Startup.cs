@@ -1,5 +1,4 @@
-using System;
-using Google.Apis.Auth.OAuth2;
+using EasyCaching.Disk;
 using LiteDB.Async;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -7,12 +6,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System;
 using Telegram.Bot.Framework;
-using Zizi.Core.Utils.GoogleCloud;
 using Zizi.Mirror.Bots;
 using Zizi.Mirror.Extensions;
 using Zizi.Mirror.Handlers;
 using Zizi.Mirror.Handlers.Commands;
+using Zizi.Mirror.Utils;
 
 namespace Zizi.Mirror
 {
@@ -42,12 +42,18 @@ namespace Zizi.Mirror
 
             services.AddScoped(_ => new LiteDatabaseAsync("Filename=Storage/Data/Local_LiteDB.db;Connection=shared;"));
 
+            services.AddScoped<AuthService>();
+
+            services.AddScoped<AuthorizeCommand>();
+            services.AddScoped<UnAuthorizeCommand>();
+            services.AddScoped<UnAuthorizeAllCommand>();
+
             services.AddScoped<ExceptionHandler>();
             services.AddScoped<NewUpdateHandler>();
 
             // services.AddScoped<AllDebridCommand>();
             // services.AddScoped<FastDebridCommand>();
-            services.AddScoped<AuthorizeCommand>();
+            services.AddScoped<CloneCommand>();
             //services.AddScoped<CloneCommand>();
 
             services.AddGoogleDrive();

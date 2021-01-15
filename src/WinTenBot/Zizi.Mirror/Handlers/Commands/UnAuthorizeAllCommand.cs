@@ -11,7 +11,7 @@ using Zizi.Mirror.Utils;
 
 namespace Zizi.Mirror.Handlers.Commands
 {
-    public class AuthorizeCommand : CommandBase
+    public class UnAuthorizeAllCommand : CommandBase
     {
         private TelegramService _telegramService;
         private readonly AppConfig _appConfig;
@@ -19,7 +19,7 @@ namespace Zizi.Mirror.Handlers.Commands
         private IEasyCachingProvider _easyCachingProvider;
         private readonly AuthService _authService;
 
-        public AuthorizeCommand(AppConfig appConfig, LiteDatabaseAsync liteDb, IEasyCachingProvider easyCachingProvider, AuthService authService)
+        public UnAuthorizeAllCommand(AppConfig appConfig, LiteDatabaseAsync liteDb, IEasyCachingProvider easyCachingProvider, AuthService authService)
         {
             _appConfig = appConfig;
             _easyCachingProvider = easyCachingProvider;
@@ -35,31 +35,19 @@ namespace Zizi.Mirror.Handlers.Commands
             var fromId = _telegramService.FromId;
             var chatId = _telegramService.ChatId;
 
-            if (await _authService.IsAuth(chatId))
-            {
-                await _telegramService.SendTextAsync("Chat has been authorized!");
-                return;
-            }
-
             if (!_telegramService.IsFromSudo)
             {
                 Log.Information("User ID: {0} isn't sudo!", fromId);
 
-                await _telegramService.SendTextAsync("You can't authorize this chat!");
+                await _telegramService.SendTextAsync("You can't change authorization for this chat!");
                 return;
             }
 
-            await _telegramService.SendTextAsync("Authorizing chat..");
+            await _telegramService.SendTextAsync("UnAuthorizing all chat..");
 
-            await _authService.SaveAuth(new AuthorizedChat()
-            {
-                ChatId = chatId,
-                AuthorizedBy = fromId,
-                IsAuthorized = true,
-                CreatedAt = DateTime.Now
-            });
+            await _authService.UnAuth();
 
-            await _telegramService.EditAsync("Chat has been authorized!");
+            await _telegramService.EditAsync("All Chat has been UnAuthorized!");
         }
     }
 }

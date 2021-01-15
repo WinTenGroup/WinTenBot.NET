@@ -5,7 +5,7 @@ using Zizi.Mirror.Handlers.Commands;
 
 namespace Zizi.Mirror.Extensions
 {
-    public class CommandBuilderExtension
+    public static class CommandBuilderExtension
     {
         public static IBotBuilder ConfigureBot()
         {
@@ -13,7 +13,9 @@ namespace Zizi.Mirror.Extensions
                 .Use<ExceptionHandler>()
                 .UseWhen<NewUpdateHandler>(When.NewUpdate)
                 .UseWhen(When.NewCommand, builder => builder
-                    .UseCommand<AuthorizeCommand>("authorize")
+                    .UseCommand<AuthorizeCommand>("auth")
+                    .UseCommand<UnAuthorizeAllCommand>("unauthall")
+                    .UseCommand<UnAuthorizeCommand>("unauth")
                     // .UseCommand<AllDebridCommand>("ad")
                     // .UseCommand<FastDebridCommand>("fd")
                     .UseCommand<CloneCommand>("clone")
