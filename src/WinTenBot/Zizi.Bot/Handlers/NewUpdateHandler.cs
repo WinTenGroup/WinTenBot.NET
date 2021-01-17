@@ -30,8 +30,8 @@ namespace Zizi.Bot.Handlers
             if (_telegramService.Context.Update.ChannelPost != null) return;
 
             _telegramService.AppConfig = AppConfig;
-            _telegramService.IsBotAdmin = await _telegramService.IsBotAdmin().ConfigureAwait(false);
-            _telegramService.IsFromAdmin = await _telegramService.IsAdminChat().ConfigureAwait(false);
+            // _telegramService.IsBotAdmin = await _telegramService.IsBotAdmin().ConfigureAwait(false);
+            // _telegramService.IsFromAdmin = await _telegramService.IsAdminChat().ConfigureAwait(false);
 
             var chatSettings = _telegramService.CurrentSetting;
 
@@ -124,7 +124,7 @@ namespace Zizi.Bot.Handlers
             if (message.Text != null)
             {
                 // nonAwaitTasks.Add(_telegramService.FindNotesAsync());
-                nonAwaitTasks.Add(_telegramService.FindTagsAsync());
+                // nonAwaitTasks.Add(_telegramService.FindTagsAsync());
             }
 
             nonAwaitTasks.Add(_telegramService.CheckMataZiziAsync());

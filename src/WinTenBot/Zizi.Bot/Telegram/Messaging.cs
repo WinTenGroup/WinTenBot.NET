@@ -369,6 +369,7 @@ namespace Zizi.Bot.Telegram
             }
         }
 
+        [Obsolete("FindTags will moved as command.")]
         public static async Task FindTagsAsync(this TelegramService telegramService)
         {
             var sw = new Stopwatch();
@@ -376,18 +377,22 @@ namespace Zizi.Bot.Telegram
 
             var message = telegramService.MessageOrEdited;
             var chatSettings = telegramService.CurrentSetting;
+            var chatId = telegramService.ChatId;
+
             if (!chatSettings.EnableFindTags)
             {
                 Log.Information("Find Tags is disabled in this Group!");
                 return;
             }
 
-            var tagsService = new TagsService();
+            // var tagsService = new TagsService();
             if (!message.Text.Contains("#"))
             {
                 Log.Information("Message {0} is not contains any Hashtag.", message.MessageId);
                 return;
             }
+
+            var keyCache = chatId.ReduceChatId() + "-tags";
 
             Log.Information("Tags Received..");
             var partsText = message.Text.Split(new char[] {' ', '\n', ','})
@@ -400,7 +405,7 @@ namespace Zizi.Bot.Telegram
             Log.Debug("AllTags: {0}", allTags.ToJson(true));
             Log.Debug("First 5: {0}", limitedTags.ToJson(true));
             //            int count = 1;
-            var tags = telegramService.GetChatCache<List<CloudTag>>("tags");
+            var tags = MonkeyCacheUtil.Get<IEnumerable<CloudTag>>(keyCache);
             foreach (var split in limitedTags)
             {
                 var trimTag = split.TrimStart('#');
