@@ -105,7 +105,9 @@ namespace Zizi.Bot.Extensions
 
         public static IServiceCollection AddTagsCommands(this IServiceCollection services)
         {
-            return services.AddScoped<TagsCommand>()
+            return services
+                .AddScoped<FindTagCommand>()
+                .AddScoped<TagsCommand>()
                 .AddScoped<TagCommand>()
                 .AddScoped<UntagCommand>();
         }
