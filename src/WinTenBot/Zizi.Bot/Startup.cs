@@ -46,7 +46,7 @@ namespace Zizi.Bot
                 .Configure<BotOptions<ZiziBot>>(Configuration.GetSection("ZiziBot"))
                 .Configure<CustomBotOptions<ZiziBot>>(Configuration.GetSection("ZiziBot"));
 
-            services.AddScoped<IWeatherService, WeatherService>()
+            services.AddDataService();
                 .AddScoped<ChatService>()
                 .AddScoped<CekResiService>();
 

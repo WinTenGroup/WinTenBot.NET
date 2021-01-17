@@ -12,9 +12,9 @@ namespace Zizi.Bot.Handlers.Commands.Tags
         private TagsService _tagsService;
         private TelegramService _telegramService;
 
-        public UntagCommand()
+        public UntagCommand(TagsService tagsService)
         {
-            _tagsService = new TagsService();
+            _tagsService = tagsService;
         }
 
         public override async Task HandleAsync(IUpdateContext context, UpdateDelegate next, string[] args,

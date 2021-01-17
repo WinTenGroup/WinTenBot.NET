@@ -15,9 +15,9 @@ namespace Zizi.Bot.Handlers.Commands.Tags
         private readonly TagsService _tagsService;
         private TelegramService _telegramService;
 
-        public TagCommand()
+        public TagCommand(TagsService tagsService)
         {
-            _tagsService = new TagsService();
+            _tagsService = tagsService;
         }
 
         public override async Task HandleAsync(IUpdateContext context, UpdateDelegate next, string[] args,

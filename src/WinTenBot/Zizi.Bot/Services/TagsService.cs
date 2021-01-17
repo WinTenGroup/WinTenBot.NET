@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Serilog;
 using SqlKata;
@@ -9,13 +11,20 @@ using Zizi.Bot.Tools;
 using Zizi.Bot.Interfaces;
 using Zizi.Bot.Models;
 using Zizi.Bot.Providers;
+using Zizi.Bot.Telegram;
 
 namespace Zizi.Bot.Services
 {
-    public class TagsService : ITagsService
+    public class TagsService
     {
         private string baseTable = "tags";
         private string jsonCache = "tags.json";
+        private QueryFactory _queryFactory;
+
+        public TagsService(QueryFactory queryFactory)
+        {
+            _queryFactory = queryFactory;
+        }
 
         public async Task<bool> IsExist(long chatId, string tagVal)
         {
@@ -37,19 +46,25 @@ namespace Zizi.Bot.Services
             // return data;
         }
 
-        public async Task<List<CloudTag>> GetTagsByGroupAsync(long chatId)
+        public async Task<IEnumerable<CloudTag>> GetTagsByGroupAsync(long chatId)
         {
-            var query = await new Query("tags")
-                .Where("chat_id", chatId)
-                .OrderBy("tag")
-                .ExecForMysql()
-                .GetAsync()
-                .ConfigureAwait(false);
+            var key = $"{chatId.ReduceChatId()}-tags";
 
-            var mapped = query.ToJson().MapObject<List<CloudTag>>();
+            if (!MonkeyCacheUtil.IsCacheExist(key))
+            {
+                var mapped = await _queryFactory.FromQuery(new Query("tags"))
+                    .Where("chat_id", chatId)
+                    .OrderBy("tag")
+                    .GetAsync<CloudTag>()
+                    .ConfigureAwait(false);
 
-            Log.Debug("Tags for ChatId: {0} {1}", chatId, mapped.ToJson(true));
-            return mapped;
+                mapped.AddCache(key);
+            }
+
+            var cached = MonkeyCacheUtil.Get<IEnumerable<CloudTag>>(key);
+
+            Log.Debug("Tags for ChatId: {0} => {1}", chatId, cached.ToJson(true));
+            return cached;
 
             // Log.Debug($"tags: {query.ToJson(true)}");
 
@@ -106,18 +121,19 @@ namespace Zizi.Bot.Services
             return delete > 0;
         }
 
+        [Obsolete("Tags cache will be updated automatically.")]
         public async Task UpdateCacheAsync(Message message)
         {
             var chatId = message.Chat.Id;
-            var data = await GetTagsByGroupAsync(chatId)
-                .ConfigureAwait(false);
+            var data = await GetTagsByGroupAsync(chatId).ConfigureAwait(false);
+
             // data.BackgroundWriteCache($"{chatId}/{jsonCache}");
 
-            var liteDb = await LiteDbProvider.GetCollectionsAsync<CloudTag>()
-                .ConfigureAwait(false);
-            data.ForEach(y => liteDb.DeleteMany(x => x.ChatId == y.ChatId));
+            // var liteDb = await LiteDbProvider.GetCollectionsAsync<CloudTag>()
+            // .ConfigureAwait(false);
+            // data.ForEach(y => liteDb.DeleteMany(x => x.ChatId == y.ChatId));
 
-            var insertBulk = liteDb.InsertBulk(data);
+            // var insertBulk = liteDb.InsertBulk(data);
 
             message.SetChatCache("tags", data);
         }

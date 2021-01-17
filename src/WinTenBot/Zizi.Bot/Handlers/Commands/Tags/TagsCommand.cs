@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Serilog;
 using Telegram.Bot.Framework.Abstractions;
@@ -14,9 +15,9 @@ namespace Zizi.Bot.Handlers.Commands.Tags
         private SettingsService _settingsService;
         private TelegramService _telegramService;
 
-        public TagsCommand()
+        public TagsCommand(TagsService tagsService)
         {
-            _tagsService = new TagsService();
+            _tagsService = tagsService;
         }
 
         public override async Task HandleAsync(IUpdateContext context, UpdateDelegate next, string[] args,
@@ -33,8 +34,8 @@ namespace Zizi.Bot.Handlers.Commands.Tags
                 .ConfigureAwait(false);
             await _telegramService.SendTextAsync("🔄 Loading tags..")
                 .ConfigureAwait(false);
-            var tagsData = await _tagsService.GetTagsByGroupAsync(msg.Chat.Id)
-                .ConfigureAwait(false);
+            var tagsData = (await _tagsService.GetTagsByGroupAsync(msg.Chat.Id)
+                .ConfigureAwait(false)).ToList();
             var tagsStr = string.Empty;
 
             foreach (var tag in tagsData)
@@ -58,8 +59,9 @@ namespace Zizi.Bot.Handlers.Commands.Tags
             var lastTagsMsgId = currentSetting.LastTagsMessageId;
             Log.Information($"LastTagsMsgId: {lastTagsMsgId}");
 
-            if (lastTagsMsgId.ToInt() > 0) await _telegramService.DeleteAsync(lastTagsMsgId.ToInt())
-                .ConfigureAwait(false);
+            if (lastTagsMsgId.ToInt() > 0)
+                await _telegramService.DeleteAsync(lastTagsMsgId.ToInt())
+                    .ConfigureAwait(false);
             await _tagsService.UpdateCacheAsync(msg)
                 .ConfigureAwait(false);
             await _settingsService.UpdateCell("last_tags_message_id", _telegramService.SentMessageId)
