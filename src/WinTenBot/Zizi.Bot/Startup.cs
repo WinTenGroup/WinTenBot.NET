@@ -47,8 +47,7 @@ namespace Zizi.Bot
                 .Configure<CustomBotOptions<ZiziBot>>(Configuration.GetSection("ZiziBot"));
 
             services.AddDataService();
-                .AddScoped<ChatService>()
-                .AddScoped<CekResiService>();
+            services.AddFeatureService();
 
             services.AddFluentMigration(Configuration.GetConnectionString("MySql"));
             services.AddSqlKataMysql();

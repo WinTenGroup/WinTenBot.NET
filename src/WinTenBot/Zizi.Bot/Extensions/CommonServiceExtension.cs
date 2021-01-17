@@ -16,6 +16,15 @@ namespace Zizi.Bot.Extensions
             return services
                 .AddScoped<TagsService>();
         }
+
+        public static IServiceCollection AddFeatureService(this IServiceCollection services)
+        {
+            return services
+                .AddScoped<IWeatherService, WeatherService>()
+                .AddScoped<ChatService>()
+                .AddScoped<CekResiService>();
+        }
+
         public static IApplicationBuilder ConfigureNewtonsoftJson(this IApplicationBuilder app)
         {
             var contractResolver = new DefaultContractResolver()
