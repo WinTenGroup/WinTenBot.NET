@@ -34,12 +34,20 @@ namespace Zizi.Bot.Handlers.Commands.Additional
                 return;
             }
 
+#pragma warning disable 4014
+            Task.Run(async () =>
+#pragma warning restore 4014
+            {
+                Log.Debug("Running check in background");
+                await CheckResi(resi);
+            });
+        }
+
+        private async Task CheckResi(string resi)
+        {
             await _telegramService.EditAsync("🔍 Sedang memeriksa nomor Resi");
             var runCekResi = await _cekResiService.GetResi(resi);
             Log.Debug("Check Results: {0}", runCekResi.ToJson(true));
-
-            // Log.Debug("Filtering result.");
-            // var filtered = results.Where(cekResi => cekResi.Result != null);
 
             if (runCekResi.Result == null)
             {
@@ -47,8 +55,6 @@ namespace Zizi.Bot.Handlers.Commands.Additional
                                                  $"\nNo Resi: <code>{resi}</code>");
                 return;
             }
-
-            // var cek = filtered.First();
 
             var result = runCekResi.Result;
             var summary = result.Summary;
