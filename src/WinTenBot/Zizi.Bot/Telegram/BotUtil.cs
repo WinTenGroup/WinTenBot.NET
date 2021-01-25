@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Serilog;
@@ -18,7 +19,7 @@ namespace Zizi.Bot.Telegram
             var message = telegramService.MessageOrEdited;
             var chat = message.Chat;
 
-            var me = await telegramService.GetMeAsync().ConfigureAwait(false);
+            var me = await telegramService.GetBotMeAsync().ConfigureAwait(false);
             var isBotAdmin = await telegramService.IsAdminChat(me.Id).ConfigureAwait(false);
             Log.Debug("Is {0} Admin on Chat {1}? {2}", me.Username, chat.Id, isBotAdmin);
 
@@ -27,33 +28,37 @@ namespace Zizi.Bot.Telegram
 
         public static async Task<string> GetUrlStart(this TelegramService telegramService, string param)
         {
-            Log.Debug("Getting Me");
-            var bot = await telegramService.Client.GetMeAsync()
-                .ConfigureAwait(false);
+            // var bot = await telegramService.Client.GetBotMeAsync()
+            //     .ConfigureAwait(false);
+            //
+            // Log.Debug("Getting Bot Username");
+            // var username = bot.Username;
+            // return $"https://t.me/{username}?{param}";
 
-            bot.AddCache("getme");
-            Log.Debug("Getting Bot Username");
-            var username = bot.Username;
-            return $"https://t.me/{username}?{param}";
+            return await telegramService.Client.GetUrlStart(param);
         }
 
         public static async Task<string> GetUrlStart(this ITelegramBotClient botClient, string param)
         {
-            var getMe = await botClient.GetMe();
-
+            var getMe = await botClient.GetBotMeAsync();
             var username = getMe.Username;
             return $"https://t.me/{username}?{param}";
         }
 
+        [Obsolete("Please use 'GetBotMeAsync', include cached request")]
         public static async Task<User> GetMeAsync(this TelegramService telegramService)
         {
-            return await telegramService.Client.GetMeAsync()
-                .ConfigureAwait(false);
+            return await telegramService.Client.GetMeAsync().ConfigureAwait(false);
         }
 
-        public static async Task<User> GetMe(this ITelegramBotClient botClient)
+        public static async Task<User> GetBotMeAsync(this TelegramService telegramService)
         {
-            Log.Debug("Request GetMe");
+            return await telegramService.Client.GetBotMeAsync();
+        }
+
+        public static async Task<User> GetBotMeAsync(this ITelegramBotClient botClient)
+        {
+            Log.Debug("Getting Me");
 
             var isCacheExist = MonkeyCacheUtil.IsCacheExist(GetMeCacheKey);
             if (!isCacheExist)
@@ -72,20 +77,19 @@ namespace Zizi.Bot.Telegram
 
         public static async Task<bool> IsBeta(this TelegramService telegramService)
         {
-            var me = await GetMeAsync(telegramService)
-                .ConfigureAwait(false);
+            var me = await GetBotMeAsync(telegramService).ConfigureAwait(false);
             var isBeta = me.Username.ToLower().Contains("beta");
-            Log.Information($"IsBeta: {isBeta}");
+            Log.Information("Is Bot {0} IsBeta: {1}", me, isBeta);
             return isBeta;
         }
 
         public static async Task<bool> IsBotAdded(this User[] users)
         {
             Log.Information("Checking is added me?");
-            var me = await BotSettings.Client.GetMeAsync()
+            var me = await BotSettings.Client.GetBotMeAsync()
                 .ConfigureAwait(false);
             var isMe = (from user in users where user.Id == me.Id select user.Id == me.Id).FirstOrDefault();
-            Log.Information($"Is added me? {isMe}");
+            Log.Information("Is added me? {0}", isMe);
 
             return isMe;
         }
@@ -94,21 +98,20 @@ namespace Zizi.Bot.Telegram
         {
             Log.Information("Checking is added me?");
 
-            var cacheKey = "get-me";
-            var client = telegramService.Client;
+            // var cacheKey = "get-me";
+            //
+            // var isValid = MonkeyCacheUtil.IsCacheExist(cacheKey);
+            // if (!isValid)
+            // {
+            //     getMe.AddCache(cacheKey);
+            // }
 
-            var isValid = MonkeyCacheUtil.IsCacheExist(cacheKey);
-            if (!isValid)
-            {
-                var getMe = await client.GetMeAsync().ConfigureAwait(false);
-                getMe.AddCache(cacheKey);
-            }
-
-            var me = MonkeyCacheUtil.Get<User>(cacheKey);
-
+            var me = await telegramService.GetBotMeAsync().ConfigureAwait(false);
+            
+            // var me = MonkeyCacheUtil.Get<User>(cacheKey);
 
             var isMe = (from user in users where user.Id == me.Id select user.Id == me.Id).FirstOrDefault();
-            Log.Information($"Is added me? {isMe}");
+            Log.Information("Is added me? {0}", isMe);
 
             return isMe;
         }
