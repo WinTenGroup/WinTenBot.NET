@@ -12,7 +12,7 @@ namespace Zizi.Bot.Telegram
 {
     public static class AdminUtil
     {
-        private const string BaseCacheKey = "admin-group";
+        private const string BaseCacheKey = "admin";
 
         private static string GetCacheKey(long chatId)
         {
