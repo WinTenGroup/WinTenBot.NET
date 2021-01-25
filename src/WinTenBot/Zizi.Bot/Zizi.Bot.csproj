@@ -18,6 +18,8 @@
         <PackageReference Include="Dapper" Version="2.0.78" />
         <PackageReference Include="Datadog.Trace" Version="1.22.0" />
         <PackageReference Include="DotNetZip" Version="1.15.0" />
+        <PackageReference Include="EasyCaching.Disk" Version="1.2.0" />
+        <PackageReference Include="EasyCaching.SQLite" Version="1.2.0" />
         <PackageReference Include="EasyEncrypt" Version="2.2.1" />
         <PackageReference Include="FluentMigrator.Runner" Version="3.2.11" />
         <PackageReference Include="Flurl.Http" Version="3.0.1" />
