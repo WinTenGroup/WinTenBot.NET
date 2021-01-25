@@ -53,6 +53,7 @@ namespace Zizi.Bot
             services.AddSqlKataMysql();
             services.AddLiteDb();
             services.AddRavenDb();
+            // services.AddRavenDb();
 
             services.AddGeneralEvents();
             services.AddGroupEvents();
