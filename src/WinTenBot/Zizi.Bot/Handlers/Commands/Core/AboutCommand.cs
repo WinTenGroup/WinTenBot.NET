@@ -17,8 +17,7 @@ namespace Zizi.Bot.Handlers.Commands.Core
         {
             _telegramService = new TelegramService(context);
 
-            var me = await _telegramService.GetMeAsync()
-                .ConfigureAwait(false);
+            var me = await _telegramService.GetBotMeAsync();
             var botName = me.FirstName;
             var botVersion = BotSettings.ProductVersion;
 
@@ -36,7 +35,7 @@ namespace Zizi.Bot.Handlers.Commands.Core
             }
 
             sendText += "Untuk Bot lebih cepat dan tetap cepat dan terus peningkatan dan keandalan, " +
-                        "silakan <b>Donasi</b> via Paypal untuk beli VPS dan beri saya Kopi.\n\n" +
+                        "silakan <b>Donasi</b> untuk biaya Server dan beri saya Kopi.\n\n" +
                         "Terima kasih kepada <b>Akmal Projext</b> yang telah memberikan kesempatan ZiziBot pada kehidupan sebelumnya.";
 
             var inlineKeyboard = new InlineKeyboardMarkup(new[]
