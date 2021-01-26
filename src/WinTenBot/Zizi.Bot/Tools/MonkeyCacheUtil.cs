@@ -50,7 +50,10 @@ namespace Zizi.Bot.Tools
         public static T Get<T>(string key)
         {
             Log.Information("Getting Monkeys data: {0}", key);
-            return Barrel.Current.Get<T>(key);
+            var data = Barrel.Current.Get<T>(key);
+            // Log.Debug($"Monkey Data of '{key}': {data.ToJson(true)}");
+
+            return data;
         }
 
         public static IEnumerable<string> GetKeys()
