@@ -24,11 +24,11 @@ namespace Zizi.Bot.Tools
             MonkeyCacheUtil.SetupCache();
 
             BotSettings.DbConnectionString = BotSettings.DbConnectionString;
-            DbMigration.ConnectionString = BotSettings.DbConnectionString;
+            // DbMigration.ConnectionString = BotSettings.DbConnectionString;
 
 
             // DbMigration.RunMySqlMigration();
-            SqlMigration.MigrateAll();
+            // SqlMigration.MigrateAll();
 
             GoogleDrive.Auth();
 
