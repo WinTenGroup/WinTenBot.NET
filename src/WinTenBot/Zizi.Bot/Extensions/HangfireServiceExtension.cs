@@ -33,7 +33,6 @@ namespace Zizi.Bot.Extensions
                 .AddHangfire(config =>
                 {
                     config
-                        .UseSerilogLogProvider()
                         .UseStorage(HangfireUtil.GetMysqlStorage(connStr))
                         // .UseStorage(HangfireJobs.GetSqliteStorage())
                         // .UseStorage(HangfireJobs.GetLiteDbStorage())
@@ -43,7 +42,8 @@ namespace Zizi.Bot.Extensions
                         .UseHeartbeatPage(TimeSpan.FromSeconds(5))
                         .UseSimpleAssemblyNameTypeSerializer()
                         .UseRecommendedSerializerSettings()
-                        .UseColouredConsoleLogProvider();
+                        .UseColouredConsoleLogProvider()
+                        .UseSerilogLogProvider();
                 });
 
             Log.Debug("Hangfire Service added.");
