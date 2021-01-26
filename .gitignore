@@ -340,15 +340,19 @@ src/WinTenBot/WinTenBot/Storage/JsonCache/
 src/WinTenBot/WinTenBot/Storage/Learning/
 src/WinTenBot/WinTenBot/appsettings.json
 
-/src/WinTenBot/Zizi.Hook/appsettings.json
-/src/WinTenBot/Zizi.WebApi/appsettings.json
-/src/WinTenBot/Zizi.Portal/appsettings.json
+src/WinTenBot/Zizi.Bot/Storage/MonkeyCache/
+src/WinTenBot/Zizi.Bot/Storage/EasyCaching/
+src/WinTenBot/Zizi.Bot/Storage/JsonCache/
+src/WinTenBot/Zizi.Bot/Storage/Common/
+src/WinTenBot/Zizi.Bot/Storage/MachineLearning/
+src/WinTenBot/Zizi.Bot/appsettings.json
 
-/src/WinTenBot/Zizi.Bot/Storage/MonkeyCache/
-/src/WinTenBot/Zizi.Bot/Storage/JsonCache/
-/src/WinTenBot/Zizi.Bot/Storage/Common/
-/src/WinTenBot/Zizi.Bot/Storage/MachineLearning/
+src/WinTenBot/Zizi.Mirror/Storage/Common/
+src/WinTenBot/Zizi.Mirror/Storage/Data/
+src/WinTenBot/Zizi.Mirror/Storage/EasyCaching/
+src/WinTenBot/Zizi.Mirror/appsettings.json
 
-/src/WinTenBot/Zizi.Mirror/Storage/Common/
-/src/WinTenBot/Zizi.Mirror/Storage/Data/
-/src/WinTenBot/Zizi.Mirror/appsettings.json
+src/WinTenBot/Zizi.Hook/appsettings.json
+src/WinTenBot/Zizi.WebApi/appsettings.json
+src/WinTenBot/Zizi.Portal/appsettings.json
+
