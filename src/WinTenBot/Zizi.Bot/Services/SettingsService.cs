@@ -1,48 +1,76 @@
-﻿using Serilog;
-using SqlKata;
-using SqlKata.Execution;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Serilog;
+using SqlKata;
+using SqlKata.Execution;
 using Telegram.Bot.Types;
 using Zizi.Bot.Common;
 using Zizi.Bot.IO;
 using Zizi.Bot.Models;
 using Zizi.Bot.Providers;
+using Zizi.Bot.Telegram;
+using Zizi.Bot.Tools;
 
 namespace Zizi.Bot.Services
 {
     public class SettingsService
     {
         private string baseTable = "group_settings";
+
+        [Obsolete("This property will be removed.")]
         public Message Message { get; set; }
 
         public SettingsService()
         {
         }
 
+        [Obsolete("Next time, this constructor will be removed.")]
         public SettingsService(Message message)
         {
             Message = message;
         }
 
-        public async Task<bool> IsSettingExist()
+        public async Task<bool> IsSettingExist(long chatId)
         {
-            var where = new Dictionary<string, object>() {{"chat_id", Message.Chat.Id}};
+            // var where = new Dictionary<string, object>()
+            // {
+            //     {"chat_id", chatId}
+            // };
+            //
+            // var data = await new Query(baseTable)
+            //     .Where(where)
+            //     .ExecForMysql()
+            //     .GetAsync()
+            //     .ConfigureAwait(false);
+
+            var data = await GetSettingsByGroupCore(chatId);
+            var isExist = data != null;
+
+            Log.Debug("Group setting IsExist: {0}", isExist);
+            return isExist;
+        }
+
+        public async Task<ChatSetting> GetSettingsByGroupCore(long chatId)
+        {
+            var where = new Dictionary<string, object>()
+            {
+                {"chat_id", chatId}
+            };
 
             var data = await new Query(baseTable)
                 .Where(where)
                 .ExecForMysql()
-                .GetAsync()
+                .FirstOrDefaultAsync<ChatSetting>()
                 .ConfigureAwait(false);
-            var isExist = data.Any();
 
-            Log.Information($"Group setting IsExist: {isExist}");
-            return isExist;
+            return data;
         }
 
+        [Obsolete("Please use Get by ChatId param 'chatId'")]
         public async Task<ChatSetting> GetSettingByGroup()
         {
             var where = new Dictionary<string, object>()
@@ -59,6 +87,32 @@ namespace Zizi.Bot.Services
             var mapped = data.ToJson().MapObject<List<ChatSetting>>();
 
             return mapped.FirstOrDefault();
+        }
+
+        public async Task<ChatSetting> GetSettingByGroup(long chatId)
+        {
+            Log.Information("Get settings chat {0}", chatId);
+            var cacheKey = chatId.ReduceChatId() + "-setting";
+
+            if (!MonkeyCacheUtil.IsCacheExist(cacheKey))
+            {
+                await UpdateSettingsCache(chatId);
+
+                // var mapped = data.ToJson().MapObject<List<ChatSetting>>();
+            }
+
+            var cached = MonkeyCacheUtil.Get<ChatSetting>(cacheKey);
+            return cached;
+        }
+
+        public async Task UpdateSettingsCache(long chatId)
+        {
+            Log.Debug("Updating cache for {0}", chatId);
+            var cacheKey = chatId.ReduceChatId() + "-setting";
+
+            var data = await GetSettingsByGroupCore(chatId);
+
+            data.AddCache(cacheKey);
         }
 
         public async Task<List<CallBackButton>> GetSettingButtonByGroup()
@@ -169,20 +223,15 @@ namespace Zizi.Bot.Services
 
         public async Task<int> SaveSettingsAsync(Dictionary<string, object> data)
         {
-            var chatId = data["chat_id"];
-            var where = new Dictionary<string, object>() {{"chat_id", chatId}};
+            var chatId = data["chat_id"].ToInt64();
+            var where = new Dictionary<string, object>() { { "chat_id", chatId } };
 
-            Log.Debug($"Checking settings for {chatId}");
-            var check = await new Query(baseTable)
-                .Where(where)
-                .ExecForMysql()
-                .GetAsync()
-                .ConfigureAwait(false);
+            Log.Debug("Checking settings for {0}", chatId);
 
-            var isExist = check.Any();
+            var isExist = await IsSettingExist(chatId);
 
             var insert = -1;
-            Log.Debug($"Group setting IsExist: {isExist}");
+            Log.Debug("Group setting IsExist: {0}", isExist);
             if (!isExist)
             {
                 Log.Information($"Inserting new data for {chatId}");
@@ -194,7 +243,7 @@ namespace Zizi.Bot.Services
             }
             else
             {
-                Log.Information($"Updating data for {chatId}");
+                Log.Information("Updating data for {0}", chatId);
 
                 insert = await new Query(baseTable)
                     .Where(where)
@@ -206,11 +255,12 @@ namespace Zizi.Bot.Services
             return insert;
         }
 
+        [Obsolete("Please use with first of chatId param.")]
         public async Task UpdateCell(string key, object value)
         {
             Log.Debug("Updating Chat Settings {0} => {1}", key, value);
-            var where = new Dictionary<string, object>() {{"chat_id", Message.Chat.Id}};
-            var data = new Dictionary<string, object>() {{key, value}};
+            var where = new Dictionary<string, object>() { { "chat_id", Message.Chat.Id } };
+            var data = new Dictionary<string, object>() { { key, value } };
 
             await new Query(baseTable)
                 .Where(where)
@@ -221,6 +271,22 @@ namespace Zizi.Bot.Services
             await UpdateCache().ConfigureAwait(false);
         }
 
+        public async Task UpdateCell(long chatId, string key, object value)
+        {
+            Log.Debug("Updating Chat Settings {0} => {1}", key, value);
+            var where = new Dictionary<string, object>() { { "chat_id", chatId } };
+            var data = new Dictionary<string, object>() { { key, value } };
+
+            await new Query(baseTable)
+                .Where(where)
+                .ExecForMysql()
+                .UpdateAsync(data)
+                .ConfigureAwait(false);
+
+            await UpdateSettingsCache(chatId);
+        }
+
+        [Obsolete("Cache will be configured automatically.")]
         public async Task<ChatSetting> ReadCache()
         {
             if (Message == null) return null;
@@ -239,6 +305,7 @@ namespace Zizi.Bot.Services
             return cache ?? new ChatSetting();
         }
 
+        [Obsolete("Cache will be updated automatically.")]
         public async Task UpdateCache()
         {
             var data = await GetSettingByGroup()
