@@ -2,6 +2,9 @@
 
 [![CodeFactor](https://www.codefactor.io/repository/github/wintendev/wintenbot.net/badge)](https://www.codefactor.io/repository/github/wintendev/wintenbot.net)
 [![License](https://img.shields.io/github/license/WinTenDev/WinTenBot.NET?label=License&color=brightgreen&cacheSeconds=3600)](./LICENSE)
+[![GitHub last commit](https://img.shields.io/github/last-commit/WinTenDev/WinTenBot.NET?style=flat-square)](https://github.com/WinTenDev/WinTenBot.NET)
+![Lines of code](https://img.shields.io/tokei/lines/github/WinTenDev/WinTenBot.NET?style=flat-square)
+![GitHub repo size](https://img.shields.io/github/repo-size/WinTenDev/WinTenBot.NET?style=flat-square)
 
 Official repository Zizi Bot, written in .NET
 
