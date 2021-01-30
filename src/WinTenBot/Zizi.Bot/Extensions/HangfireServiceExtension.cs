@@ -23,9 +23,9 @@ namespace Zizi.Bot.Extensions
             Log.Debug("Adding Hangfire Service");
 
             var scope = services.BuildServiceProvider();
-            var appConfig = scope.GetService<AppConfig>();
+            var appConfig = scope.GetRequiredService<AppConfig>();
 
-            if (appConfig == null) return services;
+            // if (appConfig == null) return services;
 
             var connStr = appConfig.HangfireConfig.Mysql;
 
