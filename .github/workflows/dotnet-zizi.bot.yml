@@ -2,13 +2,12 @@ name: Zizi Bot
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
-  build:
-
+  linux64-build:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -22,15 +21,50 @@ jobs:
           dotnet-version: 5.0.100
       - name: Install dependencies
         run: dotnet restore
-      - name: Build
-        run: dotnet publish -r linux-x64 -c Release --self-contained=false /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true
 
-      - name: Upload a Build Artifact
+      - name: Linux64 FD Build
+        run: dotnet publish -r linux-x64 -c Release --self-contained=false
+      - name: Upload Linux64 Artifacs
         uses: actions/upload-artifact@v2.1.4
         with:
-          # Artifact name
-          name: zizibot-build.zip
-          # optional, default is artifact
-          # A file, directory or wildcard pattern that describes what to upload
-          path: src/WinTenBot/Zizi.Bot/bin/Release
-          # The desired behavior if no files are found using the provided path.
+          name: zizibot-linux64-fd-build
+          path: src/WinTenBot/Zizi.Bot/bin/Release/net5.0/linux-x64/publish
+
+      - name: Linux64 Single-File Build
+        run: dotnet publish -r linux-x64 -c Release --self-contained=false /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true
+      - name: Upload Linux64 Single-File Artifacs
+        uses: actions/upload-artifact@v2.1.4
+        with:
+          name: zizibot-linux64-sf-build
+          path: src/WinTenBot/Zizi.Bot/bin/Release/net5.0/linux-x64/publish
+
+  win64-build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./src/WinTenBot/Zizi.Bot
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 5.0.100
+      - name: Install dependencies
+        run: dotnet restore
+
+      - name: Win64 FD Build
+        run: dotnet publish -r win-x64 -c Release --self-contained=false
+      - name: Upload Win64 FD Artifacs
+        uses: actions/upload-artifact@v2.1.4
+        with:
+          name: zizibot-win64-fd-build
+          path: src/WinTenBot/Zizi.Bot/bin/Release/net5.0/win-x64/publish
+
+      - name: Win64 Single-File Build
+        run: dotnet publish -r win-x64 -c Release --self-contained=false /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true
+      - name: Upload Win64 SF Artifacs
+        uses: actions/upload-artifact@v2.1.4
+        with:
+          name: zizibot-windows-sf-build
+          path: src/WinTenBot/Zizi.Bot/bin/Release/net5.0/win-x64/publish
