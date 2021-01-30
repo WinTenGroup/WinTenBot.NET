@@ -20,8 +20,8 @@ namespace Zizi.Bot.Tools
             Log.Information("Version: {0}", BotSettings.ProductVersion);
 
             LiteDbProvider.InitializeLiteDb();
-            RavenDbProvider.InitDatabase();
-            MonkeyCacheUtil.SetupCache();
+            // RavenDbProvider.InitDatabase();
+            // MonkeyCacheUtil.SetupCache();
 
             BotSettings.DbConnectionString = BotSettings.DbConnectionString;
             // DbMigration.ConnectionString = BotSettings.DbConnectionString;
