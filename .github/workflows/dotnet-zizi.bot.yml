@@ -22,15 +22,21 @@ jobs:
           dotnet-version: 5.0.100
       - name: Install dependencies
         run: dotnet restore
-      - name: Build
+        
+      - name: Linux64 Build
         run: dotnet publish -r linux-x64 -c Release --self-contained=false /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true
 
-      - name: Upload a Build Artifact
+      - name: Windows64 Build
+        run: dotnet publish -r win-x64 -c Release --self-contained=false /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true
+
+      - name: Upload Linux64 Artifacs
         uses: actions/upload-artifact@v2.1.4
         with:
-          # Artifact name
-          name: zizibot-build.zip
-          # optional, default is artifact
-          # A file, directory or wildcard pattern that describes what to upload
-          path: src/WinTenBot/Zizi.Bot/bin/Release
-          # The desired behavior if no files are found using the provided path.
+          name: zizibot-linux64-build
+          path: src/WinTenBot/Zizi.Bot/bin/Release/net5.0/linux-x64/publish
+          
+      - name: Upload Linux64 Artifacs
+        uses: actions/upload-artifact@v2.1.4
+        with:
+          name: zizibot-windows-build
+          path: src/WinTenBot/Zizi.Bot/bin/Release/net5.0/win-x64/publish
