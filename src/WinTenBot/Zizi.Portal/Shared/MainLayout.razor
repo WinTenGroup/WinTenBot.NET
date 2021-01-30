@@ -1,17 +1,59 @@
 ﻿@inherits LayoutComponentBase
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu/>
-    </div>
+@code {
+    public bool Opened { get; set; }
 
-    <div class="main">
-        <div class="top-row px-4">
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
-        </div>
+    protected override void OnInitialized()
+    {
+        Opened = true;
+    }
 
-        <div class="content px-4">
-            @Body
-        </div>
-    </div>
-</div>
+    private void ButtonClicked()
+    {
+        Opened = !Opened;
+    }
+
+}
+
+<MatAppBarContainer>
+    <MatAppBar Fixed="true">
+        <MatAppBarRow>
+            <MatAppBarSection>
+                <MatIconButton Icon="menu" OnClick="args => ButtonClicked()"></MatIconButton>
+                <MatAppBarTitle>Zizi.Portal - Manage Zizi configuration for your Group.</MatAppBarTitle>
+            </MatAppBarSection>
+            <MatAppBarSection Align="@MatAppBarSectionAlign.End">
+                <MatIconButton Icon="favorite"></MatIconButton>
+            </MatAppBarSection>
+        </MatAppBarRow>
+    </MatAppBar>
+
+
+    <MatAppBarContent>
+        <MatDrawerContainer Style="width: 100%; height: calc(100vh - 64px);">
+            <MatDrawer @bind-Opened="@Opened" Mode="@MatDrawerMode.Dismissible">
+                <NavMenu/>
+            </MatDrawer>
+            <MatDrawerContent>
+                <div class="container-fluid">
+                    @* <MatButton OnClick="@((e) => ButtonClicked())">Open Menu</MatButton> *@
+                    @Body
+                </div>
+            </MatDrawerContent>
+        </MatDrawerContainer>
+    </MatAppBarContent>
+</MatAppBarContainer>
+
+@* <div class="page"> *@
+@*     <div class="sidebar"> *@
+@*     </div> *@
+@* *@
+@*     <div class="main"> *@
+@*         <div class="top-row px-4"> *@
+@*             <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a> *@
+@*         </div> *@
+@* *@
+@*         <div class="content px-4"> *@
+@*         </div> *@
+@*     </div> *@
+@* </div> *@

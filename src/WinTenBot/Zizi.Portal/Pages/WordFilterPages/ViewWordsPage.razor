@@ -1,12 +1,14 @@
 @page "/word-filter/view";
 @using SqlKata.Execution
 @using System.Data
+@using EasyCaching.Core
 @using Serilog
 @using Zizi.Core.Models
 @using Zizi.Core.Utils.Text
 
 @inject IDbConnection DbConn
 @inject QueryFactory QueryFactory;
+@inject IEasyCachingProvider CachingProvider;
 
 <h3>Word Filter</h3>
 <MatButton OnClick="LoadWords" Raised="true">Reload</MatButton>
@@ -49,6 +51,7 @@ else
 
 @code {
 
+        const string CacheKey = "word-filters";
     IEnumerable<WordFilter> _listWords;
 
     // class Dessert
@@ -144,7 +147,18 @@ else
 
     private async Task LoadWords()
     {
-        _listWords = (await QueryFactory.Query("word_filter").GetAsync()).ToJson().MapJson<IEnumerable<WordFilter>>();
+        if (!await CachingProvider.ExistsAsync(CacheKey))
+        {
+            Log.Information("Loading data 'word_filter'");
+            _listWords = (await QueryFactory.Query("word_filter").GetAsync()).ToJson().MapJson<IEnumerable<WordFilter>>();
+
+            Log.Debug("Updating cache..");
+            await CachingProvider.SetAsync(CacheKey, _listWords, TimeSpan.FromHours(1));
+        }
+
+
+        Log.Information("Loading from Cache 'word_filter'");
+        _listWords = (await CachingProvider.GetAsync<IEnumerable<WordFilter>>(CacheKey)).Value;
         Log.Debug("Words: {0}", _listWords.ToJson(true));
     }
 

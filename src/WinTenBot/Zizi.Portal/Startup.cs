@@ -27,8 +27,11 @@ namespace Zizi.Portal
             var connString = Configuration.GetConnectionString("MysqlDatabase");
 
             services.AddRazorPages();
+            services.AddBootstrapBlazor();
             services.AddServerSideBlazor();
             services.AddHttpClient();
+
+            services.AddEasyCachingDisk();
             services.AddSqlKataMysql(connString);
             services.AddSingleton<WeatherForecastService>();
 
