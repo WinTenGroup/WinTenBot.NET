@@ -68,7 +68,7 @@ namespace Zizi.Bot.Telegram
                     .ConfigureAwait(false);
 
                 Log.Debug("Updating cache");
-                getMe.AddCache(GetMeCacheKey);
+                getMe.AddCache(GetMeCacheKey, 10);
             }
 
             var fromCache = MonkeyCacheUtil.Get<User>(GetMeCacheKey);
@@ -107,7 +107,7 @@ namespace Zizi.Bot.Telegram
             // }
 
             var me = await telegramService.GetBotMeAsync().ConfigureAwait(false);
-            
+
             // var me = MonkeyCacheUtil.Get<User>(cacheKey);
 
             var isMe = (from user in users where user.Id == me.Id select user.Id == me.Id).FirstOrDefault();
