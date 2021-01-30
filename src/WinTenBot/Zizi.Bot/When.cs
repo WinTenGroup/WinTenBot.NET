@@ -46,8 +46,19 @@ namespace Zizi.Bot
             context.Update.Message?.Text.ToLower() == "ping" ||
             context.Update.Message?.Text.ToLower() == "/ping";
 
-        public static bool CallTagReceived(IUpdateContext context) =>
-            context.Update.Message.Text.Contains('#');
+        public static bool CallTagReceived(IUpdateContext context)
+        {
+            var isTrue = false;
+            var message = context.Update.Message ?? context.Update.EditedMessage;
+
+            if (message.Text != null)
+            {
+                isTrue = message.Text.Contains("#");
+            }
+
+            return isTrue;
+            // return context.Update.Message.Text.Contains('#');
+        }
 
         public static bool MembersChanged(IUpdateContext context) =>
             context.Update.ChannelPost?.NewChatMembers != null ||
