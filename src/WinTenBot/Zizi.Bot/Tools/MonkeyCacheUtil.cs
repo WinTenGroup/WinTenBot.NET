@@ -41,10 +41,11 @@ namespace Zizi.Bot.Tools
             return isValid;
         }
 
-        public static void AddCache<T>(this T data, string key)
+        public static void AddCache<T>(this T data, string key, int expireIn = 1)
         {
-            Log.Information("Adding Monkeys with key: {0}", key);
-            Barrel.Current.Add(key, data, TimeSpan.FromMinutes(1));
+            var expireDate = TimeSpan.FromMinutes(expireIn);
+            Log.Debug("Adding Monkeys with key: '{0}'. Expire in: '{1}' ", key, expireDate);
+            Barrel.Current.Add(key, data, expireDate);
         }
 
         public static T Get<T>(string key)
