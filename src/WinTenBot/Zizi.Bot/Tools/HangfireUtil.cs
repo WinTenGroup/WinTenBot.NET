@@ -5,6 +5,7 @@ using Serilog;
 using System;
 using System.Data;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Zizi.Bot.Tools
 {
@@ -18,14 +19,17 @@ namespace Zizi.Bot.Tools
 
             var numOfJobs = recurringJobs.Count;
 
-            foreach (var recurringJobId in recurringJobs.Select(recurringJob => recurringJob.Id))
+            Parallel.ForEach(recurringJobs, (dto, pls, index) =>
             {
-                Log.Debug("Deleting jobId: {0}", recurringJobId);
+                var recurringJobId = dto.Id;
 
+                Log.Debug("Deleting jobId: {0}, Index: {1}", recurringJobId, index);
                 RecurringJob.RemoveIfExists(recurringJobId);
-            }
 
-            Log.Information("Hangfire jobs succesfully deleted. Total: {0}", numOfJobs);
+                Log.Debug("Delete succeeded {0}, Index: {1}", recurringJobId, index);
+            });
+
+            Log.Information("Hangfire jobs successfully deleted. Total: {0}", numOfJobs);
         }
 
         public static MySqlStorage GetMysqlStorage(string connectionStr)
