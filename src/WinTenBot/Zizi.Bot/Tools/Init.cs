@@ -1,5 +1,6 @@
 using Serilog;
 using Zizi.Bot.Common;
+using Zizi.Bot.Extensions;
 using Zizi.Bot.Models;
 using Zizi.Bot.Providers;
 using Zizi.Bot.Tools.GoogleCloud;
@@ -14,7 +15,7 @@ namespace Zizi.Bot.Tools
             // ConfigureNewtonsoftJson();
 
             BotSettings.FillSettings();
-            Logger.SetupLogger();
+            // SerilogServiceExtension.SetupLogger();
 
             Log.Information("Name: {0}", BotSettings.ProductName);
             Log.Information("Version: {0}", BotSettings.ProductVersion);
