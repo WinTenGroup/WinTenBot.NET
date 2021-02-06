@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using System.Threading.Tasks;
 using Hangfire;
 using Hangfire.Storage;
@@ -48,6 +48,9 @@ namespace Zizi.Bot.Scheduler
             }
         }
 
+        [JobDisplayName("RSS for ChatID {0}. URL: {1}")]
+        [AutomaticRetry(Attempts = 2, OnAttemptsExceeded = AttemptsExceededAction.Delete)]
+        [Queue("rss-broadcaster")]
         public static void RegisterFeed(long chatId, string urlFeed)
         {
             var reducedChatId = chatId.ReduceChatId();
