@@ -54,7 +54,8 @@ namespace Zizi.Bot.Handlers.Callbacks
                         .ConfigureAwait(false);
                     var listWarns = warnJson.AsQueryable().ToList();
 
-                    foreach (var warn in listWarns)
+                    Parallel.ForEach(listWarns, async (warn) =>
+                        // foreach (var warn in listWarns)
                     {
                         var userId = warn.FromId;
                         var isExist = listWarns.Any(x => x.FromId == userId);
@@ -99,12 +100,15 @@ namespace Zizi.Bot.Handlers.Callbacks
                                 }
                             }
                         }
-                    }
+
+                        // }
+                    });
 
                     answer = "Terima kasih sudah verifikasi Username!";
                 }
 
                 await Telegram.UpdateWarnMessageAsync().ConfigureAwait(false);
+                Log.Debug("Verify Username finish");
             }
             else if (fromId == callBackParam1.ToInt64())
             {
