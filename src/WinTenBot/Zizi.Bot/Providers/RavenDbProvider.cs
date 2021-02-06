@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Raven.Client.Documents;
@@ -12,6 +13,7 @@ using Zizi.Bot.Models;
 
 namespace Zizi.Bot.Providers
 {
+    [Obsolete("RavenDB will be removed.")]
     public static class RavenDbProvider
     {
         private static DocumentStore Store { get; set; }
