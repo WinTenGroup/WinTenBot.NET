@@ -9,6 +9,7 @@ using Zizi.Bot.IO;
 
 namespace Zizi.Bot.Models
 {
+    [Obsolete("BotSettings will be replaced with AppConfig.")]
     public static class BotSettings
     {
         public static string ProductName { get; set; }
