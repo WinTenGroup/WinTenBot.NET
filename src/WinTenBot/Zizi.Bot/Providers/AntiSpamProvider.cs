@@ -89,10 +89,10 @@ namespace Zizi.Bot.Providers
                 var resp = await url.GetJsonAsync<CasBan>()
                     .ConfigureAwait(false);
 
-                Log.Debug("CasBan Response", resp);
+                Log.Debug("CasBan Response: {0}", resp.ToJson(true));
 
                 var isBan = resp.Ok;
-                Log.Information($"UserId: {userId} is CAS ban: {isBan}");
+                Log.Information("UserId: {0} is CAS ban: {1}", userId, isBan);
                 return isBan;
             }
             catch
