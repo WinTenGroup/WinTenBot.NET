@@ -8,6 +8,7 @@ using Microsoft.Extensions.Options;
 using Serilog;
 using Telegram.Bot.Framework;
 using Telegram.Bot.Framework.Abstractions;
+using Zizi.Bot.Models.Settings;
 using Zizi.Bot.Options;
 using Zizi.Bot.Providers;
 
@@ -71,6 +72,18 @@ namespace Zizi.Bot.Extensions
 
             bot.Client.SetWebhookAsync(url.AbsoluteUri)
                 .GetAwaiter().GetResult();
+
+            return app;
+        }
+
+        public static IApplicationBuilder AboutApp(this IApplicationBuilder app)
+        {
+            var appConfig = app.ApplicationServices.GetRequiredService<AppConfig>();
+            var engines = appConfig.EnginesConfig;
+
+            Log.Information("Name: {0}", engines.ProductName);
+            Log.Information("Version: {0}", engines.Version);
+            Log.Information("Company: {0}", engines.Company);
 
             return app;
         }
