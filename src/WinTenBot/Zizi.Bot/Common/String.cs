@@ -20,7 +20,7 @@ namespace Zizi.Bot.Common
 
         public static string ResolveVariable(this string input, object parameters)
         {
-            Log.Information("Resolving variable..");
+            Log.Debug("Resolving variable..");
             var type = parameters.GetType();
             Regex regex = new Regex("\\{(.*?)\\}");
             var sb = new StringBuilder();
