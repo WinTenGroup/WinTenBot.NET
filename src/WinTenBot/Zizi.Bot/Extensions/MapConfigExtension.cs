@@ -2,26 +2,29 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Serilog;
 using Zizi.Bot.Models.Settings;
 
 namespace Zizi.Bot.Extensions
 {
     public static class MapConfigExtension
     {
-        public static IServiceCollection AddMapConfiguration(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment environment)
+        public static IServiceCollection AddMappingConfiguration(this IServiceCollection services)
         {
-            if (configuration == null) return services;
+            Log.Information("Mapping configuration..");
+            var serviceProvider = services.BuildServiceProvider();
+            var env = serviceProvider.GetRequiredService<IWebHostEnvironment>();
+            var config = serviceProvider.GetRequiredService<IConfiguration>();
 
-            var appSettings = configuration.Get<AppConfig>();
+            var appSettings = config.Get<AppConfig>();
             appSettings.EnvironmentConfig = new EnvironmentConfig()
             {
-                HostEnvironment = environment,
-                IsDevelopment = environment.IsDevelopment(),
-                IsStaging = environment.IsProduction(),
-                IsProduction = environment.IsProduction()
+                HostEnvironment = env,
+                IsDevelopment = env.IsDevelopment(),
+                IsStaging = env.IsProduction(),
+                IsProduction = env.IsProduction()
             };
 
-            services.AddSingleton(configuration);
             services.AddSingleton(appSettings);
 
             return services;
