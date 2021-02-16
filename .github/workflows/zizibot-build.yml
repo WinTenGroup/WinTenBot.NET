@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./src/WinTenBot
+        working-directory: /home/runner/work/WinTenBot.NET/WinTenBot.NET/src/WinTenBot
 
     steps:
       - uses: actions/checkout@v2
@@ -42,7 +42,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./src/WinTenBot
+        working-directory: /home/runner/work/WinTenBot.NET/WinTenBot.NET/src/WinTenBot
 
     steps:
       - uses: actions/checkout@v2
