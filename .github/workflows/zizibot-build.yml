@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./src/WinTenBot/Zizi.Bot
+        working-directory: ./src/WinTenBot
 
     steps:
       - uses: actions/checkout@v2
@@ -23,7 +23,7 @@ jobs:
         run: dotnet restore
 
       - name: Linux64 FD Build
-        run: dotnet publish -r linux-x64 -c Release --self-contained=false
+        run: dotnet publish Zizi.Bot -r linux-x64 -c Release --self-contained=false
       - name: Upload Linux64 Artifacs
         uses: actions/upload-artifact@v2.1.4
         with:
@@ -31,7 +31,7 @@ jobs:
           path: src/WinTenBot/Zizi.Bot/bin/Release/net5.0/linux-x64/publish
 
       - name: Linux64 Single-File Build
-        run: dotnet publish -r linux-x64 -c Release --self-contained=false /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true
+        run: dotnet publish Zizi.Bot -r linux-x64 -c Release --self-contained=false /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true
       - name: Upload Linux64 Single-File Artifacs
         uses: actions/upload-artifact@v2.1.4
         with:
@@ -42,7 +42,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./src/WinTenBot/Zizi.Bot
+        working-directory: ./src/WinTenBot
 
     steps:
       - uses: actions/checkout@v2
@@ -54,7 +54,7 @@ jobs:
         run: dotnet restore
 
       - name: Win64 FD Build
-        run: dotnet publish -r win-x64 -c Release --self-contained=false
+        run: dotnet publish Zizi.Bot -r win-x64 -c Release --self-contained=false
       - name: Upload Win64 FD Artifacs
         uses: actions/upload-artifact@v2.1.4
         with:
@@ -62,7 +62,7 @@ jobs:
           path: src/WinTenBot/Zizi.Bot/bin/Release/net5.0/win-x64/publish
 
       - name: Win64 Single-File Build
-        run: dotnet publish -r win-x64 -c Release --self-contained=false /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true
+        run: dotnet publish Zizi.Bot -r win-x64 -c Release --self-contained=false /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true
       - name: Upload Win64 SF Artifacs
         uses: actions/upload-artifact@v2.1.4
         with:
