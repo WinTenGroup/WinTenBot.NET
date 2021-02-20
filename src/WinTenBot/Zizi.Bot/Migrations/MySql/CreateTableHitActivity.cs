@@ -13,7 +13,7 @@ namespace Zizi.Bot.Migrations.MySql
             if (Schema.Table(TableName).Exists()) return;
 
             Create.Table(TableName)
-                .WithColumn("id").AsInt16().Identity()
+                .WithColumn("id").AsInt16().Identity().PrimaryKey()
                 .WithColumn("via_bot").AsMySqlVarchar(128).Nullable()
                 .WithColumn("message_type").AsMySqlVarchar(100).Nullable()
                 .WithColumn("from_id").AsInt32()

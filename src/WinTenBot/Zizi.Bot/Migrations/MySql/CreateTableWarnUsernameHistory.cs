@@ -4,7 +4,7 @@ using Zizi.Bot.Extensions;
 namespace Zizi.Bot.Migrations.MySql
 {
     [Migration(120210113001)]
-    public class CreateTableWarnUsernameHistory: Migration
+    public class CreateTableWarnUsernameHistory : Migration
     {
         private const string TableName = "warn_username_history";
 
@@ -21,10 +21,8 @@ namespace Zizi.Bot.Migrations.MySql
                 .WithColumn("step_count").AsMySqlText()
                 .WithColumn("last_warn_message_id").AsInt64()
                 .WithColumn("created_at").AsMySqlTimestamp().WithDefault(SystemMethods.CurrentDateTime)
-                .WithColumn("updated_at").AsMySqlTimestamp().WithDefaultValue("ON UPDATE current_timestamp()");
-
+                .WithColumn("updated_at").AsMySqlTimestamp().WithDefault(SystemMethods.CurrentDateTime);
         }
-
 
         public override void Down()
         {
