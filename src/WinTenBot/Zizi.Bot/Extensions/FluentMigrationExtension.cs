@@ -3,6 +3,7 @@ using System.Reflection;
 using FluentMigrator.Builders;
 using FluentMigrator.Infrastructure;
 using FluentMigrator.Runner;
+using FluentMigrator.Runner.Logging;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
@@ -23,18 +24,22 @@ namespace Zizi.Bot.Extensions
                         .WithGlobalConnectionString(connStr)
                         .ScanIn(Assembly.GetExecutingAssembly()).For.All()
 
-                    // .ScanIn(typeof(CreateTableAfk).Assembly).For.Migrations()
-                    // .ScanIn(typeof(CreateTableChatSettings).Assembly).For.Migrations()
-                    // .ScanIn(typeof(CreateTableGlobalBan).Assembly).For.Migrations()
-                    // .ScanIn(typeof(CreateTableHitActivity).Assembly).For.Migrations()
-                    // .ScanIn(typeof(CreateTableRssHistory).Assembly).For.Migrations()
-                    // .ScanIn(typeof(CreateTableRssSettings).Assembly).For.Migrations()
-                    // .ScanIn(typeof(CreateTableSafeMember).Assembly).For.Migrations()
-                    // .ScanIn(typeof(CreateTableSpells).Assembly).For.Migrations()
-                    // .ScanIn(typeof(CreateTableTags).Assembly).For.Migrations()
-                    // .ScanIn(typeof(CreateTableWordsLearning).Assembly).For.Migrations()
+                // .ScanIn(typeof(CreateTableAfk).Assembly).For.Migrations()
+                // .ScanIn(typeof(CreateTableChatSettings).Assembly).For.Migrations()
+                // .ScanIn(typeof(CreateTableGlobalBan).Assembly).For.Migrations()
+                // .ScanIn(typeof(CreateTableHitActivity).Assembly).For.Migrations()
+                // .ScanIn(typeof(CreateTableRssHistory).Assembly).For.Migrations()
+                // .ScanIn(typeof(CreateTableRssSettings).Assembly).For.Migrations()
+                // .ScanIn(typeof(CreateTableSafeMember).Assembly).For.Migrations()
+                // .ScanIn(typeof(CreateTableSpells).Assembly).For.Migrations()
+                // .ScanIn(typeof(CreateTableTags).Assembly).For.Migrations()
+                // .ScanIn(typeof(CreateTableWordsLearning).Assembly).For.Migrations()
                 )
-                .AddLogging(lb => lb.AddSerilog());
+                .AddLogging(lb => lb.AddSerilog())
+                .Configure<LogFileFluentMigratorLoggerOptions>(options =>
+                {
+                    options.ShowSql = true;
+                });
 
             return services;
         }
