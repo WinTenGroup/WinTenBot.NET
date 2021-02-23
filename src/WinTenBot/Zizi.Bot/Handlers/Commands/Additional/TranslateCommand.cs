@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Serilog;
@@ -7,6 +8,7 @@ using Telegram.Bot.Framework.Abstractions;
 using Zizi.Bot.Common;
 using Zizi.Bot.Providers;
 using Zizi.Bot.Services;
+using Zizi.Bot.Tools;
 
 namespace Zizi.Bot.Handlers.Commands.Additional
 {
@@ -28,16 +30,15 @@ namespace Zizi.Bot.Handlers.Commands.Additional
 
             if (message.ReplyToMessage == null)
             {
-                var hint = await "Balas pesan yang ingin anda terjemahkan".TranslateAsync(userLang)
+                var hint = await "Balas pesan yang ingin anda terjemahkan".GoogleTranslatorAsync(userLang)
                     .ConfigureAwait(false);
-                await _telegramService.SendTextAsync(hint.MergedTranslation)
+                await _telegramService.SendTextAsync(hint)
                     .ConfigureAwait(false);
                 return;
             }
 
             var param = message.Text.SplitText(" ").ToArray();
             var param1 = param.ValueOfIndex(1) ?? "";
-
 
             // if (param1.IsNullOrEmpty() ||  !param1.Contains("-"))
             // {
@@ -58,8 +59,9 @@ namespace Zizi.Bot.Handlers.Commands.Additional
                 .ConfigureAwait(false);
             try
             {
-                var translate = await forTranslate.TranslateAsync(param1)
-                    .ConfigureAwait(false);
+                var translate = await forTranslate.GoogleTranslatorAsync(param1);
+
+                // var translate = await forTranslate.TranslateAsync(param1).ConfigureAwait(false);
 
                 // var translate = forTranslate.TranslateTo(param1);
 
@@ -69,9 +71,9 @@ namespace Zizi.Bot.Handlers.Commands.Additional
                 // translateResult.AppendLine(translation._Translation);
                 // }
 
-                var translateResult = translate.MergedTranslation;
+                // var translateResult = translate.MergedTranslation;
 
-                await _telegramService.EditAsync(translateResult)
+                await _telegramService.EditAsync(translate)
                     .ConfigureAwait(false);
             }
             catch (Exception ex)
