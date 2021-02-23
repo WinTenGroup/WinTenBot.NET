@@ -8,7 +8,7 @@ using Zizi.Bot.Models.Settings;
 
 namespace Zizi.Bot.Extensions
 {
-    public static class RavenDBServiceCollectionExtension
+    public static class RavenDBServiceExtension
     {
         public static IServiceCollection AddRavenDb(this IServiceCollection services)
         {

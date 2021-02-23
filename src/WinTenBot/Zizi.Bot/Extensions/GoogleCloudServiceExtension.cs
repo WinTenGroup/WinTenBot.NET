@@ -12,7 +12,7 @@ using Zizi.Bot.Models.Settings;
 
 namespace Zizi.Bot.Extensions
 {
-    public static class GoogleCloudServiceCollectionExtension
+    public static class GoogleCloudServiceExtension
     {
         public static IServiceCollection AddGoogleDrive(this IServiceCollection services)
         {
