@@ -47,7 +47,7 @@ namespace Zizi.Bot.Common
                 Delimiter = delimiter,
                 MissingFieldFound = null,
                 BadDataFound = null,
-                PrepareHeaderForMatch = (header, index) => header.ToLower()
+                PrepareHeaderForMatch = (header) => header.Header.ToLower()
             };
 
             using var reader = new StreamReader(filePath);
