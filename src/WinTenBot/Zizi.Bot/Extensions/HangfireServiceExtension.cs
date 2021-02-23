@@ -26,8 +26,8 @@ namespace Zizi.Bot.Extensions
             var appConfig = scope.GetRequiredService<AppConfig>();
 
             // if (appConfig == null) return services;
-
-            var connStr = appConfig.HangfireConfig.Mysql;
+            var connStr = appConfig.ConnectionStrings.MySql;
+            // var connStr = appConfig.HangfireConfig.Mysql;
 
             services.AddHangfireServer()
                 .AddHangfire(config =>
@@ -53,10 +53,14 @@ namespace Zizi.Bot.Extensions
 
         public static IApplicationBuilder UseHangfireDashboardAndServer(this IApplicationBuilder app)
         {
-            var hangfireBaseUrl = BotSettings.HangfireBaseUrl;
-            var hangfireUsername = BotSettings.HangfireUsername;
-            var hangfirePassword = BotSettings.HangfirePassword;
+            var appConfig = app.ApplicationServices.GetRequiredService<AppConfig>();
+            var hangfireConfig = appConfig.HangfireConfig;
 
+            var hangfireBaseUrl = hangfireConfig.BaseUrl;
+            var hangfireUsername = hangfireConfig.Username;
+            var hangfirePassword = hangfireConfig.Password;
+
+            Log.Information("Hangfire Url: {0}", hangfireBaseUrl);
             Log.Information("Hangfire Auth: {0} | {1}", hangfireUsername, hangfirePassword);
 
             var dashboardOptions = new DashboardOptions
@@ -71,7 +75,7 @@ namespace Zizi.Bot.Extensions
 
             var serverOptions = new BackgroundJobServerOptions
             {
-                WorkerCount = Environment.ProcessorCount * 4
+                WorkerCount = Environment.ProcessorCount * hangfireConfig.WorkerMultiplier
             };
 
             app.UseHangfireServer(serverOptions, new[]
