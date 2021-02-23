@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 using Humanizer;
 using LiteDB;
@@ -7,6 +8,7 @@ using Zizi.Bot.IO;
 
 namespace Zizi.Bot.Providers
 {
+    [Obsolete("LiteDB no longer used for caching on next.")]
     public static class LiteDbProvider
     {
         private static LiteDatabase LiteDb { get; set; }
