@@ -17,8 +17,8 @@ namespace Zizi.Bot.Tools
             BotSettings.FillSettings();
             // SerilogServiceExtension.SetupLogger();
 
-            Log.Information("Name: {0}", BotSettings.ProductName);
-            Log.Information("Version: {0}", BotSettings.ProductVersion);
+            // Log.Information("Name: {0}", BotSettings.ProductName);
+            // Log.Information("Version: {0}", BotSettings.ProductVersion);
 
             LiteDbProvider.InitializeLiteDb();
             // RavenDbProvider.InitDatabase();
