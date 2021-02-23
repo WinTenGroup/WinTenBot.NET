@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 using JsonFlatFileDataStore;
 using Serilog;
@@ -7,6 +8,7 @@ using Zizi.Bot.Services;
 
 namespace Zizi.Bot.Tools
 {
+    [Obsolete("JsonCache util will be replaced by other provider.")]
     public static class JsonCacheUtil
     {
         private static string BasePath { get; } = Path.Combine("Storage", "JsonCache");
