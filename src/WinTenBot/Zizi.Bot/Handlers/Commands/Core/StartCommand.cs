@@ -6,12 +6,19 @@ using Zizi.Bot.Common;
 using Zizi.Bot.Models;
 using Zizi.Bot.Telegram;
 using Zizi.Bot.Services;
+using Zizi.Bot.Models.Settings;
 
 namespace Zizi.Bot.Handlers.Commands.Core
 {
     class StartCommand : CommandBase
     {
         private TelegramService _telegramService;
+        private EnginesConfig _enginesConfig;
+
+        public StartCommand(EnginesConfig enginesConfig)
+        {
+            _enginesConfig = enginesConfig;
+        }
 
         public override async Task HandleAsync(IUpdateContext context, UpdateDelegate next, string[] args,
             CancellationToken cancellationToken)
@@ -21,9 +28,10 @@ namespace Zizi.Bot.Handlers.Commands.Core
             var partText = msg.Text.SplitText(" ").ToArray();
             var paramStart = partText.ValueOfIndex(1);
 
-            var botName = BotSettings.ProductName;
-            var botVer = BotSettings.ProductVersion;
-            var botCompany = BotSettings.ProductCompany;
+            var botName = _enginesConfig.ProductName;
+            var botVer = _enginesConfig.Version;
+            var botCompany = _enginesConfig.Company;
+
             var winTenDev = botCompany.MkUrl("https://t.me/WinTenDev");
             var levelStandardUrl = "https://docs.zizibot.azhe.space/glosarium/admin-dengan-level-standard";
             var ziziDocs = "https://docs.zizibot.azhe.space";
@@ -35,10 +43,8 @@ namespace Zizi.Bot.Handlers.Commands.Core
                               $"Agar fungsi saya bekerja dengan fitur penuh, jadikan saya admin dengan {levelStandard}. " +
                               $"\n\nSaran dan fitur bisa di ajukan di @WinTenDevSupport atau @TgBotID.";
 
-            var urlStart = await _telegramService.GetUrlStart("start=help")
-                .ConfigureAwait(false);
-            var urlAddTo = await _telegramService.GetUrlStart("startgroup=new")
-                .ConfigureAwait(false);
+            var urlStart = await _telegramService.GetUrlStart("start=help");
+            var urlAddTo = await _telegramService.GetUrlStart("startgroup=new");
 
             switch (paramStart)
             {
@@ -51,8 +57,7 @@ namespace Zizi.Bot.Handlers.Commands.Core
                         }
                     });
                     var send = "Untuk cara pasang Username, silakan klik tombol di bawah ini";
-                    await _telegramService.SendTextAsync(send, setUsername)
-                        .ConfigureAwait(false);
+                    await _telegramService.SendTextAsync(send, setUsername);
                     break;
 
                 default:
@@ -62,7 +67,7 @@ namespace Zizi.Bot.Handlers.Commands.Core
                     //
                     // if (_telegramService.IsPrivateChat())
                     // {
-                    
+
                     var keyboard = new InlineKeyboardMarkup(new[]
                     {
                         new[]
@@ -77,8 +82,7 @@ namespace Zizi.Bot.Handlers.Commands.Core
                     });
                     // }
 
-                    await _telegramService.SendTextAsync(sendText, keyboard, disableWebPreview: true)
-                        .ConfigureAwait(false);
+                    await _telegramService.SendTextAsync(sendText, keyboard, disableWebPreview: true);
                     break;
             }
         }
