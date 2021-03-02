@@ -39,7 +39,8 @@ namespace Zizi.Bot
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMapConfiguration(Configuration, Environment);
+            services.AddMappingConfiguration();
+
 
             services
                 .AddTransient<ZiziBot>()
@@ -49,7 +50,7 @@ namespace Zizi.Bot
             services.AddDataService();
             services.AddFeatureService();
 
-            services.AddFluentMigration(Configuration.GetConnectionString("MySql"));
+            services.AddFluentMigration();
             services.AddSqlKataMysql();
             services.AddLiteDb();
             services.AddRavenDb();
