@@ -17,7 +17,7 @@ namespace Zizi.Core.Utils
                 x++;
             }
 
-            return string.Format($"{Math.Round(size, 2)} {norm[x]}{suffix}", MidpointRounding.ToZero);
+            return string.Format($"{Math.Round(size, 2):N} {norm[x]}{suffix}", MidpointRounding.ToZero);
         }
 
         public static string SizeFormat(this long size, string suffix = null)
