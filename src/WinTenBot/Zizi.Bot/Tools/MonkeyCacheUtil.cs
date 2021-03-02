@@ -13,6 +13,7 @@ using Zizi.Bot.Services;
 
 namespace Zizi.Bot.Tools
 {
+    [Obsolete("MonkeyCache will be replaced with EasyCaching")]
     public static class MonkeyCacheUtil
     {
         public static void SetupCache()
