@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
@@ -24,6 +25,7 @@ namespace Zizi.Bot.Tools.GoogleCloud
         private const string AppName = "Zizi Uploader";
         private static DriveService Service { get; set; }
 
+        [Obsolete("Please Initialize Drive service via Dependency Injection")]
         public static void Auth()
         {
             Log.Information("Initializing GoogleDrive client.");
