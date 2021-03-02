@@ -27,6 +27,13 @@ namespace Zizi.Bot.Extensions
 
             services.AddSingleton(appSettings);
 
+            services.AddSingleton(appSettings.EnginesConfig);
+            services.AddSingleton(appSettings.CommonConfig);
+            services.AddSingleton(appSettings.DatabaseConfig);
+            services.AddSingleton(appSettings.HangfireConfig);
+            services.AddSingleton(appSettings.ConnectionStrings);
+            services.AddSingleton(appSettings.DataDogConfig);
+
             return services;
         }
     }
