@@ -10,12 +10,10 @@ using Telegram.Bot;
 using Telegram.Bot.Framework;
 using Zizi.Bot.Bots;
 using Zizi.Bot.Extensions;
-using Zizi.Bot.Interfaces;
 using Zizi.Bot.Models;
 using Zizi.Bot.Options;
-using Zizi.Bot.Services;
-using Zizi.Bot.Services.HangfireJobs;
 using Zizi.Bot.Tools;
+using Zizi.Core.Extensions;
 
 namespace Zizi.Bot
 {
@@ -53,7 +51,8 @@ namespace Zizi.Bot
             services.AddFluentMigration();
             services.AddSqlKataMysql();
             services.AddLiteDb();
-            services.AddRavenDb();
+
+            services.AddEasyCachingDisk();
             // services.AddRavenDb();
 
             services.AddGeneralEvents();
