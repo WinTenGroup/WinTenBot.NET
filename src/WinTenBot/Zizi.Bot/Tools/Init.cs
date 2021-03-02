@@ -31,7 +31,7 @@ namespace Zizi.Bot.Tools
             // DbMigration.RunMySqlMigration();
             // SqlMigration.MigrateAll();
 
-            GoogleDrive.Auth();
+            // GoogleDrive.Auth();
 
             // Bot.Clients.Add("macosbot", new TelegramBotClient(Configuration["MacOsBot:ApiToken"]));
             // Bot.Clients.Add("zizibot", new TelegramBotClient(Configuration["ZiziBot:ApiToken"]));
