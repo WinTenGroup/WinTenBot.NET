@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using MySql.Data.MySqlClient;
+using MySqlConnector;
 using Serilog;
 using SqlKata;
 using SqlKata.Compilers;
