@@ -30,6 +30,7 @@ namespace Zizi.Bot.Extensions
             var serilogConfig = new LoggerConfiguration()
                 .Enrich.FromLogContext()
                 .MinimumLevel.Override("Hangfire", LogEventLevel.Information)
+                .MinimumLevel.Override("MySqlConnector", LogEventLevel.Information)
                 .WriteTo.Async(a =>
                     a.File(logPath, rollingInterval: rollingInterval, flushToDiskInterval: flushInterval, shared: true, outputTemplate: consoleTemplate))
                 .WriteTo.Async(a =>
