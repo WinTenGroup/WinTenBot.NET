@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,6 +11,7 @@ using Zizi.Bot.Models;
 
 namespace Zizi.Bot.Providers
 {
+    [Obsolete("This Class will be replaced with QueryFactory from DI")]
     public static class MysqlProvider
     {
         public static QueryFactory GetMysqlInstances()
