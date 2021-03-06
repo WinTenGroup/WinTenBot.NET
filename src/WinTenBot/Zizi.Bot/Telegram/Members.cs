@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
@@ -35,6 +35,7 @@ namespace Zizi.Bot.Telegram
             return $"<a href='tg://user?id={message.From.Id}'>{(firstName + " " + lastName).Trim()}</a>";
         }
 
+        [Obsolete("AFK Check will be moved to NewUpdateHandler")]
         public static async Task AfkCheckAsync(this TelegramService telegramService)
         {
             var sw = Stopwatch.StartNew();

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Humanizer;
 using Serilog;
@@ -23,6 +23,7 @@ namespace Zizi.Bot.Telegram
             return chatIdStr.ToInt64();
         }
 
+        [Obsolete("This method will be moved")]
         public static async Task EnsureChatHealthAsync(this TelegramService telegramService)
         {
             Log.Information("Ensuring chat health..");
