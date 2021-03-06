@@ -76,13 +76,19 @@ namespace Zizi.Bot
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.SetupSerilog();
+            app.AboutApp();
+
             var configureBot = CommandBuilderExtension.ConfigureBot();
             BotSettings.HostingEnvironment = env;
 
             app.UseFluentMigration();
             app.ConfigureNewtonsoftJson();
             app.ConfigureDapper();
-            app.UseSerilogRequestLogging();
+            // app.UseMonkeyCache();
+
+            app.UseRouting();
+            app.UseStaticFiles();
 
             // app.UseEmbeddedRavenDBServer();
 
