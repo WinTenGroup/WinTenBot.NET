@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,8 +20,8 @@ namespace Zizi.Bot.Telegram
             Log.Information("Starting Hit Activity");
 
             var message = telegramService.MessageOrEdited;
-            var botUser = await telegramService.GetMeAsync()
-                .ConfigureAwait(false);
+            var botUser = await telegramService.GetBotMeAsync();
+
             var data = new Dictionary<string, object>()
             {
                 {"via_bot", botUser.Username},
