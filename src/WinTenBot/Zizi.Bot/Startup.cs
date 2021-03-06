@@ -51,6 +51,8 @@ namespace Zizi.Bot
 
             services.AddFluentMigration();
             services.AddSqlKataMysql();
+
+            services.AddClickHouse();
             services.AddLiteDb();
 
             services.AddEasyCachingDisk();
