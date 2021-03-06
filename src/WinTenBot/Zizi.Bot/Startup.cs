@@ -39,6 +39,7 @@ namespace Zizi.Bot
         {
             services.AddMappingConfiguration();
 
+            services.AddHealthChecks();
 
             services
                 .AddTransient<ZiziBot>()
@@ -115,6 +116,11 @@ namespace Zizi.Bot
             app.Run(async context =>
                 await context.Response.WriteAsync("Hello World!")
                     .ConfigureAwait(false));
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapHealthChecks("/health");
+            });
 
             Log.Information("App is ready.");
         }
