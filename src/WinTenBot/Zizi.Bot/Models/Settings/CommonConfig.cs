@@ -6,6 +6,7 @@ namespace Zizi.Bot.Models.Settings
         public string ConnectionString { get; set; }
         public string MysqlDbName { get; set; }
         public string SpamWatchToken { get; set; }
+        public string DeepAiToken { get; set; }
         public bool IsRestricted { get; set; }
     }
 }
