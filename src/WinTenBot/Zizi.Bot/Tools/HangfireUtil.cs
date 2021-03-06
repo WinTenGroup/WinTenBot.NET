@@ -1,11 +1,9 @@
-﻿using Hangfire;
-using Hangfire.MySql.Core;
+﻿using System;
+using System.Threading.Tasks;
+using Hangfire;
+using Hangfire.MySql;
 using Hangfire.Storage;
 using Serilog;
-using System;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Zizi.Bot.Tools
 {
@@ -38,14 +36,14 @@ namespace Zizi.Bot.Tools
 
             var options = new MySqlStorageOptions
             {
-                TransactionIsolationLevel = IsolationLevel.ReadCommitted,
+                // TransactionIsolationLevel = IsolationLevel.ReadCommitted,
                 QueuePollInterval = TimeSpan.FromSeconds(15),
                 JobExpirationCheckInterval = TimeSpan.FromHours(1),
                 CountersAggregateInterval = TimeSpan.FromMinutes(5),
                 PrepareSchemaIfNecessary = true,
                 DashboardJobListLimit = 50000,
                 TransactionTimeout = TimeSpan.FromMinutes(1),
-                TablePrefix = "_hangfire"
+                TablesPrefix = "_hangfire"
             };
             var storage = new MySqlStorage(connectionStr, options);
             return storage;
