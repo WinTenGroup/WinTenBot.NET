@@ -76,6 +76,7 @@ namespace Zizi.Bot.Extensions
                                         .UseCommand<MediaFilterCommand>("mfil")
                                         .UseCommand<MigrateCommand>("migrate")
                                         .UseCommand<NotesCommand>("filters")
+                                        .UseCommand<NudityCommand>("nudity")
                                         .UseCommand<OcrCommand>("ocr")
                                         .UseCommand<OutCommand>("out")
                                         .UseCommand<PinCommand>("pin")

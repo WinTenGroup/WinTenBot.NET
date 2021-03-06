@@ -27,6 +27,7 @@ namespace Zizi.Bot.Extensions
                 .AddScoped<WgetCommand>()
                 .AddScoped<AllDebridCommand>()
                 .AddScoped<CheckResiCommand>()
+                .AddScoped<NudityCommand>()
                 .AddScoped<StickerPackCommand>();
         }
 
