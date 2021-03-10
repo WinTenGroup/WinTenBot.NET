@@ -1,13 +1,17 @@
+using System;
 using System.Diagnostics;
 using System.IO;
 using Dapper;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MonkeyCache;
 using MonkeyCache.FileStore;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Serilog;
+using Telegram.Bot;
+using Zizi.Bot.Handlers.Callbacks;
 using Zizi.Bot.Interfaces;
 using Zizi.Bot.Services;
 using Zizi.Bot.Services.HangfireJobs;
@@ -18,14 +22,14 @@ namespace Zizi.Bot.Extensions
 {
     public static class CommonServiceExtension
     {
-        public static IServiceCollection AddDataService(this IServiceCollection services)
+        public static IServiceCollection AddDataServices(this IServiceCollection services)
         {
             return services
                 .AddScoped<TagsService>()
                 .AddScoped<SettingsService>();
         }
 
-        public static IServiceCollection AddFeatureService(this IServiceCollection services)
+        public static IServiceCollection AddFeatureServices(this IServiceCollection services)
         {
             return services
                 .AddScoped<IWeatherService, WeatherService>()

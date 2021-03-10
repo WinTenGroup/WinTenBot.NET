@@ -46,17 +46,18 @@ namespace Zizi.Bot
                 .Configure<BotOptions<ZiziBot>>(Configuration.GetSection("ZiziBot"))
                 .Configure<CustomBotOptions<ZiziBot>>(Configuration.GetSection("ZiziBot"));
 
-            services.AddDataService();
-            services.AddFeatureService();
-
             services.AddFluentMigration();
-            services.AddSqlKataMysql();
+            services.AddEasyCachingDisk();
 
+            services.AddSqlKataMysql();
             services.AddClickHouse();
             services.AddLiteDb();
-
-            services.AddEasyCachingDisk();
             // services.AddRavenDb();
+
+
+            services.AddDataServices();
+            services.AddFeatureServices();
+            services.AddCallbackQueryHandlers();
 
             services.AddGeneralEvents();
             services.AddGroupEvents();
@@ -88,7 +89,7 @@ namespace Zizi.Bot
             app.UseFluentMigration();
             app.ConfigureNewtonsoftJson();
             app.ConfigureDapper();
-            // app.UseMonkeyCache();
+            app.UseMonkeyCache();
 
             app.UseRouting();
             app.UseStaticFiles();
@@ -113,7 +114,7 @@ namespace Zizi.Bot
             }
 
             app.UseHangfireDashboardAndServer();
-            app.RegisterHangfireAdminChecker();
+            app.RegisterHangfireOnStartup();
 
             app.Run(async context =>
                 await context.Response.WriteAsync("Hello World!")
