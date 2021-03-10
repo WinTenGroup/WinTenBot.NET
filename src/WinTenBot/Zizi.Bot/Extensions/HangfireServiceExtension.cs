@@ -8,7 +8,7 @@ using HangfireBasicAuthenticationFilter;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
-using Zizi.Bot.Models;
+using Zizi.Bot.IO;
 using Zizi.Bot.Models.Settings;
 using Zizi.Bot.Scheduler;
 using Zizi.Bot.Services.HangfireJobs;
@@ -25,9 +25,7 @@ namespace Zizi.Bot.Extensions
             var scope = services.BuildServiceProvider();
             var appConfig = scope.GetRequiredService<AppConfig>();
 
-            // if (appConfig == null) return services;
             var connStr = appConfig.ConnectionStrings.MySql;
-            // var connStr = appConfig.HangfireConfig.Mysql;
 
             services.AddHangfireServer()
                 .AddHangfire(config =>
@@ -83,19 +81,23 @@ namespace Zizi.Bot.Extensions
                 new ProcessMonitor(TimeSpan.FromSeconds(1))
             });
 
-            Task.Run(BotScheduler.StartScheduler);
+            // Task.Run(BotScheduler.StartScheduler);
 
             Log.Information("Hangfire is Running.");
             return app;
         }
 
-        public static IApplicationBuilder RegisterHangfireAdminChecker(this IApplicationBuilder app)
+        public static IApplicationBuilder RegisterHangfireOnStartup(this IApplicationBuilder app)
         {
-            var jobId = "admin-checker";
+            HangfireUtil.DeleteAllJobs();
 
-            Log.Debug("Registering Hangfire Admin checker");
-            RecurringJob.AddOrUpdate<ChatService>(jobId, chatService => chatService.CheckBotAdminOnGroup(), Cron.Daily);
-            Log.Debug("Hangfire Admin checker successfully registered with ID: {0}", jobId);
+            RssScheduler.InitScheduler();
+
+            HangfireUtil.RegisterJob<ChatService>("admin-checker", service => service.CheckBotAdminOnGroup(), Cron.Daily);
+
+            HangfireUtil.RegisterJob("log-cleaner", () => Storage.ClearLog(), Cron.Daily);
+
+            HangfireUtil.RegisterJob("monkeys-remover", () => MonkeyCacheUtil.DeleteExpired(), Cron.Hourly);
 
             return app;
         }

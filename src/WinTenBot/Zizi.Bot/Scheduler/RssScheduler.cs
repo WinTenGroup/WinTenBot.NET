@@ -4,7 +4,7 @@ using Hangfire;
 using Hangfire.Storage;
 using Serilog;
 using Zizi.Bot.Common;
-using Zizi.Bot.Services;
+using Zizi.Bot.Services.Datas;
 using Zizi.Bot.Telegram;
 using Zizi.Bot.Tools;
 
@@ -19,8 +19,8 @@ namespace Zizi.Bot.Scheduler
                 Log.Information("Initializing RSS Scheduler.");
                 var rssService = new RssService();
                 Log.Information("Getting list Chat ID");
-                var listChatId = await rssService.GetAllRssSettingsAsync()
-                    .ConfigureAwait(false);
+                var listChatId = await rssService.GetAllRssSettingsAsync();
+
                 foreach (var rssSetting in listChatId)
                 {
                     var chatId = rssSetting.ChatId.ToInt64();

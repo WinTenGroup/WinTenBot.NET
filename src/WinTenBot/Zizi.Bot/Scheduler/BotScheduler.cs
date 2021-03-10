@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using Hangfire;
 using Serilog;
@@ -7,33 +8,37 @@ using Zizi.Bot.Tools;
 
 namespace Zizi.Bot.Scheduler
 {
+    [Obsolete("This register will be moved to HangfireService")]
     static class BotScheduler
     {
+        [Obsolete("This register will be moved to HangfireService")]
         public static void StartScheduler()
         {
-            HangfireUtil.DeleteAllJobs();
+            // HangfireUtil.DeleteAllJobs();
 
-            MonkeyCacheRemover();
-            StartLogCleanupScheduler();
+            // MonkeyCacheRemover();
+            // StartLogCleanupScheduler();
             // StartSyncWordFilter();
             // StartCronFlushHitActivity();
-            RssScheduler.InitScheduler();
+            // RssScheduler.InitScheduler();
 
             // StartSyncGlobalBanToLocal();
         }
 
+        [Obsolete("This register will be moved to HangfireService")]
         private static void StartLogCleanupScheduler()
         {
             var jobId = "logfile-cleanup";
             var path = Path.Combine("Storage", "Logs");
 
-            Log.Debug($"Starting cron Log Cleaner with id {jobId}");
+            Log.Debug("Starting cron Log Cleaner with id {JobId}", jobId);
             RecurringJob.RemoveIfExists(jobId);
             // RecurringJob.AddOrUpdate(jobId, () => Storage.ClearLogs(path, "Zizi", true), Cron.Hourly);
             RecurringJob.AddOrUpdate(jobId, () => Storage.ClearLog(), Cron.Hourly);
             RecurringJob.Trigger(jobId);
         }
 
+        [Obsolete("This register will be moved to HangfireService")]
         private static void MonkeyCacheRemover()
         {
             const string jobId = "monkey-cache-remover";
