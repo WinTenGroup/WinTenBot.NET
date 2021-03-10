@@ -1,4 +1,5 @@
-﻿using LiteDB.Async;
+﻿using ClickHouse.Client.ADO;
+using LiteDB.Async;
 using Microsoft.Extensions.DependencyInjection;
 using MySqlConnector;
 using MySqlConnector.Logging;
@@ -39,7 +40,7 @@ namespace Zizi.Bot.Extensions
 
         public static IServiceCollection AddLiteDb(this IServiceCollection services)
         {
-            services.AddScoped(provider =>
+            services.AddScoped(_ =>
             {
                 var dbPath = "Storage/Data/Local_LiteDB.db";
                 Log.Debug("Loading LiteDB: {0}", dbPath);
@@ -50,6 +51,18 @@ namespace Zizi.Bot.Extensions
             });
 
             return services;
+        }
+
+        public static IServiceCollection AddClickHouse(this IServiceCollection services)
+        {
+            return services.AddScoped(provide =>
+            {
+                var appConfig = provide.GetRequiredService<AppConfig>();
+
+                var connStr = appConfig.ConnectionStrings.ClickHouseConn;
+
+                return new ClickHouseConnection(connStr);
+            });
         }
     }
 }
