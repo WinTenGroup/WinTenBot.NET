@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -355,7 +355,7 @@ namespace Zizi.Bot.Telegram
 
                     foreach (var note in selectedNotes)
                     {
-                        Log.Debug("List Notes: " + note.ToJson(true));
+                        Log.Debug("List Notes: {V}", note.ToJson(true));
                     }
                 }
                 else

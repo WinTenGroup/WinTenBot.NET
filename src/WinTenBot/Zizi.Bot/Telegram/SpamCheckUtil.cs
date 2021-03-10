@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Serilog;
 using Telegram.Bot.Types;
@@ -10,6 +11,7 @@ namespace Zizi.Bot.Telegram
 {
     public static class SpamCheckUtil
     {
+        [Obsolete("Soon will be replaced by AntiSpamService")]
         public static async Task<bool> CheckGlobalBanAsync(this TelegramService telegramService,
             User userTarget = null)
         {
@@ -17,7 +19,6 @@ namespace Zizi.Bot.Telegram
             var sw = Stopwatch.StartNew();
             var user = message.From;
 
-            // var settingService = new SettingsService(message);
             var chatSettings = telegramService.CurrentSetting;
             if (!chatSettings.EnableFedEs2)
             {
@@ -51,7 +52,7 @@ namespace Zizi.Bot.Telegram
 
             var isBan = await user.Id.CheckGBan()
                 .ConfigureAwait(false);
-            Log.Information($"IsBan: {isBan}");
+            Log.Information("IsBan: {IsBan}", isBan);
             if (isBan)
             {
                 await telegramService.DeleteAsync(messageId)
@@ -67,6 +68,7 @@ namespace Zizi.Bot.Telegram
             return isBan;
         }
 
+        [Obsolete("Soon will be replaced by AntiSpamService")]
         public static async Task<bool> CheckCasBanAsync(this TelegramService telegramService)
         {
             bool isBan;
@@ -75,7 +77,6 @@ namespace Zizi.Bot.Telegram
             var user = message.From;
             var userId = user.Id;
 
-            // var settingService = new SettingsService(message);
             var chatSettings = telegramService.CurrentSetting;
             if (!chatSettings.EnableFedCasBan)
             {
@@ -103,7 +104,7 @@ namespace Zizi.Bot.Telegram
 
             isBan = await user.IsCasBanAsync()
                 .ConfigureAwait(false);
-            Log.Information($"{user} is CAS ban: {isBan}");
+            Log.Information("{User} is CAS ban: {IsBan}", user, isBan);
             if (isBan)
             {
                 var replyMarkup = new InlineKeyboardMarkup(new[]
@@ -141,6 +142,7 @@ namespace Zizi.Bot.Telegram
             return isBan;
         }
 
+        [Obsolete("Soon will be replaced by AntiSpamService")]
         public static async Task<bool> CheckSpamWatchAsync(this TelegramService telegramService)
         {
             bool isBan;
@@ -148,7 +150,7 @@ namespace Zizi.Bot.Telegram
             var message = telegramService.MessageOrEdited;
             var sw = Stopwatch.StartNew();
             var user = message.From;
-            // var settingService = new SettingsService(message);
+
             var chatSettings = telegramService.CurrentSetting;
             if (!chatSettings.EnableFedSpamWatch)
             {

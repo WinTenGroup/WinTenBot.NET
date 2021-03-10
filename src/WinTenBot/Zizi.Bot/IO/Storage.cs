@@ -40,11 +40,10 @@ namespace Zizi.Bot.IO
                         await using var fileStream = File.OpenRead(zipFile);
 
                         var media = new InputOnlineFile(fileStream, zipFile);
-                        await botClient.SendDocumentAsync(channelTarget, media)
-                            .ConfigureAwait(false);
+                        await botClient.SendDocumentAsync(channelTarget, media);
 
                         fileStream.Close();
-                        await fileStream.DisposeAsync().ConfigureAwait(false);
+                        await fileStream.DisposeAsync();
 
                         filePath.DeleteFile();
                         zipFile.DeleteFile();
@@ -65,7 +64,7 @@ namespace Zizi.Bot.IO
         {
             try
             {
-                Log.Information($"Clearing {logsPath}, filter: {filter}, upload: {upload}");
+                Log.Information("Clearing {LogsPath}, filter: {Filter}, upload: {Upload}", logsPath, filter, upload);
                 var botClient = BotSettings.Client;
                 var channelTarget = BotSettings.BotChannelLogs;
 
@@ -83,21 +82,20 @@ namespace Zizi.Bot.IO
 
                 if (filteredFiles.Length > 0)
                 {
-                    Log.Information($"Found {filteredFiles.Length} of {files.Length}");
+                    Log.Information("Found {Length} of {Length1}", filteredFiles.Length, files.Length);
                     foreach (var fileInfo in filteredFiles)
                     {
                         var filePath = fileInfo.FullName;
                         if (upload)
                         {
-                            Log.Information($"Uploading file {filePath}");
+                            Log.Information("Uploading file {FilePath}", filePath);
                             var fileStream = File.OpenRead(filePath);
 
                             var media = new InputOnlineFile(fileStream, fileInfo.Name);
-                            await botClient.SendDocumentAsync(channelTarget, media)
-                                .ConfigureAwait(false);
+                            await botClient.SendDocumentAsync(channelTarget, media);
 
                             fileStream.Close();
-                            await fileStream.DisposeAsync().ConfigureAwait(false);
+                            await fileStream.DisposeAsync();
                         }
 
                         var old = filePath + ".old";

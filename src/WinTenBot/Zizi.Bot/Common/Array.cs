@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using Serilog;
 
@@ -9,7 +8,7 @@ namespace Zizi.Bot.Common
     {
         public static T[][] ChunkBy<T>(this IEnumerable<T> btnList, int chunk = 2)
         {
-            Log.Information($"Chunk buttons to {chunk}");
+            Log.Information("Chunk buttons to {Chunk}", chunk);
             var chunksBtn = btnList
                 .Select((s, i) => new {Value = s, Index = i})
                 .GroupBy(x => x.Index / chunk)
@@ -41,7 +40,7 @@ namespace Zizi.Bot.Common
             if (array.Length > index && array[index] != null)
             {
                 value = array[index];
-                Log.Debug($"Get Array index {index}: {value}");
+                Log.Debug("Get Array index {Index}: {Value}", index, value);
             }
 
             return value;

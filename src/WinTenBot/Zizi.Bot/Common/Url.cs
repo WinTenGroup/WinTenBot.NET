@@ -21,7 +21,7 @@ namespace Zizi.Bot.Common
         {
             var webClient = new WebClient();
 
-            Log.Information($"Saving {remoteFileUrl} to {localFileName}");
+            Log.Information("Saving {RemoteFileUrl} to {LocalFileName}", remoteFileUrl, localFileName);
             webClient.DownloadFile(remoteFileUrl, localFileName);
             webClient.Dispose();
         }
@@ -33,7 +33,7 @@ namespace Zizi.Bot.Common
             var cachePath = BotSettings.PathCache;
             var localPath = Path.Combine(cachePath, localFileName).EnsureDirectory();
 
-            Log.Information($"Saving {remoteFileUrl} to {localPath}");
+            Log.Information("Saving {RemoteFileUrl} to {LocalPath}", remoteFileUrl, localPath);
             webClient.DownloadFile(remoteFileUrl, localPath);
             webClient.Dispose();
 

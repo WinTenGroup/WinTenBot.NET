@@ -31,7 +31,7 @@ namespace Zizi.Bot.Tools
             await UpdateCacheAsync()
                 .ConfigureAwait(false);
 
-            Log.Information($"Loading cache from {CacheFilename}");
+            Log.Information("Loading cache from {CacheFilename}", CacheFilename);
             var covidAll = await CacheFilename.ReadCacheAsync<CovidAll>()
                 .ConfigureAwait(false);
 
@@ -155,7 +155,7 @@ namespace Zizi.Bot.Tools
 
             if (!CacheFilename.IsFileCacheExist())
             {
-                Log.Information($"Getting information from {urlApi}");
+                Log.Information("Getting information from {UrlApi}", urlApi);
                 var covidAll = await urlApi.GetJsonAsync<CovidAll>()
                     .ConfigureAwait(false);
 

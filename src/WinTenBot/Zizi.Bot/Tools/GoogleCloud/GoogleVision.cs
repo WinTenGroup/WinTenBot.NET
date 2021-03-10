@@ -21,7 +21,7 @@ namespace Zizi.Bot.Tools.GoogleCloud
         private static ImageAnnotatorClient MakeClient()
         {
             var credPath = BotSettings.GoogleCloudCredentialsPath.SanitizeSlash();
-            Log.Information($"Instantiates a client, cred {credPath}");
+            Log.Information("Instantiates a client, cred {CredPath}", credPath);
             var clientBuilder = new ImageAnnotatorClientBuilder
             {
                 CredentialsPath = credPath
@@ -39,7 +39,7 @@ namespace Zizi.Bot.Tools.GoogleCloud
 
         public static string ScanText(string filePath)
         {
-            Log.Information($"GoogleVision detect text {filePath}");
+            Log.Information("GoogleVision detect text {FilePath}", filePath);
             if (Client == null)
             {
                 Client = MakeClient();
@@ -51,7 +51,7 @@ namespace Zizi.Bot.Tools.GoogleCloud
             Log.Information("Performs text detection on the image file");
             var response = Client.DetectText(image);
 
-            Log.Information($"ResponseCount: {response.Count}");
+            Log.Information("ResponseCount: {Count}", response.Count);
             if (response.Count != 0)
             {
                 return response[0].Description.HtmlEncode();
@@ -65,7 +65,7 @@ namespace Zizi.Bot.Tools.GoogleCloud
 
         public static SafeSearchAnnotation SafeSearch(string filePath)
         {
-            Log.Information($"Google SafeSearch file {filePath}");
+            Log.Information("Google SafeSearch file {FilePath}", filePath);
             Log.Debug("Loading file into memory");
             var image = Image.FromFile(filePath);
 
@@ -105,8 +105,8 @@ namespace Zizi.Bot.Tools.GoogleCloud
             foreach (var annotation in entityAnnotations)
             {
                 // if (annotation.Description != null)
-                Log.Information($"Annotation {annotation.ToJson(true)}");
-                Log.Information($"Desc {annotation.Score} - {annotation.Description}");
+                Log.Information("Annotation {V}", annotation.ToJson(true));
+                Log.Information("Desc {Score} - {Description}", annotation.Score, annotation.Description);
             }
         }
     }

@@ -15,7 +15,7 @@ namespace Zizi.Bot.Tools.GoogleCloud
         private static void MakeClient()
         {
             var credPath = BotSettings.GoogleCloudCredentialsPath.SanitizeSlash();
-            Log.Information($"Create Firestore client, cred {credPath}");
+            Log.Information("Create Firestore client, cred {CredPath}", credPath);
             var clientBuilder = new FirestoreDbBuilder()
             {
                 CredentialsPath = credPath,
@@ -29,10 +29,10 @@ namespace Zizi.Bot.Tools.GoogleCloud
         public static void Create(string path, object data)
         {
             if (Db == null) MakeClient();
-            
+
             // var a = FirestoreDb.Create(projectId);
-            Log.Information($"Adding data to {path}");
-            Log.Debug($"Data: {data.ToJson(true)}");
+            Log.Information("Adding data to {Path}", path);
+            Log.Debug("Data: {V}", data.ToJson(true));
 
             var collection = Db.Collection(path);
             collection.AddAsync(data);
@@ -43,9 +43,9 @@ namespace Zizi.Bot.Tools.GoogleCloud
             var collectionReference = Db.Collection("");
             var docs = await collectionReference.GetSnapshotAsync();
 
-            foreach (var VARIABLE in docs)
+            foreach (var documentSnapshot in docs)
             {
-                Logger.LogInfo($"{VARIABLE.ToJson(true)}");
+                Log.Information("SnapShot: {0}", documentSnapshot.ToJson(true));
             }
         }
     }

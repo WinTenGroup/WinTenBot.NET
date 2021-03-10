@@ -1,7 +1,6 @@
 using System.Threading.Tasks;
 using Flurl;
 using Flurl.Http;
-using Serilog;
 using Zizi.Bot.Models;
 using Zizi.Bot.Services;
 

@@ -14,6 +14,8 @@ namespace Zizi.Bot.Providers
 {
     public static class AntiSpamProvider
     {
+
+        [Obsolete("Soon will be replaced by AntiSpamService")]
         public static async Task<SpamWatch> CheckSpamWatch(this int userId)
         {
             var spamWatch = new SpamWatch();
@@ -53,6 +55,7 @@ namespace Zizi.Bot.Providers
             return spamWatch;
         }
 
+        [Obsolete("Soon will be replaced by AntiSpamService")]
         public static async Task<bool> CheckGBan(this int userId)
         {
             // var query = await new Query("fban_user")
@@ -80,6 +83,7 @@ namespace Zizi.Bot.Providers
             return isGBan;
         }
 
+        [Obsolete("Soon will be replaced by AntiSpamService")]
         public static async Task<bool> IsCasBanAsync(this User user)
         {
             try

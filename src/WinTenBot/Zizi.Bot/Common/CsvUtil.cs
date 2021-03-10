@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -42,9 +41,6 @@ namespace Zizi.Bot.Common
 
             var csv = new CsvWriter(writer, config);
 
-            // v19 or below
-            // csv.Context.WriterConfiguration.HasHeaderRecord = false;
-
             csv.WriteRecords(records);
             Log.Debug("CSV file written to {0}", filePath);
 
@@ -74,9 +70,6 @@ namespace Zizi.Bot.Common
             using var writer = new StreamWriter(filePath);
             using var csv = new CsvWriter(writer, config);
 
-            // v19 or below
-            // csv.Context.WriterConfiguration.HasHeaderRecord = false;
-
             csv.WriteRecord(record);
             Log.Debug("CSV file written to {0}", filePath);
 
@@ -105,9 +98,6 @@ namespace Zizi.Bot.Common
             using var writer = new StreamWriter(stream);
             using var csv = new CsvWriter(writer, config);
 
-            // v19 or below
-            // csv.Context.WriterConfiguration.HasHeaderRecord = false;
-
             csv.WriteField(row);
 
             Log.Debug("CSV file written to {0}", filePath);
@@ -127,7 +117,7 @@ namespace Zizi.Bot.Common
             if (!File.Exists(filePath))
             {
                 Log.Information("File {0} is not exist", filePath);
-                return null;
+                return new List<T>();
             }
 
             // v20 or above
@@ -142,13 +132,6 @@ namespace Zizi.Bot.Common
 
             using var reader = new StreamReader(filePath);
             using var csv = new CsvReader(reader, csvConfiguration);
-
-            // v19 or below
-            // csv.Configuration.HasHeaderRecord = hasHeader;
-            // csv.Configuration.Delimiter = delimiter;
-            // csv.Configuration.MissingFieldFound = null;
-            // csv.Configuration.BadDataFound = null;
-            // csv.Configuration.PrepareHeaderForMatch = (string header, int index) => header.ToLower();
 
             var records = csv.GetRecords<T>().ToList();
             Log.Information("Parsing csv records {0} record(s)", records.Count);

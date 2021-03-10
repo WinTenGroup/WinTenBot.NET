@@ -1,8 +1,8 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Serilog;
 using Telegram.Bot.Types;
-using Telegram.Bot.Types.Enums;
 using Zizi.Bot.Common;
 using Zizi.Bot.Models;
 using Zizi.Bot.Services;
@@ -11,6 +11,7 @@ namespace Zizi.Bot.Telegram
 {
     public static class Privilege
     {
+        [Obsolete("This method will be moved to TelegramService")]
         public static bool IsSudoer(this int userId)
         {
             bool isSudoer = false;

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -302,7 +302,7 @@ namespace Zizi.Bot.Telegram
 
                 var urlStart = await telegramService.GetUrlStart("start=set-username")
                     .ConfigureAwait(false);
-                Log.Information($"UrlStart: {urlStart}");
+                Log.Information("UrlStart: {UrlStart}", urlStart);
 
                 var inlineKeyboard = new InlineKeyboardMarkup(new[]
                 {
@@ -386,7 +386,7 @@ namespace Zizi.Bot.Telegram
 
                 // var newStep = warnHistories.StepCount + 1;
                 var newStep = warnHistory.StepCount + 1;
-                Log.Information($"New step for {message.From} is {newStep}");
+                Log.Information("New step for {From} is {NewStep}", message.From, newStep);
 
                 // var update = new Dictionary<string, object>
                 // {

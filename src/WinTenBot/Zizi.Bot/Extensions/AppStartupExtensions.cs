@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -41,12 +41,7 @@ namespace Zizi.Bot.Extensions
                 }, cancellationToken)
                 .ContinueWith(t =>
                 {
-                    Log.Error(t.Exception.Demystify(), "Error Starting Bot.");
-
-                    // ToDo use logger
-                    // Console.ForegroundColor = ConsoleColor.Red;
-                    // Console.WriteLine(t.Exception);
-                    // Console.ResetColor();
+                    Log.Error(t.Exception!.Demystify(), "Error Starting Bot.");
 
                     throw t.Exception;
                 }, TaskContinuationOptions.OnlyOnFaulted);
@@ -58,7 +53,6 @@ namespace Zizi.Bot.Extensions
         public static IApplicationBuilder EnsureWebhookSet<TBot>(this IApplicationBuilder app) where TBot : IBot
         {
             using var scope = app.ApplicationServices.CreateScope();
-            // var logger = scope.ServiceProvider.GetRequiredService<ILogger<Startup>>();
             var bot = scope.ServiceProvider.GetRequiredService<TBot>();
             var options = scope.ServiceProvider.GetRequiredService<IOptions<CustomBotOptions<TBot>>>();
 

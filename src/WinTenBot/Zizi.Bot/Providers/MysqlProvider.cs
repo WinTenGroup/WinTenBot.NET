@@ -19,19 +19,26 @@ namespace Zizi.Bot.Providers
             var connection = new MySqlConnection(BotSettings.DbConnectionString);
             var factory = new QueryFactory(connection, new MySqlCompiler())
             {
-                Logger = result => { Log.Debug($"MySqlExec: {result}"); }
+                Logger = result =>
+                {
+                    Log.Debug("MySqlExec: {Result}", result);
+                }
             };
 
             return factory;
         }
 
+        [Obsolete("This method will be replaced with QueryFactory from DI")]
         public static Query ExecForMysql(this Query query, bool printSql = true)
         {
             var connection = new MySqlConnection(BotSettings.DbConnectionString);
             var factory = new QueryFactory(connection, new MySqlCompiler());
             if (printSql)
             {
-                factory.Logger = sql => { Log.Debug($"MySqlExec: {sql}"); };
+                factory.Logger = sql =>
+                {
+                    Log.Debug("MySqlExec: {Sql}", sql);
+                };
             }
 
             return factory.FromQuery(query);
@@ -44,10 +51,13 @@ namespace Zizi.Bot.Providers
             var factory = new QueryFactory(connection, new MySqlCompiler());
             if (printSql)
             {
-                factory.Logger = sqlResult => { Log.Debug($"MySqlExec: {sqlResult}"); };
+                factory.Logger = sqlResult =>
+                {
+                    Log.Debug("MySqlExec: {SqlResult}", sqlResult);
+                };
             }
 
-            return await factory.StatementAsync(sql, param).ConfigureAwait(false);
+            return await factory.StatementAsync(sql, param);
         }
 
         public static int ExecForMysqlNonQuery(this string sql, object param = null, bool printSql = false)
@@ -56,7 +66,10 @@ namespace Zizi.Bot.Providers
             var factory = new QueryFactory(connection, new MySqlCompiler());
             if (printSql)
             {
-                factory.Logger = sqlResult => { Log.Debug($"MySqlExec: {sqlResult}"); };
+                factory.Logger = sqlResult =>
+                {
+                    Log.Debug("MySqlExec: {SqlResult}", sqlResult);
+                };
             }
 
             return factory.Statement(sql, param);
@@ -69,10 +82,13 @@ namespace Zizi.Bot.Providers
             var factory = new QueryFactory(connection, new MySqlCompiler());
             if (printSql)
             {
-                factory.Logger = sqlResult => { Log.Debug($"MySqlExec: {sqlResult}"); };
+                factory.Logger = sqlResult =>
+                {
+                    Log.Debug("MySqlExec: {SqlResult}", sqlResult);
+                };
             }
 
-            return await factory.SelectAsync(sql, param).ConfigureAwait(false);
+            return await factory.SelectAsync(sql, param);
         }
 
         public static IEnumerable<dynamic> ExecForMysqlQuery(this string sql, object param = null,
@@ -82,7 +98,10 @@ namespace Zizi.Bot.Providers
             var factory = new QueryFactory(connection, new MySqlCompiler());
             if (printSql)
             {
-                factory.Logger = sqlResult => { Log.Debug($"MySqlExec: {sqlResult}"); };
+                factory.Logger = sqlResult =>
+                {
+                    Log.Debug("MySqlExec: {SqlResult}", sqlResult);
+                };
             }
 
             return factory.Select(sql, param);
@@ -91,7 +110,7 @@ namespace Zizi.Bot.Providers
         public static async Task<int> MysqlDeleteDuplicateRowAsync(this string tableName, string columnKey,
             bool printSql = false)
         {
-            Log.Information($"Deleting duplicate rows on {tableName}");
+            Log.Information("Deleting duplicate rows on {TableName}", tableName);
 
             // var sql = $@"DELETE t1 FROM {tableName} t1
             //                 INNER JOIN {tableName} t2
@@ -109,10 +128,10 @@ namespace Zizi.Bot.Providers
 
             var sql = queries.ToString();
 
-            if (printSql) Log.Debug($"SQL: {sql}");
+            if (printSql) Log.Debug("SQL: {Sql}", sql);
 
-            var exec = await sql.ExecForMysqlNonQueryAsync(sql).ConfigureAwait(false);
-            Log.Information($"Deleted: {exec} rows.");
+            var exec = await sql.ExecForMysqlNonQueryAsync(sql);
+            Log.Information("Deleted: {Exec} rows.", exec);
 
             return exec;
         }

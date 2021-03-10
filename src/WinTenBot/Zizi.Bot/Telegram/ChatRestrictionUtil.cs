@@ -12,6 +12,7 @@ namespace Zizi.Bot.Telegram
 {
     public static class ChatRestrictionUtil
     {
+        [Obsolete("This method will be moved to TelegramService")]
         public static bool IsRestricted()
         {
             var isRestricted = BotSettings.GlobalConfiguration["CommonConfig:IsRestricted"].ToBool();
@@ -20,6 +21,7 @@ namespace Zizi.Bot.Telegram
             return isRestricted;
         }
 
+        [Obsolete("This method will be moved to TelegramService")]
         public static bool CheckRestriction(this long chatId)
         {
             try

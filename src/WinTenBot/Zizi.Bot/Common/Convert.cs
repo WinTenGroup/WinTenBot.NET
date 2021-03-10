@@ -10,7 +10,6 @@ namespace Zizi.Bot.Common
     {
         public static bool ToBool(this object obj)
         {
-//            return bool.Parse(obj);
             return System.Convert.ToBoolean(obj);
         }
 

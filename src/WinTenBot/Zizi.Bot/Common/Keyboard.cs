@@ -17,11 +17,11 @@ namespace Zizi.Bot.Common
             var splitWelcomeButton = buttonStr.Split(',').ToList();
             foreach (var button in splitWelcomeButton)
             {
-                Log.Information($"Button: {button}");
+                Log.Information("Button: {Button}", button);
                 if (button.Contains("|"))
                 {
                     var buttonLink = button.Split('|').ToList();
-                    Log.Information($"Appending keyboard: {buttonLink[0]} -> {buttonLink[1]}");
+                    Log.Information("Appending keyboard: {V} -> {V1}", buttonLink[0], buttonLink[1]);
                     dict.Add(buttonLink[0], buttonLink[1]);
                 }
             }
@@ -59,10 +59,10 @@ namespace Zizi.Bot.Common
 
         public static async Task<InlineKeyboardMarkup> JsonToButton(this string jsonPath, int chunk = 2)
         {
-            var json = "";
+            string json;
             if (File.Exists(jsonPath))
             {
-                Log.Information($"Loading Json from path: {jsonPath}");
+                Log.Information("Loading Json from path: {JsonPath}", jsonPath);
                 json = await File.ReadAllTextAsync(jsonPath)
                     .ConfigureAwait(false);
             }
@@ -72,7 +72,7 @@ namespace Zizi.Bot.Common
                 json = jsonPath;
             }
 
-            var replyMarkup = json.ToDataTable();
+            var replyMarkup = json.MapObject<DataTable>();
 
             var btnList = new List<InlineKeyboardButton>();
 
@@ -82,22 +82,15 @@ namespace Zizi.Bot.Common
                 var data = row["data"].ToString();
                 if (data.CheckUrlValid())
                 {
-                    Log.Debug($"Appending Text: '{btnText}', Url: '{data}'.");
+                    Log.Debug("Appending button URL. Text: '{BtnText}', Url: '{Data}'.", btnText, data);
                     btnList.Add(InlineKeyboardButton.WithUrl(btnText, data));
                 }
                 else
                 {
-                    Log.Debug($"Appending Text: '{btnText}', Data: '{data}'.");
+                    Log.Debug("Appending button callback. Text: '{BtnText}', Data: '{Data}'.", btnText, data);
                     btnList.Add(InlineKeyboardButton.WithCallbackData(btnText, data));
                 }
             }
-
-            // ConsoleHelper.WriteLine($"Chunk buttons to {chunk}");
-            // var chunksBtn = btnList
-            //     .Select((s, i) => new { Value = s, Index = i })
-            //     .GroupBy(x => x.Index / chunk)
-            //     .Select(grp => grp.Select(x => x.Value).ToArray())
-            //     .ToArray();
 
             return new InlineKeyboardMarkup(btnList.ChunkBy(chunk));
         }

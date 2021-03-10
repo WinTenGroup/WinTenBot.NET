@@ -26,7 +26,7 @@ namespace Zizi.Bot.Tools
                 .ConfigureAwait(false);
 
             var mappedHistory = localHistory.ToJson().MapObject<List<RssHistory>>();
-            Log.Information($"RSS History {prevDate} {mappedHistory.Count}");
+            Log.Information("RSS History {PrevDate} {Count}", prevDate, mappedHistory.Count);
 
             Log.Information("Migrating RSS History to Cloud");
 
@@ -53,7 +53,7 @@ namespace Zizi.Bot.Tools
             }
 
             var valuesStr = valuesInsert.MkJoin(", ");
-            Log.Debug($"RssHistory: \n{valuesStr}");
+            Log.Debug("RssHistory: \n{ValuesStr}", valuesStr);
 
             var sqlInsert = "INSERT INTO rss_history " +
                             "(url, rss_source, chat_id, title, publish_date, author, created_at) " +
@@ -174,11 +174,11 @@ namespace Zizi.Bot.Tools
 
             // Log.Debug("Deleting old Words");
             // await wordCollection.DeleteManyAsync(x => x.Word != null)
-                // .ConfigureAwait(false);
+            // .ConfigureAwait(false);
 
             // Log.Debug("Inserting new Words");
             // await wordCollection.InsertManyAsync(cloudWords)
-                // .ConfigureAwait(false);
+            // .ConfigureAwait(false);
 
             Log.Information("Sync {0} Words complete in {1}", cloudWords.Count, sw.Elapsed);
 
@@ -243,9 +243,9 @@ namespace Zizi.Bot.Tools
                 .ConfigureAwait(false)).ToList();
 
             // var cloudQuery = (await new Query("word_filter")
-                // .ExecForMysql()
-                // .GetAsync()
-                // .ConfigureAwait(false)).ToList();
+            // .ExecForMysql()
+            // .GetAsync()
+            // .ConfigureAwait(false)).ToList();
 
             // var cloudWords = cloudQuery.ToJson().MapObject<List<WordFilter>>();
 
@@ -260,11 +260,11 @@ namespace Zizi.Bot.Tools
 
             // Log.Debug("Deleting old Words");
             // await wordCollection.DeleteManyAsync(x => x.Word != null)
-                // .ConfigureAwait(false);
+            // .ConfigureAwait(false);
 
             // Log.Debug("Inserting new Words");
             // await wordCollection.InsertManyAsync(cloudWords)
-                // .ConfigureAwait(false);
+            // .ConfigureAwait(false);
 
             Log.Information("Sync {0} Words complete in {1}", wordFilters.Count, sw.Elapsed);
 

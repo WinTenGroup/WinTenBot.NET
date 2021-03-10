@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -35,7 +35,7 @@ namespace Zizi.Bot.Tools
                 // {
                 var rssUrl = rssSetting.UrlFeed;
 
-                Log.Information($"Processing {rssUrl} for {chatId}.");
+                Log.Information("Processing {RssUrl} for {ChatId}.", rssUrl, chatId);
                 try
                 {
                     newRssCount += await ExecuteUrlAsync(chatId, rssUrl)
@@ -52,7 +52,7 @@ namespace Zizi.Bot.Tools
 
             await Task.WhenAll(tasks).ConfigureAwait(false);
 
-            Log.Information($"RSS Scheduler finished. New RSS Count: {newRssCount}");
+            Log.Information("RSS Scheduler finished. New RSS Count: {NewRssCount}", newRssCount);
 
             return newRssCount;
         }

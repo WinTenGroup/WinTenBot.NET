@@ -1,10 +1,10 @@
+using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Serilog;
 using Telegram.Bot;
 using Telegram.Bot.Types;
-using Zizi.Bot.Common;
 using Zizi.Bot.Services;
 using Zizi.Bot.Tools;
 
@@ -58,6 +58,7 @@ namespace Zizi.Bot.Telegram
             return chatMembers;
         }
 
+        [Obsolete("This method will be moved to TelegramService")]
         public static async Task<ChatMember[]> GetChatAdmin(this ITelegramBotClient botClient, long chatId)
         {
             var keyCache = GetCacheKey(chatId);

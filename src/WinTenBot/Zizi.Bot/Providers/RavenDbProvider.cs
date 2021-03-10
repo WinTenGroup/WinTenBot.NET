@@ -1,11 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Security.Cryptography.X509Certificates;
-using System.Threading.Tasks;
 using Raven.Client.Documents;
 using Raven.Client.Documents.Linq;
-using Raven.Client.Documents.Operations;
-using Raven.Client.Documents.Queries;
 using Raven.Client.Documents.Session;
 using Serilog;
 using Zizi.Bot.Common;

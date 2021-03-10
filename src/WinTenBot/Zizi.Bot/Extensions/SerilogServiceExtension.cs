@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
@@ -62,34 +62,6 @@ namespace Zizi.Bot.Extensions
             Log.Logger = serilogConfig.CreateLogger();
 
             app.UseSerilogRequestLogging();
-        }
-
-        [Obsolete("Please use the Serilog Log static class directly.")]
-        public static string LogInfo(this string message)
-        {
-            Log.Information(message);
-            return message;
-        }
-
-        [Obsolete("Please use the Serilog Log static class directly.")]
-        public static string LogWarning(this string message)
-        {
-            Log.Warning(message);
-            return message;
-        }
-
-        [Obsolete("Please use the Serilog Log static class directly.")]
-        public static string LogDebug(this string message)
-        {
-            Log.Debug(message);
-            return message;
-        }
-
-        [Obsolete("Please use the Serilog Log static class directly.")]
-        public static string LogError(this Exception ex, string message)
-        {
-            Log.Error(message, ex);
-            return message;
         }
     }
 }

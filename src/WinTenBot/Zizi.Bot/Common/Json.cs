@@ -11,7 +11,7 @@ namespace Zizi.Bot.Common
 {
     public static class Json
     {
-        private static string workingDir = "Storage/Caches";
+        private static readonly string workingDir = "Storage/Caches";
 
         [Obsolete("Please use with type T.")]
         public static string ToJson(this object dataTable, bool indented = false, bool followProperty = false)
@@ -36,7 +36,6 @@ namespace Zizi.Bot.Common
 
         public static T MapObject<T>(this string json)
         {
-            // return JsonSerializer.Deserialize<T>(json);
             return JsonConvert.DeserializeObject<T>(json);
         }
 

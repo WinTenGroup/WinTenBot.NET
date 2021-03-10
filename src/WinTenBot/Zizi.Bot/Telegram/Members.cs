@@ -110,7 +110,7 @@ namespace Zizi.Bot.Telegram
                 var hitActivity = telegramService.GetChatCache<HitActivity>(fromId.ToString());
                 if (hitActivity == null)
                 {
-                    Log.Information($"This may first Hit from User {0}. In {1}", fromId, sw.Elapsed);
+                    Log.Information("This may first Hit from User {V}. In {V1}", fromId, sw.Elapsed);
 
                     telegramService.SetChatCache(fromId.ToString(), new HitActivity()
                     {

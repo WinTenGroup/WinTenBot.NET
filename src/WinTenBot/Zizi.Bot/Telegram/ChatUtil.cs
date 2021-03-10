@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Humanizer;
@@ -15,7 +16,7 @@ namespace Zizi.Bot.Telegram
             var chatIdStr = chatId.ToString();
             if (chatIdStr.StartsWith("-100"))
             {
-                chatIdStr = chatIdStr.Substring(4);
+                chatIdStr = chatIdStr[4..];
             }
 
             Log.Debug("Reduced ChatId from {0} to {1}", chatId, chatIdStr);

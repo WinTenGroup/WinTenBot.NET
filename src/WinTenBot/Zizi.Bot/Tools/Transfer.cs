@@ -73,7 +73,7 @@ namespace Zizi.Bot.Tools
 
                     await telegramService.EditAsync(completeText)
                         .ConfigureAwait(false);
-                    Log.Information($"Download file complete {args.Cancelled}");
+                    Log.Information("Download file complete {Cancelled}", args.Cancelled);
 
                     var preparingUpload = $"Preparing upload file to Google Drive." +
                                           $"\nFile: {fileName}";

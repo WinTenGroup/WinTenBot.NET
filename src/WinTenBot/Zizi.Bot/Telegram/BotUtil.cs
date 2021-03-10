@@ -51,11 +51,13 @@ namespace Zizi.Bot.Telegram
             return await telegramService.Client.GetMeAsync().ConfigureAwait(false);
         }
 
+        [Obsolete("This method will be moved to TelegramService")]
         public static async Task<User> GetBotMeAsync(this TelegramService telegramService)
         {
             return await telegramService.Client.GetBotMeAsync();
         }
 
+        [Obsolete("This method will be moved to TelegramService")]
         public static async Task<User> GetBotMeAsync(this ITelegramBotClient botClient)
         {
             Log.Debug("Getting Me");
@@ -75,6 +77,7 @@ namespace Zizi.Bot.Telegram
             return fromCache;
         }
 
+        [Obsolete("Please use 'GetBotMeAsync', include cached request")]
         public static async Task<bool> IsBeta(this TelegramService telegramService)
         {
             var me = await GetBotMeAsync(telegramService).ConfigureAwait(false);
@@ -94,6 +97,7 @@ namespace Zizi.Bot.Telegram
             return isMe;
         }
 
+        [Obsolete("This method will be moved to TelegramService")]
         public static async Task<bool> IsBotAdded(this TelegramService telegramService, User[] users)
         {
             Log.Information("Checking is added me?");

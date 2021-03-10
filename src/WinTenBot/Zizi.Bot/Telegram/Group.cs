@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using Serilog;
 using Zizi.Bot.Common;
 using Zizi.Bot.Services;
@@ -34,7 +34,7 @@ namespace Zizi.Bot.Telegram
                                             $"\nKetik /welcome untuk melihat perubahan")
                 .ConfigureAwait(false);
 
-            Log.Information($"Success save welcome {target} on {chatId}.");
+            Log.Information("Success save welcome {Target} on {ChatId}.", target, chatId);
         }
     }
 }

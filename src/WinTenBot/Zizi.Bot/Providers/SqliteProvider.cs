@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.SQLite;
 using System.IO;
 using System.Linq;
@@ -10,10 +11,12 @@ using SqlKata.Execution;
 
 namespace Zizi.Bot.Providers
 {
+    [Obsolete("SQLite no longer used anymore")]
     public static class SqliteProvider
     {
-        static string dbPath = "Storage/Common/LocalStorage.db";
+        static readonly string dbPath = "Storage/Common/LocalStorage.db";
 
+        [Obsolete("SQLite no longer used anymore")]
         private static SQLiteConnection InitSqLite()
         {
             var connBuilder = new SQLiteConnectionStringBuilder
@@ -23,31 +26,39 @@ namespace Zizi.Bot.Providers
             var connStr = connBuilder.ConnectionString;
             
             if (File.Exists(dbPath)) return new SQLiteConnection(connStr);
-            
-            Log.Information($"Creating {dbPath} for LocalStorage");
+
+            Log.Information("Creating {DbPath} for LocalStorage", dbPath);
             SQLiteConnection.CreateFile(dbPath);
 
             return new SQLiteConnection(connStr);
         }
-        
+
+        [Obsolete("SQLite no longer used anymore")]
         public static Query ExecForSqLite(this Query query, bool printSql = false)
         {
             var connection = InitSqLite();
             
             var factory = new QueryFactory(connection, new SqliteCompiler());
 
-            if (printSql) factory.Logger = sqlResult => { Log.Debug($"SQLiteExec: {sqlResult}"); };
+            if (printSql) factory.Logger = sqlResult =>
+            {
+                Log.Debug("SQLiteExec: {SqlResult}", sqlResult);
+            };
 
             return factory.FromQuery(query);
         }
 
+        [Obsolete("SQLite no longer used anymore")]
         public static async Task<int> ExecForSqLite(this string sql, bool printSql = false, object param = null)
         {
            var connection = InitSqLite();
             
             var factory = new QueryFactory(connection, new SqliteCompiler());
 
-            if (printSql) factory.Logger = sqlResult => { Log.Debug($"SQLiteExec: {sqlResult}"); };
+            if (printSql) factory.Logger = sqlResult =>
+            {
+                Log.Debug("SQLiteExec: {SqlResult}", sqlResult);
+            };
 
             return await factory.StatementAsync(sql, param)
                 .ConfigureAwait(false);
@@ -59,7 +70,10 @@ namespace Zizi.Bot.Providers
 
             var factory = new QueryFactory(connection, new SqliteCompiler());
 
-            if (printSql) factory.Logger = sqlResult => { Log.Debug($"SQLiteExec: {sqlResult}"); };
+            if (printSql) factory.Logger = sqlResult =>
+            {
+                Log.Debug("SQLiteExec: {SqlResult}", sqlResult);
+            };
 
             return await factory.SelectAsync(sql, param)
                 .ConfigureAwait(false);
@@ -76,7 +90,7 @@ namespace Zizi.Bot.Providers
 
             var result = await sql.ExecForSqLite(true)
                 .ConfigureAwait(false);
-            Log.Information($"Deleted {result}");
+            Log.Information("Deleted {Result}", result);
 
             return result;
         }
@@ -90,8 +104,8 @@ namespace Zizi.Bot.Providers
                 .Get();
             
             var isExist = query.Any();
-            
-            Log.Debug($"Is {tableName} exist: {isExist}");
+
+            Log.Debug("Is {TableName} exist: {IsExist}", tableName, isExist);
             
             return isExist;
         }

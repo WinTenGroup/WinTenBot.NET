@@ -17,10 +17,8 @@ namespace Zizi.Bot.Tools
 
             // Put the database update into a scope to ensure
             // that all resources will be disposed.
-            using (var scope = serviceProvider.CreateScope())
-            {
-                UpdateMySqlDatabase(scope.ServiceProvider);
-            }
+            using var scope = serviceProvider.CreateScope();
+            UpdateMySqlDatabase(scope.ServiceProvider);
         }
 
         /// <summary>

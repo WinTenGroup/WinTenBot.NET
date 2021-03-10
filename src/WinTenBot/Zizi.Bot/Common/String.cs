@@ -26,7 +26,7 @@ namespace Zizi.Bot.Common
             var sb = new StringBuilder();
             var pos = 0;
 
-            if (input == null) return input;
+            if (input == null) return null;
 
             foreach (Match toReplace in regex.Matches(input))
             {
@@ -48,27 +48,6 @@ namespace Zizi.Bot.Common
         {
             Log.Debug("Writing file to {0}", path);
             await File.WriteAllTextAsync(path, content).ConfigureAwait(false);
-
-            //            var sw = new StreamWriter(path);
-            //            sw.Write(content);
-            //            sw.Close();
-            //            sw.Dispose();
-
-            //            using (var sw = new StreamWriter(@path))
-            //            {
-            //                await sw.WriteAsync(content);
-            //                sw.Close();
-            //                sw.Dispose();
-            //            }
-
-            //            var buffer = Encoding.UTF8.GetBytes(content);
-            //
-            //            using (var fs = new FileStream(@path, FileMode.OpenOrCreate, 
-            //                FileAccess.Write, FileShare.None, buffer.Length, true))
-            //            {
-            //                await fs.WriteAsync(buffer, 0, buffer.Length);
-            //                fs.Close();
-            //            }
         }
 
         public static string SqlEscape(this string str)
@@ -130,7 +109,7 @@ namespace Zizi.Bot.Common
             var urls = await FeedReader.GetFeedUrlsFromUrlAsync(url);
 
             string feedUrl = url;
-            if (urls.Count() < 1) // no url - probably the url is already the right feed url
+            if (!urls.Any()) // no url - probably the url is already the right feed url
                 feedUrl = url;
             else if (urls.Count() == 1)
                 feedUrl = urls.First().Url;
@@ -181,6 +160,11 @@ namespace Zizi.Bot.Common
             }
 
             return str;
+        }
+
+        public static string RemoveLastLines(this string str, int lines = 0)
+        {
+            return str.Remove(str.TrimEnd().LastIndexOf(Environment.NewLine, StringComparison.Ordinal) + lines).Trim();
         }
 
         public static string StripMargin(this string s)
@@ -260,7 +244,7 @@ namespace Zizi.Bot.Common
                 .Select(e => ((char) e).ToString())
                 .Concat(Enumerable.Range(97, 26).Select(e => ((char) e).ToString()))
                 .Concat(Enumerable.Range(0, 10).Select(e => e.ToString()))
-                .OrderBy(e => Guid.NewGuid())
+                .OrderBy(_ => Guid.NewGuid())
                 .Take(lengthId)
                 .ToList()
                 .ForEach(e => builder.Append(e));

@@ -10,32 +10,29 @@ namespace Zizi.Bot.IO
 {
     public static class Caching
     {
-        private static string workingDir = "Storage/Caches";
+        private static readonly string workingDir = "Storage/Caches";
 
         public static async Task WriteCacheAsync(this object data, string fileJson, bool indented = true)
         {
             var filePath = $"{workingDir}/{fileJson}".EnsureDirectory();
             var json = data.ToJson(indented);
 
-            await json.ToFile(filePath)
-                .ConfigureAwait(false);
+            await json.ToFile(filePath);
             Log.Information("Writing cache success..");
         }
 
         public static void BackgroundWriteCache(this object dataTable, string fileJson)
         {
             var jobId = BackgroundJob.Enqueue(() => WriteCacheAsync(dataTable, fileJson, true));
-            Log.Information($"Background Write Cache scheduled with ID: {jobId}");
+            Log.Information("Background Write Cache scheduled with ID: {JobId}", jobId);
         }
 
         public static async Task<T> ReadCacheAsync<T>(this string fileJson)
         {
             var filePath = $"{workingDir}/{fileJson}";
-            var json = await File.ReadAllTextAsync(filePath)
-                .ConfigureAwait(false);
+            var json = await File.ReadAllTextAsync(filePath);
             var dataTable = json.MapObject<T>();
 
-            // var dataTable = json.ToDataTable();
             Log.Information("Loaded cache items: {0}", fileJson);
             return dataTable;
         }
@@ -44,30 +41,30 @@ namespace Zizi.Bot.IO
         {
             var filePath = $"{workingDir}/{fileName}";
             var isExist = File.Exists(filePath);
-            Log.Information($"IsCache {fileName} Exist: {isExist}");
+            Log.Information("IsCache {FileName} Exist: {IsExist}", fileName, isExist);
 
             return isExist;
         }
 
         public static void ClearCache(string keyword)
         {
-            Log.Information($"Deleting caches. Keyword {keyword}");
+            Log.Information("Deleting caches. Keyword {Keyword}", keyword);
 
             var listFile = Directory.GetFiles(workingDir);
             var listFiltered = listFile.Where(file =>
                 file.Contains(keyword)).ToArray();
 
-            Log.Information($"Found cache target {listFiltered.Length} of {listFile.Length}");
+            Log.Information("Found cache target {Length} of {Length1}", listFiltered.Length, listFile.Length);
             foreach (var file in listFiltered)
             {
-                Log.Information($"Deleting {file}");
+                Log.Information("Deleting {File}", file);
                 File.Delete(file);
             }
         }
 
         public static void ClearCacheOlderThan(string keyword, int days = 1)
         {
-            Log.Information($"Deleting caches older than {days} days");
+            Log.Information("Deleting caches older than {Days} days", days);
 
             var dirInfo = new DirectoryInfo(workingDir);
             var files = dirInfo.GetFiles();
@@ -75,11 +72,11 @@ namespace Zizi.Bot.IO
                 fileInfo.CreationTimeUtc < DateTime.UtcNow.AddDays(-days) &&
                 fileInfo.Name.Contains(keyword)).ToArray();
 
-            Log.Information($"Found cache target {filteredFiles.Length} of {files.Length}");
+            Log.Information("Found cache target {Length} of {Length1}", filteredFiles.Length, files.Length);
 
             foreach (FileInfo file in filteredFiles)
             {
-                Log.Information($"Deleting {file.FullName}");
+                Log.Information("Deleting {FullName}", file.FullName);
                 File.Delete(file.FullName);
             }
         }

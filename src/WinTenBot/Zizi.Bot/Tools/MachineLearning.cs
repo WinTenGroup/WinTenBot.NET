@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,7 +16,7 @@ namespace Zizi.Bot.Tools
 {
     public static class MachineLearning
     {
-        private static string tableName = "words_learning";
+        private static readonly string tableName = "words_learning";
         private static MLContext mlContext;
         private static TransformerChain<ITransformer> model;
         public static PredictionEngine<SpamInput, SpamPrediction> SpamEngine { get; set; }
@@ -30,7 +30,7 @@ namespace Zizi.Bot.Tools
 
             Log.Information("Loading dataset.");
             // Specify the schema for spam data and read it into DataView.
-            // var data = mlContext.Data.LoadFromTextFile<SpamInput>(filePath, 
+            // var data = mlContext.Data.LoadFromTextFile<SpamInput>(filePath,
             // hasHeader: true, separatorChar: '\t',allowQuoting:true);
 
             var dataSet = new Query("words_learning")
@@ -38,20 +38,20 @@ namespace Zizi.Bot.Tools
                 .ExecForMysql(true)
                 .Get<LearnCsv>();
 
-            Log.Debug($"Load DataSet {dataSet.Count()} row(s)");
+            Log.Debug("Load DataSet {V} row(s)", dataSet.Count());
             var data = mlContext.Data.LoadFromEnumerable(dataSet);
 
             Log.Information("Creating pipelines.");
-            // Data process configuration with pipeline data transformations 
+            // Data process configuration with pipeline data transformations
             var dataProcessPipeline = mlContext.Transforms.Conversion
                 .MapValueToKey("Label", "Label")
                 .Append(mlContext.Transforms.Text.FeaturizeText("FeaturesText",
                     new Microsoft.ML.Transforms.Text.TextFeaturizingEstimator.Options
                     {
                         WordFeatureExtractor = new Microsoft.ML.Transforms.Text.WordBagEstimator.Options
-                            {NgramLength = 2, UseAllLengths = true},
+                        { NgramLength = 2, UseAllLengths = true },
                         CharFeatureExtractor = new Microsoft.ML.Transforms.Text.WordBagEstimator.Options
-                            {NgramLength = 3, UseAllLengths = false},
+                        { NgramLength = 3, UseAllLengths = false },
                     }, "Message"))
                 .Append(mlContext.Transforms.CopyColumns("Features", "FeaturesText"))
                 .Append(mlContext.Transforms.NormalizeLpNorm("Features", "Features"))
@@ -66,9 +66,8 @@ namespace Zizi.Bot.Tools
                     .Conversion.MapKeyToValue("PredictedLabel", "PredictedLabel"));
             var trainingPipeLine = dataProcessPipeline.Append(trainer);
 
-
             Log.Information("Evaluate the model using cross-validation.");
-            // Cross-validation splits our dataset into 'folds', trains a model on some folds and 
+            // Cross-validation splits our dataset into 'folds', trains a model on some folds and
             // evaluates it on the remaining fold. We are using 5 folds so we get back 5 sets of scores.
             // Let's compute the average AUC, which should be between 0.5 and 1 (higher is better).
             Log.Information("=== Cross-validating to get model's accuracy metrics");
@@ -76,7 +75,7 @@ namespace Zizi.Bot.Tools
                 mlContext.MulticlassClassification.CrossValidate(data: data, estimator: trainingPipeLine,
                     numberOfFolds: 5);
 
-            Log.Information($"Trainer: {trainer.ToJson(true)}");
+            Log.Information("Trainer: {V}", trainer.ToJson(true));
 
             Log.Information("Starting train a model");
             // Now let's train a model on the full dataset to help us get better results
@@ -112,21 +111,21 @@ namespace Zizi.Bot.Tools
                 SetupEngine();
             }
 
-            var input = new SpamInput {Message = message};
+            var input = new SpamInput { Message = message };
             var predict = SpamEngine.Predict(input);
             var isSpam = predict.IsSpam == "spam";
-            Log.Information($"IsSpam: {isSpam}");
+            Log.Information("IsSpam: {IsSpam}", isSpam);
 
             return isSpam;
         }
 
         public static void ClassifyMessage(PredictionEngine<SpamInput, SpamPrediction> predictor, string message)
         {
-            var input = new SpamInput {Message = message};
+            var input = new SpamInput { Message = message };
             var prediction = predictor.Predict(input);
             var isSpamStr = prediction.IsSpam == "spam" ? "spam" : "not spam";
 
-            Log.Information($"The message '{input.ToJson(true)}' is '{isSpamStr}'");
+            Log.Information("The message '{V}' is '{IsSpamStr}'", input.ToJson(true), isSpamStr);
         }
 
         public static void WriteToCsv()
@@ -149,7 +148,7 @@ namespace Zizi.Bot.Tools
             var chatId = message.Chat.Id;
             var fromId = message.From.Id;
 
-            Log.Information($"Loading file {filePath}");
+            Log.Information("Loading file {FilePath}", filePath);
 
             var csvRecords = Csv.ReadCsv<LearnCsv>(filePath, hasHeader: hasHeader, delimiter: delimiter);
 
@@ -157,7 +156,7 @@ namespace Zizi.Bot.Tools
             {
                 var label = row.Label;
                 var msg = row.Message;
-                var cols = new List<object> {label, msg, fromId, chatId};
+                var cols = new List<object> { label, msg, fromId, chatId };
 
                 // return new { label, msg, fromId, chatId};
                 return cols.AsEnumerable();
@@ -171,15 +170,15 @@ namespace Zizi.Bot.Tools
             // ChatId = chatId
             // }
 
-            Log.Information($"Inserting {values.Count()} row(s).");
+            Log.Information("Inserting {V} row(s).", values.Count());
             var chunkInsert = values.ChunkBy(1000);
-            var cols = new[] {"label", "message", "from_id", "chat_id"};
+            var cols = new[] { "label", "message", "from_id", "chat_id" };
             foreach (var value in chunkInsert)
             {
                 var insert = new Query(tableName)
                     .ExecForMysql()
                     .Insert(cols, value);
-                Log.Information($"Inserted to {tableName} {insert} row(s)");
+                Log.Information("Inserted to {TableName} {Insert} row(s)", tableName, insert);
             }
 
             await tableName.MysqlDeleteDuplicateRowAsync("message", printSql: true)

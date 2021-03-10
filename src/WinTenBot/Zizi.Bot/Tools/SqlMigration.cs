@@ -14,10 +14,10 @@ namespace Zizi.Bot.Tools
         public static async Task MigrateLocalStorage(this string tableName)
         {
             var filePath = Environment.CurrentDirectory + $"/Storage/SQL/Sqlite/{tableName}.sql";
-            Log.Debug($"Migrating :{filePath}");
+            Log.Debug("Migrating :{FilePath}", filePath);
             await filePath.ExecuteFileForSqLite().ConfigureAwait(false);
         }
-        
+
         public static void MigrateMysql()
         {
             var path = Path.Combine(Environment.CurrentDirectory, "Storage/SQL/MySql").SanitizeSlash();
@@ -28,16 +28,16 @@ namespace Zizi.Bot.Tools
                 var filePath = file.SanitizeSlash();
                 if (filePath.Contains("obs"))
                 {
-                    Log.Debug($"Skip => {filePath} because obsolete");
+                    Log.Debug("Skip => {FilePath} because obsolete", filePath);
                 }
                 else
                 {
-                    Log.Debug($"Migrating => {filePath}");
+                    Log.Debug("Migrating => {FilePath}", filePath);
                     var sql = File.ReadAllText(file);
                     sql.ExecForMysqlNonQuery(true);
                 }
             }
-            
+
             Log.Information("SQL Migration finish.");
         }
 

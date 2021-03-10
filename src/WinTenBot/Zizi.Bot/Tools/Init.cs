@@ -1,9 +1,5 @@
-using Serilog;
-using Zizi.Bot.Common;
-using Zizi.Bot.Extensions;
 using Zizi.Bot.Models;
 using Zizi.Bot.Providers;
-using Zizi.Bot.Tools.GoogleCloud;
 
 namespace Zizi.Bot.Tools
 {

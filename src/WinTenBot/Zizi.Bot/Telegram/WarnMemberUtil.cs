@@ -28,7 +28,7 @@ namespace Zizi.Bot.Telegram
                 var partText = textMsg.Split(" ");
                 var reasonWarn = partText.ValueOfIndex(1) ?? "no-reason";
                 var user = repMessage.From;
-                Log.Information($"Warning User: {user}");
+                Log.Information("Warning User: {User}", user);
 
                 var warnLimit = 4;
                 var warnHistory = await UpdateWarnMemberStat(message)
@@ -112,16 +112,16 @@ namespace Zizi.Bot.Telegram
 
             var exist = warnHistory.Any<object>();
 
-            Log.Information($"Check Warn Username History: {exist}");
+            Log.Information("Check Warn Username History: {Exist}", exist);
 
             if (exist)
             {
                 var warnHistories = warnHistory.ToJson().MapObject<List<WarnMemberHistory>>().First();
 
-                Log.Information($"Mapped: {warnHistories.ToJson(true)}");
+                Log.Information("Mapped: {V}", warnHistories.ToJson(true));
 
                 var newStep = warnHistories.StepCount + 1;
-                Log.Information($"New step for {message.From} is {newStep}");
+                Log.Information("New step for {From} is {NewStep}", message.From, newStep);
 
                 var update = new Dictionary<string, object>
                 {
@@ -141,7 +141,7 @@ namespace Zizi.Bot.Telegram
                     .UpdateAsync(update)
                     .ConfigureAwait(false);
 
-                Log.Information($"Update step: {insertHit}");
+                Log.Information("Update step: {InsertHit}", insertHit);
             }
             else
             {
@@ -164,7 +164,7 @@ namespace Zizi.Bot.Telegram
                     .InsertAsync(data)
                     .ConfigureAwait(false);
 
-                Log.Information($"Insert Hit: {insertHit}");
+                Log.Information("Insert Hit: {InsertHit}", insertHit);
             }
 
             var updatedHistory = await new Query(tableName)
@@ -198,7 +198,7 @@ namespace Zizi.Bot.Telegram
                 .UpdateAsync(update)
                 .ConfigureAwait(false);
 
-            Log.Information($"Update lastWarn: {insertHit}");
+            Log.Information("Update lastWarn: {InsertHit}", insertHit);
         }
 
         public static async Task ResetWarnMemberStatAsync(Message message)
@@ -222,7 +222,7 @@ namespace Zizi.Bot.Telegram
                 .UpdateAsync(update)
                 .ConfigureAwait(false);
 
-            Log.Information($"Update step: {insertHit}");
+            Log.Information("Update step: {InsertHit}", insertHit);
         }
 
         public static async Task RemoveWarnMemberStatAsync(this TelegramService telegramService, int userId)
@@ -246,7 +246,7 @@ namespace Zizi.Bot.Telegram
                 .UpdateAsync(update)
                 .ConfigureAwait(false);
 
-            Log.Information($"Update step: {insertHit}");
+            Log.Information("Update step: {InsertHit}", insertHit);
         }
     }
 }
