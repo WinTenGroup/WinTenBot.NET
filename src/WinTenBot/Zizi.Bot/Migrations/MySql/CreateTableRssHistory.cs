@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using FluentMigrator;
+﻿using FluentMigrator;
 using Zizi.Bot.Extensions;
 
 namespace Zizi.Bot.Migrations.MySql
