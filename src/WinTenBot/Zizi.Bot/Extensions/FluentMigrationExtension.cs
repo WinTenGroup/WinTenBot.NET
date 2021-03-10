@@ -51,9 +51,6 @@ namespace Zizi.Bot.Extensions
             var appConfig = services.GetRequiredService<AppConfig>();
             var runner = scopes.ServiceProvider.GetRequiredService<IMigrationRunner>();
 
-            // if (appConfig == null) return app;
-            // if (runner == null) return app;
-
             Log.Information("Running DB migration..");
 
             runner.ListMigrations();
