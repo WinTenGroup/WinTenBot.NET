@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -57,7 +57,7 @@ namespace Zizi.Bot.Tools
             return newRssCount;
         }
 
-        [AutomaticRetry(Attempts = 3, OnAttemptsExceeded = AttemptsExceededAction.Delete)]
+        [AutomaticRetry(Attempts = 2, OnAttemptsExceeded = AttemptsExceededAction.Delete)]
         public static async Task<int> ExecuteUrlAsync(long chatId, string rssUrl)
         {
             int newRssCount = 0;
