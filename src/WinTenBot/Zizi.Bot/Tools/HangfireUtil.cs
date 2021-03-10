@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Hangfire;
 using Hangfire.MySql;
@@ -11,6 +13,8 @@ namespace Zizi.Bot.Tools
     {
         public static void DeleteAllJobs()
         {
+            var sw = Stopwatch.StartNew();
+
             Log.Information("Deleting previous Hangfire jobs..");
             var connection = JobStorage.Current.GetConnection();
             var recurringJobs = connection.GetRecurringJobs();
@@ -27,7 +31,9 @@ namespace Zizi.Bot.Tools
                 Log.Debug("Delete succeeded {0}, Index: {1}", recurringJobId, index);
             });
 
-            Log.Information("Hangfire jobs successfully deleted. Total: {0}", numOfJobs);
+            Log.Information("Hangfire jobs successfully deleted. Total: {0}. Time: {1}", numOfJobs, sw.Elapsed);
+
+            sw.Stop();
         }
 
         public static MySqlStorage GetMysqlStorage(string connectionStr)
@@ -47,6 +53,51 @@ namespace Zizi.Bot.Tools
             };
             var storage = new MySqlStorage(connectionStr, options);
             return storage;
+        }
+
+        public static void RegisterJob(string jobId, Expression<Action> methodCall, Func<string> cronExpression,
+            TimeZoneInfo timeZone = null, string queue = "default")
+        {
+            var sw = Stopwatch.StartNew();
+
+            Log.Debug("Registering Job with ID: {0}", jobId);
+            RecurringJob.RemoveIfExists(jobId);
+            RecurringJob.AddOrUpdate(jobId, methodCall, cronExpression, timeZone, queue);
+            RecurringJob.Trigger(jobId);
+
+            Log.Debug("Registering Job {0} finish in {1}", jobId, sw.Elapsed);
+
+            sw.Stop();
+        }
+
+        public static void RegisterJob<T>(string jobId, Expression<Func<T, Task>> methodCall, Func<string> cronExpression,
+            TimeZoneInfo timeZone = null, string queue = "default")
+        {
+            var sw = Stopwatch.StartNew();
+
+            Log.Debug("Registering Job with ID: {0}", jobId);
+            RecurringJob.RemoveIfExists(jobId);
+            RecurringJob.AddOrUpdate(jobId, methodCall, cronExpression, timeZone, queue);
+            RecurringJob.Trigger(jobId);
+
+            Log.Debug("Registering Job {0} finish in {1}", jobId, sw.Elapsed);
+
+            sw.Stop();
+        }
+
+        public static void RegisterJob(string jobId, Expression<Func<Task>> methodCall, Func<string> cronExpression,
+            TimeZoneInfo timeZone = null, string queue = "default")
+        {
+            var sw = Stopwatch.StartNew();
+
+            Log.Debug("Registering Job with ID: {0}", jobId);
+            RecurringJob.RemoveIfExists(jobId);
+            RecurringJob.AddOrUpdate(jobId, methodCall, cronExpression, timeZone, queue);
+            RecurringJob.Trigger(jobId);
+
+            Log.Debug("Registering Job {0} finish in {1}", jobId, sw.Elapsed);
+
+            sw.Stop();
         }
 
         // public static SQLiteStorage GetSqliteStorage()
