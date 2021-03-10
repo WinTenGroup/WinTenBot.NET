@@ -34,38 +34,5 @@ namespace Zizi.Bot.Extensions
 
             return services;
         }
-
-        // public static IApplicationBuilder UseEmbeddedRavenDBServer(this IApplicationBuilder app)
-        // {
-        //     var appConfig = app?.ApplicationServices.GetService<AppConfig>();
-        //     var ravenDbConfig = appConfig?.RavenDBConfig;
-        //     var serverUrl = ravenDbConfig?.Embedded.ServerUrl;
-        //     var frameworkVersion = ravenDbConfig?.Embedded.FrameworkVersion;
-        //
-        //     Log.Debug("Starting RavenDB Embedded server.");
-        //
-        //     EmbeddedServer.Instance.StartServer(new ServerOptions()
-        //     {
-        //         AcceptEula = true,
-        //         ServerUrl = serverUrl,
-        //         FrameworkVersion = frameworkVersion,
-        //         DataDirectory = "Storage/Data/",
-        //         LogsPath = "Storage/Logs/",
-        //     });
-        //
-        //     EmbeddedServer.Instance.ServerProcessExited += delegate(object sender, ServerProcessExitedEventArgs args)
-        //     {
-        //         Log.Error("Server Exited. {0} => {1}", sender, args);
-        //     };
-        //
-        //     var pid = EmbeddedServer.Instance.GetServerProcessIdAsync().Result;
-        //     var serverUri = EmbeddedServer.Instance.GetServerUriAsync().Result;
-        //
-        //     Log.Debug("RavenDB Embedded server initialized.");
-        //     Log.Debug("ProcessID: {0}", pid);
-        //     Log.Debug("ServerURL: {0}", serverUri);
-        //
-        //     return app;
-        // }
     }
 }
