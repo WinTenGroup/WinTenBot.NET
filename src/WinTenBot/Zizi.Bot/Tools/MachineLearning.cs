@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -135,9 +135,10 @@ namespace Zizi.Bot.Tools
             var data = new Query("words_learning")
                 .SelectRaw("mark Mark, message Message")
                 .ExecForMysql(true)
-                .Get<LearnCsv>();
+                .Get<LearnCsv>()
+                .ToList();
 
-            Csv.Write(filePath, data, delimiter: "\t");
+            data.WriteRecords(filePath, delimiter: "\t");
         }
 
         public static async Task ImportCsv(this TelegramService telegramService, string filePath,
@@ -150,7 +151,7 @@ namespace Zizi.Bot.Tools
 
             Log.Information("Loading file {FilePath}", filePath);
 
-            var csvRecords = Csv.ReadCsv<LearnCsv>(filePath, hasHeader: hasHeader, delimiter: delimiter);
+            var csvRecords = CsvUtil.ReadCsv<LearnCsv>(filePath, hasHeader: hasHeader, delimiter: delimiter);
 
             var values = csvRecords.Select(row =>
             {
