@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace Zizi.Bot.Models
 {
-    public partial class StickerAppItem
+    public class StickerAppItem
     {
         [JsonProperty("android_play_store_link")]
         public Uri AndroidPlayStoreLink { get; set; }
@@ -16,7 +16,7 @@ namespace Zizi.Bot.Models
         public List<StickerPack> StickerPacks { get; set; }
     }
 
-    public partial class StickerPack
+    public class StickerPack
     {
         [JsonProperty("identifier")]
         public string Identifier { get; set; }
@@ -53,7 +53,7 @@ namespace Zizi.Bot.Models
         public List<StickerItem> Stickers { get; set; }
     }
 
-    public partial class StickerItem
+    public class StickerItem
     {
         [JsonProperty("image_file")]
         public string ImageFile { get; set; }

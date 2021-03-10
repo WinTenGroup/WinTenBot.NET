@@ -23,7 +23,7 @@ namespace Zizi.Bot.Models.Lmao
         public long Updated { get; set; }
     }
 
-    public partial class CountryInfo
+    public class CountryInfo
     {
         [JsonProperty("_id")]
         public long Id { get; set; }

@@ -10,7 +10,7 @@ namespace Zizi.Bot.Models
 
         [JsonProperty("member_count")]
         public long MemberCount { get; set; }
-        
+
         [JsonProperty("event_log_chat_id")]
         public long EventLogChatId { get; set; }
 
@@ -26,21 +26,21 @@ namespace Zizi.Bot.Models
         public string WelcomeMedia { get; set; }
 
         [JsonProperty("welcome_media_type")]
-        public MediaType WelcomeMediaType { get; set; }
+        public MediaType WelcomeMediaType { get; set; } = MediaType.Unknown;
 
         [JsonProperty("rules_text")]
         public string RulesText { get; set; }
 
         [JsonProperty("last_tags_message_id")]
         public string LastTagsMessageId { get; set; }
-        
+
         [JsonProperty("last_warn_username_message_id")]
         public string LastWarnUsernameMessageId { get; set; }
-        
+
         [JsonProperty("last_welcome_message_id")]
         public string LastWelcomeMessageId { get; set; }
 
-        [JsonProperty("enable_afk_stat")] 
+        [JsonProperty("enable_afk_stat")]
         public bool EnableAfkStat { get; set; } = true;
 
         [JsonProperty("enable_global_ban")]
@@ -49,19 +49,19 @@ namespace Zizi.Bot.Models
         [JsonProperty("enable_human_verification")]
         public bool EnableHumanVerification { get; set; } = true;
 
-        [JsonProperty("enable_fed_cas_ban")] 
+        [JsonProperty("enable_fed_cas_ban")]
         public bool EnableFedCasBan { get; set; } = true;
 
-        [JsonProperty("enable_fed_es2_ban")] 
+        [JsonProperty("enable_fed_es2_ban")]
         public bool EnableFedEs2 { get; set; } = true;
 
-        [JsonProperty("enable_fed_spamwatch")] 
+        [JsonProperty("enable_fed_spamwatch")]
         public bool EnableFedSpamWatch { get; set; } = true;
 
         [JsonProperty("enable_find_notes")]
         public bool EnableFindNotes { get; set; }
 
-        [JsonProperty("enable_find_tags")] 
+        [JsonProperty("enable_find_tags")]
         public bool EnableFindTags { get; set; } = true;
 
         [JsonProperty("enable_word_filter_group")]
@@ -70,7 +70,7 @@ namespace Zizi.Bot.Models
         [JsonProperty("enable_word_filter_global")]
         public bool EnableWordFilterGroupWide { get; set; } = true;
 
-        [JsonProperty("enable_warn_username")] 
+        [JsonProperty("enable_warn_username")]
         public bool EnableWarnUsername { get; set; } = true;
 
         [JsonProperty("enable_welcome_message")]

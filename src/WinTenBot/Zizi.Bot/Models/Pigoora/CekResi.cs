@@ -15,7 +15,7 @@ namespace Zizi.Bot.Models.Pigoora
         public Result Result { get; set; }
     }
 
-    public partial class Result
+    public class Result
     {
         [JsonProperty("delivered")]
         public bool Delivered { get; set; }
@@ -33,7 +33,7 @@ namespace Zizi.Bot.Models.Pigoora
         public DeliveryStatus DeliveryStatus { get; set; }
     }
 
-    public partial class DeliveryStatus
+    public class DeliveryStatus
     {
         [JsonProperty("status")]
         public string Status { get; set; }
@@ -48,7 +48,7 @@ namespace Zizi.Bot.Models.Pigoora
         public DateTime PodTime { get; set; }
     }
 
-    public partial class Details
+    public class Details
     {
         [JsonProperty("waybill_number")]
         public string WaybillNumber { get; set; }
@@ -99,7 +99,7 @@ namespace Zizi.Bot.Models.Pigoora
         public string ReceiverCity { get; set; }
     }
 
-    public partial class Manifest
+    public class Manifest
     {
         [JsonProperty("manifest_code")]
         public string ManifestCode { get; set; }
@@ -117,7 +117,7 @@ namespace Zizi.Bot.Models.Pigoora
         public string CityName { get; set; }
     }
 
-    public partial class Summary
+    public class Summary
     {
         [JsonProperty("courier_code")]
         public string CourierCode { get; set; }
@@ -152,12 +152,12 @@ namespace Zizi.Bot.Models.Pigoora
 
     public partial class CekResi
     {
-        public static CekResi FromJson(string json) => JsonConvert.DeserializeObject<CekResi>(json, Pigoora.Converter.Settings);
+        public static CekResi FromJson(string json) => JsonConvert.DeserializeObject<CekResi>(json, Converter.Settings);
     }
 
     public static class Serialize
     {
-        public static string ToJson(this CekResi self) => JsonConvert.SerializeObject(self, Pigoora.Converter.Settings);
+        public static string ToJson(this CekResi self) => JsonConvert.SerializeObject(self, Converter.Settings);
     }
 
     internal static class Converter

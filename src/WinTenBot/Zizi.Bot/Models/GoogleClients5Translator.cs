@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 
 namespace Zizi.Bot.Models
 {
-    public partial class GoogleClients5Translator
+    public class GoogleClients5Translator
     {
         [JsonProperty("sentences")]
         public List<Sentence> Sentences { get; set; }
@@ -30,7 +27,7 @@ namespace Zizi.Bot.Models
         public List<QueryInflection> QueryInflections { get; set; }
     }
 
-    public partial class AlternativeTranslation
+    public class AlternativeTranslation
     {
         [JsonProperty("src_phrase")]
         public string SrcPhrase { get; set; }
@@ -51,7 +48,7 @@ namespace Zizi.Bot.Models
         public long EndPos { get; set; }
     }
 
-    public partial class Alternative
+    public class Alternative
     {
         [JsonProperty("word_postproc")]
         public string WordPostproc { get; set; }
@@ -66,7 +63,7 @@ namespace Zizi.Bot.Models
         public bool AttachToNextToken { get; set; }
     }
 
-    public partial class Srcunicodeoffset
+    public class Srcunicodeoffset
     {
         [JsonProperty("begin")]
         public long Begin { get; set; }
@@ -75,7 +72,7 @@ namespace Zizi.Bot.Models
         public long End { get; set; }
     }
 
-    public partial class Dict
+    public class Dict
     {
         [JsonProperty("pos")]
         public string Pos { get; set; }
@@ -93,7 +90,7 @@ namespace Zizi.Bot.Models
         public long PosEnum { get; set; }
     }
 
-    public partial class Entry
+    public class Entry
     {
         [JsonProperty("word")]
         public string Word { get; set; }
@@ -105,7 +102,7 @@ namespace Zizi.Bot.Models
         public double? Score { get; set; }
     }
 
-    public partial class LdResult
+    public class LdResult
     {
         [JsonProperty("srclangs")]
         public List<string> Srclangs { get; set; }
@@ -117,7 +114,7 @@ namespace Zizi.Bot.Models
         public List<string> ExtendedSrclangs { get; set; }
     }
 
-    public partial class QueryInflection
+    public class QueryInflection
     {
         [JsonProperty("written_form")]
         public string WrittenForm { get; set; }
@@ -126,7 +123,7 @@ namespace Zizi.Bot.Models
         public Features Features { get; set; }
     }
 
-    public partial class Features
+    public class Features
     {
         [JsonProperty("gender", NullValueHandling = NullValueHandling.Ignore)]
         public long? Gender { get; set; }
@@ -135,7 +132,7 @@ namespace Zizi.Bot.Models
         public long Number { get; set; }
     }
 
-    public partial class Sentence
+    public class Sentence
     {
         [JsonProperty("trans")]
         public string Trans { get; set; }

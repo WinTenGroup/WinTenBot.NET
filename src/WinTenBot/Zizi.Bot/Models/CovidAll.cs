@@ -19,7 +19,7 @@ namespace Zizi.Bot.Models
         public Confirmed Recovered { get; set; }
     }
 
-    public partial class Confirmed
+    public class Confirmed
     {
         [JsonProperty("last_updated")]
         public DateTimeOffset LastUpdated { get; set; }
@@ -34,7 +34,7 @@ namespace Zizi.Bot.Models
         public Uri Source { get; set; }
     }
 
-    public partial class Location
+    public class Location
     {
         [JsonProperty("coordinates")]
         public Coordinates Coordinates { get; set; }
@@ -55,7 +55,7 @@ namespace Zizi.Bot.Models
         public string Province { get; set; }
     }
 
-    public partial class Coordinates
+    public class Coordinates
     {
         [JsonProperty("lat")]
         public string Lat { get; set; }
@@ -64,7 +64,7 @@ namespace Zizi.Bot.Models
         public string Long { get; set; }
     }
 
-    public partial class Latest
+    public class Latest
     {
         [JsonProperty("confirmed")]
         public long Confirmed { get; set; }
