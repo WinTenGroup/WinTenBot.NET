@@ -35,6 +35,14 @@ namespace Zizi.Bot.Extensions
                 .AddScoped<IWeatherService, WeatherService>()
                 .AddScoped<ChatService>()
                 .AddScoped<CekResiService>();
+
+        public static IServiceCollection AddCallbackQueryHandlers(this IServiceCollection services)
+        {
+            return services.AddScoped<SettingsCallback>()
+                .AddScoped<ActionCallback>()
+                .AddScoped<HelpCallback>()
+                .AddScoped<PingCallback>()
+                .AddScoped<VerifyCallback>();
         }
 
         public static IApplicationBuilder ConfigureNewtonsoftJson(this IApplicationBuilder app)

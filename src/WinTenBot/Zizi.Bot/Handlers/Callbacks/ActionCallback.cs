@@ -16,47 +16,43 @@ namespace Zizi.Bot.Handlers.Callbacks
         {
             Telegram = telegramService;
             CallbackQuery = telegramService.Context.Update.CallbackQuery;
-            Log.Information("Receiving Verify Callback");
-
-            Parallel.Invoke(async () =>
-                await ExecuteAsync().ConfigureAwait(false));
         }
 
-        private async Task ExecuteAsync()
+        public async Task<bool> ExecuteAsync()
         {
+            Log.Information("Receiving Verify Callback");
+
             var callbackData = CallbackQuery.Data;
             var fromId = CallbackQuery.From.Id;
-            Log.Information($"CallbackData: {callbackData} from {fromId}");
+            Log.Information("CallbackData: {CallbackData} from {FromId}", callbackData, fromId);
 
             var partCallbackData = callbackData.Split(" ");
             var action = partCallbackData.ValueOfIndex(1);
             var target = partCallbackData.ValueOfIndex(2).ToInt();
-            var isAdmin = await Telegram.IsAdminGroup(fromId)
-                .ConfigureAwait(false);
+            var isAdmin = await Telegram.IsAdminGroup(fromId);
 
             if (!isAdmin)
             {
-                Log.Information($"UserId: {fromId} is not Admin in this chat!");
-                return;
+                Log.Information("UserId: {FromId} is not Admin in this chat!", fromId);
+                return false;
             }
 
             switch (action)
             {
                 case "remove-warn":
-                    Log.Information($"Removing warn for {target}");
-                    await Telegram.RemoveWarnMemberStatAsync(target)
-                        .ConfigureAwait(false);
-                    await Telegram.EditMessageCallback($"Peringatan untuk UserID: {target} sudah di hapus")
-                        .ConfigureAwait(false);
+                    Log.Information("Removing warn for {Target}", target);
+                    await Telegram.RemoveWarnMemberStatAsync(target);
+                    await Telegram.EditMessageCallback($"Peringatan untuk UserID: {target} sudah di hapus");
                     break;
 
                 default:
-                    Log.Information($"Action {action} is undefined");
+                    Log.Information("Action {Action} is undefined", action);
                     break;
             }
 
-            await Telegram.AnswerCallbackQueryAsync("Succed!")
-                .ConfigureAwait(false);
+            await Telegram.AnswerCallbackQueryAsync("Succed!");
+
+            return true;
         }
     }
 }

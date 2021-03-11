@@ -15,19 +15,20 @@ namespace Zizi.Bot.Handlers.Callbacks
             _telegramService = telegramService;
             _callbackQuery = telegramService.CallbackQuery;
 
-            Log.Information("Receiving Ping callback");
-            Parallel.Invoke(async () => await ExecuteAsync());
         }
 
-        private async Task ExecuteAsync()
+        public async Task<bool> ExecuteAsync()
         {
+            Log.Information("Receiving Ping callback");
+
             var callbackData = _callbackQuery.Data;
             Log.Debug("CallbackData: {0}", callbackData);
 
             var answerCallback = $"Callback: {callbackData}";
 
-            await _telegramService.AnswerCallbackQueryAsync(answerCallback, showAlert: true)
-                .ConfigureAwait(false);
+            await _telegramService.AnswerCallbackQueryAsync(answerCallback, showAlert: true);
+
+            return true;
         }
     }
 }

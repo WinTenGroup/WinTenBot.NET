@@ -20,20 +20,19 @@ namespace Zizi.Bot.Handlers.Callbacks
             CallbackQuery = telegramService.Context.Update.CallbackQuery;
             Log.Information("Receiving Verify Callback");
 
-            Parallel.Invoke(async () =>
-                await ExecuteVerifyAsync().ConfigureAwait(false));
+            // Parallel.Invoke(async () =>
+            //     await ExecuteVerifyAsync().ConfigureAwait(false));
         }
 
-        private async Task ExecuteVerifyAsync()
+        public async Task<bool> ExecuteVerifyAsync()
         {
             Log.Information("Executing Verify Callback");
 
             var callbackData = CallbackQuery.Data;
-            var message = Telegram.Message;
             var fromId = CallbackQuery.From.Id;
             var chatId = CallbackQuery.Message.Chat.Id;
 
-            Log.Debug($"CallbackData: {callbackData} from {fromId}");
+            Log.Debug("CallbackData: {CallbackData} from {FromId}", callbackData, fromId);
 
             var partCallbackData = callbackData.Split(" ");
             var callBackParam1 = partCallbackData.ValueOfIndex(1);
@@ -50,8 +49,7 @@ namespace Zizi.Bot.Handlers.Callbacks
                 }
                 else
                 {
-                    var warnJson = await WarnUsernameUtil.GetWarnUsernameCollectionAsync()
-                        .ConfigureAwait(false);
+                    var warnJson = await WarnUsernameUtil.GetWarnUsernameCollectionAsync();
                     var listWarns = warnJson.AsQueryable().ToList();
 
                     Parallel.ForEach(listWarns, async (warn) =>
@@ -71,15 +69,13 @@ namespace Zizi.Bot.Handlers.Callbacks
                             }
                             else
                             {
-                                await Telegram.RestrictMemberAsync(fromId, true)
-                                    .ConfigureAwait(false);
+                                await Telegram.RestrictMemberAsync(fromId, true);
 
 
                                 if (isExist)
                                 {
                                     var delete = await warnJson.DeleteManyAsync(x =>
-                                            x.FromId == userId && x.ChatId == chatId)
-                                        .ConfigureAwait(false);
+                                            x.FromId == userId && x.ChatId == chatId);
                                     Log.Debug("Deleting {0} result {1}", userId, delete);
                                 }
                             }
@@ -94,14 +90,12 @@ namespace Zizi.Bot.Handlers.Callbacks
                                 if (isExist)
                                 {
                                     var delete = await warnJson.DeleteManyAsync(x =>
-                                            x.FromId == userId && x.ChatId == chatId)
-                                        .ConfigureAwait(false);
+                                            x.FromId == userId && x.ChatId == chatId);
                                     Log.Debug("Deleting {0} result {1}", userId, delete);
                                 }
                             }
                         }
 
-                        // }
                     });
 
                     answer = "Terima kasih sudah verifikasi Username!";
@@ -112,13 +106,12 @@ namespace Zizi.Bot.Handlers.Callbacks
             }
             else if (fromId == callBackParam1.ToInt64())
             {
-                await Telegram.RestrictMemberAsync(callBackParam1.ToInt(), true)
-                    .ConfigureAwait(false);
+                await Telegram.RestrictMemberAsync(callBackParam1.ToInt(), true);
                 answer = "Terima kasih sudah verifikasi!";
             }
 
-            await Telegram.AnswerCallbackQueryAsync(answer)
-                .ConfigureAwait(false);
+            await Telegram.AnswerCallbackQueryAsync(answer);
+            return true;
         }
     }
 }

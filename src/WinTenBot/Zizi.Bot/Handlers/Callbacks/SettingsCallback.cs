@@ -5,39 +5,38 @@ using Telegram.Bot.Types;
 using Zizi.Bot.Common;
 using Zizi.Bot.Telegram;
 using Zizi.Bot.Services;
+using Zizi.Bot.Services.Datas;
 
 namespace Zizi.Bot.Handlers.Callbacks
 {
     public class SettingsCallback
     {
-        private TelegramService _telegramService;
+        private readonly TelegramService _telegramService;
+        private readonly SettingsService _settingsService;
         private CallbackQuery CallbackQuery { get; set; }
         private Message Message { get; set; }
 
-        public SettingsCallback(TelegramService telegramService)
+        public SettingsCallback(TelegramService telegramService, SettingsService settingsService)
         {
             _telegramService = telegramService;
-            Message = telegramService.Message;
+            _settingsService = settingsService;
+
             CallbackQuery = telegramService.Context.Update.CallbackQuery;
-
-            Log.Information("Receiving Setting Callback.");
-
-            Parallel.Invoke(async () =>
-                await ExecuteToggleAsync().ConfigureAwait(false));
         }
 
-        private async Task ExecuteToggleAsync()
+        public async Task<bool> ExecuteToggleAsync()
         {
+            Log.Information("Processing Setting Callback.");
+
             var chatId = CallbackQuery.Message.Chat.Id;
             var fromId = CallbackQuery.From.Id;
             var msgId = CallbackQuery.Message.MessageId;
 
-            var isAdmin = await _telegramService.IsAdminGroup(fromId)
-                .ConfigureAwait(false);
+            var isAdmin = await _telegramService.IsAdminGroup(fromId);
             if (!isAdmin)
             {
                 Log.Information("He is not admin.");
-                return;
+                return false;
             }
 
             var callbackData = CallbackQuery.Data;
@@ -48,40 +47,35 @@ namespace Zizi.Bot.Handlers.Callbacks
             var keyParamStr = callbackParam.Replace(valueParamStr, "");
             var currentVal = valueParamStr.ToBoolInt();
 
-            Log.Information($"Param : {keyParamStr}");
-            Log.Information($"CurrentVal : {currentVal}");
+            Log.Information("Param : {KeyParamStr}", keyParamStr);
+            Log.Information("CurrentVal : {CurrentVal}", currentVal);
 
             var columnTarget = "enable" + keyParamStr;
             var newValue = currentVal == 0 ? 1 : 0;
-            Log.Information($"Column: {columnTarget}, Value: {currentVal}, NewValue: {newValue}");
+            Log.Information("Column: {ColumnTarget}, Value: {CurrentVal}, NewValue: {NewValue}",
+                columnTarget, currentVal, newValue);
 
-            var settingService = new SettingsService(Message);
             var data = new Dictionary<string, object>()
             {
                 ["chat_id"] = chatId,
                 [columnTarget] = newValue
             };
 
-            await settingService.SaveSettingsAsync(data)
-                .ConfigureAwait(false);
+            await _settingsService.SaveSettingsAsync(data);
 
-            var settingBtn = await settingService.GetSettingButtonByGroup()
-                .ConfigureAwait(false);
-            var btnMarkup = await settingBtn.ToJson().JsonToButton(chunk: 2)
-                .ConfigureAwait(false);
-            Log.Debug($"Settings: {settingBtn.Count}");
+            var settingBtn = await _settingsService.GetSettingButtonByGroup(chatId);
+            var btnMarkup = await settingBtn.ToJson().JsonToButton(chunk: 2);
+            Log.Debug("Settings: {Count}", settingBtn.Count);
 
             _telegramService.SentMessageId = msgId;
 
             var editText = $"Settings Toggles" +
                            $"\nParam: {columnTarget} to {newValue}";
-            await _telegramService.EditMessageCallback(editText, btnMarkup)
-                .ConfigureAwait(false);
+            await _telegramService.EditMessageCallback(editText, btnMarkup);
 
-            await settingService.UpdateCache()
-                .ConfigureAwait(true);
-            // var lastReplyMarkup = CallbackQuery.Message.ReplyMarkup.InlineKeyboard;
-            // Log.Debug($"LastReplyMarkup: {lastReplyMarkup.ToJson(true)}");
+            await _settingsService.UpdateSettingsCache(chatId);
+
+            return true;
         }
     }
 }
