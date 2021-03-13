@@ -12,17 +12,24 @@ using Zizi.Bot.Common;
 using Zizi.Bot.Models;
 using Zizi.Bot.Services;
 using File = System.IO.File;
+using String = Zizi.Bot.Common.String;
 
 namespace Zizi.Bot.Handlers.Commands.Additional
 {
     public class CatCommand : CommandBase
     {
-        private TelegramService _telegramService;
+        private readonly TelegramService _telegramService;
+
+        public CatCommand(TelegramService telegramService)
+        {
+            _telegramService = telegramService;
+        }
 
         public override async Task HandleAsync(IUpdateContext context, UpdateDelegate next, string[] args,
             CancellationToken cancellationToken)
         {
-            _telegramService = new TelegramService(context);
+            await _telegramService.AddUpdateContext(context);
+
             var client = _telegramService.Client;
             var message = _telegramService.Message;
             var partsText = message.Text.SplitText(" ").ToArray();
@@ -36,8 +43,8 @@ namespace Zizi.Bot.Handlers.Commands.Additional
             {
                 if (!param1.IsNumeric())
                 {
-                    await _telegramService.SendTextAsync("Pastikan jumlah kochenk yang diminta berupa angka.")
-                        .ConfigureAwait(false);
+                    await _telegramService.SendTextAsync("Pastikan jumlah kochenk yang diminta berupa angka.");
+
                     return;
                 }
 
@@ -45,39 +52,30 @@ namespace Zizi.Bot.Handlers.Commands.Additional
 
                 if (catNum > 10)
                 {
-                    await _telegramService.SendTextAsync("Batas maksimal Kochenk yg di minta adalah 10")
-                        .ConfigureAwait(false);
+                    await _telegramService.SendTextAsync("Batas maksimal Kochenk yg di minta adalah 10");
+
                     return;
                 }
             }
 
-            await _telegramService.SendTextAsync($"Sedang mempersiapkan {catNum} Kochenk")
-                .ConfigureAwait(false);
+            await _telegramService.SendTextAsync($"Sedang mempersiapkan {catNum} Kochenk");
+
             for (int i = 1; i <= catNum; i++)
             {
-                Log.Information($"Loading cat {i} of {catNum} from {catSource}");
-                // await _telegramService.EditAsync($"Sedang mengambil {i} of {catNum} Kochenk")
-                //     .ConfigureAwait(false);
+                Log.Information("Loading cat {I} of {CatNum} from {CatSource}", i, catNum, catSource);
 
-                var url = await catSource
-                    .GetJsonAsync<CatMeow>(cancellationToken)
-                    .ConfigureAwait(false);
+                var url = await catSource.GetJsonAsync<CatMeow>(cancellationToken);
                 var urlFile = url.File.AbsoluteUri;
 
-                Log.Information($"Adding kochenk {urlFile}");
+                Log.Information("Adding kochenk {UrlFile}", urlFile);
 
                 var fileName = Path.GetFileName(urlFile);
                 var timeStamp = DateTime.UtcNow.ToString("yyyy-MM-dd");
-                var saveName = Path.Combine(chatId.ToString(), $"kochenk_{timeStamp}_" + fileName);
+                var uniqueId = String.GenerateUniqueId(5);
+                var saveName = Path.Combine("Cats", $"kochenk_{timeStamp}_{uniqueId}_{fileName}");
                 var savedPath = urlFile.SaveToCache(saveName);
 
                 var fileStream = File.OpenRead(savedPath);
-                // listAlbum.Add(new InputMediaPhoto()
-                // {
-                    // Caption = $"Kochenk {i}",
-                    // Media = new InputMedia(fileStream, fileName),
-                    // ParseMode = ParseMode.Html
-                // });
 
                 var inputMediaPhoto = new InputMediaPhoto(new InputMedia(fileStream, fileName))
                 {
@@ -86,15 +84,13 @@ namespace Zizi.Bot.Handlers.Commands.Additional
                 };
                 listAlbum.Add(inputMediaPhoto);
 
-                // listAlbum.Add(new InputMediaPhoto(new InputMedia()));
-                await fileStream.DisposeAsync().ConfigureAwait(false);
+                // await fileStream.DisposeAsync();
 
                 Thread.Sleep(100);
             }
 
-            await _telegramService.DeleteAsync().ConfigureAwait(false);
-            await client.SendMediaGroupAsync(listAlbum, chatId, cancellationToken: cancellationToken)
-                .ConfigureAwait(false);
+            await _telegramService.DeleteAsync();
+            await client.SendMediaGroupAsync(listAlbum, chatId, cancellationToken: cancellationToken);
         }
     }
 }
