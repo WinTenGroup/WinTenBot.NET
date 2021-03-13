@@ -5,11 +5,10 @@ using System.IO;
 using System.Net;
 using Serilog;
 using Zizi.Bot.IO;
-using Zizi.Bot.Models;
 
 namespace Zizi.Bot.Common
 {
-    public static class Url
+    public static class UrlUtil
     {
         public static Uri GenerateUrlQrApi(this string data)
         {
@@ -30,8 +29,8 @@ namespace Zizi.Bot.Common
         {
             var webClient = new WebClient();
 
-            var cachePath = BotSettings.PathCache;
-            var localPath = Path.Combine(cachePath, localFileName).EnsureDirectory();
+            var cachePath = Path.Combine("Storage", "Caches");
+            var localPath = Path.Combine(cachePath, localFileName).SanitizeSlash().EnsureDirectory();
 
             Log.Information("Saving {RemoteFileUrl} to {LocalPath}", remoteFileUrl, localPath);
             webClient.DownloadFile(remoteFileUrl, localPath);
@@ -160,7 +159,7 @@ namespace Zizi.Bot.Common
         public static Uri GetAutoRedirectedUrl(this string url)
         {
             if (!IsNeedRedirect(url)) return new Uri(url);
-            
+
             var webRequest = (HttpWebRequest) HttpWebRequest.Create(url);
             webRequest.Method = "HEAD";
             webRequest.AllowAutoRedirect = true;
@@ -169,7 +168,6 @@ namespace Zizi.Bot.Common
             Log.Debug("Response: {0}", webResponse.ToJson(true));
 
             return webResponse.ResponseUri;
-
         }
 
         public static bool IsNeedRedirect(string url)
