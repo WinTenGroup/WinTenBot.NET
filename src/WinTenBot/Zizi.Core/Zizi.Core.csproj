@@ -11,7 +11,6 @@
     <PackageReference Include="CodeHollow.FeedReader" Version="1.2.1" />
     <PackageReference Include="CsvHelper" Version="25.0.0" />
     <PackageReference Include="Dapper" Version="2.0.78" />
-    <PackageReference Include="DeepAI.Client" Version="1.3.0" />
     <PackageReference Include="EasyCaching.Disk" Version="1.2.1" />
     <PackageReference Include="EasyCaching.SQLite" Version="1.2.0" />
     <PackageReference Include="Flurl.Http" Version="3.0.1" />
