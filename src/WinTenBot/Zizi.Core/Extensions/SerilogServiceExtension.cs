@@ -19,12 +19,11 @@ namespace Zizi.Core.Extensions
             });
         }
 
-        public static LoggerConfiguration WithPrettiedMemoryUsage(this LoggerEnrichmentConfiguration configuration)
+        public static LoggerConfiguration WithPrettiedMemoryUsage(this LoggerEnrichmentConfiguration configuration, bool includeGc = false)
         {
-
             return configuration.WithDynamicProperty("MemoryUsage", () =>
             {
-                GC.Collect();
+                if (includeGc) GC.Collect();
 
                 var proc = Process.GetCurrentProcess();
                 var mem = proc.PrivateMemorySize64.SizeFormat();
