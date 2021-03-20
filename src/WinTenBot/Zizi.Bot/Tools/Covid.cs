@@ -28,12 +28,10 @@ namespace Zizi.Bot.Tools
             // var fileName = $"covid-all-{timeStamp}.json";
             // var urlApi = "https://coronavirus-tracker-api.herokuapp.com/all";
 
-            await UpdateCacheAsync()
-                .ConfigureAwait(false);
+            await UpdateCacheAsync();
 
             Log.Information("Loading cache from {CacheFilename}", CacheFilename);
-            var covidAll = await CacheFilename.ReadCacheAsync<CovidAll>()
-                .ConfigureAwait(false);
+            var covidAll = await CacheFilename.ReadCacheAsync<CovidAll>();
 
             // Log.Information($"CovidAll: {covidAll.ToJson(true)}");
 
@@ -68,8 +66,7 @@ namespace Zizi.Bot.Tools
         {
             Log.Information("Send request API.");
             var url = "https://corona.lmao.ninja/v2/all";
-            var covid = await url.GetJsonAsync<Models.Lmao.CovidAll>()
-                .ConfigureAwait(false);
+            var covid = await url.GetJsonAsync<Models.Lmao.CovidAll>();
 
             Log.Information("Building result");
             var strBuild = new StringBuilder();
@@ -109,8 +106,7 @@ namespace Zizi.Bot.Tools
             try
             {
                 var urlApi = $"https://corona.lmao.ninja/v2/countries/{country}";
-                var covid = await urlApi.GetJsonAsync<CovidByCountry>()
-                    .ConfigureAwait(false);
+                var covid = await urlApi.GetJsonAsync<CovidByCountry>();
 
                 var strBuild = new StringBuilder();
                 strBuild.AppendLine($"<b>Country:</b> {covid.Country}");
@@ -156,11 +152,9 @@ namespace Zizi.Bot.Tools
             if (!CacheFilename.IsFileCacheExist())
             {
                 Log.Information("Getting information from {UrlApi}", urlApi);
-                var covidAll = await urlApi.GetJsonAsync<CovidAll>()
-                    .ConfigureAwait(false);
+                var covidAll = await urlApi.GetJsonAsync<CovidAll>();
 
-                await covidAll.WriteCacheAsync(CacheFilename)
-                    .ConfigureAwait(false);
+                await covidAll.WriteCacheAsync(CacheFilename);
             }
             else
             {

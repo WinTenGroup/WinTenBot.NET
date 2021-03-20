@@ -47,7 +47,7 @@ namespace Zizi.Bot.Common
         public static async Task ToFile(this string content, string path)
         {
             Log.Debug("Writing file to {0}", path);
-            await File.WriteAllTextAsync(path, content).ConfigureAwait(false);
+            await File.WriteAllTextAsync(path, content);
         }
 
         public static string SqlEscape(this string str)

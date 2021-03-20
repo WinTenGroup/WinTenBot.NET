@@ -28,17 +28,15 @@ namespace Zizi.Bot.Tools.Ocr
                     return string.Empty;
                 }
 
-                Log.Information($"Sending {filePath} to {url}");
+                Log.Information("Sending {FilePath} to {Url}", filePath, url);
                 var postResult = await url
                     .PostMultipartAsync(post =>
                         post.AddFile("image", fs, fileName)
                             .AddString("apikey", ocrKey)
-                            .AddString("language", "eng"))
-                    .ConfigureAwait(false);
+                            .AddString("language", "eng"));
 
-                Log.Information($"OCR: {postResult.StatusCode}");
-                var json = await postResult.GetStringAsync()
-                    .ConfigureAwait(false);
+                Log.Information("OCR: {StatusCode}", postResult.StatusCode);
+                var json = await postResult.GetStringAsync();
 
                 var map = JsonConvert.DeserializeObject<OcrResult>(json);
 

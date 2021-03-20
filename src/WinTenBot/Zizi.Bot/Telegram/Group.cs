@@ -1,7 +1,8 @@
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Serilog;
 using Zizi.Bot.Common;
 using Zizi.Bot.Services;
+using Zizi.Bot.Services.Datas;
 
 namespace Zizi.Bot.Telegram
 {
@@ -17,22 +18,18 @@ namespace Zizi.Bot.Telegram
 
             if (data.IsNullOrEmpty())
             {
-                await telegramService.SendTextAsync($"Silakan masukan konfigurasi {target} yang akan di terapkan")
-                    .ConfigureAwait(false);
+                await telegramService.SendTextAsync($"Silakan masukan konfigurasi {target} yang akan di terapkan");
                 return;
             }
             // Log.Information(columnTarget);
             // Log.Information(data);
 
-            await telegramService.SendTextAsync($"Sedang menyimpan Welcome {target}..")
-                .ConfigureAwait(false);
+            await telegramService.SendTextAsync($"Sedang menyimpan Welcome {target}..");
 
-            await settingsService.UpdateCell(columnTarget, data)
-                .ConfigureAwait(false);
+            await settingsService.UpdateCell(columnTarget, data);
 
             await telegramService.EditAsync($"Welcome {target} berhasil di simpan!" +
-                                            $"\nKetik /welcome untuk melihat perubahan")
-                .ConfigureAwait(false);
+                                            $"\nKetik /welcome untuk melihat perubahan");
 
             Log.Information("Success save welcome {Target} on {ChatId}.", target, chatId);
         }

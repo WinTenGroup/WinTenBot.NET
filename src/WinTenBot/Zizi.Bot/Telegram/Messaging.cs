@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -13,6 +13,7 @@ using Zizi.Bot.IO;
 using Zizi.Bot.Models;
 using Zizi.Bot.Providers;
 using Zizi.Bot.Services;
+using Zizi.Bot.Services.Datas;
 using Zizi.Bot.Tools;
 using Zizi.Bot.Tools.GoogleCloud;
 
@@ -89,23 +90,21 @@ namespace Zizi.Bot.Telegram
             // var query = await new Query("word_filter")
             //     .ExecForSqLite(true)
             //     .Where("is_global", 1)
-            //     .GetAsync()
-            //     .ConfigureAwait(false);
+            //     .GetAsync();
             //
             // var mappedWords = query.ToJson().MapObject<List<WordFilter>>();
 
 
             // var jsonWords = "local-words".OpenJson();
             // var listWords = (await jsonWords.GetCollectionAsync<WordFilter>()
-            // .ConfigureAwait(false))
+            // )
             // .AsQueryable()
             // .Where(x => x.IsGlobal)
             // .ToList();
 
             // jsonWords.Dispose();
 
-            var collection = await LiteDbProvider.GetCollectionsAsync<WordFilter>()
-                .ConfigureAwait(false);
+            var collection = await LiteDbProvider.GetCollectionsAsync<WordFilter>();
 
             var listWords = collection.Query()
                 .Where(x => x.IsGlobal)
@@ -126,7 +125,7 @@ namespace Zizi.Bot.Telegram
                 return telegramResult;
             }
 
-            var listWords = await GetWordFiltersBase().ConfigureAwait(false);
+            var listWords = await GetWordFiltersBase();
 
             var partedWord = words.Split(new[] {'\n', '\r', ' ', '\t'},
                 StringSplitOptions.RemoveEmptyEntries);
@@ -190,7 +189,7 @@ namespace Zizi.Bot.Telegram
             var text = message.Text ?? message.Caption;
             if (!text.IsNullOrEmpty())
             {
-                var result = await IsMustDelete(text).ConfigureAwait(false);
+                var result = await IsMustDelete(text);
                 var isMustDelete = result.IsSuccess;
 
                 Log.Information("Message {0} IsMustDelete: {1}", msgId, isMustDelete);
@@ -199,11 +198,9 @@ namespace Zizi.Bot.Telegram
                 {
                     Log.Debug("Result: {0}", result.ToJson(true));
                     var note = "Pesan di Obrolan di hapus karena terdeteksi filter Kata.\n" + result.Notes;
-                    await telegramService.SendEventAsync(note)
-                        .ConfigureAwait(false);
+                    await telegramService.SendEventAsync(note);
 
-                    await telegramService.DeleteAsync(message.MessageId)
-                        .ConfigureAwait(false);
+                    await telegramService.DeleteAsync(message.MessageId);
                 }
             }
             else
@@ -223,7 +220,7 @@ namespace Zizi.Bot.Telegram
             {
                 Log.Information("");
 
-                var isSafe = await telegramService.IsSafeMemberAsync().ConfigureAwait(false);
+                var isSafe = await telegramService.IsSafeMemberAsync();
                 if (isSafe)
                 {
                     Log.Information("Scan photo skipped because UserId {0} is SafeMember", fromId);
@@ -232,19 +229,17 @@ namespace Zizi.Bot.Telegram
 
                 var fileName = $"{chatId}/ocr-{msgId}.jpg";
                 Log.Information("Preparing photo");
-                var savedFile = await telegramService.DownloadFileAsync(fileName)
-                    .ConfigureAwait(false);
+                var savedFile = await telegramService.DownloadFileAsync(fileName);
 
                 // var ocr = await TesseractProvider.OcrSpace(savedFile)
-                //     .ConfigureAwait(false);
+                //     ;
                 var ocr = GoogleVision.ScanText(savedFile);
 
                 // var safeSearch = GoogleVision.SafeSearch(savedFile);
                 // Log.Debug($"SafeSearch: {safeSearch.ToJson(true)}");
 
                 Log.Information("Scanning message..");
-                var result = await IsMustDelete(ocr)
-                    .ConfigureAwait(false);
+                var result = await IsMustDelete(ocr);
                 var isMustDelete = result.IsSuccess;
 
                 Log.Information("Message {0} IsMustDelete: {1}", message.MessageId, isMustDelete);
@@ -253,16 +248,13 @@ namespace Zizi.Bot.Telegram
                 {
                     Log.Debug("Result: {0}", result.ToJson(true));
                     var note = "Pesan gambar di Obrolan di hapus karena terdeteksi filter Kata.\n" + result.Notes;
-                    await telegramService.SendEventAsync(note)
-                        .ConfigureAwait(false);
+                    await telegramService.SendEventAsync(note);
 
-                    await telegramService.DeleteAsync(message.MessageId)
-                        .ConfigureAwait(false);
+                    await telegramService.DeleteAsync(message.MessageId);
                 }
                 else
                 {
-                    await telegramService.VerifySafeMemberAsync()
-                        .ConfigureAwait(false);
+                    await telegramService.VerifySafeMemberAsync();
                 }
 
                 savedFile.GetDirectory().RemoveFiles("ocr");
@@ -301,7 +293,7 @@ namespace Zizi.Bot.Telegram
                     ScanPhotoAsync(telegramService)
                 };
 
-                await Task.WhenAll(listAction).ConfigureAwait(false);
+                await Task.WhenAll(listAction);
             }
             catch (Exception ex)
             {
@@ -339,8 +331,7 @@ namespace Zizi.Bot.Telegram
 
                 var notesService = new NotesService();
 
-                var selectedNotes = await notesService.GetNotesBySlug(message.Chat.Id, message.Text)
-                    .ConfigureAwait(false);
+                var selectedNotes = await notesService.GetNotesBySlug(message.Chat.Id, message.Text);
                 if (selectedNotes.Count > 0)
                 {
                     var content = selectedNotes[0].Content;
@@ -350,8 +341,7 @@ namespace Zizi.Bot.Telegram
                         inlineKeyboardMarkup = btnData.ToReplyMarkup(2);
                     }
 
-                    await telegramService.SendTextAsync(content, inlineKeyboardMarkup)
-                        .ConfigureAwait(false);
+                    await telegramService.SendTextAsync(content, inlineKeyboardMarkup);
 
                     foreach (var note in selectedNotes)
                     {
@@ -413,7 +403,7 @@ namespace Zizi.Bot.Telegram
 
                 var tagData = tags.Where(x => x.Tag == trimTag).ToList();
                 // var tagData = await tagsService.GetTagByTag(message.Chat.Id, trimTag)
-                //     .ConfigureAwait(false);
+                //     ;
                 Log.Debug("Data of tag: {0} {1}", trimTag, tagData.ToJson(true));
 
                 var content = tagData[0].Content;
@@ -429,20 +419,17 @@ namespace Zizi.Bot.Telegram
 
                 if (typeData != MediaType.Unknown)
                 {
-                    await telegramService.SendMediaAsync(idData, typeData, content, buttonMarkup)
-                        .ConfigureAwait(false);
+                    await telegramService.SendMediaAsync(idData, typeData, content, buttonMarkup);
                 }
                 else
                 {
-                    await telegramService.SendTextAsync(content, buttonMarkup)
-                        .ConfigureAwait(false);
+                    await telegramService.SendTextAsync(content, buttonMarkup);
                 }
             }
 
             if (allTags > limitedCount)
             {
-                await telegramService.SendTextAsync("Due performance reason, we limit 5 batch call tags")
-                    .ConfigureAwait(false);
+                await telegramService.SendTextAsync("Due performance reason, we limit 5 batch call tags");
             }
 
             Log.Information("Find Tags completed in {0}", sw.Elapsed);

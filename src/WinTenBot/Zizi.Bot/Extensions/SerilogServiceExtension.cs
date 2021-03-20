@@ -1,10 +1,11 @@
-using System;
+﻿using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.Datadog.Logs;
 using Serilog.Sinks.SystemConsole.Themes;
+using Serilog.Templates;
 using Zizi.Bot.Common;
 using Zizi.Bot.Models.Settings;
 
@@ -14,27 +15,30 @@ namespace Zizi.Bot.Extensions
     {
         public static void SetupSerilog(this IApplicationBuilder app)
         {
-            var templateBase = $"[{{Level:u3}}] {{Message:lj}}{{NewLine}}{{Exception}}";
-            var consoleTemplate = $"{{Timestamp:HH:mm:ss.ffffff}} {templateBase}";
-            var fileTemplate = $"[{{Timestamp:yyyy-MM-dd HH:mm:ss.fffff zzz}} {templateBase}";
-            var logPath = "Storage/Logs/ZiziBot-.log";
+            const string logPath = "Storage/Logs/ZiziBot-.log";
+            const RollingInterval rollingInterval = RollingInterval.Day;
             var flushInterval = TimeSpan.FromSeconds(1);
-            var rollingInterval = RollingInterval.Day;
+
+            var templateBase = $"[{{Level:u3}}] {{MemoryUsage}}{{ThreadId}}| {{Message:lj}}{{NewLine}}{{Exception}}";
+            var outputTemplate = $"{{Timestamp:HH:mm:ss.fff}} {templateBase}";
 
             var appConfig = app.ApplicationServices.GetRequiredService<AppConfig>();
             var envConfig = appConfig.EnvironmentConfig;
-            var datadogConfig = appConfig.DataDogConfig;
 
+            var datadogConfig = appConfig.DataDogConfig;
             var datadogKey = datadogConfig.ApiKey;
 
             var serilogConfig = new LoggerConfiguration()
                 .Enrich.FromLogContext()
+                // .Enrich.WithThreadId()
+                // .Enrich.WithPrettiedMemoryUsage()
                 .MinimumLevel.Override("Hangfire", LogEventLevel.Information)
-                .MinimumLevel.Override("MySqlConnector", LogEventLevel.Information)
+                .MinimumLevel.Override("MySqlConnector", LogEventLevel.Warning)
+                // .Filter.ByExcluding("{@m} not like '%pinged server%'")
                 .WriteTo.Async(a =>
-                    a.File(logPath, rollingInterval: rollingInterval, flushToDiskInterval: flushInterval, shared: true, outputTemplate: consoleTemplate))
+                    a.File(logPath, rollingInterval: rollingInterval, flushToDiskInterval: flushInterval, shared: true, outputTemplate: outputTemplate))
                 .WriteTo.Async(a =>
-                    a.Console(theme: SystemConsoleTheme.Colored, outputTemplate: consoleTemplate));
+                    a.Console(theme: SystemConsoleTheme.Colored, outputTemplate: outputTemplate));
 
             if (envConfig.IsProduction)
             {

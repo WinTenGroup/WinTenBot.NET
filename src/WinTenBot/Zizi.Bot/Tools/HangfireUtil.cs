@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Hangfire;
@@ -98,6 +99,36 @@ namespace Zizi.Bot.Tools
             Log.Debug("Registering Job {0} finish in {1}", jobId, sw.Elapsed);
 
             sw.Stop();
+        }
+
+        public static int TriggerJobs(string prefixId)
+        {
+            var sw = Stopwatch.StartNew();
+
+            Log.Information("Loading Hangfire jobs..");
+            var connection = JobStorage.Current.GetConnection();
+
+            var recurringJobs = connection.GetRecurringJobs();
+            var filteredJobs = recurringJobs.Where(dto => dto.Id.StartsWith(prefixId)).ToList();
+            Log.Debug("Fount {0} of {1}", filteredJobs.Count, recurringJobs.Count);
+
+            var numOfJobs = filteredJobs.Count;
+
+            Parallel.ForEach(recurringJobs, (dto, pls, index) =>
+            {
+                var recurringJobId = dto.Id;
+
+                Log.Debug("Triggering jobId: {0}, Index: {1}", recurringJobId, index);
+                RecurringJob.Trigger(recurringJobId);
+
+                Log.Debug("Trigger succeeded {0}, Index: {1}", recurringJobId, index);
+            });
+
+            Log.Information("Hangfire jobs successfully trigger. Total: {0}. Time: {1}", numOfJobs, sw.Elapsed);
+
+            sw.Stop();
+
+            return filteredJobs.Count;
         }
 
         // public static SQLiteStorage GetSqliteStorage()

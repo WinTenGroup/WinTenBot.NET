@@ -50,17 +50,13 @@ namespace Zizi.Bot.Telegram
 
             var messageId = message.MessageId;
 
-            var isBan = await user.Id.CheckGBan()
-                .ConfigureAwait(false);
+            var isBan = await user.Id.CheckGBan();
             Log.Information("IsBan: {IsBan}", isBan);
             if (isBan)
             {
-                await telegramService.DeleteAsync(messageId)
-                    .ConfigureAwait(false);
-                await telegramService.KickMemberAsync(user)
-                    .ConfigureAwait(false);
-                await telegramService.UnbanMemberAsync(user)
-                    .ConfigureAwait(false);
+                await telegramService.DeleteAsync(messageId);
+                await telegramService.KickMemberAsync(user);
+                await telegramService.UnbanMemberAsync(user);
             }
 
             sw.Stop();
@@ -102,8 +98,7 @@ namespace Zizi.Bot.Telegram
 
             Log.Information("Starting check in Cas Ban");
 
-            isBan = await user.IsCasBanAsync()
-                .ConfigureAwait(false);
+            isBan = await user.IsCasBanAsync();
             Log.Information("{User} is CAS ban: {IsBan}", user, isBan);
             if (isBan)
             {
@@ -119,22 +114,19 @@ namespace Zizi.Bot.Telegram
                 var sendText = $"{user} di blokir di CAS!" +
                                $"\nUntuk detil lebih lanjut, silakan buka <b>CAS Query</b>" +
                                $"\n\nUntuk mengajukan buka blokir silakan masuk ke <b>CAS Discuss</b>.";
-                var isAdminGroup = await telegramService.IsAdminGroup().ConfigureAwait(false);
+                var isAdminGroup = await telegramService.IsAdminGroup();
                 if (!isAdminGroup)
                 {
-                    await telegramService.KickMemberAsync(user)
-                        .ConfigureAwait(false);
+                    await telegramService.KickMemberAsync(user);
 
-                    await telegramService.UnbanMemberAsync(user)
-                        .ConfigureAwait(false);
+                    await telegramService.UnbanMemberAsync(user);
                 }
                 else
                 {
                     sendText = $"{user} di blokir di CAS, namun tidak bisa memblokirnya karena Admin di Grup ini";
                 }
 
-                await telegramService.SendTextAsync(sendText, replyMarkup)
-                    .ConfigureAwait(false);
+                await telegramService.SendTextAsync(sendText, replyMarkup);
             }
 
             sw.Stop();
@@ -178,8 +170,7 @@ namespace Zizi.Bot.Telegram
 
             Log.Information("Starting Run SpamWatch");
 
-            var spamWatch = await user.Id.CheckSpamWatch()
-                .ConfigureAwait(false);
+            var spamWatch = await user.Id.CheckSpamWatch();
             isBan = spamWatch.IsBan;
 
             Log.Information("{0} is SpamWatch Ban => {1}", user, isBan);
@@ -189,12 +180,9 @@ namespace Zizi.Bot.Telegram
                 var sendText = $"{user} is banned in SpamWatch!" +
                                "\nFed: @SpamWatch" +
                                $"\nReason: {spamWatch.Reason}";
-                await telegramService.SendTextAsync(sendText)
-                    .ConfigureAwait(false);
-                await telegramService.KickMemberAsync(user)
-                    .ConfigureAwait(false);
-                await telegramService.UnbanMemberAsync(user)
-                    .ConfigureAwait(false);
+                await telegramService.SendTextAsync(sendText);
+                await telegramService.KickMemberAsync(user);
+                await telegramService.UnbanMemberAsync(user);
             }
 
             sw.Stop();

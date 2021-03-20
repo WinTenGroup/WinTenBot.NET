@@ -23,8 +23,7 @@ namespace Zizi.Bot.Telegram
             var client = telegramService.Client;
             var chatId = telegramService.ChatId;
 
-            await client.SendStickerAsync(chatId, stickerFileId)
-                .ConfigureAwait(false);
+            await client.SendStickerAsync(chatId, stickerFileId);
         }
     }
 }

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -10,6 +10,7 @@ using Telegram.Bot.Types.ReplyMarkups;
 using Zizi.Bot.Common;
 using Zizi.Bot.Models;
 using Zizi.Bot.Services;
+using Zizi.Bot.Services.Datas;
 using Zizi.Bot.Tools;
 
 namespace Zizi.Bot.Telegram
@@ -43,8 +44,7 @@ namespace Zizi.Bot.Telegram
             {
                 Log.Information("Starting check Username");
 
-                // var warnUsername = await warnJson.GetCollectionAsync<WarnUsernameHistory>()
-                // .ConfigureAwait(false);
+                // var warnUsername = await warnJson.GetCollectionAsync<WarnUsernameHistory>();
 
                 var warnLimit = 4;
                 // var errorCount = 0;
@@ -64,7 +64,7 @@ namespace Zizi.Bot.Telegram
                     return;
                 }
 
-                var isBotAdmin = await telegramService.IsBotAdmin().ConfigureAwait(false);
+                var isBotAdmin = await telegramService.IsBotAdmin();
                 if (!isBotAdmin)
                 {
                     Log.Information("This bot IsNot Admin in {0}, so Warn Username disabled.", message.Chat);
@@ -77,7 +77,7 @@ namespace Zizi.Bot.Telegram
 
                 if (noUsername)
                 {
-                    var isFromAdmin = await telegramService.IsAdminGroup().ConfigureAwait(false);
+                    var isFromAdmin = await telegramService.IsAdminGroup();
                     if (isFromAdmin)
                     {
                         Log.Information("This UserID {0} Is Admin in {1}, so Warn Username disabled.", fromId, message.Chat.Id);
@@ -85,9 +85,7 @@ namespace Zizi.Bot.Telegram
                     }
 
                     var settingsService = new SettingsService(message);
-                    var updateResult = (await UpdateWarnUsernameStat(message)
-                            .ConfigureAwait(false))
-                        .ToList();
+                    var updateResult = (await UpdateWarnUsernameStat(message)).ToList();
                     var noUsernameCount = updateResult.Count;
 
                     Log.Debug("No Username Count: {0}", noUsernameCount);
@@ -122,12 +120,10 @@ namespace Zizi.Bot.Telegram
                     var updatedStep = currentUser.StepCount;
                     // var lastMessageId = orderDescFirst.LastWarnMessageId;
 
-                    await telegramService.DeleteAsync(lastWarn.ToInt())
-                        .ConfigureAwait(false);
+                    await telegramService.DeleteAsync(lastWarn.ToInt());
                     var addMinutes = updatedStep.GetMuteStep();
                     var muteTime = DateTime.Now.AddMinutes(addMinutes);
-                    var result = await telegramService.RestrictMemberAsync(fromUser.Id, until: muteTime)
-                        .ConfigureAwait(false);
+                    var result = await telegramService.RestrictMemberAsync(fromUser.Id, until: muteTime);
 
                     if (!result.IsSuccess)
                     {
@@ -141,8 +137,7 @@ namespace Zizi.Bot.Telegram
                             "pastikan ZiZi menjadi Admin dengan " +
                             "<a href='https://docs.zizibot.azhe.space/glosarium/admin-dengan-level-standard'>Level Standard</a>";
 
-                        await telegramService.SendTextAsync(exSend)
-                            .ConfigureAwait(false);
+                        await telegramService.SendTextAsync(exSend);
 
                         // break;
                         return;
@@ -153,23 +148,18 @@ namespace Zizi.Bot.Telegram
                         var sendWarn = $"Batas peringatan telah di lampaui." +
                                        $"\n{nameLink} di tendang sekarang!";
 
-                        await telegramService.SendTextAsync(sendWarn, disableWebPreview: true)
-                            .ConfigureAwait(false);
+                        await telegramService.SendTextAsync(sendWarn, disableWebPreview: true);
 
-                        await telegramService.KickMemberAsync(fromUser)
-                            .ConfigureAwait(false);
-                        await telegramService.UnbanMemberAsync(fromUser)
-                            .ConfigureAwait(false);
-                        await ResetWarnUsernameStatAsync(fromId, chatId)
-                            .ConfigureAwait(false);
+                        await telegramService.KickMemberAsync(fromUser);
+                        await telegramService.UnbanMemberAsync(fromUser);
+                        await ResetWarnUsernameStatAsync(fromId, chatId);
 
                         // return;
                     }
                     // }
 
                     //
-                    // var urlStart = await telegramService.GetUrlStart("start=set-username")
-                    //     .ConfigureAwait(false);
+                    // var urlStart = await telegramService.GetUrlStart("start=set-username");
                     // Log.Information($"UrlStart: {urlStart}");
                     // var inlineKeyboard = new InlineKeyboardMarkup(new[]
                     // {
@@ -190,15 +180,12 @@ namespace Zizi.Bot.Telegram
                     // );
 
                     // await telegramService.SendTextAsync(sendText, inlineKeyboard, disableWebPreview: true)
-                    // .ConfigureAwait(false);
-                    // await message.UpdateLastWarnUsernameMessageIdAsync(telegramService.SentMessageId)
-                    //     .ConfigureAwait(false);
+                    // ;
+                    // await message.UpdateLastWarnUsernameMessageIdAsync(telegramService.SentMessageId);
 
-                    await telegramService.UpdateWarnMessageAsync()
-                        .ConfigureAwait(false);
+                    await telegramService.UpdateWarnMessageAsync();
 
-                    await settingsService.UpdateCell("last_warn_username_message_id", telegramService.SentMessageId)
-                        .ConfigureAwait(false);
+                    await settingsService.UpdateCell(chatId, "last_warn_username_message_id", telegramService.SentMessageId);
                 }
                 else
                 {
@@ -220,8 +207,7 @@ namespace Zizi.Bot.Telegram
         public static async Task<IDocumentCollection<WarnUsernameHistory>> GetWarnUsernameCollectionAsync()
         {
             var warnJson = JsonName.OpenJson();
-            var warnHistories = (await warnJson.GetCollectionAsync<WarnUsernameHistory>()
-                .ConfigureAwait(false));
+            var warnHistories = (await warnJson.GetCollectionAsync<WarnUsernameHistory>());
 
             return warnHistories;
         }
@@ -234,8 +220,7 @@ namespace Zizi.Bot.Telegram
             var lastName = message.From.LastName;
             var chatId = message.Chat.Id;
 
-            var warnHistories = (await warnJson.GetCollectionAsync<WarnUsernameHistory>()
-                    .ConfigureAwait(false))
+            var warnHistories = (await warnJson.GetCollectionAsync<WarnUsernameHistory>())
                 .AsQueryable()
                 .Where(x => x.ChatId == chatId);
 
@@ -249,8 +234,7 @@ namespace Zizi.Bot.Telegram
             var message = telegramService.Message;
             var callback = telegramService.CallbackQuery;
 
-            var updateResult = (await GetWarnUsernameHistory(message)
-                    .ConfigureAwait(false))
+            var updateResult = (await GetWarnUsernameHistory(message))
                 .ToList()
                 .OrderBy(x => x.StepCount)
                 .ToList();
@@ -266,7 +250,7 @@ namespace Zizi.Bot.Telegram
 
                 var callbackMsgId = callback.Message.MessageId;
 
-                await telegramService.DeleteAsync(callbackMsgId).ConfigureAwait(false);
+                await telegramService.DeleteAsync(callbackMsgId);
             }
             else
             {
@@ -300,8 +284,7 @@ namespace Zizi.Bot.Telegram
                 sendText += "\nMasing-masing telah di mute berdasarkan <a href='https://t.me/WinTenDev/41'>Step Mute</a> " +
                             $"silakan segera pasang Username dan jangan lupa tekan tombol Verifikasi di bawah ini.";
 
-                var urlStart = await telegramService.GetUrlStart("start=set-username")
-                    .ConfigureAwait(false);
+                var urlStart = await telegramService.GetUrlStart("start=set-username");
                 Log.Information("UrlStart: {UrlStart}", urlStart);
 
                 var inlineKeyboard = new InlineKeyboardMarkup(new[]
@@ -326,13 +309,11 @@ namespace Zizi.Bot.Telegram
 
                     Log.Debug("Me should edit current Message");
 
-                    await telegramService.EditMessageCallback(sendText, inlineKeyboard, disableWebPreview: true)
-                        .ConfigureAwait(false);
+                    await telegramService.EditMessageCallback(sendText, inlineKeyboard, disableWebPreview: true);
                 }
                 else
                 {
-                    await telegramService.SendTextAsync(sendText, inlineKeyboard, disableWebPreview: true, replyToMsgId: 0)
-                        .ConfigureAwait(false);
+                    await telegramService.SendTextAsync(sendText, inlineKeyboard, disableWebPreview: true, replyToMsgId: 0);
                 }
             }
         }
@@ -357,7 +338,7 @@ namespace Zizi.Bot.Telegram
             // };
 
             // var warnHistories = (await warnJson.GetCollectionAsync<WarnUsernameHistory>()
-            //         .ConfigureAwait(false))
+            //         )
             //     .AsQueryable()
             //     .Where(x => x.FromId == fromId && x.ChatId == chatId);
 
@@ -369,7 +350,7 @@ namespace Zizi.Bot.Telegram
             //     .Where("chat_id", data["chat_id"])
             //     .ExecForMysql(true)
             //     .GetAsync()
-            //     .ConfigureAwait(false);
+            //     ;
 
             // var exist = warnHistory.Any<object>();
             var exist = warnHistories.Any();
@@ -398,7 +379,7 @@ namespace Zizi.Bot.Telegram
                 //     .Where("chat_id", data["chat_id"])
                 //     .ExecForMysql(true)
                 //     .UpdateAsync(update)
-                //     .ConfigureAwait(false);
+                //     ;
 
                 var insertHit = await warnUsername.UpdateOneAsync(x =>
                         x.FromId == fromId && x.ChatId == chatId,
@@ -411,7 +392,7 @@ namespace Zizi.Bot.Telegram
                         ChatId = chatId,
                         CreatedAt = warnHistory.CreatedAt,
                         UpdatedAt = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
-                    }).ConfigureAwait(false);
+                    });
 
                 Log.Information("Update step: {0}", insertHit);
             }
@@ -421,8 +402,7 @@ namespace Zizi.Bot.Telegram
 
                 // var insertHit = await new Query(tableName)
                 //     .ExecForMysql(true)
-                //     .InsertAsync(data)
-                //     .ConfigureAwait(false);
+                //     .InsertAsync(data);
 
                 var insertHit = await warnUsername.InsertOneAsync(new WarnUsernameHistory()
                 {
@@ -432,7 +412,7 @@ namespace Zizi.Bot.Telegram
                     StepCount = 1,
                     ChatId = chatId,
                     CreatedAt = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
-                }).ConfigureAwait(false);
+                });
 
                 Log.Information("Insert Hit: {0}", insertHit);
             }
@@ -441,19 +421,17 @@ namespace Zizi.Bot.Telegram
             //     .Where("from_id", data["from_id"])
             //     .Where("chat_id", data["chat_id"])
             //     .ExecForMysql(true)
-            //     .GetAsync()
-            //     .ConfigureAwait(false);
+            //     .GetAsync();
 
             // return updatedHistory.ToJson().MapObject<List<WarnUsernameHistory>>().First();
 
             warnJson.Dispose();
 
-            // var updatedHistory = (await warnJson.GetCollectionAsync<WarnUsernameHistory>()
-            //         .ConfigureAwait(false))
+            // var updatedHistory = (await warnJson.GetCollectionAsync<WarnUsernameHistory>())
             //     .AsQueryable()
             //     .Where(x => x.FromId == fromId && x.ChatId == chatId);
 
-            return (await GetWarnUsernameCollectionAsync().ConfigureAwait(false))
+            return (await GetWarnUsernameCollectionAsync())
                 .AsQueryable()
                 .Where(x => x.ChatId == chatId);
         }
@@ -463,8 +441,7 @@ namespace Zizi.Bot.Telegram
             Log.Information("Resetting warn Username step.");
 
             var warnJson = JsonName.OpenJson();
-            var warnUsername = await warnJson.GetCollectionAsync<WarnUsernameHistory>()
-                .ConfigureAwait(false);
+            var warnUsername = await warnJson.GetCollectionAsync<WarnUsernameHistory>();
 
             // var tableName = "warn_username_history";
             // var fromId = message.From.Id;
@@ -481,12 +458,10 @@ namespace Zizi.Bot.Telegram
             //     .Where("from_id", fromId)
             //     .Where("chat_id", chatId)
             //     .ExecForMysql(true)
-            //     .UpdateAsync(update)
-            //     .ConfigureAwait(false);
+            //     .UpdateAsync(update);
 
             var resetWarn = await warnUsername.DeleteOneAsync(x =>
-                    x.FromId == fromId && x.ChatId == chatId)
-                .ConfigureAwait(false);
+                x.FromId == fromId && x.ChatId == chatId);
 
             warnJson.Dispose();
 
@@ -511,7 +486,7 @@ namespace Zizi.Bot.Telegram
             current.UpdatedAt = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
 
             var insertHit = await warnUsername.UpdateOneAsync(x =>
-                x.FromId == fromId && x.ChatId == chatId, current).ConfigureAwait(false);
+                x.FromId == fromId && x.ChatId == chatId, current);
 
             // var update = new Dictionary<string, object>
             // {
@@ -523,8 +498,7 @@ namespace Zizi.Bot.Telegram
             //     .Where("from_id", fromId)
             //     .Where("chat_id", chatId)
             //     .ExecForMysql(true)
-            //     .UpdateAsync(update)
-            //     .ConfigureAwait(false);
+            //     .UpdateAsync(update);
 
             Log.Information("Update lastWarn: {0}. In {1}", insertHit, sw.Elapsed);
         }

@@ -19,7 +19,7 @@ namespace Zizi.Bot.Telegram
             var querySql = await new Query(GBanAdminTable)
                 .ExecForMysql()
                 .Where("user_id", userId)
-                .GetAsync<GBanAdminItem>().ConfigureAwait(false);
+                .GetAsync<GBanAdminItem>();
             var isRegistered = querySql.Any();
             Log.Debug("UserId {0} is registered on ES2? {1}", userId, isRegistered);
 
@@ -28,11 +28,8 @@ namespace Zizi.Bot.Telegram
         }
         private static async Task<bool> IsRegisteredGBanAsync(this GBanAdminItem gBanAdminItem)
         {
-            return await IsGBanAdminAsync(gBanAdminItem.UserId)
-                .ConfigureAwait(false);
+            return await IsGBanAdminAsync(gBanAdminItem.UserId);
         }
-        
-        
 
         public static async Task RegisterGBanAdmin(this TelegramService telegramService)
         {
@@ -43,8 +40,7 @@ namespace Zizi.Bot.Telegram
                 var repMsg = message.ReplyToMessage;
                 if (repMsg.From.IsBot)
                 {
-                    await telegramService.EditAsync("Tidak dapat meregister Bot menjadi admin ES2")
-                        .ConfigureAwait(false);
+                    await telegramService.EditAsync("Tidak dapat meregister Bot menjadi admin ES2");
                     return;
                 }
 
@@ -61,20 +57,19 @@ namespace Zizi.Bot.Telegram
                 IsBanned = false,
             };
 
-            var isRegistered = await adminItem.IsRegisteredGBanAsync().ConfigureAwait(false);
+            var isRegistered = await adminItem.IsRegisteredGBanAsync();
             if (isRegistered)
             {
-                await telegramService.EditAsync($"Sepertinya UserID {adminItem.UserId} sudah menjadi Admin Fed")
-                    .ConfigureAwait(false);
+                await telegramService.EditAsync($"Sepertinya UserID {adminItem.UserId} sudah menjadi Admin Fed");
                 return;
             }
 
             var querySql = await new Query(GBanAdminTable)
                 .ExecForMysql()
-                .InsertAsync(adminItem).ConfigureAwait(false);
+                .InsertAsync(adminItem);
             Log.Debug("Insert GBanReg: {0}", querySql);
 
-            await telegramService.EditAsync("Selesai").ConfigureAwait(false);
+            await telegramService.EditAsync("Selesai");
         }
     }
 }

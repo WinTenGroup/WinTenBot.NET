@@ -60,8 +60,7 @@ namespace Zizi.Bot.Providers
                 Log.Debug("SQLiteExec: {SqlResult}", sqlResult);
             };
 
-            return await factory.StatementAsync(sql, param)
-                .ConfigureAwait(false);
+            return await factory.StatementAsync(sql, param);
         }
 
         public static async Task<IEnumerable<dynamic>> ExecForSqLiteQuery(this string sql, bool printSql = false, object param = null)
@@ -75,8 +74,7 @@ namespace Zizi.Bot.Providers
                 Log.Debug("SQLiteExec: {SqlResult}", sqlResult);
             };
 
-            return await factory.SelectAsync(sql, param)
-                .ConfigureAwait(false);
+            return await factory.SelectAsync(sql, param);
         }
 
         public static async Task<int> DeleteDuplicateRow(this string tableName, string columnKey)
@@ -88,8 +86,7 @@ namespace Zizi.Bot.Providers
                       $"FROM {tableName} " +
                       $"GROUP BY {columnKey});";
 
-            var result = await sql.ExecForSqLite(true)
-                .ConfigureAwait(false);
+            var result = await sql.ExecForSqLite(true);
             Log.Information("Deleted {Result}", result);
 
             return result;
@@ -114,10 +111,8 @@ namespace Zizi.Bot.Providers
         {
             if (!File.Exists(filePath)) return false;
             
-            var sql = await File.ReadAllTextAsync(filePath)
-                .ConfigureAwait(false);
-            await sql.ExecForSqLite(true)
-                .ConfigureAwait(false);
+            var sql = await File.ReadAllTextAsync(filePath);
+            await sql.ExecForSqLite(true);
 
             return true;
         }

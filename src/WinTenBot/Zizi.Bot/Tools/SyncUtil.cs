@@ -22,8 +22,7 @@ namespace Zizi.Bot.Tools
             var localHistory = await queryBase
                 .WhereLike("created_at", $"%{prevDate}%")
                 .ExecForSqLite()
-                .GetAsync()
-                .ConfigureAwait(false);
+                .GetAsync();
 
             var mappedHistory = localHistory.ToJson().MapObject<List<RssHistory>>();
             Log.Information("RSS History {PrevDate} {Count}", prevDate, mappedHistory.Count);
@@ -59,8 +58,7 @@ namespace Zizi.Bot.Tools
                             "(url, rss_source, chat_id, title, publish_date, author, created_at) " +
                             $"VALUES {valuesInsert.MkJoin(", ")}";
 
-            await sqlInsert.ExecForMysqlNonQueryAsync(printSql: true)
-                .ConfigureAwait(false);
+            await sqlInsert.ExecForMysqlNonQueryAsync(printSql: true);
 
             // queryBase.ExecForMysql()
 
@@ -73,8 +71,7 @@ namespace Zizi.Bot.Tools
             Log.Information("Getting FBam data..");
             var cloudQuery = (await new Query("global_bans")
                     .ExecForMysql()
-                    .GetAsync<GlobalBanData>()
-                    .ConfigureAwait(false))
+                    .GetAsync<GlobalBanData>())
                 .ToList();
 
             var mappedQuery = cloudQuery.ToJson(followProperty: true).MapObject<List<GlobalBanData>>();
@@ -84,13 +81,13 @@ namespace Zizi.Bot.Tools
             var jsonGBan = "gban-users".OpenJson();
 
             Log.Debug("Opening GBan collection");
-            var gBanCollection = await jsonGBan.GetCollectionAsync<GlobalBanData>().ConfigureAwait(false);
+            var gBanCollection = await jsonGBan.GetCollectionAsync<GlobalBanData>();
 
             Log.Debug("Deleting old data");
-            await gBanCollection.DeleteManyAsync(x => true).ConfigureAwait(false);
+            await gBanCollection.DeleteManyAsync(x => true);
 
             Log.Debug("Inserting new data");
-            await gBanCollection.InsertManyAsync(cloudQuery).ConfigureAwait(false);
+            await gBanCollection.InsertManyAsync(cloudQuery);
 
             Log.Debug("GBanSync - Clearing Object..");
             jsonGBan.Dispose();
@@ -131,7 +128,7 @@ namespace Zizi.Bot.Tools
             //
             //     Log.Information($"Insert part {step++}");
             //     await insertSql.ExecForSqLite(true)
-            //         .ConfigureAwait(false);
+            //         ;
             // }
 
             // foreach (var globalBan in mappedQuery)
@@ -149,7 +146,7 @@ namespace Zizi.Bot.Tools
             // }
 
             // await "fban_user".DeleteDuplicateRow("user_id")
-            // .ConfigureAwait(false);
+            // ;
         }
 
         public static async Task SyncWordToLocalAsync()
@@ -158,8 +155,7 @@ namespace Zizi.Bot.Tools
             Log.Information("Starting Sync Words filter");
             var cloudQuery = (await new Query("word_filter")
                 .ExecForMysql()
-                .GetAsync()
-                .ConfigureAwait(false)).ToList();
+                .GetAsync()).ToList();
 
             var cloudWords = cloudQuery.ToJson().MapObject<List<WordFilter>>();
 
@@ -174,11 +170,11 @@ namespace Zizi.Bot.Tools
 
             // Log.Debug("Deleting old Words");
             // await wordCollection.DeleteManyAsync(x => x.Word != null)
-            // .ConfigureAwait(false);
+            // ;
 
             // Log.Debug("Inserting new Words");
             // await wordCollection.InsertManyAsync(cloudWords)
-            // .ConfigureAwait(false);
+            // ;
 
             Log.Information("Sync {0} Words complete in {1}", cloudWords.Count, sw.Elapsed);
 
@@ -190,7 +186,7 @@ namespace Zizi.Bot.Tools
             // var localQuery = (await new Query("word_filter")
             //     .ExecForSqLite()
             //     .GetAsync()
-            //     .ConfigureAwait(false)).ToList();
+            //     ).ToList();
             // var localWords = localQuery.ToJson().MapObject<List<WordFilter>>();
             //
             //
@@ -208,7 +204,7 @@ namespace Zizi.Bot.Tools
             // var clearData = await new Query("word_filter")
             //     .ExecForSqLite(true)
             //     .DeleteAsync()
-            //     .ConfigureAwait(false);
+            //     ;
             //
             // Log.Information($"Deleting local Word Filter: {clearData} rows");
             //
@@ -227,25 +223,25 @@ namespace Zizi.Bot.Tools
             //     var insert = await new Query("word_filter")
             //         .ExecForSqLite()
             //         .InsertAsync(data)
-            //         .ConfigureAwait(false);
+            //         ;
             // }
             //
             // Log.Information($"Synced {cloudWords.Count} row(s)");
         }
 
+        [Obsolete("This method will be moved as Service")]
         public static async Task SyncWordToLocalAsync(this QueryFactory factory)
         {
             var sw = Stopwatch.StartNew();
             Log.Information("Starting Sync Words filter");
 
             var wordFilters = (await factory.FromQuery(new Query("word_filter"))
-                .GetAsync<WordFilter>()
-                .ConfigureAwait(false)).ToList();
+                .GetAsync<WordFilter>()).ToList();
 
             // var cloudQuery = (await new Query("word_filter")
             // .ExecForMysql()
             // .GetAsync()
-            // .ConfigureAwait(false)).ToList();
+            // ).ToList();
 
             // var cloudWords = cloudQuery.ToJson().MapObject<List<WordFilter>>();
 
@@ -260,11 +256,11 @@ namespace Zizi.Bot.Tools
 
             // Log.Debug("Deleting old Words");
             // await wordCollection.DeleteManyAsync(x => x.Word != null)
-            // .ConfigureAwait(false);
+            // ;
 
             // Log.Debug("Inserting new Words");
             // await wordCollection.InsertManyAsync(cloudWords)
-            // .ConfigureAwait(false);
+            // ;
 
             Log.Information("Sync {0} Words complete in {1}", wordFilters.Count, sw.Elapsed);
 

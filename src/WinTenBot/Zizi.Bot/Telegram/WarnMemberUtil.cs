@@ -31,8 +31,7 @@ namespace Zizi.Bot.Telegram
                 Log.Information("Warning User: {User}", user);
 
                 var warnLimit = 4;
-                var warnHistory = await UpdateWarnMemberStat(message)
-                    .ConfigureAwait(false);
+                var warnHistory = await UpdateWarnMemberStat(message);
                 var updatedStep = warnHistory.StepCount;
                 var lastMessageId = warnHistory.LastWarnMessageId;
                 var nameLink = user.GetNameLink();
@@ -48,22 +47,17 @@ namespace Zizi.Bot.Telegram
                 }
 
                 var muteUntil = DateTime.UtcNow.AddMinutes(3);
-                await telegramService.RestrictMemberAsync(fromId, until: muteUntil)
-                    .ConfigureAwait(false);
+                await telegramService.RestrictMemberAsync(fromId, until: muteUntil);
 
                 if (updatedStep > warnLimit)
                 {
                     var sendWarn = $"Batas peringatan telah di lampaui." +
                                    $"\n{nameLink} di tendang sekarang!";
-                    await telegramService.SendTextAsync(sendWarn)
-                        .ConfigureAwait(false);
+                    await telegramService.SendTextAsync(sendWarn);
 
-                    await telegramService.KickMemberAsync(user)
-                        .ConfigureAwait(false);
-                    await telegramService.UnbanMemberAsync(user)
-                        .ConfigureAwait(false);
-                    await ResetWarnMemberStatAsync(message)
-                        .ConfigureAwait(false);
+                    await telegramService.KickMemberAsync(user);
+                    await telegramService.UnbanMemberAsync(user);
+                    await ResetWarnMemberStatAsync(message);
 
                     return;
                 }
@@ -76,10 +70,8 @@ namespace Zizi.Bot.Telegram
                     }
                 });
 
-                await telegramService.SendTextAsync(sendText, inlineKeyboard)
-                    .ConfigureAwait(false);
-                await message.UpdateLastWarnMemberMessageIdAsync(telegramService.SentMessageId)
-                    .ConfigureAwait(false);
+                await telegramService.SendTextAsync(sendText, inlineKeyboard);
+                await message.UpdateLastWarnMemberMessageIdAsync(telegramService.SentMessageId);
             }
             catch (Exception ex)
             {
@@ -107,8 +99,7 @@ namespace Zizi.Bot.Telegram
                 .Where("from_id", fromId)
                 .Where("chat_id", chatId)
                 .ExecForSqLite(true)
-                .GetAsync()
-                .ConfigureAwait(false);
+                .GetAsync();
 
             var exist = warnHistory.Any<object>();
 
@@ -138,8 +129,7 @@ namespace Zizi.Bot.Telegram
                     .Where("from_id", fromId)
                     .Where("chat_id", chatId)
                     .ExecForSqLite(true)
-                    .UpdateAsync(update)
-                    .ConfigureAwait(false);
+                    .UpdateAsync(update);
 
                 Log.Information("Update step: {InsertHit}", insertHit);
             }
@@ -161,8 +151,7 @@ namespace Zizi.Bot.Telegram
 
                 var insertHit = await new Query(tableName)
                     .ExecForSqLite(true)
-                    .InsertAsync(data)
-                    .ConfigureAwait(false);
+                    .InsertAsync(data);
 
                 Log.Information("Insert Hit: {InsertHit}", insertHit);
             }
@@ -171,8 +160,7 @@ namespace Zizi.Bot.Telegram
                 .Where("from_id", fromId)
                 .Where("chat_id", chatId)
                 .ExecForSqLite(true)
-                .GetAsync()
-                .ConfigureAwait(false);
+                .GetAsync();
 
             return updatedHistory.ToJson().MapObject<List<WarnMemberHistory>>().First();
         }
@@ -195,8 +183,7 @@ namespace Zizi.Bot.Telegram
                 .Where("from_id", fromId)
                 .Where("chat_id", chatId)
                 .ExecForSqLite(true)
-                .UpdateAsync(update)
-                .ConfigureAwait(false);
+                .UpdateAsync(update);
 
             Log.Information("Update lastWarn: {InsertHit}", insertHit);
         }
@@ -219,8 +206,7 @@ namespace Zizi.Bot.Telegram
                 .Where("from_id", fromId)
                 .Where("chat_id", chatId)
                 .ExecForSqLite(true)
-                .UpdateAsync(update)
-                .ConfigureAwait(false);
+                .UpdateAsync(update);
 
             Log.Information("Update step: {InsertHit}", insertHit);
         }
@@ -243,8 +229,7 @@ namespace Zizi.Bot.Telegram
                 .Where("from_id", userId)
                 .Where("chat_id", chatId)
                 .ExecForSqLite(true)
-                .UpdateAsync(update)
-                .ConfigureAwait(false);
+                .UpdateAsync(update);
 
             Log.Information("Update step: {InsertHit}", insertHit);
         }

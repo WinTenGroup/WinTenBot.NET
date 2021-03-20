@@ -26,10 +26,10 @@ namespace Zizi.Bot.Tools
                 var swUpdater = Stopwatch.StartNew();
                 Log.Information("Starting download from Mega. Url: {0}", megaUrl);
                 var client = new MegaApiClient();
-                await client.LoginAnonymousAsync().ConfigureAwait(false);
+                await client.LoginAnonymousAsync();
 
                 var fileLink = new Uri(megaUrl);
-                var node = await client.GetNodeFromLinkAsync(fileLink).ConfigureAwait(false);
+                var node = await client.GetNodeFromLinkAsync(fileLink);
 
                 Log.Debug("Downloading {0}", node.Name);
                 IProgress<double> progressHandler = new Progress<double>(async x =>
@@ -38,18 +38,15 @@ namespace Zizi.Bot.Tools
                     
                     if (swUpdater.Elapsed.Seconds < 5) return;
                     swUpdater.Restart();
-                    await telegramService.EditAsync($"Downloading Progress: {downloadProgress:.##} %")
-                        .ConfigureAwait(false);
+                    await telegramService.EditAsync($"Downloading Progress: {downloadProgress:.##} %");
                     // swUpdater.Start();
                 });
                 
-                await client.DownloadFileAsync(fileLink, node.Name, progressHandler)
-                    .ConfigureAwait(false);
+                await client.DownloadFileAsync(fileLink, node.Name, progressHandler);
             }
             catch (Exception ex)
             {
-                await telegramService.SendTextAsync($"🚫 <b>Sesuatu telah terjadi.</b>\n{ex.Message}")
-                    .ConfigureAwait(false);
+                await telegramService.SendTextAsync($"🚫 <b>Sesuatu telah terjadi.</b>\n{ex.Message}");
             }
         }
     }

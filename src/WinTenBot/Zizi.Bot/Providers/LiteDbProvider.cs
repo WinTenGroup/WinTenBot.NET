@@ -44,8 +44,7 @@ namespace Zizi.Bot.Providers
         {
             var collectionName = typeof(T).Name.Pluralize();
             Log.Debug("Getting collection {0} async", collectionName);
-            return await Task.Run(() => LiteDb.GetCollection<T>(collectionName))
-                .ConfigureAwait(false);
+            return await Task.Run(() => LiteDb.GetCollection<T>(collectionName));
         }
 
         public static long Rebuild()

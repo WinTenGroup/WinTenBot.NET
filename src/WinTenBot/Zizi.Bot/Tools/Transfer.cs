@@ -58,8 +58,7 @@ namespace Zizi.Bot.Tools
                                        $"\n<b>Size:</b> {totalSize}" +
                                        $"\n<b>Speed:</b> {downloadSpeed}";
 
-                    await telegramService.EditAsync(progressText)
-                        .ConfigureAwait(false);
+                    await telegramService.EditAsync(progressText);
 
                     swUpdater.Start();
                 };
@@ -71,14 +70,12 @@ namespace Zizi.Bot.Tools
                                        $"\n<b>Size:</b> {totalSize}" +
                                        $"\n<b>Success:</b> {!args.Cancelled}";
 
-                    await telegramService.EditAsync(completeText)
-                        .ConfigureAwait(false);
+                    await telegramService.EditAsync(completeText);
                     Log.Information("Download file complete {Cancelled}", args.Cancelled);
 
                     var preparingUpload = $"Preparing upload file to Google Drive." +
                                           $"\nFile: {fileName}";
-                    await telegramService.EditAsync(preparingUpload)
-                        .ConfigureAwait(false);
+                    await telegramService.EditAsync(preparingUpload);
                     telegramService.UploadFile(saveFilePath);
                 };
 
@@ -89,8 +86,7 @@ namespace Zizi.Bot.Tools
             catch (Exception e)
             {
                 Log.Error(e.Demystify(), "Error when starting download");
-                await telegramService.EditAsync($"⛔️ Error when download file. \n{e.Message}")
-                    .ConfigureAwait(false);
+                await telegramService.EditAsync($"⛔️ Error when download file. \n{e.Message}");
             }
 
             return null;

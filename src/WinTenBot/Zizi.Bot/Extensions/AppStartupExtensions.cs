@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -34,10 +34,8 @@ namespace Zizi.Bot.Extensions
 #pragma warning disable CA2008 // Do not create tasks without passing a TaskScheduler
             Task.Run(async () =>
                 {
-                    await Task.Delay(startAfter, cancellationToken)
-                        .ConfigureAwait(false);
-                    await updateManager.RunAsync(cancellationToken: cancellationToken)
-                        .ConfigureAwait(false);
+                    await Task.Delay(startAfter, cancellationToken);
+                    await updateManager.RunAsync(cancellationToken: cancellationToken);
                 }, cancellationToken)
                 .ContinueWith(t =>
                 {

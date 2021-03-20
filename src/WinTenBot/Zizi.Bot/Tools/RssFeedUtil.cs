@@ -11,7 +11,7 @@ using Telegram.Bot.Exceptions;
 using Telegram.Bot.Types.Enums;
 using Zizi.Bot.Common;
 using Zizi.Bot.Models;
-using Zizi.Bot.Services;
+using Zizi.Bot.Services.Datas;
 using Zizi.Bot.Telegram;
 
 namespace Zizi.Bot.Tools
@@ -26,8 +26,7 @@ namespace Zizi.Bot.Tools
             var rssService = new RssService();
 
             Log.Information("Getting RSS settings..");
-            var rssSettings = await rssService.GetRssSettingsAsync(chatId)
-                .ConfigureAwait(false);
+            var rssSettings = await rssService.GetRssSettingsAsync(chatId);
 
             var tasks = rssSettings.Select(async rssSetting =>
             {
@@ -38,8 +37,7 @@ namespace Zizi.Bot.Tools
                 Log.Information("Processing {RssUrl} for {ChatId}.", rssUrl, chatId);
                 try
                 {
-                    newRssCount += await ExecuteUrlAsync(chatId, rssUrl)
-                        .ConfigureAwait(false);
+                    newRssCount += await ExecuteUrlAsync(chatId, rssUrl);
                 }
                 catch (Exception ex)
                 {
@@ -50,13 +48,14 @@ namespace Zizi.Bot.Tools
                 // }
             });
 
-            await Task.WhenAll(tasks).ConfigureAwait(false);
+            await Task.WhenAll(tasks);
 
             Log.Information("RSS Scheduler finished. New RSS Count: {NewRssCount}", newRssCount);
 
             return newRssCount;
         }
 
+        [Obsolete("This function will be moved as Service")]
         [AutomaticRetry(Attempts = 2, OnAttemptsExceeded = AttemptsExceededAction.Delete)]
         public static async Task<int> ExecuteUrlAsync(long chatId, string rssUrl)
         {
@@ -64,8 +63,7 @@ namespace Zizi.Bot.Tools
             var rssService = new RssService();
 
             Log.Information("Reading feed from {0}. Url: {1}", chatId, rssUrl);
-            var rssFeeds = await FeedReader.ReadAsync(rssUrl)
-                .ConfigureAwait(false);
+            var rssFeeds = await FeedReader.ReadAsync(rssUrl);
 
             var rssTitle = rssFeeds.Title;
 
@@ -90,13 +88,12 @@ namespace Zizi.Bot.Tools
                 // };
 
                 Log.Debug("Getting last history for {0} url {1}", chatId, rssUrl);
-                // var rssHistory = await rssService.GetRssHistory(whereHistory)
-                // .ConfigureAwait(false);
+                // var rssHistory = await rssService.GetRssHistory(whereHistory);
                 var rssHistory = await rssService.GetRssHistory(new RssHistory()
                 {
                     ChatId = chatId,
                     RssSource = rssUrl
-                }).ConfigureAwait(false);
+                });
                 var lastRssHistory = rssHistory.LastOrDefault();
 
                 // if (!rssHistory.Any()) break;
@@ -109,7 +106,7 @@ namespace Zizi.Bot.Tools
 
                     if (currentArticleDate < lastArticleDate)
                     {
-                        Log.Information($"Current article is older than last article. Stopped.");
+                        Log.Information("Current article is older than last article. Stopped.");
                         break;
                     }
 
@@ -131,12 +128,12 @@ namespace Zizi.Bot.Tools
                     {"url", rssFeed.Link}
                 };
 
-                // var isExist = await rssService.IsExistInHistory(where).ConfigureAwait(false);
-                var isExist = await rssService.IsExistInHistory(new RssHistory()
+                // var isExist = await rssService.IsExistInHistory(where);
+                var isExist = await rssService.IsHistoryExist(new RssHistory()
                 {
                     ChatId = chatId,
                     Url = rssFeed.Link
-                }).ConfigureAwait(false);
+                });
 
                 if (isExist)
                 {
@@ -148,10 +145,9 @@ namespace Zizi.Bot.Tools
 
                 try
                 {
-                    await BotSettings.Client.SendTextMessageAsync(chatId, sendText, ParseMode.Html)
-                        .ConfigureAwait(false);
+                    await BotSettings.Client.SendTextMessageAsync(chatId, sendText, ParseMode.Html);
 
-                    Log.Debug($"Writing to RSS History");
+                    Log.Debug("Writing to RSS History");
                     // var data = new Dictionary<string, object>()
                     // {
                     //     {"url", rssFeed.Link},
@@ -163,8 +159,7 @@ namespace Zizi.Bot.Tools
                     //     {"created_at", DateTime.Now.ToString(CultureInfo.InvariantCulture)}
                     // };
                     //
-                    // await rssService.SaveRssHistoryAsync(data)
-                    //     .ConfigureAwait(false);
+                    // await rssService.SaveRssHistoryAsync(data);
 
                     await rssService.SaveRssHistoryAsync(new RssHistory()
                     {
@@ -175,7 +170,7 @@ namespace Zizi.Bot.Tools
                         PublishDate = rssFeed.PublishingDate ?? DateTime.Now,
                         Author = rssFeed.Author ?? "N/A",
                         CreatedAt = DateTime.Now
-                    }).ConfigureAwait(false);
+                    });
 
                     // castStep++;
                     newRssCount++;
@@ -193,7 +188,7 @@ namespace Zizi.Bot.Tools
                     {
                         Log.Warning("Seem need clearing all RSS Settings and unregister Cron completely!");
                         Log.Debug("Deleting all RSS Settings");
-                        await rssService.DeleteAllByChatId(chatId).ConfigureAwait(false);
+                        await rssService.DeleteAllByChatId(chatId);
 
                         UnRegRSS(chatId);
                     }
@@ -216,8 +211,7 @@ namespace Zizi.Bot.Tools
         public static async Task<string> FindUrlFeed(this string url)
         {
             Log.Information("Scanning {0} ..", url);
-            var urls = await FeedReader.GetFeedUrlsFromUrlAsync(url)
-                .ConfigureAwait(false);
+            var urls = await FeedReader.GetFeedUrlsFromUrlAsync(url);
             Log.Debug("UrlFeeds: {0}", urls.ToJson());
 
             string feedUrl = "";
@@ -239,8 +233,7 @@ namespace Zizi.Bot.Tools
             bool isValid = false;
             try
             {
-                var feed = await FeedReader.ReadAsync(url)
-                    .ConfigureAwait(false);
+                var feed = await FeedReader.ReadAsync(url);
                 isValid = true;
             }
             catch (Exception ex)

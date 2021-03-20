@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
@@ -9,6 +9,7 @@ using Zizi.Bot.Common;
 using Zizi.Bot.Models;
 using Zizi.Bot.Tools;
 using Zizi.Bot.Services;
+using Zizi.Bot.Services.Datas;
 
 namespace Zizi.Bot.Telegram
 {
@@ -54,27 +55,23 @@ namespace Zizi.Bot.Telegram
             if (message.ReplyToMessage != null)
             {
                 var repMsg = message.ReplyToMessage;
-                var isAfkReply = await afkService.IsAfkAsync(repMsg)
-                    .ConfigureAwait(false);
+                var isAfkReply = await afkService.IsAfkAsync(repMsg);
                 if (isAfkReply)
-                    await telegramService.SendTextAsync($"{repMsg.GetFromNameLink()} sedang afk")
-                        .ConfigureAwait(false);
+                    await telegramService.SendTextAsync($"{repMsg.GetFromNameLink()} sedang afk");
             }
 
-            var isAfk = await afkService.IsAfkAsync(message)
-                .ConfigureAwait(false);
+            var isAfk = await afkService.IsAfkAsync(message);
             if (isAfk)
             {
-                await telegramService.SendTextAsync($"{message.GetFromNameLink()} sudah tidak afk")
-                    .ConfigureAwait(false);
+                await telegramService.SendTextAsync($"{message.GetFromNameLink()} sudah tidak afk");
 
                 var data = new Dictionary<string, object>
                 {
                     {"chat_id", message.Chat.Id}, {"user_id", message.From.Id}, {"is_afk", 0}, {"afk_reason", ""}
                 };
 
-                await afkService.SaveAsync(data).ConfigureAwait(false);
-                await afkService.UpdateCacheAsync().ConfigureAwait(false);
+                await afkService.SaveAsync(data);
+                await afkService.UpdateCacheAsync();
             }
 
             Log.Debug("AFK check completed. In {0}", sw.Elapsed);
@@ -102,8 +99,7 @@ namespace Zizi.Bot.Telegram
                     return;
                 }
 
-                var botUser = await telegramService.GetMeAsync()
-                    .ConfigureAwait(false);
+                var botUser = await telegramService.GetMeAsync();
 
                 Log.Information("Starting SangMata check..");
 
@@ -162,8 +158,7 @@ namespace Zizi.Bot.Telegram
 
                 if (changesCount > 0)
                 {
-                    await telegramService.SendTextAsync(msgBuild.ToString().Trim())
-                        .ConfigureAwait(false);
+                    await telegramService.SendTextAsync(msgBuild.ToString().Trim());
 
                     telegramService.SetChatCache(fromId.ToString(), new HitActivity()
                     {

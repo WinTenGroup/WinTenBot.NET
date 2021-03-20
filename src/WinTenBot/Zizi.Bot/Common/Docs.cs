@@ -8,8 +8,7 @@ namespace Zizi.Bot.Common
         public static async Task<string> LoadInBotDocs(this string slug)
         {
             var path = $"Storage/InbotDocs/{slug}.html";
-            var html = await File.ReadAllTextAsync(path)
-                .ConfigureAwait(false);
+            var html = await File.ReadAllTextAsync(path);
 
             return html.Trim();
         }

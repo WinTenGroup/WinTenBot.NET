@@ -69,6 +69,7 @@ namespace Zizi.Bot.Extensions
             return app;
         }
 
+        [Obsolete("MonkeyCache no longer used")]
         public static IApplicationBuilder UseMonkeyCache(this IApplicationBuilder app)
         {
             var sw = Stopwatch.StartNew();

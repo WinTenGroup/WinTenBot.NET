@@ -80,7 +80,7 @@ namespace Zizi.Bot.Tools.GoogleCloud
             Log.Information("Starting Google VideoIntelligence");
 
             Log.Debug("Loading content");
-            var fileBytes = await File.ReadAllBytesAsync(filePath).ConfigureAwait(false);
+            var fileBytes = await File.ReadAllBytesAsync(filePath);
             var protoBuff = ByteString.CopyFrom(fileBytes);
             
             Log.Debug("Creating request");
@@ -91,9 +91,7 @@ namespace Zizi.Bot.Tools.GoogleCloud
             };
 
             Log.Debug("Annotating video");
-            var operation = await (await VideoIntelligenceService.AnnotateVideoAsync(request)
-                    .ConfigureAwait(false)).PollUntilCompletedAsync()
-                .ConfigureAwait(false);
+            var operation = await (await VideoIntelligenceService.AnnotateVideoAsync(request)).PollUntilCompletedAsync();
 
             Log.Debug("OperationResult: {0}", operation.Result.ToJson(true));
             var annotationResult = operation.Result.AnnotationResults.First();

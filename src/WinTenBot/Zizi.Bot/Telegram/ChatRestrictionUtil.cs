@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Humanizer;
 using Microsoft.Extensions.Configuration;
 using Serilog;
 using Zizi.Bot.Common;
@@ -47,24 +48,32 @@ namespace Zizi.Bot.Telegram
 
         public static async Task<bool> EnsureChatRestrictionAsync(this TelegramService telegramService)
         {
-            Log.Information("Starting ensure Chat Restriction");
+            try
+            {
+                Log.Information("Starting ensure Chat Restriction");
 
-            var message = telegramService.MessageOrEdited;
-            var chatId = message.Chat.Id;
+                var message = telegramService.MessageOrEdited;
+                var chatId = message.Chat.Id;
 
-            var globalRestrict = ChatRestrictionUtil.IsRestricted();
-            var isRestricted = chatId.CheckRestriction();
+                var globalRestrict = ChatRestrictionUtil.IsRestricted();
+                var isRestricted = chatId.CheckRestriction();
 
-            if (!isRestricted || !globalRestrict) return false;
+                if (!isRestricted || !globalRestrict) return false;
 
-            Log.Information("I must leave right now!");
-            var msgOut = $"Sepertinya saya salah alamat, saya pamit dulu..";
+                Log.Information("I must leave right now!");
+                var msgOut = $"Sepertinya saya salah alamat, saya pamit dulu..";
 
-            await telegramService.SendTextAsync(msgOut)
-                .ConfigureAwait(false);
-            await telegramService.LeaveChat(chatId)
-                .ConfigureAwait(false);
-            return true;
+                await telegramService.SendTextAsync(msgOut);
+                await telegramService.LeaveChat(chatId);
+
+                return true;
+            }
+            catch
+            {
+                Log.Error("Error when {0}", nameof(EnsureChatRestrictionAsync).Humanize());
+
+                return false;
+            }
         }
 
     }

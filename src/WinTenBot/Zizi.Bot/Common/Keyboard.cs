@@ -63,8 +63,7 @@ namespace Zizi.Bot.Common
             if (File.Exists(jsonPath))
             {
                 Log.Information("Loading Json from path: {JsonPath}", jsonPath);
-                json = await File.ReadAllTextAsync(jsonPath)
-                    .ConfigureAwait(false);
+                json = await File.ReadAllTextAsync(jsonPath);
             }
             else
             {

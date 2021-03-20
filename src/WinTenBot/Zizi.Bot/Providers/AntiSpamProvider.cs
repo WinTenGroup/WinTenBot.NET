@@ -26,8 +26,7 @@ namespace Zizi.Bot.Providers
                 var baseUrl = $"https://api.spamwat.ch/banlist/{userId}";
                 spamWatch = await baseUrl
                     .WithOAuthBearerToken(spamWatchToken)
-                    .GetJsonAsync<SpamWatch>()
-                    .ConfigureAwait(false);
+                    .GetJsonAsync<SpamWatch>();
                 spamWatch.IsBan = spamWatch.Code != 404;
                 Log.Debug("SpamWatch Result: {0}", spamWatch.ToJson(true));
             }
@@ -61,13 +60,12 @@ namespace Zizi.Bot.Providers
             // var query = await new Query("fban_user")
             //     .Where("user_id", userId)
             //     .ExecForSqLite(true)
-            //     .GetAsync()
-            //     .ConfigureAwait(false);
+            //     .GetAsync();
 
             var jsonGBan = "gban-users".OpenJson();
 
             Log.Debug("Opening GBan collection");
-            var gBanCollection = await jsonGBan.GetCollectionAsync<GlobalBanData>().ConfigureAwait(false);
+            var gBanCollection = await jsonGBan.GetCollectionAsync<GlobalBanData>();
 
             var allBan = gBanCollection.AsQueryable().ToList();
             Log.Debug("Loaded ES2 Ban: {0}", allBan.Count);
@@ -90,8 +88,7 @@ namespace Zizi.Bot.Providers
             {
                 var userId = user.Id;
                 var url = "https://api.cas.chat/check".SetQueryParam("user_id", userId);
-                var resp = await url.GetJsonAsync<CasBan>()
-                    .ConfigureAwait(false);
+                var resp = await url.GetJsonAsync<CasBan>();
 
                 Log.Debug("CasBan Response: {0}", resp.ToJson(true));
 

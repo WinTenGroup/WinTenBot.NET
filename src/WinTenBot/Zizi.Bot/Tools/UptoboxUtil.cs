@@ -37,8 +37,7 @@ namespace Zizi.Bot.Tools
             var url = Url.Combine(UptoboxApi, "user/me");
             var json = await url
                 .SetQueryParam("token", token)
-                .GetJsonAsync<UptoboxUser>()
-                .ConfigureAwait(false);
+                .GetJsonAsync<UptoboxUser>();
             // Log.Debug("Uptobox Me: {0}", json.ToJson(true));
 
             return json;
@@ -54,7 +53,7 @@ namespace Zizi.Bot.Tools
                 .SetQueryParam("token", token)
                 .SetQueryParam("file_code", fileId);
 
-            var waiting = await req.GetJsonAsync<UptoboxLink>().ConfigureAwait(false);
+            var waiting = await req.GetJsonAsync<UptoboxLink>();
             Log.Debug("Waiting: {0}", waiting.ToJson(true));
 
             return waiting.LinkData.DlLink;
@@ -71,7 +70,7 @@ namespace Zizi.Bot.Tools
                 var param1 = partsText.ValueOfIndex(0);
                 Log.Information("Starting download from Uptobox. Url: {0}", param1);
 
-                var user = await GetMe().ConfigureAwait(false);
+                var user = await GetMe();
                 var isPremium = user.UserData.Premium;
                 if (!isPremium)
                 {
@@ -80,19 +79,18 @@ namespace Zizi.Bot.Tools
                 }
 
                 var fileId = param1.Replace("https://uptobox.com/", "", StringComparison.InvariantCulture).Trim();
-                var downloadLink = await GetDownloadLinkAsync(fileId).ConfigureAwait(false);
+                var downloadLink = await GetDownloadLinkAsync(fileId);
 
                 if (!withoutDownload)
                 {
-                    await telegramService.DownloadFile(downloadLink).ConfigureAwait(false);
+                    await telegramService.DownloadFile(downloadLink);
                 }
 
                 return downloadLink;
             }
             catch
             {
-                await telegramService.EditAsync("Terjadi kesalahan ketika mengunduh file dari Uptobox. Pastikan kembali tautan.")
-                    .ConfigureAwait(false);
+                await telegramService.EditAsync("Terjadi kesalahan ketika mengunduh file dari Uptobox. Pastikan kembali tautan.");
                 return null;
             }
         }

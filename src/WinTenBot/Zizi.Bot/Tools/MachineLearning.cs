@@ -100,7 +100,7 @@ namespace Zizi.Bot.Tools
             {
                 Log.Information("Running async setup.");
                 SetupEngine();
-            }).ConfigureAwait(false);
+            });
         }
 
         public static bool PredictMessage(string message)
@@ -182,8 +182,7 @@ namespace Zizi.Bot.Tools
                 Log.Information("Inserted to {TableName} {Insert} row(s)", tableName, insert);
             }
 
-            await tableName.MysqlDeleteDuplicateRowAsync("message", printSql: true)
-                .ConfigureAwait(false);
+            await tableName.MysqlDeleteDuplicateRowAsync("message", printSql: true);
         }
     }
 }

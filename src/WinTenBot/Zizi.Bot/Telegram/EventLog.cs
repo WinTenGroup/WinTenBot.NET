@@ -24,8 +24,7 @@ namespace Zizi.Bot.Telegram
 
             foreach (var chatId in listLogTarget)
             {
-                await telegramService.SendEventCoreAsync(text, chatId, true, repToMsgId: repToMsgId)
-                    .ConfigureAwait(false);
+                await telegramService.SendEventCoreAsync(text, chatId, true, repToMsgId: repToMsgId);
             }
         }
 
@@ -46,9 +45,7 @@ namespace Zizi.Bot.Telegram
                           $"\nNote: {additionalText}" +
                           $"\n\n#{message.Type} => #ID{chatId.ToString().TrimStart('-')}";
 
-            await telegramService
-                .SendTextAsync(sendLog, customChatId: customChatId, disableWebPreview: disableWebPreview, replyToMsgId: repToMsgId)
-                .ConfigureAwait(false);
+            await telegramService.SendTextAsync(sendLog, customChatId: customChatId, disableWebPreview: disableWebPreview, replyToMsgId: repToMsgId);
         }
     }
 }

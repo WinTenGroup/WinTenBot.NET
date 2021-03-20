@@ -23,8 +23,8 @@ namespace Zizi.Bot.Extensions
                 .AddScoped<ExceptionHandler>()
                 .AddScoped<UpdateMembersList>()
                 .AddScoped<CallbackQueryHandler>()
-                .AddScoped<PingHandler>()
-                .AddScoped<MediaReceivedHandler>();
+                .AddScoped<PingHandler>();
+            // .AddScoped<MediaReceivedHandler>();
         }
     }
 }

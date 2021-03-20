@@ -27,8 +27,7 @@ namespace Zizi.Bot.Telegram
             var message = telegramService.Message;
             var chatId = message.Chat.Id;
 
-            var admins = await client.GetChatAdministratorsAsync(chatId)
-                .ConfigureAwait(false);
+            var admins = await client.GetChatAdministratorsAsync(chatId);
 
             telegramService.SetChatCache(BaseCacheKey, admins);
         }
@@ -38,8 +37,7 @@ namespace Zizi.Bot.Telegram
             var keyCache = GetCacheKey(chatId);
 
             Log.Information("Updating list Admin Cache with key: {0}", keyCache);
-            var admins = await client.GetChatAdministratorsAsync(chatId)
-                .ConfigureAwait(false);
+            var admins = await client.GetChatAdministratorsAsync(chatId);
 
             admins.AddCache(keyCache);
         }
@@ -49,7 +47,7 @@ namespace Zizi.Bot.Telegram
             var cacheExist = telegramService.IsChatCacheExist(BaseCacheKey);
             if (!cacheExist)
             {
-                await telegramService.UpdateCacheAdminAsync().ConfigureAwait(false);
+                await telegramService.UpdateCacheAdminAsync();
             }
 
             var chatMembers = telegramService.GetChatCache<ChatMember[]>(BaseCacheKey);
@@ -66,7 +64,7 @@ namespace Zizi.Bot.Telegram
             var cacheExist = MonkeyCacheUtil.IsCacheExist(keyCache);
             if (!cacheExist)
             {
-                await botClient.UpdateCacheAdminAsync(chatId).ConfigureAwait(false);
+                await botClient.UpdateCacheAdminAsync(chatId);
             }
 
             var chatMembers = MonkeyCacheUtil.Get<ChatMember[]>(keyCache);
@@ -83,8 +81,7 @@ namespace Zizi.Bot.Telegram
 
             if (telegramService.IsPrivateChat()) return false;
 
-            var chatMembers = await telegramService.GetChatAdmin()
-                .ConfigureAwait(false);
+            var chatMembers = await telegramService.GetChatAdmin();
 
             var isAdmin = chatMembers.Any(admin => userId == admin.User.Id);
 
@@ -100,8 +97,7 @@ namespace Zizi.Bot.Telegram
         {
             var sw = Stopwatch.StartNew();
 
-            var chatMembers = await botClient.GetChatAdmin(chatId)
-                .ConfigureAwait(false);
+            var chatMembers = await botClient.GetChatAdmin(chatId);
 
             var isAdmin = chatMembers.Any(admin => userId == admin.User.Id);
 

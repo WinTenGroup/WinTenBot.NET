@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Humanizer;
@@ -6,6 +6,7 @@ using Serilog;
 using Telegram.Bot.Types.Enums;
 using Zizi.Bot.Common;
 using Zizi.Bot.Services;
+using Zizi.Bot.Services.Datas;
 
 namespace Zizi.Bot.Telegram
 {
@@ -45,14 +46,13 @@ namespace Zizi.Bot.Telegram
                 {"is_admin", telegramService.IsBotAdmin}
             };
 
-            var saveSettings = await settingsService.SaveSettingsAsync(data)
-                .ConfigureAwait(false);
+            var saveSettings = await settingsService.SaveSettingsAsync(data);
             Log.Debug("Ensure Settings: {0}", saveSettings);
 
-            await settingsService.UpdateCache()
-                .ConfigureAwait(false);
+            await settingsService.UpdateCache();
         }
 
+        [Obsolete("Please use property instead of this Method")]
         public static bool IsPrivateChat(this TelegramService telegramService)
         {
             var messageOrEdited = telegramService.MessageOrEdited;
@@ -63,6 +63,7 @@ namespace Zizi.Bot.Telegram
             return isPrivate;
         }
 
+        [Obsolete("This method will be moved to TelegramService")]
         public static bool IsGroupChat(this TelegramService telegramService)
         {
             var messageOrEdited = telegramService.MessageOrEdited;

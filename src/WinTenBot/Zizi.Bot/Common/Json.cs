@@ -55,8 +55,7 @@ namespace Zizi.Bot.Common
             var filePath = $"{workingDir}/{fileJson}".EnsureDirectory();
             var json = data.ToJson(indented);
 
-            await json.ToFile(filePath)
-                .ConfigureAwait(false);
+            await json.ToFile(filePath);
             Log.Debug("Writing file complete. FileName: {0}", filePath);
 
             return filePath;

@@ -22,8 +22,7 @@ namespace Zizi.Bot.Tools
                 .SetQueryParam("agent", agent)
                 .SetQueryParam("apikey", apiKey)
                 .SetQueryParam("link", url)
-                .GetJsonAsync<AllDebrid>()
-                .ConfigureAwait(false);
+                .GetJsonAsync<AllDebrid>();
 
             return req;
             // var urlResult = req.Status == "success" ? req.DebridData.Link.AbsoluteUri : url;

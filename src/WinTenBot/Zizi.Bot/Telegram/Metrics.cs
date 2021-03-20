@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -41,26 +41,29 @@ namespace Zizi.Bot.Telegram
 
             var insertHit = await new Query("hit_activity")
                 .ExecForMysql(true)
-                .InsertAsync(data)
-                .ConfigureAwait(false);
+                .InsertAsync(data);
 
-            Log.Information($"Insert Hit: {insertHit}");
+            Log.Information("Insert Hit: {InsertHit}", insertHit);
 
-            // var hitActivity = new HitActivity()
-            // {
-            //     ViaBot = botUser.Username,
-            //     MessageType = message.Type.ToString(),
-            //     FromId = message.From.Id,
-            //     FromFirstName = message.From.FirstName,
-            //     FromLastName = message.From.LastName,
-            //     FromUsername = message.From.Username,
-            //     FromLangCode = message.From.LanguageCode,
-            //     ChatId = message.Chat.Id.ToString(),
-            //     ChatUsername = message.Chat.Username,
-            //     ChatType = message.Chat.Type.ToString(),
-            //     ChatTitle = message.Chat.Title,
-            //     Timestamp = DateTime.Now
-            // };
+            var path = "Storage/Caches/hit-buffer.csv".EnsureDirectory();
+            var hitActivity = new HitActivity()
+            {
+                ViaBot = botUser.Username,
+                MessageType = message.Type.ToString(),
+                FromId = message.From.Id,
+                FromFirstName = message.From.FirstName,
+                FromLastName = message.From.LastName,
+                FromUsername = message.From.Username,
+                FromLangCode = message.From.LanguageCode,
+                ChatId = message.Chat.Id.ToString(),
+                ChatUsername = message.Chat.Username,
+                ChatType = message.Chat.Type.ToString(),
+                ChatTitle = message.Chat.Title,
+                Timestamp = DateTime.Now
+            };
+
+            var insertBuffer = hitActivity.AppendRecord(path);
+            Log.Debug("Buffer Hit activity saved to {0}", insertBuffer);
 
             // Log.Debug("Inserting to LiteDB.");
             // var metrics = LiteDbProvider.GetCollections<HitActivity>();
@@ -133,26 +136,21 @@ namespace Zizi.Bot.Telegram
             var monthStr = DateTime.Now.ToString("yyyy-MM");
             statBuilder.AppendLine($"Stat Group: {chatId}");
 
-            await telegramService.SendTextAsync(statBuilder.ToString().Trim())
-                .ConfigureAwait(false);
+            await telegramService.SendTextAsync(statBuilder.ToString().Trim());
 
-            var monthCount = await GetMonthlyStat(telegramService)
-                .ConfigureAwait(false);
+            var monthCount = await GetMonthlyStat(telegramService);
             var monthRates = monthCount / 30;
             statBuilder.AppendLine($"This Month: {monthCount}");
             statBuilder.AppendLine($"Traffics: {monthRates} msg/day");
-            await telegramService.EditAsync(statBuilder.ToString().Trim())
-                .ConfigureAwait(false);
+            await telegramService.EditAsync(statBuilder.ToString().Trim());
 
             statBuilder.AppendLine();
 
-            var todayCount = await GetDailyStat(telegramService)
-                .ConfigureAwait(false);
+            var todayCount = await GetDailyStat(telegramService);
             var todayRates = todayCount / 24;
             statBuilder.AppendLine($"Today: {todayCount}");
             statBuilder.AppendLine($"Traffics: {todayRates} msg/hour");
-            await telegramService.EditAsync(statBuilder.ToString().Trim())
-                .ConfigureAwait(false);
+            await telegramService.EditAsync(statBuilder.ToString().Trim());
         }
 
         private static async Task<int> GetMonthlyStat(this TelegramService telegramService)
@@ -167,12 +165,11 @@ namespace Zizi.Bot.Telegram
                 .WhereRaw($"str_to_date(timestamp,'%Y-%m-%d') like '{monthStr}%'")
                 .Where("chat_id", chatId)
                 .GetAsync()
-                .ConfigureAwait(false)).ToList();
+                ).ToList();
             var monthCount = monthActivity.Count;
             return monthCount;
             // statBuilder.AppendLine($"This Month: {monthCount}");
-            // await telegramService.EditAsync(statBuilder.ToString())
-            //     .ConfigureAwait(false);
+            // await telegramService.EditAsync(statBuilder.ToString());
         }
 
         private static async Task<int> GetDailyStat(this TelegramService telegramService)
@@ -186,14 +183,13 @@ namespace Zizi.Bot.Telegram
                 .WhereDate("timestamp", todayStr)
                 .Where("chat_id", chatId)
                 .GetAsync()
-                .ConfigureAwait(false)).ToList();
+                ).ToList();
 
             var todayCount = todayActivity.Count;
             return todayCount;
 
             // statBuilder.AppendLine($"Today: {todayCount}");
-            // await telegramService.EditAsync(statBuilder.ToString())
-            //     .ConfigureAwait(false);
+            // await telegramService.EditAsync(statBuilder.ToString());
         }
     }
 }

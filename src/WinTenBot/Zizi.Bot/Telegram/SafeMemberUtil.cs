@@ -25,8 +25,7 @@ namespace Zizi.Bot.Telegram
             var query = (await new Query(tableName)
                     .ExecForMysql(true)
                     .Where("UserId", fromId)
-                    .GetAsync<SafeMember>()
-                    .ConfigureAwait(false))
+                    .GetAsync<SafeMember>())
                 .ToList().FirstOrDefault();
 
             if (query != null)
@@ -46,8 +45,7 @@ namespace Zizi.Bot.Telegram
             var query = (await new Query(tableName)
                     .ExecForMysql(true)
                     .Where("UserId", fromId)
-                    .GetAsync<SafeMember>()
-                    .ConfigureAwait(false))
+                    .GetAsync<SafeMember>())
                 .ToList().FirstOrDefault();
 
             if (query != null)
@@ -76,11 +74,10 @@ namespace Zizi.Bot.Telegram
                 var update = await new Query(tableName)
                     .ExecForMysql(true)
                     .Where("UserId", fromId)
-                    .UpdateAsync(updateData)
-                    .ConfigureAwait(false);
+                    .UpdateAsync(updateData);
                 query.SafeStep++;
 
-                await SyncSafeMemberToCache().ConfigureAwait(false);
+                await SyncSafeMemberToCache();
             }
             else
             {
@@ -95,8 +92,7 @@ namespace Zizi.Bot.Telegram
 
                 var insert = await new Query(tableName)
                     .ExecForMysql(true)
-                    .InsertAsync(insertData)
-                    .ConfigureAwait(false);
+                    .InsertAsync(insertData);
             }
 
             Log.Debug("Verify SafeStep finish");
@@ -108,10 +104,9 @@ namespace Zizi.Bot.Telegram
             var safeClouds = await new Query(TableName)
                 .ExecForMysql(true)
                 .Where("SafeStep", 10)
-                .GetAsync<SafeMember>()
-                .ConfigureAwait(false);
+                .GetAsync<SafeMember>();
 
-            // await RavenDbProvider.DeleteAll<SafeMember>().ConfigureAwait(false);
+            // await RavenDbProvider.DeleteAll<SafeMember>();
             RavenDbProvider.Insert(safeClouds);
         }
     }

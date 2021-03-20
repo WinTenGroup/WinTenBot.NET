@@ -15,7 +15,7 @@ namespace Zizi.Bot.Tools
         {
             var filePath = Environment.CurrentDirectory + $"/Storage/SQL/Sqlite/{tableName}.sql";
             Log.Debug("Migrating :{FilePath}", filePath);
-            await filePath.ExecuteFileForSqLite().ConfigureAwait(false);
+            await filePath.ExecuteFileForSqLite();
         }
 
         public static void MigrateMysql()
@@ -63,12 +63,9 @@ namespace Zizi.Bot.Tools
         public static void RunMigration()
         {
             Parallel.Invoke(
-                async () => await "word_filter".MigrateLocalStorage()
-                    .ConfigureAwait(false),
-                async () => await "rss_history".MigrateLocalStorage()
-                    .ConfigureAwait(false),
-                async () => await "warn_username_history".MigrateLocalStorage()
-                    .ConfigureAwait(false));
+                async () => await "word_filter".MigrateLocalStorage(),
+                async () => await "rss_history".MigrateLocalStorage(),
+                async () => await "warn_username_history".MigrateLocalStorage());
         }
     }
 }

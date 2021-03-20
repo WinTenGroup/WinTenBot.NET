@@ -51,7 +51,7 @@ namespace Zizi.Bot.Tools
             {
                 var collection = dataStore.GetCollection<T>();
                 return collection;
-            }).ConfigureAwait(false);
+            });
         }
     }
 }

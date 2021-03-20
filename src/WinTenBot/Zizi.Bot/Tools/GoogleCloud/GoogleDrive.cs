@@ -123,7 +123,7 @@ namespace Zizi.Bot.Tools.GoogleCloud
                 var uploadProgress = $"{updateCommon}" +
                                      $"\nSent: {sendProgress}" +
                                      $"\nSize: {fileSize}";
-                await telegramService.EditAsync(uploadProgress).ConfigureAwait(false);
+                await telegramService.EditAsync(uploadProgress);
                 Log.Debug("Progress {0}", sendProgress);
                 swUpdater.Start();
             };
@@ -134,8 +134,7 @@ namespace Zizi.Bot.Tools.GoogleCloud
                                    $"\nUrl: {uploadedUrl}" +
                                    $"\nSize: {fileSize}" +
                                    $"\n\nCC: {fromNameLink}";
-                await telegramService.EditAsync(uploadResult)
-                    .ConfigureAwait(false);
+                await telegramService.EditAsync(uploadResult);
 
                 Log.Debug("Response: {0}", file.Id);
 

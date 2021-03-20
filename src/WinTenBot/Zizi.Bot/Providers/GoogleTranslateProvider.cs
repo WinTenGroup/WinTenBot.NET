@@ -11,15 +11,14 @@ namespace Zizi.Bot.Providers
             var from = Language.Auto;
             var to = GoogleTranslator.GetLanguageByISO(toLang);
 
-            var result = await translator.TranslateAsync(forTranslate, from, to)
-                .ConfigureAwait(false);
+            var result = await translator.TranslateAsync(forTranslate, from, to);
 
             return result;
         }
 
         public static async Task<string> MergedTranslateAsync(this string forTranslate, string toLang)
         {
-            return (await forTranslate.TranslateAsync(toLang).ConfigureAwait(false)).MergedTranslation;
+            return (await forTranslate.TranslateAsync(toLang)).MergedTranslation;
         }
     }
 }
