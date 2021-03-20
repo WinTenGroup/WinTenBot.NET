@@ -47,7 +47,7 @@ namespace Zizi.Core.Utils.Text
 
         public static async Task ToFile(this string content, string path)
         {
-            Log.Information($"Writing file to {path}");
+            Log.Information("Writing file to {Path}", path);
             await File.WriteAllTextAsync(path, content);
 
             //            var sw = new StreamWriter(path);
@@ -262,6 +262,11 @@ namespace Zizi.Core.Utils.Text
             rng.GetBytes(bytes);
             uint random = BitConverter.ToUInt32(bytes, 0) % 100000000;
             return $"{random:D8}";
+        }
+
+        public static string ToTrimmedString(this StringBuilder sb)
+        {
+            return sb.ToString().Trim();
         }
     }
 }
