@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Serilog;
 using SqlKata;
 using Telegram.Bot.Types;
-using Zizi.Bot.Models;
 using Zizi.Core.Utils;
 
 namespace Zizi.Core.Services
@@ -32,7 +31,7 @@ namespace Zizi.Core.Services
         //         .Where(where)
         //         .ExecForMysql()
         //         .GetAsync()
-        //         .ConfigureAwait(false);
+        //         ;
         //     var isExist = data.Any();
         //
         //     Log.Information($"Group setting IsExist: {isExist}");
@@ -50,7 +49,7 @@ namespace Zizi.Core.Services
         //         .Where(where)
         //         .ExecForMysql()
         //         .GetAsync()
-        //         .ConfigureAwait(false);
+        //         ;
         //
         //     var mapped = data.ToJson().MapObject<List<ChatSetting>>();
         //
@@ -87,7 +86,7 @@ namespace Zizi.Core.Services
         //         .Where(where)
         //         .ExecForMysql(true)
         //         .GetAsync()
-        //         .ConfigureAwait(false);
+        //         ;
         //
         //     // Log.Debug($"PreTranspose: {data.ToJson()}");
         //     // data.ToJson(true).ToFile("settings_premap.json");
@@ -173,7 +172,7 @@ namespace Zizi.Core.Services
         //         .Where(where)
         //         .ExecForMysql()
         //         .GetAsync()
-        //         .ConfigureAwait(false);
+        //         ;
         //
         //     var isExist = check.Any();
         //
@@ -186,7 +185,7 @@ namespace Zizi.Core.Services
         //         insert = await new Query(baseTable)
         //             .ExecForMysql(true)
         //             .InsertAsync(data)
-        //             .ConfigureAwait(false);
+        //             ;
         //     }
         //     else
         //     {
@@ -196,7 +195,7 @@ namespace Zizi.Core.Services
         //             .Where(where)
         //             .ExecForMysql(true)
         //             .UpdateAsync(data)
-        //             .ConfigureAwait(false);
+        //             ;
         //     }
         //
         //     return insert;
@@ -212,9 +211,9 @@ namespace Zizi.Core.Services
         //         .Where(where)
         //         .ExecForMysql()
         //         .UpdateAsync(data)
-        //         .ConfigureAwait(false);
+        //         ;
         //
-        //     await UpdateCache().ConfigureAwait(false);
+        //     await UpdateCache();
         // }
         //
         // public async Task<ChatSetting> ReadCache()
@@ -226,11 +225,11 @@ namespace Zizi.Core.Services
         //     if (!cachePath.IsFileCacheExist())
         //     {
         //         await UpdateCache()
-        //             .ConfigureAwait(false);
+        //             ;
         //     }
         //
         //     var cache = await cachePath.ReadCacheAsync<ChatSetting>()
-        //         .ConfigureAwait(false);
+        //         ;
         //
         //     return cache ?? new ChatSetting();
         // }
@@ -238,9 +237,9 @@ namespace Zizi.Core.Services
         // public async Task UpdateCache()
         // {
         //     var data = await GetSettingByGroup()
-        //         .ConfigureAwait(false);
+        //         ;
         //     await data.WriteCacheAsync($"{Message.Chat.Id}/settings.json")
-        //         .ConfigureAwait(false);
+        //         ;
         // }
     }
 }

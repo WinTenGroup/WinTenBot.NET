@@ -79,7 +79,7 @@ namespace Zizi.Core.Utils.GoogleCloud
 
             if (!filePath.IsFileExist())
             {
-                Log.Information("File {0} is not exist, file skipped.");
+                Log.Information("File {0} is not exist, file skipped.", filePath);
                 var notExist = "Sesuatu telah terjadi. File tidak tersedia.";
                 telegramService.EditAsync(notExist).Wait();
                 return;

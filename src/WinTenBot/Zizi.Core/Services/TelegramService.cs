@@ -10,7 +10,6 @@ using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.InputFiles;
 using Telegram.Bot.Types.ReplyMarkups;
-using Zizi.Bot.Models;
 using Zizi.Core.Enums;
 using Zizi.Core.Models;
 using Zizi.Core.Models.Settings;
@@ -124,7 +123,7 @@ namespace Zizi.Core.Services
                     chatTarget = Message.Chat.Id;
                 }
 
-                Log.Information($"Leaving from {chatTarget}");
+                Log.Information("Leaving from {ChatTarget}", chatTarget);
                 await Client.LeaveChatAsync(chatTarget)
                     .ConfigureAwait(false);
             }
@@ -230,7 +229,7 @@ namespace Zizi.Core.Services
             Message send = null;
             try
             {
-                Log.Information($"Sending message to {chatTarget}");
+                Log.Information("Sending message to {ChatTarget}", chatTarget);
                 send = await Client.SendTextMessageAsync(
                     chatTarget,
                     sendText,
@@ -242,11 +241,11 @@ namespace Zizi.Core.Services
             }
             catch (ApiRequestException apiRequestException)
             {
-                Log.Error(apiRequestException, $"SendMessage Ex1");
+                Log.Error(apiRequestException, "SendMessage Ex1");
 
                 try
                 {
-                    Log.Information($"Try Sending message to {chatTarget} without reply to Msg Id.");
+                    Log.Information("Try Sending message to {ChatTarget} without reply to Msg Id.", chatTarget);
                     send = await Client.SendTextMessageAsync(
                         chatTarget,
                         sendText,
@@ -256,7 +255,7 @@ namespace Zizi.Core.Services
                 }
                 catch (ApiRequestException apiRequestException2)
                 {
-                    Log.Error(apiRequestException2, $"SendMessage Ex2");
+                    Log.Error(apiRequestException2, "SendMessage Ex2");
                 }
             }
 
@@ -268,7 +267,7 @@ namespace Zizi.Core.Services
         public async Task<Message> SendMediaAsync(string fileId, MediaType mediaType, string caption = "",
             IReplyMarkup replyMarkup = null, int replyToMsgId = -1)
         {
-            Log.Information($"Sending media: {mediaType}, fileId: {fileId} to {Message.Chat.Id}");
+            Log.Information("Sending media: {MediaType}, fileId: {FileId} to {Id}", mediaType, fileId, Message.Chat.Id);
 
             TimeProc = Message.Date.GetDelay();
             if (caption.IsNotNullOrEmpty())
@@ -311,12 +310,12 @@ namespace Zizi.Core.Services
                     break;
 
                 default:
-                    Log.Information($"Media unknown: {mediaType}");
+                    Log.Information("Media unknown: {MediaType}", mediaType);
                     return null;
                     break;
             }
 
-            Log.Information($"SendMedia: {SentMessage.MessageId}");
+            Log.Information("SendMedia: {MessageId}", SentMessage.MessageId);
 
             return SentMessage;
         }
@@ -332,7 +331,7 @@ namespace Zizi.Core.Services
             }
 
             var chatId = Message.Chat.Id;
-            Log.Information($"Updating message {SentMessageId} on {chatId}");
+            Log.Information("Updating message {SentMessageId} on {ChatId}", SentMessageId, chatId);
             try
             {
                 var edit = await Client.EditMessageTextAsync(
@@ -360,7 +359,7 @@ namespace Zizi.Core.Services
         {
             try
             {
-                Log.Information($"Editing {CallBackMessageId}");
+                Log.Information("Editing {CallBackMessageId}", CallBackMessageId);
                 await Client.EditMessageTextAsync(
                     Message.Chat,
                     CallBackMessageId,
@@ -403,17 +402,17 @@ namespace Zizi.Core.Services
                 var chatId = MessageOrEdited.Chat.Id;
                 var msgId = messageId != -1 ? messageId : SentMessageId;
 
-                Log.Information($"Delete MsgId: {msgId} on ChatId: {chatId}");
+                Log.Information("Delete MsgId: {MsgId} on ChatId: {ChatId}", msgId, chatId);
                 await Client.DeleteMessageAsync(chatId, msgId)
                     .ConfigureAwait(false);
             }
             catch (ChatNotFoundException chatNotFoundException)
             {
-                Log.Error(chatNotFoundException, $"Error Delete NotFound");
+                Log.Error(chatNotFoundException, "Error Delete NotFound");
             }
             catch (Exception ex)
             {
-                Log.Error(ex, $"Error Delete Message");
+                Log.Error(ex, "Error Delete Message");
             }
         }
 
@@ -483,7 +482,7 @@ namespace Zizi.Core.Services
             bool isKicked;
             var idTarget = user.Id;
 
-            Log.Information($"Kick {idTarget} from {Message.Chat.Id}");
+            Log.Information("Kick {IdTarget} from {Id}", idTarget, Message.Chat.Id);
             try
             {
                 await Client.KickChatMemberAsync(Message.Chat.Id, idTarget, DateTime.Now)
@@ -502,7 +501,7 @@ namespace Zizi.Core.Services
         public async Task UnbanMemberAsync(User user = null)
         {
             var idTarget = user.Id;
-            Log.Information($"Unban {idTarget} from {Message.Chat.Id}");
+            Log.Information("Unban {IdTarget} from {Id}", idTarget, Message.Chat.Id);
             try
             {
                 await Client.UnbanChatMemberAsync(Message.Chat.Id, idTarget)
@@ -518,7 +517,7 @@ namespace Zizi.Core.Services
 
         public async Task UnBanMemberAsync(int userId = -1)
         {
-            Log.Information($"Unban {userId} from {Message.Chat}");
+            Log.Information("Unban {UserId} from {Chat}", userId, Message.Chat);
             try
             {
                 await Client.UnbanChatMemberAsync(Message.Chat.Id, userId)

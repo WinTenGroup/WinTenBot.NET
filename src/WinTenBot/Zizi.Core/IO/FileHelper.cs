@@ -14,14 +14,14 @@ namespace Zizi.Core.IO
 
             try
             {
-                Log.Information($"Deleting {filePath}");
+                Log.Information("Deleting {FilePath}", filePath);
                 File.Delete(filePath);
 
-                Log.Information($"File {filePath} deleted successfully");
+                Log.Information("File {FilePath} deleted successfully", filePath);
             }
             catch (Exception ex)
             {
-                Log.Error(ex, $"Error Deleting file {filePath}");
+                Log.Error(ex, "Error Deleting file {FilePath}", filePath);
             }
         }
 
@@ -44,7 +44,7 @@ namespace Zizi.Core.IO
         //     Path.GetDirectoryName(filePath).EnsureDirectory();
         //
         //     await File.WriteAllTextAsync(filePath, content)
-        //         .ConfigureAwait(false);
+        //         ;
         //
         //     Log.Information("Writing file success..");
         // }

@@ -1,5 +1,7 @@
+using EasyCaching.Core;
 using EasyCaching.Disk;
 using EasyCaching.SQLite;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -42,6 +44,15 @@ namespace Zizi.Core.Extensions
             });
 
             return services;
+        }
+
+        public static IApplicationBuilder UseEasyCaching(this IApplicationBuilder app)
+        {
+            var services = app.ApplicationServices;
+            var cachingProvider = services.GetRequiredService<IEasyCachingProvider>();
+
+
+            return app;
         }
     }
 }

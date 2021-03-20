@@ -46,7 +46,7 @@ namespace Zizi.Core.Utils
                 size += DirSize(unused.FullName);
             }
 
-            Log.Information($"{path} size is {size}");
+            Log.Information("{Path} size is {Size}", path, size);
             return size;
         }
 
@@ -63,7 +63,7 @@ namespace Zizi.Core.Utils
 
         public static void RemoveFiles(this string path, string filter)
         {
-            Log.Information($"Deleting files in {path}");
+            Log.Information("Deleting files in {Path}", path);
             var files = Directory.GetFiles(path)
                 .Where(file => file.Contains(filter, StringComparison.CurrentCulture));
 
