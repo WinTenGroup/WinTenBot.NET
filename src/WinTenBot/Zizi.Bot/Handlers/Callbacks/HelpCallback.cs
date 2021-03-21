@@ -19,8 +19,7 @@ namespace Zizi.Bot.Handlers.Callbacks
         public async Task<bool> ExecuteAsync()
         {
             var partsCallback = CallBackData.SplitText(" ");
-            var sendText = await partsCallback[1].LoadInBotDocs()
-                .ConfigureAwait(false);
+            var sendText = await partsCallback[1].LoadInBotDocs();
             Log.Information("Docs: {SendText}", sendText);
             var subPartsCallback = partsCallback[1].SplitText("/");
 
@@ -39,8 +38,7 @@ namespace Zizi.Bot.Handlers.Callbacks
                 }
             }
 
-            var keyboard = await $"Storage/Buttons/{jsonButton}.json".JsonToButton()
-                .ConfigureAwait(false);
+            var keyboard = await $"Storage/Buttons/{jsonButton}.json".JsonToButton();
             
             await _telegramService.EditMessageCallback(sendText, keyboard);
 

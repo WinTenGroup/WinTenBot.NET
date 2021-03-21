@@ -8,12 +8,18 @@ namespace Zizi.Bot.Handlers.Commands.Chat
 {
     public class IdCommand : CommandBase
     {
-        private TelegramService _telegramService;
+        private readonly TelegramService _telegramService;
+
+        public IdCommand(TelegramService telegramService)
+        {
+            _telegramService = telegramService;
+        }
 
         public override async Task HandleAsync(IUpdateContext context, UpdateDelegate next, string[] args,
             CancellationToken cancellationToken)
         {
-            _telegramService = new TelegramService(context);
+            await _telegramService.AddUpdateContext(context);
+
             var msg = context.Update.Message;
 
             if (msg.ReplyToMessage != null)
@@ -38,14 +44,7 @@ namespace Zizi.Bot.Handlers.Commands.Chat
                        $"Username: @{username}\n" +
                        $"Language: {userLang.ToUpperCase()}";
 
-            await _telegramService.SendTextAsync(text)
-                .ConfigureAwait(false);
-            //            await context.Bot.Client.SendTextMessageAsync(
-            //                msg.Chat,
-            //                text,
-            //                ParseMode.Html,
-            //                replyToMessageId: msg.MessageId
-            //            );
+            await _telegramService.SendTextAsync(text);
         }
     }
 }

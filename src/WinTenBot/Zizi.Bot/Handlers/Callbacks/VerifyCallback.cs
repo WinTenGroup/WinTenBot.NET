@@ -19,9 +19,6 @@ namespace Zizi.Bot.Handlers.Callbacks
             Telegram = telegramService;
             CallbackQuery = telegramService.Context.Update.CallbackQuery;
             Log.Information("Receiving Verify Callback");
-
-            // Parallel.Invoke(async () =>
-            //     await ExecuteVerifyAsync().ConfigureAwait(false));
         }
 
         public async Task<bool> ExecuteVerifyAsync()
@@ -101,7 +98,7 @@ namespace Zizi.Bot.Handlers.Callbacks
                     answer = "Terima kasih sudah verifikasi Username!";
                 }
 
-                await Telegram.UpdateWarnMessageAsync().ConfigureAwait(false);
+                await Telegram.UpdateWarnMessageAsync();
                 Log.Debug("Verify Username finish");
             }
             else if (fromId == callBackParam1.ToInt64())
