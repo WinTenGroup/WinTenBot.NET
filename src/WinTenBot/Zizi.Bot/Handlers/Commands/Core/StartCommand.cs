@@ -3,27 +3,29 @@ using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstractions;
 using Telegram.Bot.Types.ReplyMarkups;
 using Zizi.Bot.Common;
-using Zizi.Bot.Models;
-using Zizi.Bot.Telegram;
 using Zizi.Bot.Services;
 using Zizi.Bot.Models.Settings;
 
 namespace Zizi.Bot.Handlers.Commands.Core
 {
-    class StartCommand : CommandBase
+    internal class StartCommand : CommandBase
     {
-        private TelegramService _telegramService;
-        private EnginesConfig _enginesConfig;
+        private readonly TelegramService _telegramService;
+        private readonly EnginesConfig _enginesConfig;
 
-        public StartCommand(EnginesConfig enginesConfig)
+        public StartCommand(
+        EnginesConfig enginesConfig, TelegramService telegramService
+        )
         {
+            _telegramService = telegramService;
             _enginesConfig = enginesConfig;
         }
 
         public override async Task HandleAsync(IUpdateContext context, UpdateDelegate next, string[] args,
             CancellationToken cancellationToken)
         {
-            _telegramService = new TelegramService(context);
+            await _telegramService.AddUpdateContext(context);
+
             var msg = _telegramService.Message;
             var partText = msg.Text.SplitText(" ").ToArray();
             var paramStart = partText.ValueOfIndex(1);
@@ -67,7 +69,6 @@ namespace Zizi.Bot.Handlers.Commands.Core
                     //
                     // if (_telegramService.IsPrivateChat())
                     // {
-
                     var keyboard = new InlineKeyboardMarkup(new[]
                     {
                         new[]

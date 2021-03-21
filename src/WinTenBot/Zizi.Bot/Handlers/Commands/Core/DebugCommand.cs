@@ -9,21 +9,25 @@ namespace Zizi.Bot.Handlers.Commands.Core
 {
     public class DebugCommand : CommandBase
     {
-        private TelegramService _telegramService;
+        private readonly TelegramService _telegramService;
+
+        public DebugCommand(TelegramService telegramService)
+        {
+            _telegramService = telegramService;
+        }
 
         public override async Task HandleAsync(IUpdateContext context, UpdateDelegate next, string[] args,
             CancellationToken cancellationToken)
         {
-            _telegramService = new TelegramService(context);
+            await _telegramService.AddUpdateContext(context);
 
             var msg = context.Update.Message;
             var json = msg.ToJson(true);
 
-            Log.Information(json.Length.ToString());
+            Log.Information("Debug: {0}", json.Length.ToString());
 
             var sendText = $"Debug:\n {json}";
-            await _telegramService.SendTextAsync(sendText)
-                .ConfigureAwait(false);
+            await _telegramService.SendTextAsync(sendText);
         }
     }
 }

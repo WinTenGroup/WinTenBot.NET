@@ -2,39 +2,51 @@
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstractions;
 using Telegram.Bot.Types.ReplyMarkups;
-using Zizi.Bot.Models;
-using Zizi.Bot.Telegram;
+using Zizi.Bot.Models.Settings;
 using Zizi.Bot.Services;
 
 namespace Zizi.Bot.Handlers.Commands.Core
 {
     public class AboutCommand : CommandBase
     {
-        private TelegramService _telegramService;
+        private readonly TelegramService _telegramService;
+        private readonly EnginesConfig _enginesConfig;
+
+        public AboutCommand(TelegramService telegramService, EnginesConfig enginesConfig)
+        {
+            _telegramService = telegramService;
+            _enginesConfig = enginesConfig;
+        }
 
         public override async Task HandleAsync(IUpdateContext context, UpdateDelegate next, string[] args,
             CancellationToken cancellationToken)
         {
-            _telegramService = new TelegramService(context);
+            await _telegramService.AddUpdateContext(context);
 
-            var me = await _telegramService.GetBotMeAsync();
+            var me = await _telegramService.GetMeAsync();
             var botName = me.FirstName;
-            var botVersion = BotSettings.ProductVersion;
+            var botVersion = _enginesConfig.Version;
 
-            var sendText = $"<b>{botName} (.NET) Alpha Preview</b>\n" +
-                           $"by @WinTenDev\n" +
-                           $"Version: {botVersion}\n\n" +
-                           "ℹ️ Bot Telegram resmi berbasis <b>WinTen API.</b> untuk manajemen dan peralatan grup. " +
-                           "Untuk detail fitur pada perintah /start.\n\n";
+            var sendText = $"<b>{botName} (.NET)";
 
-            if (await _telegramService.IsBeta()
-                .ConfigureAwait(false))
+            if (await _telegramService.IsBeta())
             {
-                sendText += "<b>Saya masih Beta, mungkin terdapat bug dan tidak stabil. " +
-                            "Tidak di rekomendasikan untuk grup Anda.</b>\n\n";
+                sendText += " Alpha Preview</b>";
             }
 
-            sendText += "Untuk Bot lebih cepat dan tetap cepat dan terus peningkatan dan keandalan, " +
+
+            sendText += $"\nby @WinTenDev" +
+                        $"\nVersion: {botVersion}" +
+                        "\n\nℹ️ Bot Telegram resmi berbasis <b>WinTen API.</b> untuk manajemen dan peralatan grup. " +
+                        "Untuk detail fitur pada perintah /start.\n";
+
+            if (await _telegramService.IsBeta())
+            {
+                sendText += "\n<b>Saya masih Beta, mungkin terdapat bug dan tidak stabil. " +
+                            "Tidak di rekomendasikan untuk grup Anda.</b>\n";
+            }
+
+            sendText += "\nUntuk Bot lebih cepat dan tetap cepat dan terus peningkatan dan keandalan, " +
                         "silakan <b>Donasi</b> untuk biaya Server dan beri saya Kopi.\n\n" +
                         "Terima kasih kepada <b>Akmal Projext</b> yang telah memberikan kesempatan ZiziBot pada kehidupan sebelumnya.";
 
@@ -63,8 +75,7 @@ namespace Zizi.Bot.Handlers.Commands.Core
                 }
             });
 
-            await _telegramService.SendTextAsync(sendText, inlineKeyboard)
-                .ConfigureAwait(false);
+            await _telegramService.SendTextAsync(sendText, inlineKeyboard);
         }
     }
 }

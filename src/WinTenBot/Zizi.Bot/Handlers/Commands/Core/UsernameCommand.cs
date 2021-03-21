@@ -2,24 +2,27 @@
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstractions;
 using Telegram.Bot.Types.ReplyMarkups;
-using Zizi.Bot.Telegram;
 using Zizi.Bot.Services;
 
 namespace Zizi.Bot.Handlers.Commands.Core
 {
     public class UsernameCommand : CommandBase
     {
-        private TelegramService _telegramService;
+        private readonly TelegramService _telegramService;
+
+        public UsernameCommand(TelegramService telegramService)
+        {
+            _telegramService = telegramService;
+        }
 
         public override async Task HandleAsync(IUpdateContext context, UpdateDelegate next, string[] args,
             CancellationToken cancellationToken)
         {
-            _telegramService = new TelegramService(context);
+            await _telegramService.AddUpdateContext(context);
 
-            if (!await _telegramService.IsBeta().ConfigureAwait(false)) return;
+            if (!await _telegramService.IsBeta()) return;
 
-            var urlStart = await _telegramService.GetUrlStart("start=set-username")
-                .ConfigureAwait(false);
+            var urlStart = await _telegramService.GetUrlStart("start=set-username");
             var usernameStr = _telegramService.IsNoUsername ? "belum" : "sudah";
             var sendText = "Tentang Username" +
                            $"\nKamu {usernameStr} mengatur Username";
@@ -36,8 +39,7 @@ namespace Zizi.Bot.Handlers.Commands.Core
                 }
             });
 
-            await _telegramService.SendTextAsync(sendText, inlineKeyboard)
-                .ConfigureAwait(false);
+            await _telegramService.SendTextAsync(sendText, inlineKeyboard);
         }
     }
 }

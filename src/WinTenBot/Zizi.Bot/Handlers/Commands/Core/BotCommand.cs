@@ -8,12 +8,18 @@ namespace Zizi.Bot.Handlers.Commands.Core
 {
     public class BotCommand : CommandBase
     {
-        private TelegramService _telegramService;
+        private readonly TelegramService _telegramService;
+
+        public BotCommand(TelegramService telegramService)
+        {
+            _telegramService = telegramService;
+        }
 
         public override async Task HandleAsync(IUpdateContext context, UpdateDelegate next, string[] args,
             CancellationToken cancellationToken)
         {
-            _telegramService = new TelegramService(context);
+            await _telegramService.AddUpdateContext(context);
+
             var isSudoer = _telegramService.IsSudoer();
             if (!isSudoer) return;
 
@@ -22,11 +28,11 @@ namespace Zizi.Bot.Handlers.Commands.Core
             // {
             //     case "migrate":
             //         await _telegramService.SendTextAsync("Migrating ")
-            //             .ConfigureAwait(false);
+            //             ;
             //         SqlMigration.MigrateMysql();
             //         // SqlMigration.MigrateSqlite();
             //         await _telegramService.SendTextAsync("Migrate complete ")
-            //             .ConfigureAwait(false);
+            //             ;
             //
             //         break;
             // }
