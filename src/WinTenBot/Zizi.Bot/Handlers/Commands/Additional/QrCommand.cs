@@ -12,12 +12,18 @@ namespace Zizi.Bot.Handlers.Commands.Additional
 {
     public class QrCommand : CommandBase
     {
-        private TelegramService _telegramService;
+        private readonly TelegramService _telegramService;
+
+        public QrCommand(TelegramService telegramService)
+        {
+            _telegramService = telegramService;
+        }
 
         public override async Task HandleAsync(IUpdateContext context, UpdateDelegate next, string[] args,
             CancellationToken cancellationToken)
         {
-            _telegramService = new TelegramService(context);
+            await _telegramService.AddUpdateContext(context);
+
             var msg = context.Update.Message;
             Message repMsg = null;
             var data = msg.Text.GetTextWithoutCmd();
@@ -33,8 +39,7 @@ namespace Zizi.Bot.Handlers.Commands.Additional
                 var sendText = "<b>Generate QR from text or caption media</b>" +
                                "\n<b>Usage : </b><code>/qr</code> (In-Reply)" +
                                "\n                <code>/qr your text here</code> (In-Message)";
-                await _telegramService.SendTextAsync(sendText)
-                    .ConfigureAwait(false);
+                await _telegramService.SendTextAsync(sendText);
                 return;
             }
 
@@ -47,8 +52,7 @@ namespace Zizi.Bot.Handlers.Commands.Additional
             }
 
             var urlQr = data.GenerateUrlQrApi();
-            await _telegramService.SendMediaAsync(urlQr.ToString(), MediaType.Photo, replyMarkup: keyboard)
-                .ConfigureAwait(false);
+            await _telegramService.SendMediaAsync(urlQr.ToString(), MediaType.Photo, replyMarkup: keyboard);
         }
     }
 }

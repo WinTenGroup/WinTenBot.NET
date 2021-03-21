@@ -12,20 +12,21 @@ namespace Zizi.Bot.Handlers.Commands.Additional
 {
     public class AllDebridCommand : CommandBase
     {
-        private TelegramService _telegramService;
+        private readonly TelegramService _telegramService;
         private readonly AppConfig _appConfig;
 
-        public AllDebridCommand(AppConfig appConfig)
+        public AllDebridCommand(
+            AppConfig appConfig,
+            TelegramService telegramService
+        )
         {
+            _telegramService = telegramService;
             _appConfig = appConfig;
         }
 
         public override async Task HandleAsync(IUpdateContext context, UpdateDelegate next, string[] args, CancellationToken cancellationToken)
         {
-            _telegramService = new TelegramService(context)
-            {
-                AppConfig = _appConfig
-            };
+            await _telegramService.AddUpdateContext(context);
 
             var allDebrid = _appConfig.AllDebridConfig;
             var isEnabled = allDebrid.IsEnabled;
@@ -51,31 +52,27 @@ namespace Zizi.Bot.Handlers.Commands.Additional
                     }
                 });
 
-                await _telegramService.SendTextAsync(limitFeature, groupBtn)
-                    .ConfigureAwait(false);
-
+                await _telegramService.SendTextAsync(limitFeature, groupBtn);
                 return;
             }
 
             if (urlParam == null)
             {
-                await _telegramService.SendTextAsync("Sertakan url yang akan di Debrid")
-                    .ConfigureAwait(false);
+                await _telegramService.SendTextAsync("Sertakan url yang akan di Debrid");
                 return;
             }
 
             Log.Information("Converting url: {0}", urlParam);
-            await _telegramService.SendTextAsync("Sedang mengkonversi URL via Alldebrid.")
-                .ConfigureAwait(false);
+            await _telegramService.SendTextAsync("Sedang mengkonversi URL via Alldebrid.");
 
-            var result = await _telegramService.ConvertUrl(urlParam).ConfigureAwait(false);
+            var result = await _telegramService.ConvertUrl(urlParam);
             if (result.Status != "success")
             {
                 var errorMessage = result.DebridError.Message;
                 var fail = "Sepertinya Debrid gagal." +
                            $"\nNote: {errorMessage}";
 
-                await _telegramService.EditAsync(fail).ConfigureAwait(false);
+                await _telegramService.EditAsync(fail);
                 return;
             }
 
@@ -95,7 +92,7 @@ namespace Zizi.Bot.Handlers.Commands.Additional
                 }
             });
 
-            await _telegramService.EditAsync(text, inlineKeyboard).ConfigureAwait(false);
+            await _telegramService.EditAsync(text, inlineKeyboard);
         }
     }
 }

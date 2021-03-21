@@ -10,37 +10,38 @@ namespace Zizi.Bot.Handlers.Commands.Additional
 {
     public class CovidCommand : CommandBase
     {
-        private TelegramService _telegramService;
+        private readonly TelegramService _telegramService;
+
+        public CovidCommand(TelegramService telegramService)
+        {
+            _telegramService = telegramService;
+        }
 
         public override async Task HandleAsync(IUpdateContext context, UpdateDelegate next, string[] args,
             CancellationToken cancellationToken)
         {
-            _telegramService = new TelegramService(context);
+            await _telegramService.AddUpdateContext(context);
+
             var txt = _telegramService.Message.Text;
             var partTxt = txt.SplitText(" ").ToArray();
             var part1 = partTxt.ValueOfIndex(1); // Country
 
-            await _telegramService.SendTextAsync("🔍 Getting information..")
-                .ConfigureAwait(false);
+            await _telegramService.SendTextAsync("🔍 Getting information..");
 
-            var sendText = "";
+            string sendText;
             if (part1.IsNullOrEmpty())
             {
                 Log.Information("Getting Covid info Global");
-                // var sendText = await CovidHelper.GetCovidUpdatesAsync();
-                sendText = await Covid.GetCovidAll()
-                    .ConfigureAwait(false);
+
+                sendText = await Covid.GetCovidAll();
             }
             else
             {
-                Log.Information($"Getting Covid info by Region: {part1}");
-                sendText = await Covid.GetCovidByCountry(part1)
-                    .ConfigureAwait(false);
+                Log.Information("Getting Covid info by Region: {Part1}", part1);
+                sendText = await Covid.GetCovidByCountry(part1);
             }
-            
-            await _telegramService.EditAsync(sendText)
-                .ConfigureAwait(false);
-            
+
+            await _telegramService.EditAsync(sendText);
         }
     }
 }

@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 using Zizi.Bot.Interfaces;
 using Zizi.Bot.Models;
 
-namespace Zizi.Bot.Services
+namespace Zizi.Bot.Services.Features
 {
     class WeatherService : IWeatherService
     {
@@ -21,13 +21,11 @@ namespace Zizi.Bot.Services
 
         public async Task<CurrentWeather> GetWeatherAsync(float lat, float lon)
         {
-            string location = await FindLocationIdAsync(lat, lon)
-                .ConfigureAwait(false);
+            string location = await FindLocationIdAsync(lat, lon);
 
             DateTime today = DateTime.Today;
 
-            string json = await _client.GetStringAsync($"location/{location}/{today.Year}/{today.Month}/{today.Day}")
-                .ConfigureAwait(false);
+            string json = await _client.GetStringAsync($"location/{location}/{today.Year}/{today.Month}/{today.Day}");
 
             dynamic arr = JsonConvert.DeserializeObject(json);
 
@@ -42,9 +40,9 @@ namespace Zizi.Bot.Services
 
         private async Task<string> FindLocationIdAsync(float lat, float lon)
         {
-            string json = await _client.GetStringAsync($"location/search?lattlong={lat},{lon}")
-                .ConfigureAwait(false);
+            string json = await _client.GetStringAsync($"location/search?lattlong={lat},{lon}");
             dynamic arr = JsonConvert.DeserializeObject(json);
+
             return arr[0].woeid;
         }
     }

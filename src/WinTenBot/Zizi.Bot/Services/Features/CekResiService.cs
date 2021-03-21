@@ -7,7 +7,7 @@ using Zizi.Bot.Models.Pigoora;
 using Zizi.Bot.Models.Settings;
 using Zizi.Bot.Tools;
 
-namespace Zizi.Bot.Services
+namespace Zizi.Bot.Services.Features
 {
     public class CekResiService
     {

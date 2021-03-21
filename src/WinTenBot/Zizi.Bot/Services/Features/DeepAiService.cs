@@ -9,7 +9,7 @@ namespace Zizi.Bot.Services.Features
 {
     public class DeepAiService
     {
-        private CommonConfig _commonConfig;
+        private readonly CommonConfig _commonConfig;
 
         // private readonly DeepAI_API _deepAiApi;
 

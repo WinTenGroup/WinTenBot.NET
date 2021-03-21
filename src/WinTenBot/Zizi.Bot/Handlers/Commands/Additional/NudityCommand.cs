@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Serilog;
@@ -7,18 +6,21 @@ using Telegram.Bot.Framework.Abstractions;
 using Telegram.Bot.Types.Enums;
 using Zizi.Bot.Services;
 using Zizi.Bot.Services.Features;
-using Zizi.Bot.Telegram;
 
 namespace Zizi.Bot.Handlers.Commands.Additional
 {
     public class NudityCommand : CommandBase
     {
-        private TelegramService _telegramService;
-        private DeepAiService _deepAiService;
+        private readonly TelegramService _telegramService;
+        private readonly DeepAiService _deepAiService;
 
-        public NudityCommand(DeepAiService deepAiService)
+        public NudityCommand(
+            DeepAiService deepAiService,
+            TelegramService telegramService
+        )
         {
             _deepAiService = deepAiService;
+            _telegramService = telegramService;
         }
 
         public override async Task HandleAsync(IUpdateContext context, UpdateDelegate next, string[] args,
@@ -26,9 +28,9 @@ namespace Zizi.Bot.Handlers.Commands.Additional
         {
             var sw = Stopwatch.StartNew();
 
-            _telegramService = new TelegramService(context);
+            await _telegramService.AddUpdateContext(context);
+
             var msg = _telegramService.Message;
-            var partsMsg = msg.Text.GetTextWithoutCmd().Split("|").ToArray();
 
             var repMsg = msg.ReplyToMessage;
 

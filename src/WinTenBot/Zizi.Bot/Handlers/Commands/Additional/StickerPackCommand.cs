@@ -8,32 +8,37 @@ using Serilog;
 using Telegram.Bot.Framework.Abstractions;
 using Telegram.Bot.Types.Enums;
 using Zizi.Bot.Common;
-using Zizi.Bot.IO;
-using Zizi.Bot.Telegram;
 using Zizi.Bot.Enums;
+using Zizi.Bot.IO;
 using Zizi.Bot.Models;
 using Zizi.Bot.Services;
+using Zizi.Bot.Telegram;
 
 namespace Zizi.Bot.Handlers.Commands.Additional
 {
     public class StickerPackCommand : CommandBase
     {
-        private TelegramService _telegramService;
+        private readonly TelegramService _telegramService;
+
+        public StickerPackCommand(TelegramService telegramService)
+        {
+            _telegramService = telegramService;
+        }
 
         public override async Task HandleAsync(IUpdateContext context, UpdateDelegate next, string[] args,
             CancellationToken cancellationToken)
         {
-            _telegramService = new TelegramService(context);
+            await _telegramService.AddUpdateContext(context);
+
             var client = _telegramService.Client;
             var message = _telegramService.Message;
             var chatId = message.Chat.Id;
 
-            if (!await _telegramService.IsBeta().ConfigureAwait(false)) return;
+            if (!await _telegramService.IsBeta()) return;
 
             if (message.ReplyToMessage == null)
             {
-                await _telegramService.SendTextAsync("Balas pesan Stiker untuk membangun StikerPack")
-                    .ConfigureAwait(false);
+                await _telegramService.SendTextAsync("Balas pesan Stiker untuk membangun StikerPack");
                 return;
             }
 
@@ -42,20 +47,18 @@ namespace Zizi.Bot.Handlers.Commands.Additional
 
             if (repMsg.Type != MessageType.Sticker)
             {
-                await _telegramService.SendTextAsync("Balas pesan Stiker untuk membangun StikerPack.")
-                    .ConfigureAwait(false);
+                await _telegramService.SendTextAsync("Balas pesan Stiker untuk membangun StikerPack.");
+
                 return;
             }
 
-            await _telegramService.SendTextAsync("Sedang mengumpulkan StikerSet..")
-                .ConfigureAwait(false);
+            await _telegramService.SendTextAsync("Sedang mengumpulkan StikerSet..");
 
             var sticker = repMsg.Sticker;
             Log.Debug("Sticker: {0}", sticker.ToJson(true));
 
             var setName = sticker.SetName;
-            var stickerPack = await _telegramService.Client.GetStickerSetAsync(setName, cancellationToken)
-                .ConfigureAwait(false);
+            var stickerPack = await _telegramService.Client.GetStickerSetAsync(setName, cancellationToken);
             Log.Debug("StikerPack: {0}", stickerPack.ToJson(true));
 
             var listStickers = stickerPack.Stickers;
@@ -64,11 +67,9 @@ namespace Zizi.Bot.Handlers.Commands.Additional
                            $"\nNama: {stickerPack.Name}" +
                            $"\nJudul: {stickerPack.Title}";
 
-            await _telegramService.EditAsync(sendEdit).ConfigureAwait(false);
-            var cachePath = Path.Combine(BotSettings.PathCache, chatId.ToString(), "stikerpack-" + repMsgId)
-                .SanitizeSlash().EnsureDirectory(true);
+            await _telegramService.EditAsync(sendEdit);
+            var cachePath = Path.Combine("Storage", "Caches", chatId.ReduceChatId() + "_stikerpack-" + repMsgId).SanitizeSlash();
             var packsPath = Path.Combine(cachePath, "stiker-packs").EnsureDirectory(true);
-            // await cachePath.ClearLogs(".webp", upload: false).ConfigureAwait(false);
 
             foreach (var listSticker in listStickers)
             {
@@ -76,20 +77,19 @@ namespace Zizi.Bot.Handlers.Commands.Additional
                 var filePath = Path.Combine(packsPath, fileId + ".webp").SanitizeSlash();
                 Log.Debug("Downloading Sticker: {0} to {1}", fileId, filePath);
                 var fileStream = new FileStream(filePath, FileMode.OpenOrCreate);
-                await client.GetInfoAndDownloadFileAsync(fileId, fileStream, cancellationToken:
-                    cancellationToken).ConfigureAwait(false);
+                await client.GetInfoAndDownloadFileAsync(fileId, fileStream, cancellationToken: cancellationToken);
                 fileStream.Close();
                 fileStream.Dispose();
             }
 
-            await _telegramService.EditAsync("Sedang membangun StikerPack..").ConfigureAwait(false);
+            await _telegramService.EditAsync("Sedang membangun StikerPack..");
             var listStikerItem = new List<StickerItem>();
             foreach (var listSticker in listStickers)
             {
                 var filePath = listSticker.FileId + ".webp";
                 listStikerItem.Add(new StickerItem()
                 {
-                    Emojis = new List<string>() {listSticker.Emoji},
+                    Emojis = new List<string>() { listSticker.Emoji },
                     ImageFile = filePath
                 });
             }
@@ -121,18 +121,17 @@ namespace Zizi.Bot.Handlers.Commands.Additional
 
             var contents = Path.Combine(cachePath, "contents.json");
 
-            await _telegramService.EditAsync("Sedang menulis Metadata..").ConfigureAwait(false);
-            await File.WriteAllTextAsync(contents, stikerPacksJson, cancellationToken).ConfigureAwait(false);
+            await _telegramService.EditAsync("Sedang menulis Metadata..");
+            await File.WriteAllTextAsync(contents, stikerPacksJson, cancellationToken);
 
-            await _telegramService.EditAsync("Sedang Membuat paket StikerPacks..").ConfigureAwait(false);
+            await _telegramService.EditAsync("Sedang Membuat paket StikerPacks..");
             var zipFileName = $"zizi-stikerpacks-{sticker.SetName}-{repMsgId}.stikerpacks";
             var packName = Path.Combine(cachePath, $"zizi-stikerpacks-{sticker.SetName}-{repMsgId}.stikerpacks");
             var files = Directory.GetFiles(cachePath, "*.*", SearchOption.AllDirectories)
                 .Where(x => !x.Contains(".stikerpacks"));
             var zipPack = files.CreateZip(packName);
-            // cachePath.CreateZip(packName);
 
-            await _telegramService.SendMediaAsync(packName, MediaType.LocalDocument).ConfigureAwait(false);
+            await _telegramService.SendMediaAsync(packName, MediaType.LocalDocument);
         }
     }
 }

@@ -4,7 +4,6 @@ using Serilog;
 using Telegram.Bot.Framework.Abstractions;
 using Zizi.Bot.Common;
 using Zizi.Bot.IO;
-using Zizi.Bot.Tools;
 using Zizi.Bot.Services;
 using Zizi.Bot.Tools.GoogleCloud;
 
@@ -12,12 +11,17 @@ namespace Zizi.Bot.Handlers.Commands.Additional
 {
     public class OcrCommand : CommandBase
     {
-        private TelegramService _telegramService;
+        private readonly TelegramService _telegramService;
+
+        public OcrCommand(TelegramService telegramService)
+        {
+            _telegramService = telegramService;
+        }
 
         public override async Task HandleAsync(IUpdateContext context, UpdateDelegate next, string[] args,
             CancellationToken cancellationToken)
         {
-            _telegramService = new TelegramService(context);
+            await _telegramService.AddUpdateContext(context);
 
             var msg = _telegramService.Message;
             var chatId = msg.Chat.Id;
@@ -29,28 +33,21 @@ namespace Zizi.Bot.Handlers.Commands.Additional
                 
                 if (repMsg.Photo != null)
                 {
-                    await _telegramService.SendTextAsync("Sedang memproses gambar")
-                        .ConfigureAwait(false);
+                    await _telegramService.SendTextAsync("Sedang memproses gambar");
                     
                     var fileName = $"{chatId}/ocr-{msgId}.jpg";
                     Log.Information("Preparing photo");
-                    var savedFile = await _telegramService.DownloadFileAsync(fileName)
-                        .ConfigureAwait(false);
+                    var savedFile = await _telegramService.DownloadFileAsync(fileName);
 
-                    // var ocr = TesseractProvider.ScanImage(savedFile);
                     var ocr = GoogleVision.ScanText(savedFile);
-                    // var ocr = await TesseractProvider.OcrSpace(savedFile)
-                        // .ConfigureAwait(false);
 
-                    // var txt = @$"<b>Scan Result</b>\n{ocr}";
 
                     if (ocr.IsNullOrEmpty())
                     {
                         ocr = "Tidak terdeteksi adanya teks di gambar tersebut";
                     }
                     
-                    await _telegramService.EditAsync(ocr)
-                        .ConfigureAwait(false);
+                    await _telegramService.EditAsync(ocr);
                     
                     savedFile.GetDirectory().RemoveFiles("ocr");
 
@@ -58,8 +55,7 @@ namespace Zizi.Bot.Handlers.Commands.Additional
                 }
             }
 
-            await _telegramService.SendTextAsync("Silakan reply salah satu gambar")
-                .ConfigureAwait(false);
+            await _telegramService.SendTextAsync("Silakan reply salah satu gambar");
         }
     }
 }
