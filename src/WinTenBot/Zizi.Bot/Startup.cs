@@ -114,16 +114,15 @@ namespace Zizi.Bot
             }
 
             app.UseHangfireDashboardAndServer();
-            app.RegisterHangfireOnStartup();
 
-            app.Run(async context =>
-                await context.Response.WriteAsync("Hello World!")
-                    .ConfigureAwait(false));
+            app.Run(async context => await context.Response.WriteAsync("Hello World!"));
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapHealthChecks("/health");
             });
+
+            app.RegisterHangfireOnStartup();
 
             Log.Information("App is ready.");
         }

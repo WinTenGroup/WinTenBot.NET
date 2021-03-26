@@ -14,6 +14,8 @@ using Telegram.Bot;
 using Zizi.Bot.Handlers.Callbacks;
 using Zizi.Bot.Interfaces;
 using Zizi.Bot.Services;
+using Zizi.Bot.Services.Datas;
+using Zizi.Bot.Services.Features;
 using Zizi.Bot.Services.HangfireJobs;
 using Zizi.Bot.Tools;
 using Zizi.Core.Utils;
@@ -34,7 +36,7 @@ namespace Zizi.Bot.Extensions
             return services
                 .AddScoped<IWeatherService, WeatherService>()
                 .AddScoped<ChatService>()
-                .AddScoped<CekResiService>();
+                .AddScoped<RssFeedService>()
 
         public static IServiceCollection AddCallbackQueryHandlers(this IServiceCollection services)
         {

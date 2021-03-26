@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 using Hangfire;
 using Hangfire.Dashboard.Dark;
 using Hangfire.Heartbeat;
@@ -7,10 +6,11 @@ using Hangfire.Heartbeat.Server;
 using HangfireBasicAuthenticationFilter;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using Nito.AsyncEx;
 using Serilog;
 using Zizi.Bot.IO;
 using Zizi.Bot.Models.Settings;
-using Zizi.Bot.Scheduler;
+using Zizi.Bot.Services.Features;
 using Zizi.Bot.Services.HangfireJobs;
 using Zizi.Bot.Tools;
 
@@ -73,7 +73,8 @@ namespace Zizi.Bot.Extensions
 
             var serverOptions = new BackgroundJobServerOptions
             {
-                WorkerCount = Environment.ProcessorCount * hangfireConfig.WorkerMultiplier
+                WorkerCount = Environment.ProcessorCount * hangfireConfig.WorkerMultiplier,
+                Queues = new []{"default","rss-feed"}
             };
 
             app.UseHangfireServer(serverOptions, new[]
@@ -91,7 +92,12 @@ namespace Zizi.Bot.Extensions
         {
             HangfireUtil.DeleteAllJobs();
 
-            RssScheduler.InitScheduler();
+            var appScope = app.ApplicationServices.CreateScope();
+            var appService = appScope.ServiceProvider;
+
+            var rssFeedService = appService.GetRequiredService<RssFeedService>();
+
+            AsyncContext.Run(async () => await rssFeedService.RegisterScheduler());
 
             HangfireUtil.RegisterJob<ChatService>("admin-checker", service => service.CheckBotAdminOnGroup(), Cron.Daily);
 
