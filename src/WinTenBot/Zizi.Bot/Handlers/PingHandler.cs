@@ -10,11 +10,17 @@ namespace Zizi.Bot.Handlers
 {
     internal class PingHandler : IUpdateHandler
     {
-        private TelegramService _telegramService;
+        private readonly TelegramService _telegramService;
+
+        public PingHandler(TelegramService telegramService)
+        {
+            _telegramService = telegramService;
+        }
 
         public async Task HandleAsync(IUpdateContext context, UpdateDelegate next, CancellationToken cancellationToken)
         {
-            _telegramService = new TelegramService(context);
+            await _telegramService.AddUpdateContext(context);
+
             var msg = context.Update.Message;
 
             var keyboard = new InlineKeyboardMarkup(
@@ -27,7 +33,7 @@ namespace Zizi.Bot.Handlers
             if (msg.Chat.Type == ChatType.Private && isSudoer)
             {
                 sendText += "\n🎛 <b>Engine info.</b>";
-                var getWebHookInfo = await _telegramService.GetWebhookInfo().ConfigureAwait(false);
+                var getWebHookInfo = await _telegramService.GetWebhookInfo();
                 if (string.IsNullOrEmpty(getWebHookInfo.Url))
                 {
                     sendText += "\n\n<i>Bot run in Poll mode.</i>";
@@ -45,7 +51,7 @@ namespace Zizi.Bot.Handlers
                 }
             }
 
-            await _telegramService.SendTextAsync(sendText, keyboard).ConfigureAwait(false);
+            await _telegramService.SendTextAsync(sendText, keyboard);
         }
     }
 }

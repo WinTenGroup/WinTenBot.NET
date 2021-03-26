@@ -15,7 +15,7 @@ namespace Zizi.Bot.Handlers
 
             try
             {
-                await next(context, cancellationToken).ConfigureAwait(false);
+                await next(context, cancellationToken);
             }
             catch (Exception e)
             {

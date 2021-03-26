@@ -76,8 +76,7 @@ namespace Zizi.Bot.Handlers
             // await CheckGlobalBanAsync(msg);
             // CheckUsername(msg);
 
-            await next(context, cancellationToken)
-                .ConfigureAwait(false);
+            await next(context, cancellationToken);
         }
     }
 }

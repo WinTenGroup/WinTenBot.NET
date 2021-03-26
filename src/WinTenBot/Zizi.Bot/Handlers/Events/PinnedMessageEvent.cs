@@ -1,7 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstractions;
-using Zizi.Bot.Providers;
 using Zizi.Bot.Telegram;
 using Zizi.Bot.Services;
 
@@ -9,11 +8,17 @@ namespace Zizi.Bot.Handlers.Events
 {
     public class PinnedMessageEvent : IUpdateHandler
     {
-        private TelegramService _telegramService;
+        private readonly TelegramService _telegramService;
+
+        public PinnedMessageEvent(TelegramService telegramService)
+        {
+            _telegramService = telegramService;
+        }
 
         public async Task HandleAsync(IUpdateContext context, UpdateDelegate next, CancellationToken cancellationToken)
         {
-            _telegramService = new TelegramService(context);
+            await _telegramService.AddUpdateContext(context);
+
             var msg = context.Update.Message;
 
             var pinnedMsg = msg.PinnedMessage;
@@ -21,8 +26,7 @@ namespace Zizi.Bot.Handlers.Events
                            $"\nPengirim: {pinnedMsg.GetFromNameLink()}" +
                            $"\nPengepin: {msg.GetFromNameLink()}";
 
-            await _telegramService.SendTextAsync(sendText)
-                .ConfigureAwait(false);
+            await _telegramService.SendTextAsync(sendText);
         }
     }
 }
