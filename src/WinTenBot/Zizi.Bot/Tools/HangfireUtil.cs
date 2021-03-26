@@ -37,6 +37,13 @@ namespace Zizi.Bot.Tools
             sw.Stop();
         }
 
+        public static void DeleteJob(string jobId)
+        {
+            Log.Debug("Deleting job by ID: '{0}'", jobId);
+            RecurringJob.RemoveIfExists(jobId);
+            Log.Debug("Job '{0}' deleted successfully..", jobId);
+        }
+
         public static MySqlStorage GetMysqlStorage(string connectionStr)
         {
             // var connectionString = BotSettings.HangfireMysqlDb;
@@ -114,7 +121,7 @@ namespace Zizi.Bot.Tools
 
             var numOfJobs = filteredJobs.Count;
 
-            Parallel.ForEach(recurringJobs, (dto, pls, index) =>
+            Parallel.ForEach(filteredJobs, (dto, pls, index) =>
             {
                 var recurringJobId = dto.Id;
 
