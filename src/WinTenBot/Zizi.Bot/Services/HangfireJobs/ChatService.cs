@@ -5,6 +5,7 @@ using Hangfire;
 using Serilog;
 using SqlKata;
 using SqlKata.Execution;
+using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 using Zizi.Bot.Models;
@@ -15,9 +16,14 @@ namespace Zizi.Bot.Services.HangfireJobs
     public class ChatService
     {
         private readonly QueryFactory _queryFactory;
+        private TelegramBotClient _botClient;
 
-        public ChatService(QueryFactory queryFactory)
+        public ChatService(
+            QueryFactory queryFactory,
+            TelegramBotClient botClient
+        )
         {
+            _botClient = botClient;
             _queryFactory = queryFactory;
         }
 
@@ -39,10 +45,10 @@ namespace Zizi.Bot.Services.HangfireJobs
                 var isAdmin = chatGroup.IsAdmin;
                 Log.Debug("Bot is Admin on {0}? {1}", chatId, isAdmin);
 
-                var me = await botClient.GetMeAsync();
-                var isAdminChat = await botClient.IsAdminChat(long.Parse(chatId), me.Id);
+                // var me = await botClient.GetMeAsync();
+                // var isAdminChat = await _botClient.IsAdminChat(long.Parse(chatId), me.Id);
 
-                if (isAdmin) continue;
+                // if (isAdminChat) continue;
 
                 Log.Debug("Doing leave chat from {0}", chatId);
                 try
@@ -64,7 +70,18 @@ namespace Zizi.Bot.Services.HangfireJobs
                 }
                 catch (Exception ex)
                 {
-                    Log.Error(ex.Demystify(), "Error on Leaving from ChatID: {0}", chatId);
+                    if (ex.Message.Contains("bot is not a member"))
+                    {
+                        Log.Warning("This bot may has leave from this chatId '{0}'", chatId);
+                    }
+                    else if (ex.Message.ToLower().Contains("forbidden"))
+                    {
+                        Log.Warning(ex.Message);
+                    }
+                    else
+                    {
+                        Log.Error(ex.Demystify(), "Error on Leaving from ChatID: {0}", chatId);
+                    }
                 }
             }
         }
