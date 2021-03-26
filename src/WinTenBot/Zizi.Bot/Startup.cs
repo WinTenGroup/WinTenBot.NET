@@ -55,10 +55,10 @@ namespace Zizi.Bot
             // services.AddRavenDb();
 
 
-            services.AddDataServices();
             services.AddFeatureServices();
-            services.AddCallbackQueryHandlers();
+            services.AddDataServices();
 
+            services.AddCallbackQueryHandlers();
             services.AddGeneralEvents();
             services.AddGroupEvents();
 
