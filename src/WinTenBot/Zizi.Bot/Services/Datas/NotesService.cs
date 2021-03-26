@@ -9,22 +9,21 @@ using Zizi.Bot.IO;
 using Zizi.Bot.Models;
 using Zizi.Bot.Providers;
 
-namespace Zizi.Bot.Services
+namespace Zizi.Bot.Services.Datas
 {
     public class NotesService
     {
-        private string baseTable = "notes";
-        
+        private readonly string baseTable = "notes";
+
         public async Task<DataTable> GetNotesByChatId(long chatId)
         {
             // var sql = $"SELECT * FROM {baseTable} WHERE chat_id = '{chatId}'";
             // var data = await _mySql.ExecQueryAsync(sql);
-            
+
             var query = await new Query(baseTable)
-                .Where("chat_id",chatId)
+                .Where("chat_id", chatId)
                 .ExecForMysql()
-                .GetAsync()
-                .ConfigureAwait(false);
+                .GetAsync();
 
             var data = query.ToJson().MapObject<DataTable>();
             return data;
@@ -33,17 +32,16 @@ namespace Zizi.Bot.Services
         public async Task<List<CloudNote>> GetNotesBySlug(long chatId, string slug)
         {
             Log.Information("Getting Notes by Slug..");
-            
+
             var query = await new Query(baseTable)
-                .Where("chat_id",chatId)
-                .OrWhereContains("slug",slug)
+                .Where("chat_id", chatId)
+                .OrWhereContains("slug", slug)
                 .ExecForMysql(true)
-                .GetAsync()
-                .ConfigureAwait(false);
+                .GetAsync();
 
             var mapped = query.ToJson().MapObject<List<CloudNote>>();
             return mapped;
-            
+
             // var sql = $"SELECT * FROM {baseTable} WHERE chat_id = '{chatId}' " +
             // $"AND MATCH(slug) AGAINST('{slug.SqlEscape()}')";
             // var data = await _mySql.ExecQueryAsync(sql);
@@ -53,22 +51,19 @@ namespace Zizi.Bot.Services
         public async Task SaveNote(Dictionary<string, object> data)
         {
             var json = data.ToJson();
-            Log.Information(json);
+            Log.Information("Json: {0}", json);
 
             var insert = await new Query(baseTable)
                 .ExecForMysql()
-                .InsertAsync( data)
-                .ConfigureAwait(false);
-            
-            Log.Information($"SaveNote: {insert}");
+                .InsertAsync(data);
+
+            Log.Information("SaveNote: {Insert}", insert);
         }
 
         public async Task UpdateCache(long chatId)
         {
-            var data = await GetNotesByChatId(chatId)
-                .ConfigureAwait(false);
-            await data.WriteCacheAsync($"{chatId}/notes.json")
-                .ConfigureAwait(false);
+            var data = await GetNotesByChatId(chatId);
+            await data.WriteCacheAsync($"{chatId}/notes.json");
         }
     }
 }

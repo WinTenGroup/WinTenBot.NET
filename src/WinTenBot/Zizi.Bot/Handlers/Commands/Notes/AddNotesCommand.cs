@@ -7,42 +7,43 @@ using Telegram.Bot.Framework.Abstractions;
 using Zizi.Bot.Common;
 using Zizi.Bot.Telegram;
 using Zizi.Bot.Services;
+using Zizi.Bot.Services.Datas;
 
 namespace Zizi.Bot.Handlers.Commands.Notes
 {
     public class AddNotesCommand : CommandBase
     {
-        private NotesService _notesService;
-        private TelegramService _telegramService;
+        private readonly NotesService _notesService;
+        private readonly TelegramService _telegramService;
 
-        public AddNotesCommand()
+        public AddNotesCommand(TelegramService telegramService, NotesService notesService)
         {
-            _notesService = new NotesService();
+            _notesService = notesService;
+            _telegramService = telegramService;
         }
 
         public override async Task HandleAsync(IUpdateContext context, UpdateDelegate next, string[] args,
             CancellationToken cancellationToken)
         {
-            _telegramService = new TelegramService(context);
+            await _telegramService.AddUpdateContext(context);
+
             var msg = context.Update.Message;
 
-            await _telegramService.SendTextAsync("This feature currently disabled")
-                .ConfigureAwait(false);
+            await _telegramService.SendTextAsync("This feature currently disabled");
             return;
-            
+
             if (msg.ReplyToMessage != null)
             {
                 var repMsg = msg.ReplyToMessage;
-                await _telegramService.SendTextAsync("Mengumpulkan informasi")
-                    .ConfigureAwait(false);
+                await _telegramService.SendTextAsync("Mengumpulkan informasi");
 
-                var partsContent = repMsg.Text.Split(new[] {"\n\n"}, StringSplitOptions.None);
+                var partsContent = repMsg.Text.Split(new[] { "\n\n" }, StringSplitOptions.None);
                 var partsMsgText = msg.Text.GetTextWithoutCmd().Split("\n\n");
 
-                Log.Information(msg.Text);
-                Log.Information(repMsg.Text);
-                Log.Information(partsContent.ToJson());
-                Log.Information(partsMsgText.ToJson());
+                // Log.Information(msg.Text);
+                // Log.Information(repMsg.Text);
+                // Log.Information(partsContent.ToJson());
+                // Log.Information(partsMsgText.ToJson());
 
                 var data = new Dictionary<string, object>()
                 {
@@ -57,13 +58,10 @@ namespace Zizi.Bot.Handlers.Commands.Notes
                     data.Add("btn_data", partsMsgText[1]);
                 }
 
-                await _telegramService.EditAsync("Menyimpan..")
-                    .ConfigureAwait(false);
-                await _notesService.SaveNote(data)
-                    .ConfigureAwait(false);
+                await _telegramService.EditAsync("Menyimpan..");
+                await _notesService.SaveNote(data);
 
-                await _telegramService.EditAsync("Berhasil")
-                    .ConfigureAwait(false);
+                await _telegramService.EditAsync("Berhasil");
             }
         }
     }
