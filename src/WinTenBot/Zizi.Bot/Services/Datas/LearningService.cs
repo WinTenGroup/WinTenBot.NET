@@ -8,11 +8,11 @@ using Telegram.Bot.Types;
 using Zizi.Bot.Models;
 using Zizi.Bot.Providers;
 
-namespace Zizi.Bot.Services
+namespace Zizi.Bot.Services.Datas
 {
     public class LearningService
     {
-        private Message _message;
+        private readonly Message _message;
         private const string TableName = "words_learning";
 
         public LearningService(Message message)
@@ -49,9 +49,9 @@ namespace Zizi.Bot.Services
                     {"message", learnData.Message},
                     {"from_id", _message.From.Id},
                     {"chat_id", _message.Chat.Id}
-                }).ConfigureAwait(false);
+                });
 
-            Log.Information($"Save Learn: {insert}");
+            Log.Information("Save Learn: {Insert}", insert);
 
             return insert;
         }

@@ -8,12 +8,18 @@ namespace Zizi.Bot.Handlers.Commands.SpamLearning
 {
     public class PredictCommand : CommandBase
     {
-        private TelegramService _telegramService;
+        private readonly TelegramService _telegramService;
+
+        public PredictCommand(TelegramService telegramService)
+        {
+            _telegramService = telegramService;
+        }
 
         public override async Task HandleAsync(IUpdateContext context, UpdateDelegate next, string[] args,
             CancellationToken cancellationToken)
         {
-            _telegramService = new TelegramService(context);
+            await _telegramService.AddUpdateContext(context);
+
             var message = _telegramService.Message;
 
             if (message.ReplyToMessage != null)
@@ -22,16 +28,16 @@ namespace Zizi.Bot.Handlers.Commands.SpamLearning
                 var repMsgText = repMsg.Text;
 
                 await _telegramService.SendTextAsync("Sedang memprediksi pesan")
-                    .ConfigureAwait(false);
+                    ;
 
                 var isSpam = MachineLearning.PredictMessage(repMsgText);
-                await _telegramService.EditAsync($"IsSpam: {isSpam}").ConfigureAwait(false);
+                await _telegramService.EditAsync($"IsSpam: {isSpam}");
 
                 return;
             }
             else
             {
-                await _telegramService.SendTextAsync("Predicting message").ConfigureAwait(false);
+                await _telegramService.SendTextAsync("Predicting message");
             }
         }
     }

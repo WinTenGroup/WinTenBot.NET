@@ -10,12 +10,18 @@ namespace Zizi.Bot.Handlers.Commands.SpamLearning
 {
     public class ImportLearnCommand : CommandBase
     {
-        private TelegramService _telegramService;
+        private readonly TelegramService _telegramService;
+
+        public ImportLearnCommand(TelegramService telegramService)
+        {
+            _telegramService = telegramService;
+        }
 
         public override async Task HandleAsync(IUpdateContext context, UpdateDelegate next, string[] args,
             CancellationToken cancellationToken)
         {
-            _telegramService = new TelegramService(context);
+            await _telegramService.AddUpdateContext(context);
+
             var message = _telegramService.Message;
             var msgText = message.Text.Split(' ');
             var param1 = "\t";
@@ -29,8 +35,7 @@ namespace Zizi.Bot.Handlers.Commands.SpamLearning
 
             if (message.ReplyToMessage != null)
             {
-                await _telegramService.SendTextAsync("Sedang mengimport dataset")
-                    .ConfigureAwait(false);
+                await _telegramService.SendTextAsync("Sedang mengimport dataset");
 
                 var repMessage = message.ReplyToMessage;
                 if (repMessage.Document != null)
@@ -40,30 +45,24 @@ namespace Zizi.Bot.Handlers.Commands.SpamLearning
                     var msgId = repMessage.MessageId;
                     var fileName = document.FileName;
                     var filePath = $"learn-dataset-{chatId}-{msgId}-{fileName}";
-                    var savedFile = await _telegramService.DownloadFileAsync(filePath)
-                        .ConfigureAwait(false);
+                    var savedFile = await _telegramService.DownloadFileAsync(filePath);
 
-                    await _telegramService.ImportCsv(savedFile, param1).ConfigureAwait(false);
+                    await _telegramService.ImportCsv(savedFile, param1);
 
-                    await _telegramService.EditAsync("Sedang mempelajari dataset")
-                        .ConfigureAwait(false);
-                    await MachineLearning.SetupEngineAsync()
-                        .ConfigureAwait(false);
+                    await _telegramService.EditAsync("Sedang mempelajari dataset");
+                    await MachineLearning.SetupEngineAsync();
 
-                    await _telegramService.EditAsync("Import selesai")
-                        .ConfigureAwait(false);
+                    await _telegramService.EditAsync("Import selesai");
                 }
                 else
                 {
                     var typeHint = "File yang mau di import harus berupa dokumen bertipe csv, tsv atau sejenis";
-                    await _telegramService.SendTextAsync(typeHint)
-                        .ConfigureAwait(false);
+                    await _telegramService.SendTextAsync(typeHint);
                 }
             }
             else
             {
-                await _telegramService.SendTextAsync("Balas file yang mau di import")
-                    .ConfigureAwait(false);
+                await _telegramService.SendTextAsync("Balas file yang mau di import");
             }
         }
     }
