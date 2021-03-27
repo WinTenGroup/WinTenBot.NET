@@ -38,7 +38,6 @@ namespace Zizi.Bot.Extensions
                 .AddScoped<TestCommand>()
                 .AddScoped<UsernameCommand>()
                 .AddScoped<StatsCommand>()
-                .AddScoped<PingCommand>()
                 .AddScoped<DebugCommand>()
                 .AddScoped<StartCommand>()
                 .AddScoped<IdCommand>()
