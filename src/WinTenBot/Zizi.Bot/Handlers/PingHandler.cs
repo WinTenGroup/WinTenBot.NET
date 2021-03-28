@@ -28,7 +28,7 @@ namespace Zizi.Bot.Handlers
             );
 
             var sendText = "ℹ️ Pong!!";
-            var isSudoer = msg.From.Id.IsSudoer();
+            var isSudoer = _telegramService.IsSudoer();
 
             if (msg.Chat.Type == ChatType.Private && isSudoer)
             {
