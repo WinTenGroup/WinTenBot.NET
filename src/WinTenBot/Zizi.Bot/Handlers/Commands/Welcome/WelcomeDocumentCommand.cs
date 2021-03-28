@@ -2,71 +2,62 @@
 using System.Threading.Tasks;
 using Serilog;
 using Telegram.Bot.Framework.Abstractions;
-using Telegram.Bot.Types.Enums;
 using Zizi.Bot.Common;
-using Zizi.Bot.Telegram;
 using Zizi.Bot.Services;
+using Zizi.Bot.Services.Datas;
+using Zizi.Bot.Telegram;
 
 namespace Zizi.Bot.Handlers.Commands.Welcome
 {
     public class WelcomeDocumentCommand : CommandBase
     {
-        private TelegramService _telegramService;
-        private SettingsService _settingsService;
+        private readonly TelegramService _telegramService;
+        private readonly SettingsService _settingsService;
+
+        public WelcomeDocumentCommand(TelegramService telegramService, SettingsService settingsService)
+        {
+            _telegramService = telegramService;
+            _settingsService = settingsService;
+        }
 
         public override async Task HandleAsync(IUpdateContext context, UpdateDelegate next, string[] args,
             CancellationToken cancellationToken)
         {
-            _telegramService = new TelegramService(context);
+            await _telegramService.AddUpdateContext(context);
+
             var msg = _telegramService.Message;
-            _settingsService = new SettingsService(msg);
+            var chatId = _telegramService.ChatId;
 
-            if (msg.Chat.Type == ChatType.Private)
+            if (_telegramService.IsPrivateChat) return;
+
+            if (!await _telegramService.IsAdminGroup()) return;
+
+            if (msg.ReplyToMessage == null)
             {
-                await _telegramService.SendTextAsync($"Welcome media hanya untuk grup saja")
-                    .ConfigureAwait(false);
+                await _telegramService.SendTextAsync("Balas sebuah gambar, video, atau dokumen yang akan di jadikan Welcome media");
                 return;
             }
 
-            if (!await _telegramService.IsAdminGroup()
-                .ConfigureAwait(false))
+            var repMsg = msg.ReplyToMessage;
+            var mediaFileId = repMsg.GetFileId();
+
+            if (mediaFileId.IsNotNullOrEmpty())
             {
-                return;
-            }
+                var mediaType = repMsg.Type;
 
-            if (msg.ReplyToMessage != null)
-            {
-                var repMsg = msg.ReplyToMessage;
-                if (repMsg.GetFileId().IsNotNullOrEmpty())
-                {
-                    var mediaFileId = repMsg.GetFileId();
-                    var mediaType = repMsg.Type;
+                await _telegramService.SendTextAsync("Sedang menyimpan Welcome Media..");
+                Log.Information("MediaId: {MediaFileId}", mediaFileId);
 
-                    await _telegramService.SendTextAsync("Sedang menyimpan Welcome Media..")
-                        .ConfigureAwait(false);
-                    Log.Information($"MediaId: {mediaFileId}");
+                await _settingsService.UpdateCell(chatId, "welcome_media", mediaFileId);
+                await _settingsService.UpdateCell(chatId, "welcome_media_type", mediaType);
+                Log.Information("Save media success..");
 
-                    await _settingsService.UpdateCell("welcome_media", mediaFileId).ConfigureAwait(false);
-                    await _settingsService.UpdateCell("welcome_media_type", mediaType).ConfigureAwait(false);
-                    Log.Information("Save media success..");
-
-                    await _telegramService.EditAsync("Welcome Media berhasil di simpan." +
-                                                     "\nKetik /welcome untuk melihat perubahan")
-                        .ConfigureAwait(false);
-                    return;
-                }
-                else
-                {
-                    await _telegramService.SendTextAsync("Media tidak terdeteksi di pesan yg di reply tersebut.")
-                        .ConfigureAwait(false);
-                    return;
-                }
+                await _telegramService.EditAsync("Welcome Media berhasil di simpan." +
+                                                 "\nKetik /welcome untuk melihat perubahan");
             }
             else
             {
-                await _telegramService
-                    .SendTextAsync("Balas sebuah gambar, video, atau dokumen yang akan di jadikan Welcome media")
-                    .ConfigureAwait(false);
+                await _telegramService.SendTextAsync("Media tidak terdeteksi di pesan yg di reply tersebut.");
             }
         }
     }

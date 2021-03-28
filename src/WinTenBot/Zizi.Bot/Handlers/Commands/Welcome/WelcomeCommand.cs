@@ -1,55 +1,47 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Serilog;
 using Telegram.Bot.Framework.Abstractions;
-using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 using Zizi.Bot.Common;
-using Zizi.Bot.Telegram;
 using Zizi.Bot.Enums;
 using Zizi.Bot.Services;
+using Zizi.Bot.Services.Datas;
+using Zizi.Bot.Telegram;
 
 namespace Zizi.Bot.Handlers.Commands.Welcome
 {
     public class WelcomeCommand : CommandBase
     {
-        private SettingsService _settingsService;
-        private TelegramService _telegramService;
+        private readonly SettingsService _settingsService;
+        private readonly TelegramService _telegramService;
+
+        public WelcomeCommand(TelegramService telegramService, SettingsService settingsService)
+        {
+            _settingsService = settingsService;
+            _telegramService = telegramService;
+        }
 
         public override async Task HandleAsync(IUpdateContext context, UpdateDelegate next, string[] args,
             CancellationToken cancellationToken)
         {
-            _telegramService = new TelegramService(context);
             var msg = context.Update.Message;
-            _settingsService = new SettingsService(msg);
+            var chatId = _telegramService.ChatId;
 
-
-            Log.Information($"Args: {string.Join(" ", args)}");
+            Log.Information("Args: {V}", string.Join(" ", args));
             var sendText = "Perintah /welcome hanya untuk grup saja";
 
-            if (msg.Chat.Type == ChatType.Private)
-            {
-                await _telegramService.SendTextAsync(sendText)
-                    .ConfigureAwait(false);
-                return;
-            }
-            
-            if (!await _telegramService.IsAdminGroup()
-                .ConfigureAwait(false))
-            {
-                return;
-            }
+            if (_telegramService.IsPrivateChat) return;
+
+            if (!await _telegramService.IsAdminGroup()) return;
 
             var chatTitle = msg.Chat.Title;
-            var settings = await _settingsService.GetSettingByGroup()
-                .ConfigureAwait(false);
+            var settings = await _settingsService.GetSettingsByGroup(chatId);
             var welcomeMessage = settings.WelcomeMessage;
             var welcomeButton = settings.WelcomeButton;
             var welcomeMedia = settings.WelcomeMedia;
             var welcomeMediaType = settings.WelcomeMediaType;
-            // var splitWelcomeButton = welcomeButton.Split(',').ToList<string>();
-            
+
             sendText = $"⚙ Konfigurasi Welcome di <b>{chatTitle}</b>\n\n";
             if (welcomeMessage.IsNullOrEmpty())
             {
@@ -66,7 +58,6 @@ namespace Zizi.Bot.Handlers.Commands.Welcome
                 sendText += $"<code>{welcomeMessage}</code>";
             }
 
-            // var keyboard = welcomeButton.ToReplyMarkup(2);
             InlineKeyboardMarkup keyboard = null;
             if (!welcomeButton.IsNullOrEmpty())
             {
@@ -75,16 +66,14 @@ namespace Zizi.Bot.Handlers.Commands.Welcome
                 sendText += "\n\n<b>Raw Button:</b>" +
                             $"\n<code>{welcomeButton}</code>";
             }
-            
+
             if (welcomeMediaType != MediaType.Unknown)
             {
-                await _telegramService.SendMediaAsync(welcomeMedia, welcomeMediaType, sendText, keyboard)
-                    .ConfigureAwait(false);
+                await _telegramService.SendMediaAsync(welcomeMedia, welcomeMediaType, sendText, keyboard);
             }
             else
             {
-                await _telegramService.SendTextAsync(sendText, keyboard)
-                    .ConfigureAwait(false);
+                await _telegramService.SendTextAsync(sendText, keyboard);
             }
         }
     }
