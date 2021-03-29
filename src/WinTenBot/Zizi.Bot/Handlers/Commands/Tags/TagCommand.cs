@@ -7,34 +7,36 @@ using Telegram.Bot.Framework.Abstractions;
 using Zizi.Bot.Common;
 using Zizi.Bot.Telegram;
 using Zizi.Bot.Services;
+using Zizi.Bot.Services.Datas;
 
 namespace Zizi.Bot.Handlers.Commands.Tags
 {
     public class TagCommand : CommandBase
     {
         private readonly TagsService _tagsService;
-        private TelegramService _telegramService;
+        private readonly TelegramService _telegramService;
 
-        public TagCommand(TagsService tagsService)
+        public TagCommand(TelegramService telegramService, TagsService tagsService)
         {
+            _telegramService = telegramService;
             _tagsService = tagsService;
         }
 
         public override async Task HandleAsync(IUpdateContext context, UpdateDelegate next, string[] args,
             CancellationToken cancellationToken)
         {
-            _telegramService = new TelegramService(context);
+            await _telegramService.AddUpdateContext(context);
+
             var msg = _telegramService.Message;
+            var chatId = _telegramService.ChatId;
             var isSudoer = _telegramService.IsSudoer();
-            var isAdmin = await _telegramService.IsAdminOrPrivateChat()
-                .ConfigureAwait(false);
+            var isAdmin = _telegramService.IsAdminOrPrivateChat();
             var sendText = "Hanya admin yang bisa membuat Tag";
 
             if (!isSudoer && !isAdmin)
             {
                 // await _telegramService.DeleteAsync(msg.MessageId);
-                await _telegramService.SendTextAsync(sendText)
-                    .ConfigureAwait(false);
+                await _telegramService.SendTextAsync(sendText);
                 Log.Information("This User is not Admin or Sudo!");
                 return;
             }
@@ -49,8 +51,7 @@ namespace Zizi.Bot.Handlers.Commands.Tags
 
             if (msg.ReplyToMessage == null)
             {
-                await _telegramService.SendTextAsync(sendText)
-                    .ConfigureAwait(false);
+                await _telegramService.SendTextAsync(sendText);
                 return;
             }
 
@@ -63,7 +64,7 @@ namespace Zizi.Bot.Handlers.Commands.Tags
             var repMsgText = repMsg.Text;
             var partsMsgText = msgText.SplitText(" ").ToArray();
 
-            Log.Information($"Part1: {partsMsgText.ToJson(true)}");
+            Log.Information("Part1: {V}", partsMsgText.ToJson(true));
 
             var slugTag = partsMsgText.ValueOfIndex(0);
             var tagAndCmd = partsMsgText.Take(2);
@@ -71,25 +72,22 @@ namespace Zizi.Bot.Handlers.Commands.Tags
 
             if (slugTag.Length < 3)
             {
-                await _telegramService.EditAsync("Slug Tag minimal 3 karakter")
-                    .ConfigureAwait(false);
+                await _telegramService.EditAsync("Slug Tag minimal 3 karakter");
+
                 return;
             }
 
-            await _telegramService.SendTextAsync("📖 Sedang mempersiapkan..")
-                .ConfigureAwait(false);
+            await _telegramService.SendTextAsync("📖 Sedang mempersiapkan..");
 
             var content = repMsg.Text ?? repMsg.Caption ?? "";
-            Log.Information(content);
+            Log.Information("Content: {0}", content);
 
-            bool isExist = await _tagsService.IsExist(msg.Chat.Id, slugTag)
-                .ConfigureAwait(false);
-            Log.Information($"Tag isExist: {isExist}");
+            bool isExist = await _tagsService.IsExist(msg.Chat.Id, slugTag);
+            Log.Information("Tag isExist: {IsExist}", isExist);
             if (isExist)
             {
                 await _telegramService.EditAsync("✅ Tag sudah ada. " +
-                                                 "Silakan ganti Tag jika ingin isi konten berbeda")
-                    .ConfigureAwait(false);
+                                                 "Silakan ganti Tag jika ingin isi konten berbeda");
                 return;
             }
 
@@ -106,28 +104,19 @@ namespace Zizi.Bot.Handlers.Commands.Tags
             if (repFileId.IsNotNullOrEmpty())
             {
                 data.Remove("file_id");
-                
+
                 data.Add("file_id", repFileId);
                 data.Add("type_data", repMsg.Type);
             }
 
-            await _telegramService.EditAsync("📝 Menyimpan tag data..")
-                .ConfigureAwait(false);
-            await _tagsService.SaveTagAsync(data)
-                .ConfigureAwait(false);
-
-            // var keyboard = new InlineKeyboardMarkup(
-            //     InlineKeyboardButton.WithCallbackData("OK", "tag finish-create")
-            // );
+            await _telegramService.EditAsync("📝 Menyimpan tag data..");
+            await _tagsService.SaveTagAsync(data);
 
             await _telegramService.EditAsync("✅ Tag berhasil di simpan.." +
                                              $"\nTag: <code>#{slugTag}</code>" +
-                                             $"\n\nKetik /tags untuk melihat semua Tag.")
-                .ConfigureAwait(false);
+                                             $"\n\nKetik /tags untuk melihat semua Tag.");
 
-            await _tagsService.UpdateCacheAsync(msg)
-                .ConfigureAwait(false);
-            return;
+            await _tagsService.UpdateCacheAsync(chatId);
         }
     }
 }

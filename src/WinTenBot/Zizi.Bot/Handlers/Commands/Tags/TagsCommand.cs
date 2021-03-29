@@ -1,75 +1,66 @@
 ﻿using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Serilog;
 using Telegram.Bot.Framework.Abstractions;
-using Telegram.Bot.Types;
 using Zizi.Bot.Common;
 using Zizi.Bot.Services;
+using Zizi.Bot.Services.Datas;
+using Zizi.Core.Utils.Text;
 
 namespace Zizi.Bot.Handlers.Commands.Tags
 {
     public class TagsCommand : CommandBase
     {
         private readonly TagsService _tagsService;
-        private SettingsService _settingsService;
-        private TelegramService _telegramService;
+        private readonly SettingsService _settingsService;
+        private readonly TelegramService _telegramService;
 
-        public TagsCommand(TagsService tagsService)
+        public TagsCommand(
+            TelegramService telegramService,
+            TagsService tagsService,
+            SettingsService settingsService
+        )
         {
+            _telegramService = telegramService;
             _tagsService = tagsService;
+            _settingsService = settingsService;
         }
 
         public override async Task HandleAsync(IUpdateContext context, UpdateDelegate next, string[] args,
             CancellationToken cancellationToken)
         {
-            Message msg = context.Update.Message;
-            _telegramService = new TelegramService(context);
-            _settingsService = new SettingsService(msg);
+            await _telegramService.AddUpdateContext(context);
+            var chatId = _telegramService.ChatId;
+            var msg = context.Update.Message;
 
-            var id = msg.From.Id;
             var sendText = "Under maintenance";
 
-            await _telegramService.DeleteAsync(msg.MessageId)
-                .ConfigureAwait(false);
-            await _telegramService.SendTextAsync("🔄 Loading tags..")
-                .ConfigureAwait(false);
-            var tagsData = (await _tagsService.GetTagsByGroupAsync(msg.Chat.Id)
-                .ConfigureAwait(false)).ToList();
-            var tagsStr = string.Empty;
+            await _telegramService.DeleteAsync(msg.MessageId);
+            await _telegramService.SendTextAsync("🔄 Loading tags..");
+            var tagsData = (await _tagsService.GetTagsByGroupAsync(chatId)).ToList();
+            var tagsStr = new StringBuilder();
 
             foreach (var tag in tagsData)
             {
-                tagsStr += $"#{tag.Tag} ";
+                tagsStr.Append($"#{tag.Tag} ");
             }
 
             sendText = $"#️⃣<b> {tagsData.Count} Tags</b>\n" +
-                       $"\n{tagsStr}";
+                       $"\n{tagsStr.ToTrimmedString()}";
 
-            await _telegramService.EditAsync(sendText)
-                .ConfigureAwait(false);
+            await _telegramService.EditAsync(sendText);
 
-            //            var jsonSettings = TextHelper.ToJson(currentSetting);
-            //            Log.Information($"CurrentSettings: {jsonSettings}");
-
-            // var lastTagsMsgId = int.Parse(currentSetting.Rows[0]["last_tags_message_id"].ToString());
-
-            var currentSetting = await _settingsService.GetSettingByGroup()
-                .ConfigureAwait(false);
+            var currentSetting = await _settingsService.GetSettingsByGroup(chatId);
             var lastTagsMsgId = currentSetting.LastTagsMessageId;
-            Log.Information($"LastTagsMsgId: {lastTagsMsgId}");
+            Log.Information("LastTagsMsgId: {LastTagsMsgId}", lastTagsMsgId);
 
             if (lastTagsMsgId.ToInt() > 0)
-                await _telegramService.DeleteAsync(lastTagsMsgId.ToInt())
-                    .ConfigureAwait(false);
-            await _tagsService.UpdateCacheAsync(msg)
-                .ConfigureAwait(false);
-            await _settingsService.UpdateCell("last_tags_message_id", _telegramService.SentMessageId)
-                .ConfigureAwait(false);
+                await _telegramService.DeleteAsync(lastTagsMsgId.ToInt());
 
-
-//            var json = TextHelper.ToJson(tagsData);
-            //                Console.WriteLine(json);
+            await _tagsService.UpdateCacheAsync(chatId);
+            await _settingsService.UpdateCell(chatId, "last_tags_message_id", _telegramService.SentMessageId);
         }
     }
 }

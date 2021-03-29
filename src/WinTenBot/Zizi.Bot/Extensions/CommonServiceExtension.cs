@@ -27,8 +27,9 @@ namespace Zizi.Bot.Extensions
         public static IServiceCollection AddDataServices(this IServiceCollection services)
         {
             return services
-                .AddScoped<TagsService>()
+                .AddScoped<AfkService>()
                 .AddScoped<SettingsService>();
+                .AddScoped<TagsService>();
         }
 
         public static IServiceCollection AddFeatureServices(this IServiceCollection services)
