@@ -1,33 +1,39 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Serilog;
-using SqlKata.Execution;
 using Telegram.Bot.Framework.Abstractions;
 using Zizi.Bot.Common;
+using Zizi.Bot.Models;
 using Zizi.Bot.Telegram;
 using Zizi.Bot.Services;
+using Zizi.Bot.Services.Datas;
 using Zizi.Bot.Tools;
 
 namespace Zizi.Bot.Handlers.Commands.Words
 {
     public class AddKataCommand : CommandBase
     {
-        private TelegramService _telegramService;
-        private WordFilterService _wordFilterService;
-        private QueryFactory _queryFactory;
+        private readonly TelegramService _telegramService;
+        private readonly WordFilterService _wordFilterService;
 
-        public AddKataCommand(QueryFactory queryFactory)
+        public AddKataCommand(
+            TelegramService telegramService,
+            WordFilterService wordFilterService
+        )
         {
-            _queryFactory = queryFactory;
+            _telegramService = telegramService;
+            _wordFilterService = wordFilterService;
         }
 
         public override async Task HandleAsync(IUpdateContext context, UpdateDelegate next, string[] args,
             CancellationToken cancellationToken)
         {
-            _telegramService = new TelegramService(context);
-            _wordFilterService = new WordFilterService(context.Update.Message);
+            await _telegramService.AddUpdateContext(context);
 
+            var chatId = _telegramService.ChatId;
+            var fromId = _telegramService.FromId;
             var msg = context.Update.Message;
             var cleanedMsg = msg.Text.GetTextWithoutCmd();
             var partedMsg = cleanedMsg.Split(" ");
@@ -36,8 +42,7 @@ namespace Zizi.Bot.Handlers.Commands.Words
             var isGlobalBlock = false;
 
             var isSudoer = _telegramService.IsSudoer();
-            var isAdmin = await _telegramService.IsAdminGroup()
-                .ConfigureAwait(false);
+            var isAdmin = await _telegramService.IsAdminGroup();
             if (!isSudoer)
             {
                 Log.Information("Currently add Kata is limited only Sudo.");
@@ -56,8 +61,7 @@ namespace Zizi.Bot.Handlers.Commands.Words
                 if (paramOption.IsContains("g") && isSudoer) // Global
                 {
                     isGlobalBlock = true;
-                    await _telegramService.AppendTextAsync("Kata ini akan di blokir Global!")
-                        .ConfigureAwait(false);
+                    await _telegramService.AppendTextAsync("Kata ini akan di blokir Global!");
                 }
 
                 if (paramOption.IsContains("d"))
@@ -76,44 +80,42 @@ namespace Zizi.Bot.Handlers.Commands.Words
 
             if (!isSudoer)
             {
-                await _telegramService.AppendTextAsync("Hanya Sudoer yang dapat memblokir Kata mode Group-wide!")
-                    .ConfigureAwait(false);
+                await _telegramService.AppendTextAsync("Hanya Sudoer yang dapat memblokir Kata mode Group-wide!");
             }
 
-            if (word.IsNotNullOrEmpty())
+            if (!word.IsNotNullOrEmpty())
             {
-                await _telegramService.AppendTextAsync("Sedang menambahkan kata")
-                    .ConfigureAwait(false);
-
-                var isExist = await _wordFilterService.IsExistAsync(@where)
-                    .ConfigureAwait(false);
-                if (!isExist)
-                {
-                    var save = await _wordFilterService.SaveWordAsync(word, isGlobalBlock)
-                        .ConfigureAwait(false);
-
-                    await _telegramService.AppendTextAsync("Sinkronisasi Kata ke cache")
-                        .ConfigureAwait(false);
-                    await _queryFactory.SyncWordToLocalAsync()
-                        .ConfigureAwait(false);
-
-                    await _telegramService.AppendTextAsync("Kata berhasil di tambahkan")
-                        .ConfigureAwait(false);
-                }
-                else
-                {
-                    await _telegramService.AppendTextAsync("Kata sudah di tambahkan")
-                        .ConfigureAwait(false);
-                }
+                await _telegramService.SendTextAsync("Apa kata yg mau di blok?");
             }
             else
             {
-                await _telegramService.SendTextAsync("Apa kata yg mau di blok?")
-                    .ConfigureAwait(false);
+                await _telegramService.AppendTextAsync("Sedang menambahkan kata");
+
+                var isExist = await _wordFilterService.IsExistAsync(@where);
+                if (isExist)
+                {
+                    await _telegramService.AppendTextAsync("Kata sudah di tambahkan");
+                }
+                else
+                {
+                    var save = await _wordFilterService.SaveWordAsync(new WordFilter()
+                    {
+                        Word = word,
+                        ChatId = chatId,
+                        IsGlobal = isGlobalBlock,
+                        FromId = fromId,
+                        CreatedAt = DateTime.Now
+                    });
+
+                    await _telegramService.AppendTextAsync("Sinkronisasi Kata ke cache");
+                    await _wordFilterService.UpdateWordsCache();
+                    // await _queryFactory.SyncWordToLocalAsync();
+
+                    await _telegramService.AppendTextAsync("Kata berhasil di tambahkan");
+                }
             }
 
-            await _telegramService.DeleteAsync(delay: 3000)
-                .ConfigureAwait(false);
+            await _telegramService.DeleteAsync(delay: 3000);
         }
     }
 }

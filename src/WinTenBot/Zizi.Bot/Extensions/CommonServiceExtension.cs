@@ -30,6 +30,7 @@ namespace Zizi.Bot.Extensions
                 .AddScoped<AfkService>()
                 .AddScoped<SettingsService>();
                 .AddScoped<TagsService>();
+                .AddScoped<WordFilterService>();
         }
 
         public static IServiceCollection AddFeatureServices(this IServiceCollection services)
