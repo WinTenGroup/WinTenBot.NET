@@ -14,7 +14,6 @@ namespace Zizi.Bot.Handlers.Callbacks
         private readonly TelegramService _telegramService;
         private readonly SettingsService _settingsService;
         private CallbackQuery CallbackQuery { get; set; }
-        private Message Message { get; set; }
 
         public SettingsCallback(TelegramService telegramService, SettingsService settingsService)
         {
@@ -73,7 +72,7 @@ namespace Zizi.Bot.Handlers.Callbacks
                            $"\nParam: {columnTarget} to {newValue}";
             await _telegramService.EditMessageCallback(editText, btnMarkup);
 
-            await _settingsService.UpdateSettingsCache(chatId);
+            await _settingsService.UpdateCacheAsync(chatId);
 
             return true;
         }
