@@ -9,7 +9,6 @@ using Zizi.Bot.Handlers.Commands.Group;
 using Zizi.Bot.Handlers.Commands.Metrics;
 using Zizi.Bot.Handlers.Commands.Notes;
 using Zizi.Bot.Handlers.Commands.Rss;
-using Zizi.Bot.Handlers.Commands.Rules;
 using Zizi.Bot.Handlers.Commands.SpamLearning;
 using Zizi.Bot.Handlers.Commands.Tags;
 using Zizi.Bot.Handlers.Commands.Welcome;
@@ -74,7 +73,6 @@ namespace Zizi.Bot.Extensions
                                         .UseCommand<KickCommand>("kick")
                                         .UseCommand<LearnCommand>("learn")
                                         .UseCommand<MediaFilterCommand>("mfil")
-                                        .UseCommand<MigrateCommand>("migrate")
                                         .UseCommand<NotesCommand>("filters")
                                         .UseCommand<NudityCommand>("nudity")
                                         .UseCommand<OcrCommand>("ocr")
