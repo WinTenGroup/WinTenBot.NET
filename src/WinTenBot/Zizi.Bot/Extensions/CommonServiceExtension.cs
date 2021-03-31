@@ -39,6 +39,7 @@ namespace Zizi.Bot.Extensions
                 .AddScoped<IWeatherService, WeatherService>()
                 .AddScoped<ChatService>()
                 .AddScoped<RssFeedService>()
+        }
 
         public static IServiceCollection AddCallbackQueryHandlers(this IServiceCollection services)
         {
