@@ -36,47 +36,47 @@ namespace Zizi.Bot.Telegram
             return $"<a href='tg://user?id={message.From.Id}'>{(firstName + " " + lastName).Trim()}</a>";
         }
 
-        [Obsolete("AFK Check will be moved to NewUpdateHandler")]
-        public static async Task AfkCheckAsync(this TelegramService telegramService)
-        {
-            var sw = Stopwatch.StartNew();
-            Log.Information("Starting check AFK");
-
-            var message = telegramService.MessageOrEdited;
-
-            var chatSettings = telegramService.CurrentSetting;
-            if (!chatSettings.EnableAfkStat)
-            {
-                Log.Information("Afk Stat is disabled in this Group!");
-                return;
-            }
-
-            var afkService = new AfkService();
-            if (message.ReplyToMessage != null)
-            {
-                var repMsg = message.ReplyToMessage;
-                var isAfkReply = await afkService.IsAfkAsync(repMsg);
-                if (isAfkReply)
-                    await telegramService.SendTextAsync($"{repMsg.GetFromNameLink()} sedang afk");
-            }
-
-            var isAfk = await afkService.IsAfkAsync(message);
-            if (isAfk)
-            {
-                await telegramService.SendTextAsync($"{message.GetFromNameLink()} sudah tidak afk");
-
-                var data = new Dictionary<string, object>
-                {
-                    {"chat_id", message.Chat.Id}, {"user_id", message.From.Id}, {"is_afk", 0}, {"afk_reason", ""}
-                };
-
-                await afkService.SaveAsync(data);
-                await afkService.UpdateCacheAsync();
-            }
-
-            Log.Debug("AFK check completed. In {0}", sw.Elapsed);
-            sw.Stop();
-        }
+        // [Obsolete("AFK Check will be moved to NewUpdateHandler")]
+        // public static async Task AfkCheckAsync(this TelegramService telegramService)
+        // {
+        //     var sw = Stopwatch.StartNew();
+        //     Log.Information("Starting check AFK");
+        //
+        //     var message = telegramService.MessageOrEdited;
+        //
+        //     var chatSettings = telegramService.CurrentSetting;
+        //     if (!chatSettings.EnableAfkStat)
+        //     {
+        //         Log.Information("Afk Stat is disabled in this Group!");
+        //         return;
+        //     }
+        //
+        //     var afkService = new AfkService();
+        //     if (message.ReplyToMessage != null)
+        //     {
+        //         var repMsg = message.ReplyToMessage;
+        //         var isAfkReply = await afkService.IsAfkAsync(repMsg);
+        //         if (isAfkReply)
+        //             await telegramService.SendTextAsync($"{repMsg.GetFromNameLink()} sedang afk");
+        //     }
+        //
+        //     var isAfk = await afkService.IsAfkAsync(message);
+        //     if (isAfk)
+        //     {
+        //         await telegramService.SendTextAsync($"{message.GetFromNameLink()} sudah tidak afk");
+        //
+        //         var data = new Dictionary<string, object>
+        //         {
+        //             {"chat_id", message.Chat.Id}, {"user_id", message.From.Id}, {"is_afk", 0}, {"afk_reason", ""}
+        //         };
+        //
+        //         await afkService.SaveAsync(data);
+        //         await afkService.UpdateCacheAsync();
+        //     }
+        //
+        //     Log.Debug("AFK check completed. In {0}", sw.Elapsed);
+        //     sw.Stop();
+        // }
 
         public static async Task CheckMataZiziAsync(this TelegramService telegramService)
         {

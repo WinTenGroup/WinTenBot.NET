@@ -64,11 +64,6 @@ namespace Zizi.Bot.Telegram
 
             var insertBuffer = hitActivity.AppendRecord(path);
             Log.Debug("Buffer Hit activity saved to {0}", insertBuffer);
-
-            // Log.Debug("Inserting to LiteDB.");
-            // var metrics = LiteDbProvider.GetCollections<HitActivity>();
-            // metrics.Insert(hitActivity);
-            // Log.Debug("Buffer saved.");
         }
 
         public static void HitActivityBackground(this TelegramService telegramService)
