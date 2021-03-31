@@ -7,7 +7,6 @@ using Zizi.Bot.Handlers.Commands.Group;
 using Zizi.Bot.Handlers.Commands.Metrics;
 using Zizi.Bot.Handlers.Commands.Notes;
 using Zizi.Bot.Handlers.Commands.Rss;
-using Zizi.Bot.Handlers.Commands.Rules;
 using Zizi.Bot.Handlers.Commands.SpamLearning;
 using Zizi.Bot.Handlers.Commands.Tags;
 using Zizi.Bot.Handlers.Commands.Welcome;
@@ -46,8 +45,7 @@ namespace Zizi.Bot.Extensions
                 .AddScoped<GlobalReportCommand>()
                 .AddScoped<StorageCommand>()
                 .AddScoped<SettingsCommand>()
-                .AddScoped<ResetSettingsCommand>()
-                .AddScoped<MigrateCommand>();
+                .AddScoped<ResetSettingsCommand>();
         }
 
         public static IServiceCollection AddGBanCommands(this IServiceCollection services)
