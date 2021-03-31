@@ -57,10 +57,12 @@ namespace Zizi.Bot.Handlers.Commands.SpamLearning
                 var learnData = new LearnData
                 {
                     Message = repText.Replace("\n", " "),
-                    Label = mark
+                    Label = mark,
+                    ChatId = _telegramService.ChatId,
+                    FromId = _telegramService.FromId
                 };
 
-                if (LearningService.IsExist(learnData))
+                if (_learningService.IsExist(learnData))
                 {
                     Log.Information("This message has learned");
                     await _telegramService.EditAsync("Pesan ini mungkin sudah di tambahkan.");
@@ -70,11 +72,9 @@ namespace Zizi.Bot.Handlers.Commands.SpamLearning
                 await _learningService.Save(learnData);
 
                 await _telegramService.EditAsync("Memperbarui local dataset");
-                // MachineLearning.WriteToCsv();
 
                 await _telegramService.EditAsync("Sedang mempelajari dataset");
                 await MachineLearning.SetupEngineAsync();
-                // BackgroundJob.Enqueue(() => LearningHelper.SetupEngine());
 
                 await _telegramService.EditAsync("Pesan berhasil di tambahkan ke Dataset");
             }
@@ -85,8 +85,6 @@ namespace Zizi.Bot.Handlers.Commands.SpamLearning
 
                 await _telegramService.EditAsync("Training selesai");
             }
-
-            // await _telegramService.SendTextAsync("Balas pesan yang ingin di pelajari");
         }
     }
 }
