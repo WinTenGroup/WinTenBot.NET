@@ -48,6 +48,7 @@ namespace Zizi.Bot.Extensions
                                         .UseCommand<AddKataCommand>("wfil")
                                         .UseCommand<AddNotesCommand>("addfilter")
                                         .UseCommand<AdminCommand>("admin")
+                                        .UseCommand<AdminCommand>("adminlist")
                                         .UseCommand<AfkCommand>("afk")
                                         .UseCommand<AllDebridCommand>("ad")
                                         .UseCommand<BanCommand>("ban")

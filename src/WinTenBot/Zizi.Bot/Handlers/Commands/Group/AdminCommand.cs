@@ -1,57 +1,66 @@
-﻿using System.Threading;
+﻿using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using Serilog;
 using Telegram.Bot.Framework.Abstractions;
 using Telegram.Bot.Types.Enums;
 using Zizi.Bot.Services;
 using Zizi.Bot.Telegram;
+using Zizi.Core.Utils.Text;
 
 namespace Zizi.Bot.Handlers.Commands.Group
 {
     public class AdminCommand : CommandBase
     {
-        private TelegramService _telegramService;
+        private readonly TelegramService _telegramService;
+
+        public AdminCommand(TelegramService telegramService)
+        {
+            _telegramService = telegramService;
+        }
 
         public override async Task HandleAsync(IUpdateContext context, UpdateDelegate next, string[] args,
             CancellationToken cancellationToken)
         {
-            var msg = context.Update.Message;
-            _telegramService = new TelegramService(context);
-            var client = _telegramService.Client;
+            await _telegramService.AddUpdateContext(context);
 
-            await _telegramService.SendTextAsync("🍽 Loading..").ConfigureAwait(false);
-            //            var admins = context.Update.Message.Chat.AllMembersAreAdministrators;
-            var admins = await client.GetChatAdministratorsAsync(msg.Chat.Id, cancellationToken)
-                .ConfigureAwait(false);
+            if (_telegramService.IsPrivateChat)
+            {
+                Log.Warning("Get admin list only for group");
+                return;
+            }
+
+            await _telegramService.SendTextAsync("🍽 Loading..");
+
+            var admins = await _telegramService.GetChatAdmin();
+
             var creatorStr = string.Empty;
-            var adminStr = string.Empty;
+            var sbAdmin = new StringBuilder();
+
             int number = 1;
             foreach (var admin in admins)
             {
                 var user = admin.User;
-                var nameLink = Members.GetNameLink(user.Id, (user.FirstName + " " + user.LastName).Trim());
+                var nameLink = user.Id.GetNameLink((user.FirstName + " " + user.LastName).Trim());
                 if (admin.Status == ChatMemberStatus.Creator)
                 {
                     creatorStr = nameLink;
                 }
                 else
                 {
-                    adminStr += $"{number++}. {nameLink}\n";
+                    sbAdmin.AppendLine($"{number++}. {nameLink}");
                 }
-
-                //                Console.WriteLine(TextHelper.ToJson(admin));
-                //                await chatProcessor.EditAsync(TextHelper.ToJson(admin));
             }
 
             var sendText = $"👤 <b>Creator</b>" +
                            $"\n└ {creatorStr}" +
                            $"\n" +
                            $"\n👥️ <b>Administrators</b>" +
-                           $"\n{adminStr}";
+                           $"\n{sbAdmin.ToTrimmedString()}";
 
-            await _telegramService.EditAsync(sendText)
-                .ConfigureAwait(false);
+            await _telegramService.EditAsync(sendText);
 
-            await _telegramService.UpdateCacheAdminAsync().ConfigureAwait(false);
+            await _telegramService.UpdateCacheAdminAsync();
         }
     }
 }
