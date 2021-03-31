@@ -9,22 +9,20 @@ using Zizi.Bot.Common;
 using Zizi.Bot.IO;
 using Zizi.Bot.Providers;
 
-namespace Zizi.Bot.Services
+namespace Zizi.Bot.Services.Datas
 {
     public class MediaFilterService
     {
-        private string baseTable = "media_filters";
-        private string fileJson = "media_filter.json";
-
+        private readonly string baseTable = "media_filters";
+        private readonly string fileJson = "media_filter.json";
 
         public async Task<bool> IsExist(string key, string value)
         {
             var query = await new Query(baseTable)
                 .ExecForMysql(true)
                 .Where(key, value)
-                .GetAsync()
-                .ConfigureAwait(false);
-            
+                .GetAsync();
+
             return query.Any();
 
             // var sql = $"SELECT * FROM {baseTable} WHERE {key} = '{value}'";
@@ -34,36 +32,33 @@ namespace Zizi.Bot.Services
 
         public async Task<bool> IsExistInCache(string key, string val)
         {
-            var data = await ReadCacheAsync()
-                .ConfigureAwait(false);
+            var data = await ReadCacheAsync();
             var search = data.AsEnumerable()
                 .Where(row => row.Field<string>(key) == val);
             if (!search.Any()) return false;
 
             var filtered = search.CopyToDataTable();
-            Log.Information($"Media found in Caches: {filtered.ToJson()}");
+            Log.Information("Media found in Caches: {V}", filtered.ToJson());
             return true;
         }
 
         public async Task SaveAsync(Dictionary<string, object> data)
         {
-//            var json = TextHelper.ToJson(data);
-            Log.Information(data.ToJson());
+            //            var json = TextHelper.ToJson(data);
+            Log.Information("Data : {0}", data.ToJson(true));
             var insert = await new Query(baseTable)
                 .ExecForMysql()
-                .InsertAsync(data)
-                .ConfigureAwait(false);
-            
+                .InsertAsync(data);
+
             // var insert = await _mySqlProvider.Insert(baseTable, data);
-            Log.Information($"SaveFile: {insert}");
+            Log.Information("SaveFile: {Insert}", insert);
         }
 
         public async Task<DataTable> GetAllMedia()
         {
             var query = await new Query(baseTable)
                 .ExecForMysql(true)
-                .GetAsync()
-                .ConfigureAwait(false);
+                .GetAsync();
             // var sql = $"SELECT * FROM {baseTable}";
             // var data = await _mySqlProvider.ExecQueryAsync(sql);
             var data = query.ToJson().MapObject<DataTable>();
@@ -72,18 +67,15 @@ namespace Zizi.Bot.Services
 
         public async Task UpdateCacheAsync()
         {
-            var data = await GetAllMedia()
-                .ConfigureAwait(false); 
-            Log.Information($"Updating Media Filter caches to {fileJson}");
+            var data = await GetAllMedia();
+            Log.Information("Updating Media Filter caches to {FileJson}", fileJson);
 
-            await data.WriteCacheAsync(fileJson)
-                .ConfigureAwait(false);
+            await data.WriteCacheAsync(fileJson);
         }
 
         public async Task<DataTable> ReadCacheAsync()
         {
-            var dataTable = await fileJson.ReadCacheAsync<DataTable>()
-                .ConfigureAwait(false);
+            var dataTable = await fileJson.ReadCacheAsync<DataTable>();
             return dataTable;
         }
     }

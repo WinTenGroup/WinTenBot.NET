@@ -28,17 +28,32 @@ namespace Zizi.Bot.Extensions
         {
             return services
                 .AddScoped<AfkService>()
-                .AddScoped<SettingsService>();
-                .AddScoped<TagsService>();
+                .AddScoped<GlobalBanService>()
+                .AddScoped<RssService>()
+                .AddScoped<SettingsService>()
+                .AddScoped<TagsService>()
                 .AddScoped<WordFilterService>();
         }
 
         public static IServiceCollection AddFeatureServices(this IServiceCollection services)
         {
             return services
+                .AddScoped<AntiSpamService>()
                 .AddScoped<IWeatherService, WeatherService>()
+                .AddScoped<TelegramService>()
                 .AddScoped<ChatService>()
                 .AddScoped<RssFeedService>()
+                .AddScoped<CekResiService>()
+                .AddScoped(service =>
+                {
+                    var configuration = service.GetRequiredService<IConfiguration>();
+
+                    var token = configuration.GetSection("ZiziBot:ApiToken").Value;
+                    var client = new TelegramBotClient(token);
+
+                    return client;
+                })
+                .AddScoped<DeepAiService>();
         }
 
         public static IServiceCollection AddCallbackQueryHandlers(this IServiceCollection services)

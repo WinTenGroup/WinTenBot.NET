@@ -65,58 +65,6 @@ namespace Zizi.Bot.Services
         public IUpdateContext Context { get; private set; }
         public ITelegramBotClient Client { get; private set; }
 
-        [Obsolete("Please call AddUpdateContext after inject into DI")]
-        public TelegramService(IUpdateContext updateContext)
-        {
-            // var sw = Stopwatch.StartNew();
-
-            Context = updateContext;
-            Client = updateContext.Bot.Client;
-            var update = updateContext.Update;
-
-            EditedMessage = updateContext.Update.EditedMessage;
-
-            AnyMessage = update.Message;
-            if (update.EditedMessage != null)
-                AnyMessage = update.EditedMessage;
-
-            if (update.CallbackQuery?.Message != null)
-                AnyMessage = update.CallbackQuery.Message;
-
-            Message = updateContext.Update.CallbackQuery != null ? updateContext.Update.CallbackQuery.Message : updateContext.Update.Message;
-
-            if (updateContext.Update.CallbackQuery != null) CallbackQuery = updateContext.Update.CallbackQuery;
-
-            MessageOrEdited = Message ?? EditedMessage;
-
-            if (Message != null)
-            {
-                TimeInit = Message.Date.GetDelay();
-            }
-
-            if (AnyMessage != null)
-            {
-                FromId = AnyMessage.From.Id;
-                ChatId = AnyMessage.Chat.Id;
-                IsNoUsername = AnyMessage.From.IsNoUsername();
-                IsChatRestricted = ChatId.CheckRestriction();
-                IsFromSudo = FromId.IsSudoer();
-
-                if (AnyMessage.Text != null) MessageTextParts = AnyMessage.Text.SplitText(" ").ToArray();
-
-                CheckIsPrivateChat();
-
-                CheckBotAdmin().GetAwaiter();
-                CheckFromAdmin().GetAwaiter();
-            }
-
-            var settingService = new SettingsService(AnyMessage);
-            CurrentSetting = settingService.ReadCache().Result;
-
-            // Log.Debug("TelegramService complete in {0}", sw.Elapsed);
-            // sw.Stop();
-        }
-
         public TelegramService(
             AppConfig appConfig,
             IEasyCachingProvider cachingProvider,

@@ -31,8 +31,8 @@ namespace Zizi.Bot.Services.HangfireJobs
         public async Task CheckBotAdminOnGroup()
         {
             Log.Information("Starting Check bot is Admin on all Group!");
-            var botClient = BotSettings.Client;
-            var urlAddTo = await botClient.GetUrlStart("startgroup=new");
+            // var botClient = BotSettings.Client;
+            // var urlAddTo = await _botClient.GetUrlStart("startgroup=new");
 
             var chatGroups = _queryFactory.FromQuery(new Query("group_settings"))
                 .WhereNot("chat_type", "Private")
@@ -42,13 +42,13 @@ namespace Zizi.Bot.Services.HangfireJobs
             foreach (var chatGroup in chatGroups)
             {
                 var chatId = chatGroup.ChatId;
-                var isAdmin = chatGroup.IsAdmin;
-                Log.Debug("Bot is Admin on {0}? {1}", chatId, isAdmin);
+                // var isAdmin = chatGroup.IsAdmin;
+                // Log.Debug("Bot is Admin on {0}? {1}", chatId, isAdmin);
 
-                // var me = await botClient.GetMeAsync();
-                // var isAdminChat = await _botClient.IsAdminChat(long.Parse(chatId), me.Id);
+                var me = await _botClient.GetMeAsync();
+                var isAdminChat = await _botClient.IsAdminChat(long.Parse(chatId), me.Id);
 
-                // if (isAdminChat) continue;
+                if (isAdminChat) continue;
 
                 Log.Debug("Doing leave chat from {0}", chatId);
                 try
@@ -65,8 +65,8 @@ namespace Zizi.Bot.Services.HangfireJobs
                         }
                     });
 
-                    await botClient.SendTextMessageAsync(chatId, msgLeave, ParseMode.Html, replyMarkup: inlineKeyboard);
-                    await botClient.LeaveChatAsync(chatId);
+                    await _botClient.SendTextMessageAsync(chatId, msgLeave, ParseMode.Html, replyMarkup: inlineKeyboard);
+                    await _botClient.LeaveChatAsync(chatId);
                 }
                 catch (Exception ex)
                 {
@@ -76,7 +76,7 @@ namespace Zizi.Bot.Services.HangfireJobs
                     }
                     else if (ex.Message.ToLower().Contains("forbidden"))
                     {
-                        Log.Warning(ex.Message);
+                        Log.Warning("{0}",ex.Message);
                     }
                     else
                     {
