@@ -44,6 +44,7 @@ namespace Zizi.Bot.Providers
             return factory.FromQuery(query);
         }
 
+        [Obsolete("This method will be replaced with QueryFactory from DI")]
         public static async Task<int> ExecForMysqlNonQueryAsync(this string sql, object param = null,
             bool printSql = false)
         {
@@ -60,6 +61,7 @@ namespace Zizi.Bot.Providers
             return await factory.StatementAsync(sql, param);
         }
 
+        [Obsolete("This method will be replaced with QueryFactory from DI", true)]
         public static int ExecForMysqlNonQuery(this string sql, object param = null, bool printSql = false)
         {
             var connection = new MySqlConnection(BotSettings.DbConnectionString);
@@ -107,6 +109,7 @@ namespace Zizi.Bot.Providers
             return factory.Select(sql, param);
         }
 
+        [Obsolete("This method will be replaced with QueryFactory from DI")]
         public static async Task<int> MysqlDeleteDuplicateRowAsync(this string tableName, string columnKey,
             bool printSql = false)
         {
