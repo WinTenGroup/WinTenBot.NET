@@ -61,7 +61,7 @@ namespace Zizi.Bot.Handlers.Commands.Chat
             };
 
             var update = await _settingsService.SaveSettingsAsync(data);
-            await _settingsService.UpdateSettingsCache(chatId);
+            await _settingsService.UpdateCacheAsync(chatId);
             Log.Information("Result: {Update}", update);
 
             await _telegramService.EditAsync("Pengaturan awal berhasil di kembalikan");
