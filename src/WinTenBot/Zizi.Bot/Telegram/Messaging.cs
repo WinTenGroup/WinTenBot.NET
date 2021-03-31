@@ -139,7 +139,6 @@ namespace Zizi.Bot.Telegram
                 foreach (var wordFilter in listWords)
                 {
                     var isGlobal = wordFilter.IsGlobal;
-                    var isDeep = wordFilter.DeepFilter;
 
                     var forFilter = wordFilter.Word.ToLowerCase();
                     if (forFilter.EndsWith("*", StringComparison.CurrentCulture))
@@ -159,7 +158,7 @@ namespace Zizi.Bot.Telegram
                     {
                         forFilter = wordFilter.Word.ToLowerCase().CleanExceptAlphaNumeric();
                         if (forCompare == forFilter) isShould = true;
-                        Log.Debug("'{0}' == '{1}' ? {2}. Deep: {3}, Global: {4}", forCompare, forFilter, isShould, isDeep, isGlobal);
+                        Log.Debug("'{0}' == '{1}' ? {2}, Global: {3}", forCompare, forFilter, isShould, isGlobal);
                     }
 
                     if (!isShould) continue;
