@@ -1,7 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstractions;
-using Zizi.Bot.Providers;
 using Zizi.Bot.Telegram;
 using Zizi.Bot.Services;
 
@@ -9,12 +8,18 @@ namespace Zizi.Bot.Handlers.Commands.Group
 {
     public class DemoteCommand : CommandBase
     {
-        private TelegramService _telegramService;
+        private readonly TelegramService _telegramService;
+
+        public DemoteCommand(TelegramService telegramService)
+        {
+            _telegramService = telegramService;
+        }
 
         public override async Task HandleAsync(IUpdateContext context, UpdateDelegate next, string[] args,
             CancellationToken cancellationToken)
         {
-            _telegramService = new TelegramService(context);
+            await _telegramService.AddUpdateContext(context);
+
             var msg = context.Update.Message;
             if (msg.ReplyToMessage != null)
             {
@@ -24,9 +29,9 @@ namespace Zizi.Bot.Handlers.Commands.Group
             var userId = msg.From.Id;
             var nameLink = msg.GetFromNameLink();
 
-            var sendText = $"{nameLink} diturunkan dari admin";
+            var sendText = $"{nameLink} tidak lagi Admin";
 
-            var promote = await _telegramService.DemoteChatMemberAsync(userId).ConfigureAwait(false);
+            var promote = await _telegramService.DemoteChatMemberAsync(userId);
             if (!promote.IsSuccess)
             {
                 var errorCode = promote.ErrorCode;
@@ -36,8 +41,7 @@ namespace Zizi.Bot.Handlers.Commands.Group
                            $"\nPesan: {errorMessage}";
             }
 
-            await _telegramService.SendTextAsync(sendText)
-                .ConfigureAwait(false);
+            await _telegramService.SendTextAsync(sendText);
         }
     }
 }

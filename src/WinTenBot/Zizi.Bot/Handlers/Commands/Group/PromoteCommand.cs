@@ -1,7 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstractions;
-using Zizi.Bot.Providers;
 using Zizi.Bot.Telegram;
 using Zizi.Bot.Services;
 
@@ -9,12 +8,18 @@ namespace Zizi.Bot.Handlers.Commands.Group
 {
     public class PromoteCommand : CommandBase
     {
-        private TelegramService _telegramService;
+        private readonly TelegramService _telegramService;
+
+        public PromoteCommand(TelegramService telegramService)
+        {
+            _telegramService = telegramService;
+        }
 
         public override async Task HandleAsync(IUpdateContext context, UpdateDelegate next, string[] args,
             CancellationToken cancellationToken)
         {
-            _telegramService = new TelegramService(context);
+            await _telegramService.AddUpdateContext(context);
+
             var msg = context.Update.Message;
             if (msg.ReplyToMessage != null)
             {
@@ -24,10 +29,9 @@ namespace Zizi.Bot.Handlers.Commands.Group
             var userId = msg.From.Id;
             var nameLink = msg.GetFromNameLink();
 
-            var sendText = $"{nameLink} berhasil menjadi admin";
+            var sendText = $"{nameLink} berhasil menjadi Admin";
 
-            var promote = await _telegramService.PromoteChatMemberAsync(userId)
-                .ConfigureAwait(false);
+            var promote = await _telegramService.PromoteChatMemberAsync(userId);
             if (!promote.IsSuccess)
             {
                 var errorCode = promote.ErrorCode;
@@ -37,8 +41,7 @@ namespace Zizi.Bot.Handlers.Commands.Group
                            $"\nPesan: {errorMessage}";
             }
 
-            await _telegramService.SendTextAsync(sendText)
-                .ConfigureAwait(false);
+            await _telegramService.SendTextAsync(sendText);
         }
     }
 }
