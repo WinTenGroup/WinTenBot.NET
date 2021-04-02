@@ -8,12 +8,18 @@ namespace Zizi.Bot.Handlers.Commands.Group
 {
     public class PinCommand : CommandBase
     {
-        private TelegramService _telegramService;
+        private readonly TelegramService _telegramService;
+
+        public PinCommand(TelegramService telegramService)
+        {
+            _telegramService = telegramService;
+        }
 
         public override async Task HandleAsync(IUpdateContext context, UpdateDelegate next, string[] args,
             CancellationToken cancellationToken)
         {
-            _telegramService = new TelegramService(context);
+            await _telegramService.AddUpdateContext(context);
+
             var msg = _telegramService.MessageOrEdited;
             var client = context.Bot.Client;
 
@@ -30,15 +36,13 @@ namespace Zizi.Bot.Handlers.Commands.Group
             if (msg.ReplyToMessage != null)
             {
                 await client.PinChatMessageAsync(
-                        msg.Chat.Id,
-                        msg.ReplyToMessage.MessageId,
-                        cancellationToken: cancellationToken)
-                    .ConfigureAwait(false);
+                    msg.Chat.Id,
+                    msg.ReplyToMessage.MessageId,
+                    cancellationToken: cancellationToken);
                 return;
             }
 
-            await _telegramService.SendTextAsync(sendText, replyToMsgId: msg.MessageId)
-                .ConfigureAwait(false);
+            await _telegramService.SendTextAsync(sendText, replyToMsgId: msg.MessageId);
         }
     }
 }
