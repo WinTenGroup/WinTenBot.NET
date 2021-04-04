@@ -8,27 +8,29 @@ namespace Zizi.Bot.Handlers.Commands.Group
 {
     public class WarnCommand : CommandBase
     {
-        private TelegramService _telegramService;
+        private readonly TelegramService _telegramService;
+
+        public WarnCommand(TelegramService telegramService)
+        {
+            _telegramService = telegramService;
+        }
 
         public override async Task HandleAsync(IUpdateContext context, UpdateDelegate next, string[] args,
             CancellationToken cancellationToken)
         {
-            _telegramService = new TelegramService(context);
+            await _telegramService.AddUpdateContext(context);
+
             var msg = _telegramService.Message;
 
-            if (!await _telegramService.IsAdminOrPrivateChat()
-                .ConfigureAwait(false))
-                return;
+            if (!_telegramService.IsAdminOrPrivateChat()) return;
 
             if (msg.ReplyToMessage != null)
             {
-                await _telegramService.WarnMemberAsync()
-                    .ConfigureAwait(false);
+                await _telegramService.WarnMemberAsync();
             }
             else
             {
-                await _telegramService.SendTextAsync("Balas pengguna yang akan di Warn", replyToMsgId: msg.MessageId)
-                    .ConfigureAwait(false);
+                await _telegramService.SendTextAsync("Balas pengguna yang akan di Warn", replyToMsgId: msg.MessageId);
             }
         }
     }
