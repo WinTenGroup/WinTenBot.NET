@@ -4,40 +4,42 @@ using System.Threading.Tasks;
 using Serilog;
 using Telegram.Bot.Framework.Abstractions;
 using Zizi.Bot.Common;
-using Zizi.Bot.Telegram;
 using Zizi.Bot.Services;
+using Zizi.Bot.Services.Datas;
+using Zizi.Bot.Telegram;
 
-namespace Zizi.Bot.Handlers.Commands.GlobalBan
+namespace Zizi.Bot.Handlers.Commands.Core
 {
     public class MediaFilterCommand : CommandBase
     {
-        private MediaFilterService _mediaFilterService;
-        private TelegramService _telegramService;
+        private readonly MediaFilterService _mediaFilterService;
+        private readonly TelegramService _telegramService;
 
-        public MediaFilterCommand()
+        public MediaFilterCommand(MediaFilterService mediaFilterService, TelegramService telegramService)
         {
-            _mediaFilterService = new MediaFilterService();
+            _mediaFilterService = mediaFilterService;
+            _telegramService = telegramService;
         }
 
         public override async Task HandleAsync(IUpdateContext context, UpdateDelegate next, string[] args,
             CancellationToken cancellationToken)
         {
-            _telegramService = new TelegramService(context);
+            await _telegramService.AddUpdateContext(context);
+
             var msg = context.Update.Message;
 
             var sendText = "Saat ini hanya untuk Sudoer saja.";
-            if (msg.From.Id.IsSudoer())
+            if (_telegramService.IsFromSudo)
             {
                 sendText = "Reply pesan untuk menyaring..";
                 if (msg.ReplyToMessage != null)
                 {
                     var repMsg = msg.ReplyToMessage;
-                    Log.Information(msg.Type.ToJson(true));
+                    Log.Information("MessageType: {0}", msg.Type.ToJson(true));
 
                     var fileId = repMsg.GetFileId();
 
-                    var isExist = await _mediaFilterService.IsExist("file_id", fileId)
-                        .ConfigureAwait(false);
+                    var isExist = await _mediaFilterService.IsExist("file_id", fileId);
                     if (!isExist)
                     {
                         var data = new Dictionary<string, object>()
@@ -48,8 +50,7 @@ namespace Zizi.Bot.Handlers.Commands.GlobalBan
                             {"blocked_from", msg.Chat.Id}
                         };
 
-                        await _mediaFilterService.SaveAsync(data)
-                            .ConfigureAwait(false);
+                        await _mediaFilterService.SaveAsync(data);
                         sendText = "File ini berhasil di simpan";
                     }
                     else
@@ -65,8 +66,7 @@ namespace Zizi.Bot.Handlers.Commands.GlobalBan
                     "terima kasih atas laporan nya.";
             }
 
-            await _telegramService.SendTextAsync(sendText)
-                .ConfigureAwait(false);
+            await _telegramService.SendTextAsync(sendText);
         }
     }
 }
