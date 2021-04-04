@@ -11,19 +11,24 @@ namespace Zizi.Bot.Handlers.Commands.Group
 {
     public class ReportCommand : CommandBase
     {
-        private TelegramService _telegramService;
+        private readonly TelegramService _telegramService;
+
+        public ReportCommand(TelegramService telegramService)
+        {
+            _telegramService = telegramService;
+        }
 
         public override async Task HandleAsync(IUpdateContext context, UpdateDelegate next, string[] args,
             CancellationToken cancellationToken)
         {
-            _telegramService = new TelegramService(context);
+            await _telegramService.AddUpdateContext(context);
+
             var msg = context.Update.Message;
             var sendText = "Balas pesan yg mau di report";
 
             if (msg.Chat.Type == ChatType.Private)
             {
-                await _telegramService.SendTextAsync("Report hanya untuk grup saja")
-                    .ConfigureAwait(false);
+                await _telegramService.SendTextAsync("Report hanya untuk grup saja");
                 return;
             }
 
@@ -33,16 +38,14 @@ namespace Zizi.Bot.Handlers.Commands.Group
 
                 if (msg.From.Id != repMsg.From.Id)
                 {
-                    var mentionAdmins = await _telegramService.GetMentionAdminsStr()
-                        .ConfigureAwait(false);
-                    var allListAdmin =await _telegramService.GetAllAdmins()
-                        .ConfigureAwait(false);
+                    var mentionAdmins = await _telegramService.GetMentionAdminsStr();
+                    var allListAdmin = await _telegramService.GetAllAdmins();
                     var allAdminId = allListAdmin.Select(a => a.User.Id);
-                    
+
                     var reporterNameLink = msg.GetFromNameLink();
                     var reportedNameLink = repMsg.GetFromNameLink();
                     var repMsgLink = repMsg.GetMessageLink();
-                    
+
                     sendText = $"Ada laporan nich." +
                                $"\n{reporterNameLink} melaporkan {reportedNameLink}" +
                                $"{mentionAdmins}";
@@ -62,16 +65,14 @@ namespace Zizi.Bot.Handlers.Commands.Group
                     });
 
                     await _telegramService.SendTextAsync(sendText)
-                        .ConfigureAwait(false);
+                        ;
                     return;
                 }
 
                 sendText = "Melaporkan diri sendiri? 🤔";
             }
 
-
-            await _telegramService.SendTextAsync(sendText)
-                .ConfigureAwait(false);
+            await _telegramService.SendTextAsync(sendText);
         }
     }
 }
