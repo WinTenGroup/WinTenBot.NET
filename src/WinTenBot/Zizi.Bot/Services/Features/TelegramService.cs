@@ -731,6 +731,27 @@ namespace Zizi.Bot.Services
             return isKicked;
         }
 
+        public async Task<bool> KickMemberAsync(int userId, bool unban = false)
+        {
+            bool isKicked;
+
+            Log.Information("Kick {UserId} from {ChatId}", userId, ChatId);
+            try
+            {
+                await Client.KickChatMemberAsync(ChatId, userId, DateTime.Now);
+
+                if (unban) await UnBanMemberAsync(userId);
+                isKicked = true;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error Kick Member");
+                isKicked = false;
+            }
+
+            return isKicked;
+        }
+
         public async Task UnbanMemberAsync(User user = null)
         {
             var idTarget = user.Id;
