@@ -64,6 +64,8 @@ namespace Zizi.Bot.Telegram
                     return;
                 }
 
+                await RemoveOldWarnUsernameQueue(telegramService, chatId);
+
                 var isBotAdmin = await telegramService.IsBotAdmin();
                 if (!isBotAdmin)
                 {
@@ -234,8 +236,9 @@ namespace Zizi.Bot.Telegram
             var message = telegramService.Message;
             var callback = telegramService.CallbackQuery;
 
+            await RemoveOldWarnUsernameQueue(telegramService, message.Chat.Id);
+
             var updateResult = (await GetWarnUsernameHistory(message))
-                .ToList()
                 .OrderBy(x => x.StepCount)
                 .ToList();
 
@@ -391,7 +394,7 @@ namespace Zizi.Bot.Telegram
                         StepCount = newStep,
                         ChatId = chatId,
                         CreatedAt = warnHistory.CreatedAt,
-                        UpdatedAt = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
+                        UpdatedAt = DateTime.Now
                     });
 
                 Log.Information("Update step: {0}", insertHit);
@@ -411,7 +414,7 @@ namespace Zizi.Bot.Telegram
                     LastName = lastName,
                     StepCount = 1,
                     ChatId = chatId,
-                    CreatedAt = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
+                    CreatedAt = DateTime.Now
                 });
 
                 Log.Information("Insert Hit: {0}", insertHit);
@@ -468,6 +471,30 @@ namespace Zizi.Bot.Telegram
             Log.Information("Update step: {0}", resetWarn);
         }
 
+        public static async Task RemoveOldWarnUsernameQueue(this TelegramService telegramService, long chatId)
+        {
+            var sw = Stopwatch.StartNew();
+
+            var collections = await GetWarnUsernameCollectionAsync();
+
+            var listWarn = collections.AsQueryable().Where(x => x.ChatId == chatId);
+            Parallel.ForEach(listWarn, async (history) =>
+            {
+                var createdAt = history.CreatedAt;
+                var range = (DateTime.Now - createdAt).Days;
+                if (range <= 2) return;
+
+                var userId = history.FromId;
+                Log.Debug("Kicking {UserId} because longer than 2 days", userId);
+                await telegramService.KickMemberAsync(userId, true);
+
+                await collections.DeleteOneAsync(usernameHistory => usernameHistory.FromId == userId);
+            });
+
+            Log.Debug("Cleaning old Warn Username queue completed in {Elapsed}", sw.Elapsed);
+            sw.Stop();
+        }
+
         public static async Task UpdateLastWarnUsernameMessageIdAsync(this Message message, long messageId)
         {
             var sw = Stopwatch.StartNew();
@@ -483,7 +510,7 @@ namespace Zizi.Bot.Telegram
                 .AsQueryable().First(x => x.FromId == fromId && x.ChatId == chatId);
 
             current.LastWarnMessageId = messageId.ToInt();
-            current.UpdatedAt = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+            current.UpdatedAt = DateTime.Now;
 
             var insertHit = await warnUsername.UpdateOneAsync(x =>
                 x.FromId == fromId && x.ChatId == chatId, current);
