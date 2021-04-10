@@ -485,6 +485,13 @@ namespace Zizi.Bot.Services
             }
 
             Message send = null;
+
+            if (sendText.IsNullOrEmpty())
+            {
+                Log.Warning("Message can't be send because null");
+                return send;
+            }
+
             try
             {
                 Log.Information("Sending message to {ChatTarget}", chatTarget);
