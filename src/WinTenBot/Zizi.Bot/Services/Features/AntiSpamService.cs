@@ -98,6 +98,8 @@ namespace Zizi.Bot.Services.Features
         public async Task<bool> CheckSpamWatch(int userId)
         {
             var sw = Stopwatch.StartNew();
+            var cacheKey = $"sw-ban_{userId}";
+
 
             var spamWatch = new SpamWatch();
             var spamWatchToken = _commonConfig.SpamWatchToken;
@@ -106,16 +108,16 @@ namespace Zizi.Bot.Services.Features
             {
                 var baseUrl = $"https://api.spamwat.ch/banlist/{userId}";
 
-                if (!await _cachingProvider.ExistsAsync(baseUrl))
+                if (!await _cachingProvider.ExistsAsync(cacheKey))
                 {
                     var check = await baseUrl
                         .WithOAuthBearerToken(spamWatchToken)
                         .GetJsonAsync<SpamWatch>();
 
-                    await _cachingProvider.SetAsync(baseUrl, check, TimeSpan.FromMinutes(5));
+                    await _cachingProvider.SetAsync(baseUrl, check, TimeSpan.FromMinutes(10));
                 }
 
-                var cache = await _cachingProvider.GetAsync<SpamWatch>(baseUrl);
+                var cache = await _cachingProvider.GetAsync<SpamWatch>(cacheKey);
 
                 spamWatch = cache.Value;
 
@@ -161,16 +163,23 @@ namespace Zizi.Bot.Services.Features
         /// <returns>A Task.</returns>
         public async Task<bool> IsCasBanAsync(int userId)
         {
+            var casCacheKey = $"cas-ban_{userId}";
             try
             {
                 var sw = Stopwatch.StartNew();
 
-                var url = "https://api.cas.chat/check".SetQueryParam("user_id", userId);
-                var resp = await url.GetJsonAsync<CasBan>();
+                if (!await _cachingProvider.ExistsAsync(casCacheKey))
+                {
+                    var url = "https://api.cas.chat/check".SetQueryParam("user_id", userId);
+                    var resp = await url.GetJsonAsync<CasBan>();
 
-                Log.Debug("CasBan Response: {0}", resp.ToJson(true));
+                    await _cachingProvider.SetAsync(casCacheKey, resp, TimeSpan.FromMinutes(10));
+                }
 
-                var isBan = resp.Ok;
+                var cache = await _cachingProvider.GetAsync<CasBan>(casCacheKey);
+                Log.Debug("CasBan Result: {0}", cache.ToJson(true));
+
+                var isBan = cache.Value.Ok;
                 Log.Debug("UserId: {0} is CAS ban: {1}", userId, isBan);
 
                 Log.Debug("CAS Check complete in {0}", sw.Elapsed);
