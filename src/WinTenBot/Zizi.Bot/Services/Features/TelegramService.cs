@@ -755,7 +755,7 @@ namespace Zizi.Bot.Services
         public async Task UnbanMemberAsync(User user = null)
         {
             var idTarget = user.Id;
-            Log.Information("Unban {IdTarget} from {Id}", idTarget, Message.Chat.Id);
+            Log.Information("Unban {IdTarget} from {ChatId}", idTarget, ChatId);
             try
             {
                 await Client.UnbanChatMemberAsync(Message.Chat.Id, idTarget);
@@ -769,7 +769,7 @@ namespace Zizi.Bot.Services
 
         public async Task UnBanMemberAsync(int userId = -1)
         {
-            Log.Information("Unban {UserId} from {Chat}", userId, Message.Chat);
+            Log.Information("Unban {UserId} from {ChatId}", userId, ChatId);
             try
             {
                 await Client.UnbanChatMemberAsync(Message.Chat.Id, userId);
@@ -884,7 +884,7 @@ namespace Zizi.Bot.Services
             }
             catch (Exception ex)
             {
-                Log.Error(ex.Demystify(), "Error restrict member");
+                Log.Error(ex.Demystify(), "Error restrict userId: {UserId} on {ChatId}", userId, ChatId);
                 var exceptionMsg = ex.Message;
                 if (exceptionMsg.Contains("CHAT_ADMIN_REQUIRED"))
                 {
