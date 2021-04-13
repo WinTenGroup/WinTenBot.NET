@@ -89,6 +89,7 @@ namespace Zizi.Bot.Extensions
                                         .UseCommand<RssInfoCommand>("rssinfo")
                                         .UseCommand<RssPullCommand>("rsspull")
                                         .UseCommand<RulesCommand>("rules")
+                                        .UseCommand<SetRssCommand>("addrss")
                                         .UseCommand<SetRssCommand>("setrss")
                                         .UseCommand<SettingsCommand>("settings")
                                         .UseCommand<SetWelcomeCommand>("setwelcome")
