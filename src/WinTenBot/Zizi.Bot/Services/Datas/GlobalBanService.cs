@@ -193,6 +193,21 @@ namespace Zizi.Bot.Services.Datas
             }
         }
 
+        #region GBan Admin
+
+        public async Task<bool> IsGBanAdminAsync(long userId)
+        {
+            var querySql = await _queryFactory.FromTable(GBanAdminTable)
+                .Where("user_id", userId)
+                .GetAsync<GBanAdminItem>();
+
+            var isRegistered = querySql.Any();
+            Log.Debug("UserId {0} is registered on ES2? {1}", userId, isRegistered);
+
+
+            return isRegistered;
+        }
+
         public async Task RegisterAdminAsync(GBanAdminItem gBanAdminItem)
         {
             var querySql = _queryFactory.FromTable(GBanAdminTable).Where("user_id", gBanAdminItem.UserId);
@@ -207,5 +222,15 @@ namespace Zizi.Bot.Services.Datas
                 });
             }
         }
+
+        public async Task SaveAdminGban(GBanAdminItem adminItem)
+        {
+            var querySql = await _queryFactory.FromTable(GBanAdminTable)
+                .InsertAsync(adminItem);
+            Log.Debug("Insert GBanReg: {0}", querySql);
+        }
+
+
+        #endregion
     }
 }
