@@ -10,9 +10,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zizi.WebApi", "Zizi.WebApi\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zizi.Portal", "Zizi.Portal\Zizi.Portal.csproj", "{74B777B9-764C-4192-9896-74667D1701A3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zizi.Core", "Zizi.Core\Zizi.Core.csproj", "{6BDF1EED-884B-4341-B103-738364252BE8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zizi.Core", "Zizi.Core\Zizi.Core.csproj", "{6BDF1EED-884B-4341-B103-738364252BE8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zizi.Mirror", "Zizi.Mirror\Zizi.Mirror.csproj", "{9A7D4E70-3CEF-4C20-80EF-AAF8E6FD3E79}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zizi.Mirror", "Zizi.Mirror\Zizi.Mirror.csproj", "{9A7D4E70-3CEF-4C20-80EF-AAF8E6FD3E79}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinTenDev.Parser", "WinTenDev.Parser\WinTenDev.Parser.csproj", "{AAA2C64A-B5E7-4822-9734-67E5761F2C74}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
