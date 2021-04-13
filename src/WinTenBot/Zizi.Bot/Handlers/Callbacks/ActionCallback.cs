@@ -9,27 +9,27 @@ namespace Zizi.Bot.Handlers.Callbacks
 {
     public class ActionCallback
     {
-        private TelegramService Telegram { get; set; }
-        private CallbackQuery CallbackQuery { get; set; }
+        private readonly TelegramService _telegramService;
+        private readonly CallbackQuery _callbackQuery;
 
         public ActionCallback(TelegramService telegramService)
         {
-            Telegram = telegramService;
-            CallbackQuery = telegramService.Context.Update.CallbackQuery;
+            _telegramService = telegramService;
+            _callbackQuery = telegramService.Context.Update.CallbackQuery;
         }
 
         public async Task<bool> ExecuteAsync()
         {
             Log.Information("Receiving Verify Callback");
 
-            var callbackData = CallbackQuery.Data;
-            var fromId = CallbackQuery.From.Id;
+            var callbackData = _callbackQuery.Data;
+            var fromId = _callbackQuery.From.Id;
             Log.Information("CallbackData: {CallbackData} from {FromId}", callbackData, fromId);
 
             var partCallbackData = callbackData.Split(" ");
             var action = partCallbackData.ValueOfIndex(1);
             var target = partCallbackData.ValueOfIndex(2).ToInt();
-            var isAdmin = await Telegram.IsAdminGroup(fromId);
+            var isAdmin = await _telegramService.IsAdminGroup(fromId);
 
             if (!isAdmin)
             {
@@ -41,8 +41,8 @@ namespace Zizi.Bot.Handlers.Callbacks
             {
                 case "remove-warn":
                     Log.Information("Removing warn for {Target}", target);
-                    await Telegram.RemoveWarnMemberStatAsync(target);
-                    await Telegram.EditMessageCallback($"Peringatan untuk UserID: {target} sudah di hapus");
+                    await _telegramService.RemoveWarnMemberStatAsync(target);
+                    await _telegramService.EditMessageCallback($"Peringatan untuk UserID: {target} sudah di hapus");
                     break;
 
                 default:
@@ -50,7 +50,7 @@ namespace Zizi.Bot.Handlers.Callbacks
                     break;
             }
 
-            await Telegram.AnswerCallbackQueryAsync("Succed!");
+            await _telegramService.AnswerCallbackQueryAsync("Succed!");
 
             return true;
         }

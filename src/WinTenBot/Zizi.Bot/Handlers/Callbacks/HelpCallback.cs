@@ -7,18 +7,18 @@ namespace Zizi.Bot.Handlers.Callbacks
 {
     public class HelpCallback
     {
-        private string CallBackData { get; set; }
+        private readonly string _callBackData;
         private readonly TelegramService _telegramService;
 
         public HelpCallback(TelegramService telegramService)
         {
             _telegramService = telegramService;
-            CallBackData = telegramService.CallbackQuery.Data;
+            _callBackData = telegramService.CallbackQuery.Data;
         }
 
         public async Task<bool> ExecuteAsync()
         {
-            var partsCallback = CallBackData.SplitText(" ");
+            var partsCallback = _callBackData.SplitText(" ");
             var sendText = await partsCallback[1].LoadInBotDocs();
             Log.Information("Docs: {SendText}", sendText);
             var subPartsCallback = partsCallback[1].SplitText("/");

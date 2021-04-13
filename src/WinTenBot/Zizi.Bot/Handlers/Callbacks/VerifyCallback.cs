@@ -11,13 +11,14 @@ namespace Zizi.Bot.Handlers.Callbacks
 {
     public class VerifyCallback
     {
-        private TelegramService Telegram { get; set; }
-        private CallbackQuery CallbackQuery { get; set; }
+        private readonly TelegramService _telegramService;
+        private readonly CallbackQuery _callbackQuery;
 
         public VerifyCallback(TelegramService telegramService)
         {
-            Telegram = telegramService;
-            CallbackQuery = telegramService.Context.Update.CallbackQuery;
+            _telegramService = telegramService;
+            _callbackQuery = telegramService.Context.Update.CallbackQuery;
+
             Log.Information("Receiving Verify Callback");
         }
 
@@ -25,9 +26,9 @@ namespace Zizi.Bot.Handlers.Callbacks
         {
             Log.Information("Executing Verify Callback");
 
-            var callbackData = CallbackQuery.Data;
-            var fromId = CallbackQuery.From.Id;
-            var chatId = CallbackQuery.Message.Chat.Id;
+            var callbackData = _callbackQuery.Data;
+            var fromId = _callbackQuery.From.Id;
+            var chatId = _callbackQuery.Message.Chat.Id;
 
             Log.Debug("CallbackData: {CallbackData} from {FromId}", callbackData, fromId);
 
@@ -40,12 +41,14 @@ namespace Zizi.Bot.Handlers.Callbacks
             if (callBackParam1 == "username")
             {
                 Log.Debug("Checking username");
-                if (CallbackQuery.From.IsNoUsername())
+                if (_callbackQuery.From.IsNoUsername())
                 {
                     answer = "Sepertinya Anda belum memasang Username, silakan di periksa kembali.";
                 }
                 else
                 {
+                    await _telegramService.RemoveOldWarnUsernameQueue(chatId);
+
                     var warnJson = await WarnUsernameUtil.GetWarnUsernameCollectionAsync();
                     var listWarns = warnJson.AsQueryable().ToList();
 
@@ -58,7 +61,7 @@ namespace Zizi.Bot.Handlers.Callbacks
 
                         try
                         {
-                            var chatMember = await Telegram.Client.GetChatMemberAsync(chatId, userId);
+                            var chatMember = await _telegramService.Client.GetChatMemberAsync(chatId, userId);
 
                             if (chatMember.User.IsNoUsername())
                             {
@@ -66,7 +69,7 @@ namespace Zizi.Bot.Handlers.Callbacks
                             }
                             else
                             {
-                                await Telegram.RestrictMemberAsync(fromId, true);
+                                await _telegramService.RestrictMemberAsync(fromId, true);
 
 
                                 if (isExist)
@@ -98,16 +101,16 @@ namespace Zizi.Bot.Handlers.Callbacks
                     answer = "Terima kasih sudah verifikasi Username!";
                 }
 
-                await Telegram.UpdateWarnMessageAsync();
+                await _telegramService.UpdateWarnMessageAsync();
                 Log.Debug("Verify Username finish");
             }
             else if (fromId == callBackParam1.ToInt64())
             {
-                await Telegram.RestrictMemberAsync(callBackParam1.ToInt(), true);
+                await _telegramService.RestrictMemberAsync(callBackParam1.ToInt(), true);
                 answer = "Terima kasih sudah verifikasi!";
             }
 
-            await Telegram.AnswerCallbackQueryAsync(answer);
+            await _telegramService.AnswerCallbackQueryAsync(answer);
             return true;
         }
     }

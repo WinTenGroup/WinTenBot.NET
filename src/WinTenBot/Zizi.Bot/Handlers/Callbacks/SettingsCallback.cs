@@ -13,23 +13,23 @@ namespace Zizi.Bot.Handlers.Callbacks
     {
         private readonly TelegramService _telegramService;
         private readonly SettingsService _settingsService;
-        private CallbackQuery CallbackQuery { get; set; }
+        private readonly CallbackQuery _callbackQuery;
 
         public SettingsCallback(TelegramService telegramService, SettingsService settingsService)
         {
             _telegramService = telegramService;
             _settingsService = settingsService;
 
-            CallbackQuery = telegramService.Context.Update.CallbackQuery;
+            _callbackQuery = telegramService.Context.Update.CallbackQuery;
         }
 
         public async Task<bool> ExecuteToggleAsync()
         {
             Log.Information("Processing Setting Callback.");
 
-            var chatId = CallbackQuery.Message.Chat.Id;
-            var fromId = CallbackQuery.From.Id;
-            var msgId = CallbackQuery.Message.MessageId;
+            var chatId = _callbackQuery.Message.Chat.Id;
+            var fromId = _callbackQuery.From.Id;
+            var msgId = _callbackQuery.Message.MessageId;
 
             var isAdmin = await _telegramService.IsAdminGroup(fromId);
             if (!isAdmin)
@@ -38,7 +38,7 @@ namespace Zizi.Bot.Handlers.Callbacks
                 return false;
             }
 
-            var callbackData = CallbackQuery.Data;
+            var callbackData = _callbackQuery.Data;
             var partedData = callbackData.Split(" ");
             var callbackParam = partedData.ValueOfIndex(1);
             var partedParam = callbackParam.Split("_");
