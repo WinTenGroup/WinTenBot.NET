@@ -80,9 +80,6 @@ namespace Zizi.Bot.Services
 
         public async Task AddUpdateContext(IUpdateContext updateContext)
         {
-            Log.Debug("Adding UpdateContext..");
-            var sw = Stopwatch.StartNew();
-
             Context = updateContext;
             Client = updateContext.Bot.Client;
             var update = updateContext.Update;
@@ -123,15 +120,8 @@ namespace Zizi.Bot.Services
 
                 await Task.WhenAll(CheckBotAdmin(), CheckFromAdmin(), getSettingsTask);
 
-                // CurrentSetting = await _settingsService.GetSettingsByGroup(ChatId);
                 CurrentSetting = getSettingsTask.Result;
             }
-
-            // var settingService = new SettingsService(AnyMessage);
-            // CurrentSetting = await settingService.ReadCache();
-
-            Log.Debug("Adding Update context complete in {0}", sw.Elapsed);
-            sw.Stop();
         }
 
         #region Chat
