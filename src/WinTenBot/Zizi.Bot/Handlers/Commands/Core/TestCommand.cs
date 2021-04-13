@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -82,21 +83,21 @@ namespace Zizi.Bot.Handlers.Commands.Core
                     await ExtractReplyMarkup();
                     break;
 
-                case "mk-remove-all":
-                    MonkeyCacheRemoveAll();
-                    break;
+                // case "mk-remove-all":
+                //     MonkeyCacheRemoveAll();
+                //     break;
 
-                case "mk-remove-expires":
-                    MonkeyCacheRemoveExpires();
-                    break;
+                // case "mk-remove-expires":
+                //     MonkeyCacheRemoveExpires();
+                //     break;
 
-                case "mk-view-all":
-                    MonkeyCacheViewAll();
-                    break;
+                // case "mk-view-all":
+                //     MonkeyCacheViewAll();
+                //     break;
 
-                case "mk-save-current":
-                    MonkeyCacheSaveCurrent();
-                    break;
+                // case "mk-save-current":
+                //     MonkeyCacheSaveCurrent();
+                //     break;
 
                 case "ml-nlp":
                     MachineLearningProcessNlp();
@@ -143,7 +144,7 @@ namespace Zizi.Bot.Handlers.Commands.Core
 
             if (repMsg == null) return;
 
-            var replyMarkups = repMsg.ReplyMarkup.InlineKeyboard;
+            var replyMarkups = repMsg.ReplyMarkup.InlineKeyboard.ToList();
             Log.Debug("ReplyMarkup: {0}", replyMarkups.ToJson(true));
 
             var flattened = replyMarkups.Flatten();
@@ -160,27 +161,27 @@ namespace Zizi.Bot.Handlers.Commands.Core
             await _telegramService.AppendTextAsync($"RawBtn: {sb}");
         }
 
-        private void MonkeyCacheRemoveAll()
-        {
-            MonkeyCacheUtil.DeleteKeys();
-            MonkeyCacheUtil.GetKeys();
-        }
+        // private void MonkeyCacheRemoveAll()
+        // {
+        //     MonkeyCacheUtil.DeleteKeys();
+        //     MonkeyCacheUtil.GetKeys();
+        // }
+        //
+        // private void MonkeyCacheRemoveExpires()
+        // {
+        //     MonkeyCacheUtil.DeleteExpired();
+        // }
 
-        private void MonkeyCacheRemoveExpires()
-        {
-            MonkeyCacheUtil.DeleteExpired();
-        }
+        // private void MonkeyCacheSaveCurrent()
+        // {
+        //     var msg = _telegramService.AnyMessage;
+        //     _telegramService.SetChatCache("messages", msg);
+        // }
 
-        private void MonkeyCacheSaveCurrent()
-        {
-            var msg = _telegramService.AnyMessage;
-            _telegramService.SetChatCache("messages", msg);
-        }
-
-        private void MonkeyCacheViewAll()
-        {
-            var keys = MonkeyCacheUtil.GetKeys();
-        }
+        // private void MonkeyCacheViewAll()
+        // {
+        //     var keys = MonkeyCacheUtil.GetKeys();
+        // }
 
         private async Task LiteDbSaveCurrent()
         {
