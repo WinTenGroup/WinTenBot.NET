@@ -7,43 +7,48 @@ using Serilog;
 using Telegram.Bot.Framework.Abstractions;
 using Zizi.Bot.Common;
 using Zizi.Bot.IO;
-using Zizi.Bot.Telegram;
 using Zizi.Bot.Enums;
 using Zizi.Bot.Models;
 using Zizi.Bot.Services;
+using Zizi.Bot.Services.Datas;
+using System.IO;
 
 namespace Zizi.Bot.Handlers.Commands.Rss
 {
     public class ExportRssCommand : CommandBase
     {
-        private RssService _rssService;
-        private TelegramService _telegramService;
+        private readonly RssService _rssService;
+        private readonly TelegramService _telegramService;
+
+        public ExportRssCommand(TelegramService telegramService, RssService rssService)
+        {
+            _telegramService = telegramService;
+            _rssService = rssService;
+        }
 
         public override async Task HandleAsync(IUpdateContext context, UpdateDelegate next, string[] args,
             CancellationToken cancellationToken)
         {
-            _telegramService = new TelegramService(context);
-            _rssService = new RssService(_telegramService.Message);
+            await _telegramService.AddUpdateContext(context);
+
             var msg = _telegramService.Message;
             var chatId = msg.Chat.Id;
             var msgId = msg.MessageId;
             var msgText = msg.Text;
             var dateDate = DateTime.UtcNow.ToString("yyyy-MM-dd", new DateTimeFormatInfo());
 
-            var isAdminOrPrivate = await _telegramService.IsAdminOrPrivateChat()
-                .ConfigureAwait(false);
-            
+            var isAdminOrPrivate = _telegramService.IsAdminOrPrivateChat();
+
             if (!isAdminOrPrivate)
             {
                 var send = "Maaf, hanya Admin yang dapat mengekspor daftar RSS";
-                await _telegramService.SendTextAsync(send).ConfigureAwait(false);
+                await _telegramService.SendTextAsync(send);
                 return;
             }
 
-            var rssSettings = await _rssService.GetRssSettingsAsync()
-                .ConfigureAwait(false);
-            
-            Log.Information($"RssSettings: {rssSettings.ToJson(true)}");
+            var rssSettings = await _rssService.GetRssSettingsAsync(chatId);
+
+            Log.Information("RssSettings: {V}", rssSettings.ToJson(true));
 
             var listRss = new StringBuilder();
             foreach (var rss in rssSettings)
@@ -51,7 +56,7 @@ namespace Zizi.Bot.Handlers.Commands.Rss
                 listRss.AppendLine(rss.UrlFeed);
             }
 
-            Log.Information($"ListUrl: \n{listRss}");
+            Log.Information("ListUrl: \n{ListRss}", listRss);
 
             var listRssStr = listRss.ToString().Trim();
             var sendText = "Daftar RSS ini tidak terenkripsi, dapat di pulihkan di obrolan mana saja. " +
@@ -65,11 +70,10 @@ namespace Zizi.Bot.Handlers.Commands.Rss
             }
 
             var filePath = $"{chatId}/rss-feed_{dateDate}_{msgId}.txt";
-            await listRssStr.WriteTextAsync(filePath).ConfigureAwait(false);
+            await listRssStr.WriteTextAsync(filePath);
 
-            var fileSend = BotSettings.PathCache + $"/{filePath}";
-            await _telegramService.SendMediaAsync(fileSend, MediaType.LocalDocument, sendText)
-                .ConfigureAwait(false);
+            var fileSend = Path.Combine("Storage", "Caches") + $"/{filePath}";
+            await _telegramService.SendMediaAsync(fileSend, MediaType.LocalDocument, sendText);
 
             fileSend.DeleteFile();
         }
