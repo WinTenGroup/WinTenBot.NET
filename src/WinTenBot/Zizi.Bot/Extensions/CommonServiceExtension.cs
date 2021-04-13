@@ -76,7 +76,8 @@ namespace Zizi.Bot.Extensions
             {
                 DateTimeZoneHandling = DateTimeZoneHandling.Local,
                 ContractResolver = contractResolver,
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                NullValueHandling = NullValueHandling.Ignore
             };
 
             return app;
