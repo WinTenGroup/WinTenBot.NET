@@ -5,23 +5,26 @@ using Telegram.Bot.Framework.Abstractions;
 using Zizi.Bot.Common;
 using Zizi.Bot.Telegram;
 using Zizi.Bot.Services;
+using Zizi.Bot.Services.Datas;
 
 namespace Zizi.Bot.Handlers.Commands.Group
 {
     public class AfkCommand : CommandBase
     {
-        private AfkService _afkService;
-        private TelegramService _telegramService;
+        private readonly AfkService _afkService;
+        private readonly TelegramService _telegramService;
 
-        public AfkCommand()
+        public AfkCommand(TelegramService telegramService, AfkService afkService)
         {
-            _afkService = new AfkService();
+            _afkService = afkService;
+            _telegramService = telegramService;
         }
 
         public override async Task HandleAsync(IUpdateContext context, UpdateDelegate next, string[] args,
             CancellationToken cancellationToken)
         {
-            _telegramService = new TelegramService(context);
+            await _telegramService.AddUpdateContext(context);
+
             var msg = context.Update.Message;
 
             var data = new Dictionary<string, object>()
@@ -41,12 +44,9 @@ namespace Zizi.Bot.Handlers.Commands.Group
                 sendText += $"\n<i>{afkReason}</i>";
             }
 
-            await _telegramService.SendTextAsync(sendText)
-                .ConfigureAwait(false);
-            await _afkService.SaveAsync(data)
-                .ConfigureAwait(false);
-            await _afkService.UpdateCacheAsync()
-                .ConfigureAwait(false);
+            await _telegramService.SendTextAsync(sendText);
+            await _afkService.SaveAsync(data);
+            await _afkService.UpdateCacheAsync();
         }
     }
 }
