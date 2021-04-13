@@ -181,7 +181,7 @@ namespace Zizi.Bot.Services.Datas
             if (userId == -1)
             {
                 var data = await GetGlobalBanFromDb();
-                await _cachingProvider.SetAsync(CacheKey, data, TimeSpan.Zero);
+                await _cachingProvider.SetAsync(CacheKey, data, TimeSpan.FromMinutes(10));
             }
             else
             {

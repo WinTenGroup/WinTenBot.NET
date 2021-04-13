@@ -5,49 +5,56 @@ using Serilog;
 using Telegram.Bot.Framework.Abstractions;
 using Zizi.Bot.Common;
 using Zizi.Bot.Models;
-using Zizi.Bot.Telegram;
 using Zizi.Bot.Services;
+using Zizi.Bot.Services.Datas;
 using Zizi.Bot.Tools;
 
 namespace Zizi.Bot.Handlers.Commands.GlobalBan
 {
     public class GlobalBanCommand : CommandBase
     {
-        private GlobalBanService _globalBanService;
-        private TelegramService _telegramService;
+        private readonly GlobalBanService _globalBanService;
+        private readonly TelegramService _telegramService;
+
+        public GlobalBanCommand(
+            GlobalBanService globalBanService,
+            TelegramService telegramService
+        )
+        {
+            _globalBanService = globalBanService;
+            _telegramService = telegramService;
+        }
 
         public override async Task HandleAsync(IUpdateContext context, UpdateDelegate next, string[] args,
             CancellationToken cancellationToken)
         {
-            _telegramService = new TelegramService(context);
+            await _telegramService.AddUpdateContext(context);
+
             var msg = _telegramService.Message;
-            _globalBanService = new GlobalBanService(msg);
 
             var chatId = msg.Chat.Id;
             var fromId = msg.From.Id;
             var partedText = msg.Text.Split(" ");
             var param0 = partedText.ValueOfIndex(0) ?? "";
             var param1 = partedText.ValueOfIndex(1) ?? "";
-            var userId = param1;
+            var userId = param1.ToInt();
             var reason = msg.Text
                 .Replace(param0, "", StringComparison.CurrentCulture)
                 .Replace(param1, "", StringComparison.CurrentCulture).Trim();
 
-            if (!fromId.IsSudoer())
+            if (!_telegramService.IsFromSudo)
             {
-                await _telegramService.SendTextAsync("Anda haram melakukan ini")
-                    .ConfigureAwait(false);
+                await _telegramService.SendTextAsync("Harap melakukan Registrasi sebelum GBan");
                 return;
             }
 
             if (param1 == "sync")
             {
-                await _telegramService.SendTextAsync("Memperbarui cache..")
-                    .ConfigureAwait(false);
-                await SyncUtil.SyncGBanToLocalAsync()
-                    .ConfigureAwait(false);
-                await _telegramService.EditAsync("Selesai memperbarui..")
-                    .ConfigureAwait(false);
+                await _telegramService.SendTextAsync("Memperbarui cache..");
+                await _globalBanService.UpdateGBanCache();
+
+                await _telegramService.EditAsync("Selesai memperbarui..");
+
                 return;
             }
 
@@ -55,12 +62,12 @@ namespace Zizi.Bot.Handlers.Commands.GlobalBan
             {
                 if (param1.IsNullOrEmpty())
                 {
-                    await _telegramService.SendTextAsync("Balas seseorang yang mau di ban")
-                        .ConfigureAwait(false);
+                    await _telegramService.SendTextAsync("Balas seseorang yang mau di ban");
+
                     return;
                 }
 
-                userId = param1;
+                userId = param1.ToInt();
                 reason = msg.Text
                     .Replace(param0, "", StringComparison.CurrentCulture)
                     .Replace(param1, "", StringComparison.CurrentCulture).Trim();
@@ -68,16 +75,13 @@ namespace Zizi.Bot.Handlers.Commands.GlobalBan
             else
             {
                 var repMsg = msg.ReplyToMessage;
-                userId = repMsg.From.Id.ToString();
+                userId = repMsg.From.Id;
                 reason = msg.Text
                     .Replace(param0, "", StringComparison.CurrentCulture).Trim();
             }
 
             Log.Information("Execute Global Ban");
-            await _telegramService.SendTextAsync("Mempersiapkan..")
-                .ConfigureAwait(false);
-            // await _telegramService.DeleteAsync(msg.MessageId)
-            // .ConfigureAwait(false);
+            await _telegramService.SendTextAsync("Mempersiapkan..");
 
             var banData = new GlobalBanData()
             {
@@ -87,35 +91,25 @@ namespace Zizi.Bot.Handlers.Commands.GlobalBan
                 ReasonBan = reason.IsNullOrEmpty() ? "no-reason" : reason
             };
 
-            var isBan = await _globalBanService.IsExist(banData)
-                .ConfigureAwait(false);
+            var isBan = await _globalBanService.IsExist(userId);
 
             if (isBan)
             {
-                await _telegramService.EditAsync("Pengguna sudah di ban")
-                    .ConfigureAwait(false);
+                await _telegramService.EditAsync("Pengguna sudah di ban");
+
                 return;
             }
 
-            await _telegramService.EditAsync("Menyimpan informasi..")
-                .ConfigureAwait(false);
-            var save = await _globalBanService.SaveBanAsync(banData)
-                .ConfigureAwait(false);
+            await _telegramService.EditAsync("Menyimpan informasi..");
+            var save = await _globalBanService.SaveBanAsync(banData);
 
-            // var save = await _globalBanService.SaveBanAsync(data);
-            Log.Information($"SaveBan: {save}");
+            Log.Information("SaveBan: {Save}", save);
 
-            await _telegramService.EditAsync("Memperbarui cache.")
-                .ConfigureAwait(false);
-            await SyncUtil.SyncGBanToLocalAsync()
-                .ConfigureAwait(false);
+            await _telegramService.EditAsync("Memperbarui cache.");
+            await _globalBanService.UpdateGBanCache(userId);
+            await SyncUtil.SyncGBanToLocalAsync();
 
-
-            await _telegramService.EditAsync("Pengguna berhasil di tambahkan.")
-                .ConfigureAwait(false);
-
-            // await _telegramService.DeleteAsync(delay: 3000)
-            // .ConfigureAwait(false);
+            await _telegramService.EditAsync("Pengguna berhasil di tambahkan.");
         }
     }
 }
