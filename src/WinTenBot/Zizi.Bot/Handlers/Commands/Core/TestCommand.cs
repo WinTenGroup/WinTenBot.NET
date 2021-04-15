@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -10,6 +10,7 @@ using Serilog;
 using Telegram.Bot.Framework.Abstractions;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
+using WinTenDev.Parser.Url;
 using Zizi.Bot.Common;
 using Zizi.Bot.Services;
 using Zizi.Bot.Services.Datas;
@@ -128,6 +129,11 @@ namespace Zizi.Bot.Handlers.Commands.Core
                     await WebhookCheck();
                     break;
 
+                case "dl-gen":
+                    var directLink = await DirectLinkParser(param2);
+                    await _telegramService.AppendTextAsync($"DL: {directLink}");
+                    break;
+
                 default:
                     await _telegramService.AppendTextAsync($"Feature '{param1}' is not available.");
                     Log.Warning("Feature '{0}' is not available.", param1);
@@ -238,6 +244,13 @@ namespace Zizi.Bot.Handlers.Commands.Core
             var text = $"NSFW Score: {output.NsfwScore}";
 
             await _telegramService.AppendTextAsync(text);
+        }
+
+        private async Task<string> DirectLinkParser(string url)
+        {
+            var directLink = await DirectLinkUtil.ParseZippyShare(url);
+
+            return directLink;
         }
     }
 }
