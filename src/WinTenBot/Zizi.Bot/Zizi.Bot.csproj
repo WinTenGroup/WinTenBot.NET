@@ -120,6 +120,7 @@
         </EmbeddedResource>
     </ItemGroup>
     <ItemGroup>
+      <ProjectReference Include="..\WinTenDev.Parser\WinTenDev.Parser.csproj" />
       <ProjectReference Include="..\Zizi.Core\Zizi.Core.csproj" />
     </ItemGroup>
 </Project>
