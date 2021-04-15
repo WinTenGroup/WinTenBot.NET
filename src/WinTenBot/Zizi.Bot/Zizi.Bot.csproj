@@ -10,11 +10,9 @@
         <DockerComposeProjectPath>..\docker-compose_zizi.bot.dcproj</DockerComposeProjectPath>
     </PropertyGroup>
     <ItemGroup>
-        <Folder Include="Handlers\Commands\Rules" />
-        <Folder Include="wwwroot\" />
-    </ItemGroup>
-    <ItemGroup>
-      <None Include="..\.editorconfig" Link=".editorconfig" />
+        <Folder Include="wwwroot\" >
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Folder>
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="ArangoDBNetStandard" Version="1.0.0-alpha03" />
