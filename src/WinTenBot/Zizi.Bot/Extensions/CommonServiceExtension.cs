@@ -32,6 +32,9 @@ namespace Zizi.Bot.Extensions
                 .AddScoped<RssService>()
                 .AddScoped<SettingsService>()
                 .AddScoped<TagsService>()
+                .AddScoped<NotesService>()
+                .AddScoped<MediaFilterService>()
+                .AddScoped<LearningService>()
                 .AddScoped<WordFilterService>();
         }
 
