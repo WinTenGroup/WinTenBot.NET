@@ -82,9 +82,9 @@ namespace Zizi.Bot.Extensions
                 new ProcessMonitor(TimeSpan.FromSeconds(1))
             });
 
-            // Task.Run(BotScheduler.StartScheduler);
+            app.RegisterHangfireOnStartup();
 
-            Log.Information("Hangfire is Running.");
+            Log.Information("Hangfire is Running..");
             return app;
         }
 

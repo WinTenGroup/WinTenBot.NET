@@ -122,9 +122,7 @@ namespace Zizi.Bot
                 endpoints.MapHealthChecks("/health");
             });
 
-            app.RegisterHangfireOnStartup();
-
-            Log.Information("App is ready.");
+            Log.Information("App is ready..");
         }
     }
 }
