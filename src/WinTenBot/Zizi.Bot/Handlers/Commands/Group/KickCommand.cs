@@ -1,122 +1,82 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Serilog;
 using Telegram.Bot.Framework.Abstractions;
 using Telegram.Bot.Types;
 using Zizi.Bot.Telegram;
 using Zizi.Bot.Services;
+using Zizi.Core.Utils.Text;
 
 namespace Zizi.Bot.Handlers.Commands.Group
 {
     public class KickCommand : CommandBase
     {
-        private TelegramService _telegramService;
+        private readonly TelegramService _telegramService;
+
+        public KickCommand(TelegramService telegramService)
+        {
+            _telegramService = telegramService;
+        }
 
         public override async Task HandleAsync(IUpdateContext context, UpdateDelegate next, string[] args,
             CancellationToken cancellationToken)
         {
-            _telegramService = new TelegramService(context);
+            await _telegramService.AddUpdateContext(context);
 
             var kickTargets = new List<User>();
 
-            var msg = context.Update.Message;
-            Message repMsg = null;
-            var fromId = msg.From.Id;
-            // var idTargets = new List<int>();
+            var msg = _telegramService.Message;
+            var fromId = _telegramService.FromId;
 
             kickTargets.Add(msg.From);
 
             if (msg.ReplyToMessage != null)
             {
-                repMsg = msg.ReplyToMessage;
-                // idTarget = repMsg.From.id;
+                kickTargets.Clear();
+
+                var repMsg = msg.ReplyToMessage;
                 kickTargets.Add(repMsg.From);
 
                 if (repMsg.NewChatMembers != null)
                 {
-                    kickTargets.Clear();
-                    var userTargets = repMsg.NewChatMembers;
-                    kickTargets.AddRange(userTargets);
-
-                    // foreach (var target in userTargets)
-                    // {
-                    //     idTargets.Add(target.Id);
-                    // }
+                    kickTargets.AddRange(repMsg.NewChatMembers);
                 }
             }
 
-            await _telegramService.DeleteAsync(msg.MessageId)
-                .ConfigureAwait(false);
+            await _telegramService.DeleteAsync(msg.MessageId);
 
-            var isAdmin = await _telegramService.IsAdminGroup()
-                .ConfigureAwait(false);
+            var isAdmin = await _telegramService.IsAdminGroup();
 
-            if (kickTargets[0].Id != msg.From.Id && isAdmin)
+            var containFromId = kickTargets.Where((user, i) => user.Id == fromId).Any();
+
+            if (!containFromId && !isAdmin)
             {
-                var isKicked = false;
-                foreach (var target in kickTargets)
-                {
-                    var idTarget = target.Id;
-                    var sendText = string.Empty;
+                Log.Warning("No privilege for execute this command!");
+                return;
+            }
 
-                    // await _chatProcessor.AppendTextAsync($"Sedang menendang {idTarget}");
-                    isKicked = await _telegramService.KickMemberAsync(target)
-                        .ConfigureAwait(false);
-                    await _telegramService.UnbanMemberAsync(target)
-                        .ConfigureAwait(false);
+            var sbKickResult = new StringBuilder($"Sedang menendang {kickTargets.Count} pengguna..");
+            sbKickResult.AppendLine();
 
-                    if (isKicked)
-                    {
-                        sendText = $"{target} berhasil di tendank ";
-
-                        sendText += idTarget == fromId ? $"oleh Self-kick" : $".";
-                    }
-                    else
-                    {
-                        sendText = $"Gagal menendang {idTarget}";
-                    }
-
-                    await _telegramService.AppendTextAsync(sendText)
-                        .ConfigureAwait(false);
-                }
+            foreach (var userId in kickTargets.Select(kickTarget => kickTarget.Id))
+            {
+                var isKicked = await _telegramService.KickMemberAsync(userId, true);
 
                 if (isKicked)
                 {
-                    await _telegramService.AppendTextAsync($"Sebanyak {kickTargets.Count} berhasil di tendang.")
-                        .ConfigureAwait(false);
+                    sbKickResult.Append($"{userId} berhasil di tendang ");
+                    sbKickResult.AppendLine(userId == fromId ? $"oleh Self-kick" : "");
                 }
                 else
                 {
-                    await _telegramService.AppendTextAsync("Gagal menendang bbrp anggota")
-                        .ConfigureAwait(false);
+                    sbKickResult.AppendLine($"Gagal menendang {userId}");
                 }
             }
-            else if (kickTargets[0].Id == fromId)
-            {
-                var idTarget = kickTargets[0];
-                var isKicked = false;
-                // await _chatProcessor.AppendTextAsync($"Sedang menendang {idTarget}");
-                isKicked = await _telegramService.KickMemberAsync(idTarget)
-                    .ConfigureAwait(false);
-                if (isKicked)
-                {
-                    var sendText = $"{idTarget} berhasil di tendang ";
-                    sendText += idTarget.Id == fromId ? $"oleh Self-kick" : $".";
-                    await _telegramService.AppendTextAsync(sendText)
-                        .ConfigureAwait(false);
-                }
-                else
-                {
-                    var sendTexts = $"Tendang {idTarget} gagal.";
-                    await _telegramService.SendTextAsync(sendTexts)
-                        .ConfigureAwait(false);
-                }
-            }
-            else
-            {
-                await _telegramService.SendTextAsync("Hanya admin yang bisa mengeksekusi")
-                    .ConfigureAwait(false);
-            }
+
+            await _telegramService.AppendTextAsync(sbKickResult.ToTrimmedString());
         }
     }
 }
