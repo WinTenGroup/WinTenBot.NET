@@ -11,18 +11,19 @@
       <PackageReference Include="EasyCaching.Disk" Version="1.2.1" />
       <PackageReference Include="EasyCaching.HybridCache" Version="1.2.0" />
       <PackageReference Include="EasyCaching.SQLite" Version="1.2.0" />
-      <PackageReference Include="Hangfire.AspNetCore" Version="1.7.19" />
+      <PackageReference Include="Hangfire.AspNetCore" Version="1.7.22" />
       <PackageReference Include="Hangfire.Dashboard.Basic.Authentication" Version="5.0.0" />
       <PackageReference Include="Hangfire.Heartbeat" Version="0.5.1" />
       <PackageReference Include="Hangfire.LiteDB" Version="0.4.0" />
+      <PackageReference Include="JetBrains.Annotations" Version="2021.1.0" />
       <PackageReference Include="LiteDB" Version="5.0.10" />
       <PackageReference Include="LiteDB.Async" Version="0.0.8" />
-      <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="5.0.4" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.4">
+      <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="5.0.5" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.5">
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
-      <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.4" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.5" />
       <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
       <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="5.0.0-alpha.2" />
       <PackageReference Include="Serilog" Version="2.10.0" />
