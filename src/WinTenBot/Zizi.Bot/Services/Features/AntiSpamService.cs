@@ -26,6 +26,7 @@ namespace Zizi.Bot.Services.Features
         /// Initializes a new instance of the <see cref="AntiSpamService"/> class.
         /// </summary>
         /// <param name="commonConfig">The common config.</param>
+        /// <param name="cachingProvider"></param>
         /// <param name="globalBanService">The global ban service.</param>
         public AntiSpamService(
             CommonConfig commonConfig,
@@ -57,7 +58,7 @@ namespace Zizi.Bot.Services.Features
 
             if (!(swBan || casBan || es2Ban))
             {
-                Log.Information("UserId {0} is passed on all Fed Ban", userId);
+                Log.Information("UserId {UserId} is passed on all Fed Ban", userId);
                 return string.Empty;
             }
 
@@ -82,9 +83,9 @@ namespace Zizi.Bot.Services.Features
             var user = await _globalBanService.GetGlobalBanByIdC(userId);
             var isBan = user != null;
 
-            Log.Debug("UserId: {0} is CAS ban: {1}", userId, isBan);
+            Log.Debug("UserId: {UserId} is CAS ban: {IsBan}", userId, isBan);
 
-            Log.Debug("ES2 Check complete in {0}", sw.Elapsed);
+            Log.Debug("ES2 Check complete in {Elapsed}", sw.Elapsed);
             sw.Stop();
 
             return isBan;
@@ -122,13 +123,13 @@ namespace Zizi.Bot.Services.Features
                 spamWatch = cache.Value;
 
                 spamWatch.IsBan = spamWatch.Code != 404;
-                Log.Debug("SpamWatch Result: {0}", spamWatch.ToJson(true));
+                Log.Debug("SpamWatch Result: {V}", spamWatch.ToJson(true));
             }
             catch (FlurlHttpException ex)
             {
                 var callHttpStatus = ex.Call.HttpResponseMessage.StatusCode;
-                // var callHttpStatus = ex.Call.HttpStatus;
-                Log.Debug("StatusCode: {0}", callHttpStatus);
+
+                Log.Debug("StatusCode: {CallHttpStatus}", callHttpStatus);
                 switch (callHttpStatus)
                 {
                     case HttpStatusCode.NotFound:
@@ -148,9 +149,9 @@ namespace Zizi.Bot.Services.Features
 
             var isBan = spamWatch.IsBan;
 
-            Log.Debug("UserId: {0} is CAS ban: {1}", userId, isBan);
+            Log.Debug("UserId: {UserId} is CAS ban: {IsBan}", userId, isBan);
 
-            Log.Debug("Spamwatch Check complete in {0}", sw.Elapsed);
+            Log.Debug("Spamwatch Check complete in {Elapsed}", sw.Elapsed);
             sw.Stop();
 
             return isBan;
@@ -177,12 +178,12 @@ namespace Zizi.Bot.Services.Features
                 }
 
                 var cache = await _cachingProvider.GetAsync<CasBan>(casCacheKey);
-                Log.Debug("CasBan Result: {0}", cache.ToJson(true));
+                Log.Debug("CasBan Result: {V}", cache.ToJson(true));
 
                 var isBan = cache.Value.Ok;
-                Log.Debug("UserId: {0} is CAS ban: {1}", userId, isBan);
+                Log.Debug("UserId: {UserId} is CAS ban: {IsBan}", userId, isBan);
 
-                Log.Debug("CAS Check complete in {0}", sw.Elapsed);
+                Log.Debug("CAS Check complete in {Elapsed}", sw.Elapsed);
                 sw.Stop();
 
                 return isBan;
