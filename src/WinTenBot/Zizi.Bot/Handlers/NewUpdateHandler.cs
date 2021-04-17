@@ -50,7 +50,7 @@ namespace Zizi.Bot.Handlers
 
             _chatSettings = _telegramService.CurrentSetting;
 
-            Log.Debug("NewUpdate: {0}", _telegramService.Context.Update.ToJson(true));
+            Log.Debug("NewUpdate: {0}", _telegramService.ToJson(true));
 
             // Pre-Task is should be awaited.
             await EnqueuePreTask();
