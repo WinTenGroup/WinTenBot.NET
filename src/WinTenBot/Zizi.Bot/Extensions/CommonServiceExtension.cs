@@ -27,6 +27,7 @@ namespace Zizi.Bot.Extensions
         public static IServiceCollection AddDataServices(this IServiceCollection services)
         {
             return services
+                .AddScoped<QueryService>()
                 .AddScoped<AfkService>()
                 .AddScoped<GlobalBanService>()
                 .AddScoped<RssService>()
