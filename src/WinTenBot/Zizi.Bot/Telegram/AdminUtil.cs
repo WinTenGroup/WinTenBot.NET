@@ -79,13 +79,12 @@ namespace Zizi.Bot.Telegram
             var message = telegramService.AnyMessage;
             userId = userId == -1 ? message.From.Id : userId;
 
-            if (telegramService.IsPrivateChat()) return false;
+            if (telegramService.IsPrivateChat) return false;
 
             var chatMembers = await telegramService.GetChatAdmin();
 
             var isAdmin = chatMembers.Any(admin => userId == admin.User.Id);
 
-            // Log.Information("UserId {0} IsAdmin: {1}. Time: {2}", userId, isAdmin, sw.Elapsed);
             Log.Debug("Is UserID {0} Admin on Chat {1}? {2}. Time: {3}", userId, message.Chat.Id, isAdmin, sw.Elapsed);
 
             sw.Stop();
