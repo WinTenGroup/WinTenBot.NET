@@ -87,10 +87,6 @@ namespace Zizi.Bot.Handlers.Commands.GlobalBan
 
             await _telegramService.EditAsync("Sedang meregister ke GBan Admin");
             await _globalBanService.SaveAdminGban(adminItem);
-            // var querySql = await new Query(GBanAdminTable)
-            //     .ExecForMysql()
-            //     .InsertAsync(adminItem);
-            // Log.Debug("Insert GBanReg: {0}", querySql);
 
             await _telegramService.EditAsync("Selesai");
         }
