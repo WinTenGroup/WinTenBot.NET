@@ -53,7 +53,7 @@ namespace Zizi.Bot.Handlers
 
             _chatSettings = _telegramService.CurrentSetting;
 
-            Log.Debug("NewUpdate: {0}", _telegramService.ToJson(true));
+            Log.Debug("NewUpdate: {V}", _telegramService.ToJson(true));
 
             // Pre-Task is should be awaited.
             await EnqueuePreTask();
@@ -61,7 +61,7 @@ namespace Zizi.Bot.Handlers
             if (_chatSettings.EnableWarnUsername
                 && _telegramService.IsGroupChat())
             {
-                Log.Debug("Await next condition 1. is enable Warn Username && is Group Chat.");
+                Log.Debug("Await next condition 1. is enable Warn Username && is Group Chat..");
                 if (!_telegramService.IsNoUsername || _telegramService.MessageOrEdited.Text == null)
                 {
                     // Next, do what bot should do.
@@ -76,7 +76,7 @@ namespace Zizi.Bot.Handlers
             }
             else
             {
-                Log.Debug("Await next else condition.");
+                Log.Debug("Await next else condition..");
                 await next(context, cancellationToken);
             }
 
@@ -123,7 +123,7 @@ namespace Zizi.Bot.Handlers
 
             await Task.WhenAll(shouldAwaitTasks.ToArray());
 
-            Log.Debug("All preTask completed in {0}", sw.Elapsed);
+            Log.Debug("All preTask completed in {Elapsed}", sw.Elapsed);
             sw.Stop();
         }
 
