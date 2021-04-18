@@ -24,13 +24,15 @@ namespace Zizi.Bot.Handlers
 
         private ChatSetting _chatSettings;
         private readonly AppConfig _appConfig;
+        private readonly WordFilterService _wordFilterService;
 
         public NewUpdateHandler(
             AfkService afkService,
             AppConfig appConfig,
             AntiSpamService antiSpamService,
             SettingsService settingsService,
-            TelegramService telegramService
+            TelegramService telegramService,
+            WordFilterService wordFilterService
         )
         {
             _appConfig = appConfig;
@@ -38,6 +40,7 @@ namespace Zizi.Bot.Handlers
             _antiSpamService = antiSpamService;
             _telegramService = telegramService;
             _settingsService = settingsService;
+            _wordFilterService = wordFilterService;
         }
 
         public async Task HandleAsync(IUpdateContext context, UpdateDelegate next, CancellationToken cancellationToken)
@@ -112,7 +115,8 @@ namespace Zizi.Bot.Handlers
 
             if (callbackQuery == null)
             {
-                shouldAwaitTasks.Add(_telegramService.CheckMessageAsync());
+                shouldAwaitTasks.Add(ScanMessageAsync());
+                // shouldAwaitTasks.Add(_telegramService.CheckMessageAsync());
             }
 
             Log.Debug("Awaiting should await task..");
@@ -145,6 +149,39 @@ namespace Zizi.Bot.Handlers
             // This List Task should not await.
             await Task.WhenAll(nonAwaitTasks.ToArray());
         }
+
+        private async Task ScanMessageAsync()
+        {
+            var message = _telegramService.MessageOrEdited;
+            var msgId = message.MessageId;
+
+            var text = message.Text ?? message.Caption;
+            if (text.IsNullOrEmpty())
+            {
+                Log.Information("No message Text for scan..");
+            }
+            else
+            {
+                var result = await _wordFilterService.IsMustDelete(text);
+                var isMustDelete = result.IsSuccess;
+
+                if (isMustDelete)
+                {
+                    Log.Information("Starting scan image if available..");
+                }
+
+                Log.Information("Message {MsgId} IsMustDelete: {IsMustDelete}", msgId, isMustDelete);
+
+                if (isMustDelete)
+                {
+                    Log.Debug("Result: {V}", result.ToJson(true));
+                    var note = "Pesan di Obrolan di hapus karena terdeteksi filter Kata.\n" + result.Notes;
+                    await _telegramService.SendEventAsync(note);
+
+                    await _telegramService.DeleteAsync(message.MessageId);
+                }
+            }
         }
+
     }
 }
