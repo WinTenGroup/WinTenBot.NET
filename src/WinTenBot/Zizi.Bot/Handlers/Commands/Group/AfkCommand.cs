@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstractions;
@@ -46,7 +46,8 @@ namespace Zizi.Bot.Handlers.Commands.Group
 
             await _telegramService.SendTextAsync(sendText);
             await _afkService.SaveAsync(data);
-            await _afkService.UpdateCacheAsync();
+            await _afkService.UpdateAfkByIdCacheAsync(fromId);
+            // await _afkService.UpdateCacheAsync();
         }
     }
 }
