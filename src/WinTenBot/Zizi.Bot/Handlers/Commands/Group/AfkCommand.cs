@@ -1,3 +1,4 @@
+﻿using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,12 +27,16 @@ namespace Zizi.Bot.Handlers.Commands.Group
             await _telegramService.AddUpdateContext(context);
 
             var msg = context.Update.Message;
+            var fromId = _telegramService.FromId;
+            var chatId = _telegramService.ChatId;
 
             var data = new Dictionary<string, object>()
             {
-                {"user_id", msg.From.Id},
-                {"chat_id", msg.Chat.Id},
-                {"is_afk", 1}
+                {"user_id", fromId},
+                {"chat_id", chatId},
+                {"is_afk", 1},
+                {"afk_start", DateTime.Now},
+                {"afk_end", DateTime.Now}
             };
 
             var sendText = $"{msg.GetFromNameLink()} Sedang afk.";
