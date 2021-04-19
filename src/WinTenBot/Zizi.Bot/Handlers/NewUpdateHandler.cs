@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Humanizer;
 using Serilog;
 using System.Collections.Generic;
@@ -55,7 +55,7 @@ namespace Zizi.Bot.Handlers
             Log.Debug("NewUpdate: {V}", _telegramService.ToJson(true));
 
             // Pre-Task is should be awaited.
-            await EnqueuePreTask();
+            await RunPreTasks();
 
             if (_chatSettings.EnableWarnUsername
                 && _telegramService.IsGroupChat())
@@ -89,34 +89,39 @@ namespace Zizi.Bot.Handlers
             await RunPostTasks();
         }
 
-        private async Task EnqueuePreTask()
+        private async Task RunPreTasks()
         {
             Log.Information("Enqueue pre tasks");
             var sw = Stopwatch.StartNew();
 
-            var message = _telegramService.AnyMessage;
-            var callbackQuery = _telegramService.CallbackQuery;
+            // var message = _telegramService.AnyMessage;
+            // var callbackQuery = _telegramService.CallbackQuery;
 
             var shouldAwaitTasks = new List<Task>();
 
-            if (!_telegramService.IsPrivateChat)
-            {
-                shouldAwaitTasks.Add(_telegramService.EnsureChatRestrictionAsync());
+            shouldAwaitTasks.Add(EnsureChatRestrictionAsync());
+            shouldAwaitTasks.Add(AntiSpamCheck());
+            shouldAwaitTasks.Add(ScanMessageAsync());
+            shouldAwaitTasks.Add(_telegramService.CheckUsernameAsync());
 
-                if (message?.Text != null)
-                {
-                    shouldAwaitTasks.Add(_telegramService.CheckGlobalBanAsync());
-                    shouldAwaitTasks.Add(_telegramService.CheckCasBanAsync());
-                    shouldAwaitTasks.Add(_telegramService.CheckSpamWatchAsync());
-                    shouldAwaitTasks.Add(_telegramService.CheckUsernameAsync());
-                }
-            }
 
-            if (callbackQuery == null)
-            {
-                shouldAwaitTasks.Add(ScanMessageAsync());
-                // shouldAwaitTasks.Add(_telegramService.CheckMessageAsync());
-            }
+            // if (!_telegramService.IsPrivateChat)
+            // {
+            // shouldAwaitTasks.Add(_telegramService.EnsureChatRestrictionAsync());
+            // shouldAwaitTasks.Add(_telegramService.CheckUsernameAsync());
+
+            // if (message?.Text != null)
+            // {
+            // shouldAwaitTasks.Add(_telegramService.CheckGlobalBanAsync());
+            // shouldAwaitTasks.Add(_telegramService.CheckCasBanAsync());
+            // shouldAwaitTasks.Add(_telegramService.CheckSpamWatchAsync());
+            // }
+            // }
+
+            // if (callbackQuery == null)
+            // {
+            // shouldAwaitTasks.Add(_telegramService.CheckMessageAsync());
+            // }
 
             Log.Debug("Awaiting should await task..");
 
@@ -145,51 +150,104 @@ namespace Zizi.Bot.Handlers
             await Task.WhenAll(nonAwaitTasks.ToArray());
         }
 
-            if (message.Text != null)
+        #region Pre Task
+
+        public async Task<bool> EnsureChatRestrictionAsync()
+        {
+            try
             {
-                // nonAwaitTasks.Add(_telegramService.FindNotesAsync());
-                // nonAwaitTasks.Add(_telegramService.FindTagsAsync());
+                if (_telegramService.IsPrivateChat)
+                {
+                    return false;
+                }
+
+                Log.Information("Starting ensure Chat Restriction");
+
+                var message = _telegramService.MessageOrEdited;
+                var chatId = message.Chat.Id;
+
+                var globalRestrict = _telegramService.IsRestricted();
+                var isRestricted = _telegramService.IsChatRestricted;
+                // var isRestricted = chatId.CheckRestriction();
+
+                if (!isRestricted || !globalRestrict) return false;
+
+                Log.Warning("I must leave right now!");
+                var msgOut = $"Sepertinya saya salah alamat, saya pamit dulu..";
+
+                await _telegramService.SendTextAsync(msgOut);
+                await _telegramService.LeaveChat(chatId);
+
+                return true;
             }
+            catch
+            {
+                Log.Error("Error when {V}", nameof(EnsureChatRestrictionAsync).Humanize());
 
-            nonAwaitTasks.Add(_telegramService.CheckMataZiziAsync());
-            nonAwaitTasks.Add(_telegramService.HitActivityAsync());
+                return false;
+            }
+        }
 
-            // This List Task should not await.
-            await Task.WhenAll(nonAwaitTasks.ToArray());
+        private async Task AntiSpamCheck()
+        {
+            var fromId = _telegramService.FromId;
+            var resultCheck = await _antiSpamService.CheckSpam(fromId);
+
+            Log.Debug("AntiSpam: {ResultCheck}", resultCheck);
+
+            await _telegramService.SendTextAsync(resultCheck);
         }
 
         private async Task ScanMessageAsync()
         {
-            var message = _telegramService.MessageOrEdited;
-            var msgId = message.MessageId;
-
-            var text = message.Text ?? message.Caption;
-            if (text.IsNullOrEmpty())
+            try
             {
-                Log.Information("No message Text for scan..");
+                var callbackQuery = _telegramService.CallbackQuery;
+
+                if (callbackQuery != null)
+                {
+                    Log.Warning("Look this message is callbackQuery!");
+                    return;
+                }
+
+                var message = _telegramService.MessageOrEdited;
+                var msgId = message.MessageId;
+
+                var text = message.Text ?? message.Caption;
+                if (text.IsNullOrEmpty())
+                {
+                    Log.Information("No message Text for scan..");
+                }
+                else
+                {
+                    var result = await _wordFilterService.IsMustDelete(text);
+                    var isMustDelete = result.IsSuccess;
+
+                    if (isMustDelete)
+                    {
+                        Log.Information("Starting scan image if available..");
+                    }
+
+                    Log.Information("Message {MsgId} IsMustDelete: {IsMustDelete}", msgId, isMustDelete);
+
+                    if (isMustDelete)
+                    {
+                        Log.Debug("Result: {V}", result.ToJson(true));
+                        var note = "Pesan di Obrolan di hapus karena terdeteksi filter Kata.\n" + result.Notes;
+                        await _telegramService.SendEventAsync(note);
+
+                        await _telegramService.DeleteAsync(message.MessageId);
+                    }
+                }
             }
-            else
+            catch (Exception ex)
             {
-                var result = await _wordFilterService.IsMustDelete(text);
-                var isMustDelete = result.IsSuccess;
-
-                if (isMustDelete)
-                {
-                    Log.Information("Starting scan image if available..");
-                }
-
-                Log.Information("Message {MsgId} IsMustDelete: {IsMustDelete}", msgId, isMustDelete);
-
-                if (isMustDelete)
-                {
-                    Log.Debug("Result: {V}", result.ToJson(true));
-                    var note = "Pesan di Obrolan di hapus karena terdeteksi filter Kata.\n" + result.Notes;
-                    await _telegramService.SendEventAsync(note);
-
-                    await _telegramService.DeleteAsync(message.MessageId);
-                }
+                Log.Error(ex, "Error occured when run {V}", nameof(ScanMessageAsync).Humanize());
             }
         }
+
+        #endregion
+
 
         #region Post Task
 
