@@ -1,17 +1,19 @@
+using System;
 using Humanizer;
 using Serilog;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstractions;
 using Zizi.Bot.Common;
 using Zizi.Bot.Models;
-using Zizi.Bot.Models.Settings;
 using Zizi.Bot.Services;
 using Zizi.Bot.Services.Datas;
 using Zizi.Bot.Services.Features;
 using Zizi.Bot.Telegram;
+using Zizi.Bot.Tools;
 
 namespace Zizi.Bot.Handlers
 {
@@ -21,21 +23,18 @@ namespace Zizi.Bot.Handlers
         private readonly AfkService _afkService;
         private readonly AntiSpamService _antiSpamService;
         private readonly SettingsService _settingsService;
+        private readonly WordFilterService _wordFilterService;
 
         private ChatSetting _chatSettings;
-        private readonly AppConfig _appConfig;
-        private readonly WordFilterService _wordFilterService;
 
         public NewUpdateHandler(
             AfkService afkService,
-            AppConfig appConfig,
             AntiSpamService antiSpamService,
             SettingsService settingsService,
             TelegramService telegramService,
             WordFilterService wordFilterService
         )
         {
-            _appConfig = appConfig;
             _afkService = afkService;
             _antiSpamService = antiSpamService;
             _telegramService = telegramService;
@@ -87,7 +86,7 @@ namespace Zizi.Bot.Handlers
             // }
 
             // Last, do additional task which bot may do
-            await EnqueueBackgroundTask();
+            await RunPostTasks();
         }
 
         private async Task EnqueuePreTask()
@@ -127,15 +126,24 @@ namespace Zizi.Bot.Handlers
             sw.Stop();
         }
 
-        private async Task EnqueueBackgroundTask()
+        private async Task RunPostTasks()
         {
             var nonAwaitTasks = new List<Task>();
-            var message = _telegramService.MessageOrEdited;
 
             //Exec nonAwait Tasks
             Log.Debug("Running nonAwait task..");
-            nonAwaitTasks.Add(_telegramService.EnsureChatHealthAsync());
-            nonAwaitTasks.Add(_telegramService.AfkCheckAsync());
+
+            nonAwaitTasks.Add(EnsureChatHealthAsync());
+            nonAwaitTasks.Add(AfkCheck());
+            nonAwaitTasks.Add(CheckMataZiziAsync());
+
+            //nonAwaitTasks.Add(_telegramService.EnsureChatHealthAsync());
+            // nonAwaitTasks.Add(_telegramService.AfkCheckAsync());
+            // nonAwaitTasks.Add(_telegramService.CheckMataZiziAsync());
+            // nonAwaitTasks.Add(_telegramService.HitActivityAsync());
+
+            await Task.WhenAll(nonAwaitTasks.ToArray());
+        }
 
             if (message.Text != null)
             {
@@ -183,5 +191,205 @@ namespace Zizi.Bot.Handlers
             }
         }
 
+        #region Post Task
+
+        private async Task AfkCheck()
+        {
+            var sw = Stopwatch.StartNew();
+
+            try
+            {
+                Log.Information("Starting check AFK");
+
+                var message = _telegramService.MessageOrEdited;
+
+                if (!_chatSettings.EnableAfkStat)
+                {
+                    Log.Information("Afk Stat is disabled in this Group!");
+                    return;
+                }
+
+                if (message.Text.StartsWith("/afk")) return;
+
+                if (message.ReplyToMessage != null)
+                {
+                    var repMsg = message.ReplyToMessage;
+                    var repFromId = repMsg.From.Id;
+
+                    var isAfkReply = await _afkService.IsExistInDb(repFromId);
+                    if (isAfkReply)
+                    {
+                        var repNameLink = repMsg.GetFromNameLink();
+                        await _telegramService.SendTextAsync($"{repNameLink} sedang afk");
+                    }
+                }
+
+                var fromId = message.From.Id;
+                var isAfk = await _afkService.IsExistInDb(fromId);
+                if (isAfk)
+                {
+                    var nameLink = message.GetFromNameLink();
+                    var currentAfk = await _afkService.GetAfkById(fromId);
+
+                    if (currentAfk.IsAfk)
+                    {
+                        await _telegramService.SendTextAsync($"{nameLink} sudah tidak afk");
+                    }
+
+                    var data = new Dictionary<string, object>
+                    {
+                        {"chat_id", message.Chat.Id},
+                        {"user_id", message.From.Id},
+                        {"is_afk", 0},
+                        {"afk_reason", ""},
+                        {"afk_end", DateTime.Now}
+                    };
+
+                    await _afkService.SaveAsync(data);
+                    await _afkService.UpdateAfkByIdCacheAsync(fromId);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error occured when run {V}", nameof(AfkCheck).Humanize());
+            }
+
+            Log.Debug("AFK check completed. In {Elapsed}", sw.Elapsed);
+            sw.Stop();
+        }
+
+        public async Task CheckMataZiziAsync()
+        {
+            var sw = Stopwatch.StartNew();
+
+            try
+            {
+                var message = _telegramService.MessageOrEdited;
+                var fromId = message.From.Id;
+                var fromUsername = message.From.Username;
+                var fromFName = message.From.FirstName;
+                var fromLName = message.From.LastName;
+                var chatId = message.Chat.Id;
+
+                var chatSettings = _telegramService.CurrentSetting;
+                if (!chatSettings.EnableZiziMata)
+                {
+                    Log.Information("MataZizi is disabled in this Group!. Completed in {Elapsed}", sw.Elapsed);
+                    sw.Stop();
+                    return;
+                }
+
+                var botUser = await _telegramService.GetMeAsync();
+
+                Log.Information("Starting SangMata check..");
+
+                var hitActivity = _telegramService.GetChatCache<HitActivity>(fromId.ToString());
+                if (hitActivity == null)
+                {
+                    Log.Information("This may first Hit from User {V}. In {V1}", fromId, sw.Elapsed);
+
+                    _telegramService.SetChatCache(fromId.ToString(), new HitActivity()
+                    {
+                        ViaBot = botUser.Username,
+                        MessageType = message.Type.ToString(),
+                        FromId = message.From.Id,
+                        FromFirstName = message.From.FirstName,
+                        FromLastName = message.From.LastName,
+                        FromUsername = message.From.Username,
+                        FromLangCode = message.From.LanguageCode,
+                        ChatId = message.Chat.Id.ToString(),
+                        ChatUsername = message.Chat.Username,
+                        ChatType = message.Chat.Type.ToString(),
+                        ChatTitle = message.Chat.Title,
+                        Timestamp = DateTime.Now
+                    });
+
+                    return;
+                }
+
+                Log.Debug("ZiziMata: {V}", hitActivity.ToJson(true));
+
+                var changesCount = 0;
+                var msgBuild = new StringBuilder();
+
+                msgBuild.AppendLine("😽 <b>MataZizi</b>");
+                msgBuild.AppendLine($"<b>UserID:</b> {fromId}");
+
+                if (fromUsername != hitActivity.FromUsername)
+                {
+                    Log.Debug("Username changed detected!");
+                    msgBuild.AppendLine($"Mengubah Username menjadi @{fromUsername}");
+                    changesCount++;
+                }
+
+                if (fromFName != hitActivity.FromFirstName)
+                {
+                    Log.Debug("First Name changed detected!");
+                    msgBuild.AppendLine($"Mengubah nama depan menjadi {fromFName}");
+                    changesCount++;
+                }
+
+                if (fromLName != hitActivity.FromLastName)
+                {
+                    Log.Debug("Last Name changed detected!");
+                    msgBuild.AppendLine($"Mengubah nama belakang menjadi {fromLName}");
+                    changesCount++;
+                }
+
+                if (changesCount > 0)
+                {
+                    await _telegramService.SendTextAsync(msgBuild.ToString().Trim());
+
+                    _telegramService.SetChatCache(fromId.ToString(), new HitActivity()
+                    {
+                        ViaBot = botUser.Username,
+                        MessageType = message.Type.ToString(),
+                        FromId = message.From.Id,
+                        FromFirstName = message.From.FirstName,
+                        FromLastName = message.From.LastName,
+                        FromUsername = message.From.Username,
+                        FromLangCode = message.From.LanguageCode,
+                        ChatId = message.Chat.Id.ToString(),
+                        ChatUsername = message.Chat.Username,
+                        ChatType = message.Chat.Type.ToString(),
+                        ChatTitle = message.Chat.Title,
+                        Timestamp = DateTime.Now
+                    });
+                    Log.Debug("Complete update Cache");
+                }
+
+                Log.Information("MataZizi completed in {Elapsed}. Changes: {ChangesCount}", sw.Elapsed, changesCount);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error SangMata");
+            }
+
+            sw.Stop();
+        }
+
+        private async Task EnsureChatHealthAsync()
+        {
+            Log.Information("Ensuring chat health..");
+
+            var message = _telegramService.Message;
+            var chatId = message.Chat.Id;
+
+            Log.Information("Preparing restore health on chatId {ChatId}..", chatId);
+            var data = new Dictionary<string, object>()
+            {
+                {"chat_id", chatId},
+                {"chat_title", message.Chat.Title ?? @"N\A"},
+                {"chat_type", message.Chat.Type.Humanize()},
+                {"is_admin", _telegramService.IsBotAdmin}
+            };
+
+            var saveSettings = await _settingsService.SaveSettingsAsync(data);
+            Log.Debug("Ensure Settings: {SaveSettings}", saveSettings);
+
+            await _settingsService.UpdateCacheAsync(chatId);
+        }
+
+        #endregion
     }
 }
