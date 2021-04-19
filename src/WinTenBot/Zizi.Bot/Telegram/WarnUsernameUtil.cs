@@ -42,6 +42,13 @@ namespace Zizi.Bot.Telegram
 
             try
             {
+
+                if (telegramService.IsPrivateChat)
+                {
+                    Log.Warning("Check username is disabled on private chat!");
+                    return;
+                }
+
                 Log.Information("Starting check Username");
 
                 // var warnUsername = await warnJson.GetCollectionAsync<WarnUsernameHistory>();
