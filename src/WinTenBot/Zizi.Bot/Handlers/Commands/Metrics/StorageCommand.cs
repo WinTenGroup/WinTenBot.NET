@@ -8,24 +8,27 @@ namespace Zizi.Bot.Handlers.Commands.Metrics
 {
     public class StorageCommand : CommandBase
     {
-        private TelegramService _telegramService;
+        private readonly TelegramService _telegramService;
+
+        public StorageCommand(TelegramService telegramService)
+        {
+            _telegramService = telegramService;
+        }
 
         public override async Task HandleAsync(IUpdateContext context, UpdateDelegate next, string[] args,
             CancellationToken cancellationToken)
         {
-            _telegramService = new TelegramService(context);
+            await _telegramService.AddUpdateContext(context);
 
             if (!_telegramService.IsSudoer())
             {
                 return;
             }
 
-            await _telegramService.SendTextAsync("<b>Storage Sense</b>")
-                .ConfigureAwait(false);
+            await _telegramService.SendTextAsync("<b>Storage Sense</b>");
 
             // var cachePath = BotSettings.PathCache.DirSize();
-            // await _telegramService.AppendTextAsync($"<b>Cache Size: </b> {cachePath}")
-            //     .ConfigureAwait(false);
+            // await _telegramService.AppendTextAsync($"<b>Cache Size: </b> {cachePath}");
         }
     }
 }

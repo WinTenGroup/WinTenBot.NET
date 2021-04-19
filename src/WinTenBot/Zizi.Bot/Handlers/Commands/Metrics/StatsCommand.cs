@@ -8,18 +8,23 @@ namespace Zizi.Bot.Handlers.Commands.Metrics
 {
     public class StatsCommand : CommandBase
     {
-        private TelegramService _telegramService;
+        private readonly TelegramService _telegramService;
+
+        public StatsCommand(TelegramService telegramService)
+        {
+            _telegramService = telegramService;
+        }
 
         public override async Task HandleAsync(IUpdateContext context, UpdateDelegate next, string[] args,
             CancellationToken cancellationToken)
         {
-            _telegramService = new TelegramService(context);
+            await _telegramService.AddUpdateContext(context);
 
-            if (!await _telegramService.IsBeta().ConfigureAwait(false)) return;
+            if (!await _telegramService.IsBeta()) return;
 
             var chatId = _telegramService.Message.Chat.Id;
 
-            await _telegramService.GetStat().ConfigureAwait(false);
+            await _telegramService.GetStat();
         }
     }
 }
