@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 using Serilog;
 using Zizi.Bot.Common;
 using Zizi.Bot.Models;
+using Zizi.Bot.Services.Features;
 using Zizi.Bot.Tools.GoogleCloud;
-using Zizi.Bot.Services;
 
 namespace Zizi.Bot.Tools
 {

@@ -12,9 +12,8 @@ using Zizi.Bot.Common;
 using Zizi.Bot.Enums;
 using Zizi.Bot.Models;
 using Zizi.Bot.Models.Settings;
-using Zizi.Bot.Providers;
-using Zizi.Bot.Services;
 using Zizi.Bot.Services.Datas;
+using Zizi.Bot.Services.Features;
 using Zizi.Bot.Telegram;
 
 namespace Zizi.Bot.Handlers.Events

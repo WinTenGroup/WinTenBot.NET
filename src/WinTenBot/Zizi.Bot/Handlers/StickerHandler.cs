@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstractions;
-using Zizi.Bot.Services;
+using Zizi.Bot.Services.Features;
 using Zizi.Bot.Telegram;
 
 namespace Zizi.Bot.Handlers

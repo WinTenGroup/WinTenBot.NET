@@ -1,5 +1,3 @@
-using EasyCaching.Core;
-using Serilog;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -7,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using EasyCaching.Core;
+using Serilog;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Framework.Abstractions;
@@ -23,7 +23,7 @@ using Zizi.Bot.Services.Datas;
 using Zizi.Bot.Telegram;
 using File = System.IO.File;
 
-namespace Zizi.Bot.Services
+namespace Zizi.Bot.Services.Features
 {
     public class TelegramService
     {

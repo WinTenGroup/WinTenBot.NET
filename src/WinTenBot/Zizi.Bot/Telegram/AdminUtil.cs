@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Serilog;
 using Telegram.Bot;
 using Telegram.Bot.Types;
-using Zizi.Bot.Services;
+using Zizi.Bot.Services.Features;
 using Zizi.Bot.Tools;
 
 namespace Zizi.Bot.Telegram

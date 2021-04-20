@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstractions;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
-using Zizi.Bot.Services;
+using Zizi.Bot.Services.Features;
 using Zizi.Bot.Telegram;
 
 namespace Zizi.Bot.Handlers

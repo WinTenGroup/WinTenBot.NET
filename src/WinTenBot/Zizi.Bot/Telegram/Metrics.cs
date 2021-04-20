@@ -10,7 +10,7 @@ using SqlKata.Execution;
 using Zizi.Bot.Common;
 using Zizi.Bot.Models;
 using Zizi.Bot.Providers;
-using Zizi.Bot.Services;
+using Zizi.Bot.Services.Features;
 using Zizi.Core.Utils;
 
 namespace Zizi.Bot.Telegram

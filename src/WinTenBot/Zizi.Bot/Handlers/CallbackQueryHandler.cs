@@ -4,7 +4,7 @@ using Serilog;
 using Telegram.Bot.Framework.Abstractions;
 using Zizi.Bot.Common;
 using Zizi.Bot.Handlers.Callbacks;
-using Zizi.Bot.Services;
+using Zizi.Bot.Services.Features;
 
 namespace Zizi.Bot.Handlers
 {

@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Serilog;
 using Telegram.Bot.Framework.Abstractions;
 using Telegram.Bot.Types.Enums;
-using Zizi.Bot.Services;
+using Zizi.Bot.Services.Features;
 using Zizi.Bot.Telegram;
 using Zizi.Core.Utils.Text;
 

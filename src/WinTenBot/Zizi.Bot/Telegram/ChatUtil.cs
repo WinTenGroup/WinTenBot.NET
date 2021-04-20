@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Humanizer;
 using Serilog;
 using Telegram.Bot.Types.Enums;
 using Zizi.Bot.Common;
-using Zizi.Bot.Services;
-using Zizi.Bot.Services.Datas;
+using Zizi.Bot.Services.Features;
 
 namespace Zizi.Bot.Telegram
 {

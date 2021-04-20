@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
-using Zizi.Bot.Services;
+using Zizi.Bot.Services.Features;
 
 namespace Zizi.Bot.Telegram
 {

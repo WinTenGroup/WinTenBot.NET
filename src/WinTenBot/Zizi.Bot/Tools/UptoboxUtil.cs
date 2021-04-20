@@ -6,9 +6,8 @@ using Serilog;
 using Zizi.Bot.Common;
 using Zizi.Bot.Models;
 using Zizi.Bot.Models.Uptobox;
-using Zizi.Bot.Services;
+using Zizi.Bot.Services.Features;
 using Zizi.Bot.Telegram;
-using Url = Flurl.Url;
 
 namespace Zizi.Bot.Tools
 {

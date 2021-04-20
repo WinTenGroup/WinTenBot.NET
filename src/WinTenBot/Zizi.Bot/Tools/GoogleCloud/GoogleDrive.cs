@@ -11,10 +11,10 @@ using Google.Apis.Util.Store;
 using HeyRed.Mime;
 using Serilog;
 using Zizi.Bot.Common;
-using Zizi.Bot.Telegram;
 using Zizi.Bot.IO;
 using Zizi.Bot.Models;
-using Zizi.Bot.Services;
+using Zizi.Bot.Services.Features;
+using Zizi.Bot.Telegram;
 using File = Google.Apis.Drive.v3.Data.File;
 
 namespace Zizi.Bot.Tools.GoogleCloud

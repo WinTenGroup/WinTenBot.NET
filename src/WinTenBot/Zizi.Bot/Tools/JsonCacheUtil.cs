@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using JsonFlatFileDataStore;
 using Serilog;
 using Zizi.Bot.IO;
-using Zizi.Bot.Services;
+using Zizi.Bot.Services.Features;
 
 namespace Zizi.Bot.Tools
 {

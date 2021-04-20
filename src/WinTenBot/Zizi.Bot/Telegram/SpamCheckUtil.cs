@@ -5,7 +5,7 @@ using Serilog;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
 using Zizi.Bot.Providers;
-using Zizi.Bot.Services;
+using Zizi.Bot.Services.Features;
 
 namespace Zizi.Bot.Telegram
 {

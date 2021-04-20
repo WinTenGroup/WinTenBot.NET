@@ -9,10 +9,8 @@ using MoreLinq;
 using Serilog;
 using Telegram.Bot.Framework.Abstractions;
 using Telegram.Bot.Types;
-using Telegram.Bot.Types.ReplyMarkups;
 using WinTenDev.Parser.Url;
 using Zizi.Bot.Common;
-using Zizi.Bot.Services;
 using Zizi.Bot.Services.Datas;
 using Zizi.Bot.Services.Features;
 using Zizi.Bot.Telegram;
@@ -234,7 +232,6 @@ namespace Zizi.Bot.Handlers.Commands.Core
 
         private async Task NsfwDetect()
         {
-            var img1 = "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/6e68f5aa-aea3-48e3-90ac-ae9286580d86/ddasy2m-94d8dc72-7733-4637-b41b-774851bd8bd9.jpg/v1/fill/w_1032,h_774,q_70,strp/heh_some_nfsw_by_nolbrony_ddasy2m-pre.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOiIsImlzcyI6InVybjphcHA6Iiwib2JqIjpbW3siaGVpZ2h0IjoiPD05NjAiLCJwYXRoIjoiXC9mXC82ZTY4ZjVhYS1hZWEzLTQ4ZTMtOTBhYy1hZTkyODY1ODBkODZcL2RkYXN5Mm0tOTRkOGRjNzItNzczMy00NjM3LWI0MWItNzc0ODUxYmQ4YmQ5LmpwZyIsIndpZHRoIjoiPD0xMjgwIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmltYWdlLm9wZXJhdGlvbnMiXX0.WO6DD_8_ttyGwZsLaDAU4HQLnNhchvsuZY1g0dbK3RE";
             var img2 = "https://api.deepai.org/job-view-file/8756b883-a087-42a9-a73c-205292ea0336/inputs/image.jpg";
             var img3 = "D:/Personal/Documents/Private/image.jpg";
 

@@ -2,8 +2,8 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstractions;
-using Zizi.Bot.Services;
 using Zizi.Bot.Services.Datas;
+using Zizi.Bot.Services.Features;
 
 namespace Zizi.Bot.Handlers.Commands.Notes
 {

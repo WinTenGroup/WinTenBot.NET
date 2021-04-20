@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using Flurl;
 using Flurl.Http;
 using Zizi.Bot.Models;
-using Zizi.Bot.Services;
+using Zizi.Bot.Services.Features;
 
 namespace Zizi.Bot.Tools
 {

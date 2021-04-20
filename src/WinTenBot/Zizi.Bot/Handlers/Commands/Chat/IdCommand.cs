@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstractions;
 using Zizi.Bot.Common;
-using Zizi.Bot.Services;
+using Zizi.Bot.Services.Features;
 
 namespace Zizi.Bot.Handlers.Commands.Chat
 {

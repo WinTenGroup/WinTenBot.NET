@@ -10,7 +10,7 @@ using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Zizi.Bot.Common;
 using Zizi.Bot.Models;
-using Zizi.Bot.Services;
+using Zizi.Bot.Services.Features;
 using File = System.IO.File;
 using String = Zizi.Bot.Common.String;
 

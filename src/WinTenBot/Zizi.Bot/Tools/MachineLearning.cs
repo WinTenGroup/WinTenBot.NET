@@ -7,10 +7,10 @@ using Microsoft.ML.Data;
 using Serilog;
 using SqlKata;
 using SqlKata.Execution;
-using Zizi.Bot.Providers;
 using Zizi.Bot.Common;
 using Zizi.Bot.Models;
-using Zizi.Bot.Services;
+using Zizi.Bot.Providers;
+using Zizi.Bot.Services.Features;
 
 namespace Zizi.Bot.Tools
 {
