@@ -110,7 +110,7 @@ namespace Zizi.Bot.Services.Features
                 ChatId = AnyMessage.Chat.Id;
                 IsNoUsername = AnyMessage.From.IsNoUsername();
                 IsChatRestricted = CheckRestriction();
-                IsFromSudo = FromId.IsSudoer();
+                IsFromSudo = CheckFromSudoer();
 
                 if (AnyMessage.Text != null) MessageTextParts = AnyMessage.Text.SplitText(" ").ToArray();
 
@@ -279,7 +279,7 @@ namespace Zizi.Bot.Services.Features
 
         #region Privilege
 
-        public bool IsFromSudoer()
+        private bool CheckFromSudoer()
         {
             bool isSudoer = false;
             var sudoers = _appConfig.Sudoers;
