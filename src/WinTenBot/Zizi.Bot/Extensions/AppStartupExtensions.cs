@@ -54,16 +54,23 @@ namespace Zizi.Bot.Extensions
             var bot = scope.ServiceProvider.GetRequiredService<TBot>();
             var options = scope.ServiceProvider.GetRequiredService<IOptions<CustomBotOptions<TBot>>>();
 
+            var currentWebhook = bot.Client.GetWebhookInfoAsync().Result;
+
             var botToken = options.Value.ApiToken;
             var webhookPath = options.Value.WebhookPath;
 
             var url = new Uri(new Uri(options.Value.WebhookDomain), $"{webhookPath}/{botToken}/webhook");
+
+            if (url.AbsoluteUri == currentWebhook.Url)
+            {
+                Log.Information("The webhook set is skipped because the WebHook is already set.");
+                return app;
+            }
+
             Log.Information("Url WebHook: {0}", url);
+            Log.Information("Setting WebHook for bot {0}", typeof(TBot).Name);
 
-            Log.Information("Setting WebHook for bot {0} to URL {1}", typeof(TBot).Name, url);
-
-            bot.Client.SetWebhookAsync(url.AbsoluteUri)
-                .GetAwaiter().GetResult();
+            bot.Client.SetWebhookAsync(url.AbsoluteUri).GetAwaiter().GetResult();
 
             return app;
         }
