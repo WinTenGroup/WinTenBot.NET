@@ -152,7 +152,7 @@ namespace Zizi.Bot.Handlers
 
         #region Pre Task
 
-        public async Task<bool> EnsureChatRestrictionAsync()
+        private async Task<bool> EnsureChatRestrictionAsync()
         {
             try
             {
@@ -188,14 +188,25 @@ namespace Zizi.Bot.Handlers
             }
         }
 
-        private async Task AntiSpamCheck()
+        private async Task<AntiSpamResult> AntiSpamCheck()
         {
             var fromId = _telegramService.FromId;
-            var resultCheck = await _antiSpamService.CheckSpam(fromId);
+            var antiSpamResult = await _antiSpamService.CheckSpam(fromId);
 
-            Log.Debug("AntiSpam: {ResultCheck}", resultCheck);
+            Log.Debug("AntiSpam: {@ResultCheck}", antiSpamResult);
 
-            await _telegramService.SendTextAsync(resultCheck);
+            if (antiSpamResult == null) return null;
+
+            var messageBan = antiSpamResult.MessageResult;
+
+            if (antiSpamResult.IsAnyBanned)
+            {
+                await _telegramService.KickMemberAsync(fromId, true);
+            }
+
+            await _telegramService.SendTextAsync(messageBan, replyToMsgId: 0);
+
+            return antiSpamResult;
         }
 
         private async Task ScanMessageAsync()
@@ -316,7 +327,7 @@ namespace Zizi.Bot.Handlers
             sw.Stop();
         }
 
-        public async Task CheckMataZiziAsync()
+        private async Task CheckMataZiziAsync()
         {
             var sw = Stopwatch.StartNew();
 
