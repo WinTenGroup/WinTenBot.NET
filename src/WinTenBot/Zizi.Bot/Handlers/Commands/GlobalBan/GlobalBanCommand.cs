@@ -30,17 +30,17 @@ namespace Zizi.Bot.Handlers.Commands.GlobalBan
         {
             await _telegramService.AddUpdateContext(context);
 
+            int userId;
+            string reason;
+
             var msg = _telegramService.Message;
+
 
             var chatId = msg.Chat.Id;
             var fromId = msg.From.Id;
             var partedText = msg.Text.Split(" ");
             var param0 = partedText.ValueOfIndex(0) ?? "";
             var param1 = partedText.ValueOfIndex(1) ?? "";
-            var userId = param1.ToInt();
-            var reason = msg.Text
-                .Replace(param0, "", StringComparison.CurrentCulture)
-                .Replace(param1, "", StringComparison.CurrentCulture).Trim();
 
             if (!_telegramService.IsFromSudo)
             {
@@ -68,16 +68,23 @@ namespace Zizi.Bot.Handlers.Commands.GlobalBan
                 }
 
                 userId = param1.ToInt();
-                reason = msg.Text
-                    .Replace(param0, "", StringComparison.CurrentCulture)
-                    .Replace(param1, "", StringComparison.CurrentCulture).Trim();
+                reason = msg.Text;
+                if (reason.IsNotNullOrEmpty())
+                    reason = reason
+                        .Replace(param0, "", StringComparison.CurrentCulture)
+                        .Replace(param1, "", StringComparison.CurrentCulture)
+                        .Trim();
             }
             else
             {
                 var repMsg = msg.ReplyToMessage;
                 userId = repMsg.From.Id;
-                reason = msg.Text
-                    .Replace(param0, "", StringComparison.CurrentCulture).Trim();
+                reason = msg.Text;
+
+                if (reason.IsNotNullOrEmpty())
+                    reason = reason
+                        .Replace(param0, "", StringComparison.CurrentCulture)
+                        .Trim();
             }
 
             Log.Information("Execute Global Ban");
