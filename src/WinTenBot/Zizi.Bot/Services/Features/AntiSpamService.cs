@@ -44,7 +44,7 @@ namespace Zizi.Bot.Services.Features
         /// </summary>
         /// <param name="userId">The user id.</param>
         /// <returns>A Task.</returns>
-        public async Task<string> CheckSpam(int userId)
+        public async Task<AntiSpamResult> CheckSpam(int userId)
         {
             var spamWatchTask = CheckSpamWatch(userId);
             var casBanTask = IsCasBanAsync(userId);
@@ -55,11 +55,12 @@ namespace Zizi.Bot.Services.Features
             var swBan = spamWatchTask.Result;
             var casBan = casBanTask.Result;
             var es2Ban = gBanTask.Result;
+            var anyBan = swBan || casBan || es2Ban;
 
-            if (!(swBan || casBan || es2Ban))
+            if (!anyBan)
             {
                 Log.Information("UserId {UserId} is passed on all Fed Ban", userId);
-                return string.Empty;
+                return null;
             }
 
             var banMsg = $"Pengguna {userId} telah di Ban di Federasi";
@@ -68,7 +69,16 @@ namespace Zizi.Bot.Services.Features
             if (casBan) banMsg += "\n- CAS Fed";
             if (swBan) banMsg += "\n- SpamWatch Fed";
 
-            return banMsg;
+            // return banMsg;
+
+            return new AntiSpamResult()
+            {
+                MessageResult = banMsg,
+                IsAnyBanned = anyBan,
+                IsEs2Banned = es2Ban,
+                IsCasBanned = casBan,
+                IsSpamWatched = swBan
+            };
         }
 
         /// <summary>
