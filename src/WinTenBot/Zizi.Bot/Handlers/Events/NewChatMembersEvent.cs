@@ -11,7 +11,6 @@ using Telegram.Bot.Types.ReplyMarkups;
 using Zizi.Bot.Common;
 using Zizi.Bot.Enums;
 using Zizi.Bot.Models;
-using Zizi.Bot.Models.Settings;
 using Zizi.Bot.Services.Datas;
 using Zizi.Bot.Services.Features;
 using Zizi.Bot.Telegram;
@@ -20,21 +19,18 @@ namespace Zizi.Bot.Handlers.Events
 {
     public class NewChatMembersEvent : IUpdateHandler
     {
-        private readonly AppConfig _appConfig;
-        private readonly EnginesConfig _enginesConfig;
         private readonly SettingsService _settingsService;
         private readonly TelegramService _telegramService;
+        private readonly AntiSpamService _antiSpamService;
         private ChatSetting Settings { get; set; }
 
         public NewChatMembersEvent(
-            AppConfig appConfig,
-            EnginesConfig enginesConfig,
+            AntiSpamService antiSpamService,
             SettingsService settingsService,
             TelegramService telegramService
         )
         {
-            _appConfig = appConfig;
-            _enginesConfig = enginesConfig;
+            _antiSpamService = antiSpamService;
             _settingsService = settingsService;
             _telegramService = telegramService;
         }
@@ -48,7 +44,7 @@ namespace Zizi.Bot.Handlers.Events
             var msg = context.Update.Message;
             var chatId = _telegramService.ChatId;
 
-            await _telegramService.DeleteAsync(msg.MessageId);
+            // await _telegramService.DeleteAsync(msg.MessageId);
 
             Log.Information("New Chat Members...");
 
@@ -72,13 +68,9 @@ namespace Zizi.Bot.Handlers.Events
                 if (isRestricted) return;
 
                 var getMe = await _telegramService.GetMeAsync();
-
-                var botName = _enginesConfig.ProductName;
                 var greetMe = $"Hai, perkenalkan saya {getMe.FirstName}" +
-
                               $"\n\nSaya adalah bot pendebug dan grup manajemen yang di lengkapi dengan alat keamanan. " +
                               $"Agar saya berfungsi penuh, jadikan saya admin dengan level standard. " +
-
                               $"\n\nUntuk melihat daftar perintah bisa ketikkan /help";
 
                 await _telegramService.SendTextAsync(greetMe, replyToMsgId: 0);
@@ -151,7 +143,7 @@ namespace Zizi.Bot.Handlers.Events
 
             int sentMsgId;
 
-            Log.Debug("New Member handler before send. Time: {0}", stopwatch.Elapsed);
+            Log.Debug("New Member handler before send. Time: {Elapsed}", stopwatch.Elapsed);
             if (Settings.WelcomeMediaType != MediaType.Unknown)
             {
                 var mediaType = Settings.WelcomeMediaType;
@@ -159,11 +151,13 @@ namespace Zizi.Bot.Handlers.Events
                     Settings.WelcomeMedia,
                     mediaType,
                     sendText,
-                    keyboard)).MessageId;
+                    keyboard,
+                    0
+                    )).MessageId;
             }
             else
             {
-                sentMsgId = (await _telegramService.SendTextAsync(sendText, keyboard)).MessageId;
+                sentMsgId = (await _telegramService.SendTextAsync(sendText, keyboard,0)).MessageId;
             }
 
             if (!Settings.EnableHumanVerification)
@@ -180,9 +174,7 @@ namespace Zizi.Bot.Handlers.Events
                 {"last_welcome_message_id", sentMsgId}
             });
 
-            // await _settingsService.UpdateCache();
-
-            Log.Debug("New Member handler complete. Time: {0}", stopwatch.Elapsed);
+            Log.Debug("New Member handler complete. Time: {Elapsed}", stopwatch.Elapsed);
             stopwatch.Stop();
         }
 
@@ -194,34 +186,34 @@ namespace Zizi.Bot.Handlers.Events
             var allNoUsername = new StringBuilder();
             var allNewBot = new StringBuilder();
 
-            Log.Debug("Parsing new {0} members..", users.Length);
+            Log.Debug("Parsing new {Length} members..", users.Length);
             foreach (var newMember in users)
             {
                 var newMemberId = newMember.Id;
 
-                var isGBanTask = _telegramService.CheckGlobalBanAsync(newMember);
-                var isCasBanTask = newMember.IsCasBanAsync();
+                var isGBanTask = _antiSpamService.CheckEs2Ban(newMemberId);
+                var isCasBanTask = _antiSpamService.IsCasBanAsync(newMemberId);
+                var isSpamWatchTask = _antiSpamService.CheckSpamWatch(newMemberId);
 
                 if (Settings.EnableHumanVerification)
                 {
-                    Log.Debug("Restricting {0}", newMemberId);
+                    Log.Debug("Restricting {NewMemberId}", newMemberId);
                     await _telegramService.RestrictMemberAsync(newMemberId);
                 }
 
-                await Task.WhenAll(isCasBanTask, isGBanTask);
+                await Task.WhenAll(isCasBanTask, isGBanTask, isSpamWatchTask);
 
-                var isBan = await isGBanTask;
-                var isCasBan = await isCasBanTask;
+                var isBan = isGBanTask.Result;
+                var isCasBan = isCasBanTask.Result;
+                var isSpamWatchBan = isSpamWatchTask.Result;
 
-                if (isBan || isCasBan) continue;
+                if (isBan || isCasBan || isSpamWatchBan)
+                {
+                    await _telegramService.KickMemberAsync(newMemberId, true);
+                    continue;
+                }
 
-                // if (BotSettings.IsProduction)
-                // {
-                // var isCasBan = await IsCasBan(newMember.Id);
-                // }
-
-                var fullName = (newMember.FirstName + " " + newMember.LastName).Trim();
-                var nameLink = newMemberId.GetNameLink(fullName);
+                var nameLink = newMember.GetNameLink();
 
                 if (newMember != lastMember)
                 {
