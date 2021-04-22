@@ -75,7 +75,7 @@ namespace Zizi.Bot
 
             services.AddHangfireServerAndConfig();
 
-            Log.Information("Services is ready.");
+            Log.Information("Services is ready..");
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

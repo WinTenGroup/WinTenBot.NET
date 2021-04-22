@@ -26,28 +26,26 @@ namespace Zizi.Bot.Tools
             {
                 var recurringJobId = dto.Id;
 
-                Log.Debug("Deleting jobId: {0}, Index: {1}", recurringJobId, index);
+                Log.Debug("Deleting jobId: {RecurringJobId}, Index: {Index}", recurringJobId, index);
                 RecurringJob.RemoveIfExists(recurringJobId);
 
-                Log.Debug("Delete succeeded {0}, Index: {1}", recurringJobId, index);
+                Log.Debug("Delete succeeded {RecurringJobId}, Index: {Index}", recurringJobId, index);
             });
 
-            Log.Information("Hangfire jobs successfully deleted. Total: {0}. Time: {1}", numOfJobs, sw.Elapsed);
+            Log.Information("Hangfire jobs successfully deleted. Total: {NumOfJobs}. Time: {Elapsed}", numOfJobs, sw.Elapsed);
 
             sw.Stop();
         }
 
         public static void DeleteJob(string jobId)
         {
-            Log.Debug("Deleting job by ID: '{0}'", jobId);
+            Log.Debug("Deleting job by ID: '{JobId}'", jobId);
             RecurringJob.RemoveIfExists(jobId);
-            Log.Debug("Job '{0}' deleted successfully..", jobId);
+            Log.Debug("Job '{JobId}' deleted successfully..", jobId);
         }
 
         public static MySqlStorage GetMysqlStorage(string connectionStr)
         {
-            // var connectionString = BotSettings.HangfireMysqlDb;
-
             var options = new MySqlStorageOptions
             {
                 // TransactionIsolationLevel = IsolationLevel.ReadCommitted,
@@ -68,12 +66,12 @@ namespace Zizi.Bot.Tools
         {
             var sw = Stopwatch.StartNew();
 
-            Log.Debug("Registering Job with ID: {0}", jobId);
+            Log.Debug("Registering Job with ID: {JobId}", jobId);
             RecurringJob.RemoveIfExists(jobId);
             RecurringJob.AddOrUpdate(jobId, methodCall, cronExpression, timeZone, queue);
             RecurringJob.Trigger(jobId);
 
-            Log.Debug("Registering Job {0} finish in {1}", jobId, sw.Elapsed);
+            Log.Debug("Registering Job {JobId} finish in {Elapsed}", jobId, sw.Elapsed);
 
             sw.Stop();
         }
@@ -83,12 +81,12 @@ namespace Zizi.Bot.Tools
         {
             var sw = Stopwatch.StartNew();
 
-            Log.Debug("Registering Job with ID: {0}", jobId);
+            Log.Debug("Registering Job with ID: {JobId}", jobId);
             RecurringJob.RemoveIfExists(jobId);
             RecurringJob.AddOrUpdate(jobId, methodCall, cronExpression, timeZone, queue);
             RecurringJob.Trigger(jobId);
 
-            Log.Debug("Registering Job {0} finish in {1}", jobId, sw.Elapsed);
+            Log.Debug("Registering Job {JobId} finish in {Elapsed}", jobId, sw.Elapsed);
 
             sw.Stop();
         }
@@ -98,12 +96,12 @@ namespace Zizi.Bot.Tools
         {
             var sw = Stopwatch.StartNew();
 
-            Log.Debug("Registering Job with ID: {0}", jobId);
+            Log.Debug("Registering Job with ID: {JobId}", jobId);
             RecurringJob.RemoveIfExists(jobId);
             RecurringJob.AddOrUpdate(jobId, methodCall, cronExpression, timeZone, queue);
             RecurringJob.Trigger(jobId);
 
-            Log.Debug("Registering Job {0} finish in {1}", jobId, sw.Elapsed);
+            Log.Debug("Registering Job {JobId} finish in {Elapsed}", jobId, sw.Elapsed);
 
             sw.Stop();
         }
@@ -117,7 +115,7 @@ namespace Zizi.Bot.Tools
 
             var recurringJobs = connection.GetRecurringJobs();
             var filteredJobs = recurringJobs.Where(dto => dto.Id.StartsWith(prefixId)).ToList();
-            Log.Debug("Fount {0} of {1}", filteredJobs.Count, recurringJobs.Count);
+            Log.Debug("Found {Count} of {Count1}", filteredJobs.Count, recurringJobs.Count);
 
             var numOfJobs = filteredJobs.Count;
 
@@ -125,13 +123,13 @@ namespace Zizi.Bot.Tools
             {
                 var recurringJobId = dto.Id;
 
-                Log.Debug("Triggering jobId: {0}, Index: {1}", recurringJobId, index);
+                Log.Debug("Triggering jobId: {RecurringJobId}, Index: {Index}", recurringJobId, index);
                 RecurringJob.Trigger(recurringJobId);
 
-                Log.Debug("Trigger succeeded {0}, Index: {1}", recurringJobId, index);
+                Log.Debug("Trigger succeeded {RecurringJobId}, Index: {Index}", recurringJobId, index);
             });
 
-            Log.Information("Hangfire jobs successfully trigger. Total: {0}. Time: {1}", numOfJobs, sw.Elapsed);
+            Log.Information("Hangfire jobs successfully trigger. Total: {NumOfJobs}. Time: {Elapsed}", numOfJobs, sw.Elapsed);
 
             sw.Stop();
 

@@ -44,7 +44,7 @@ namespace Zizi.Bot.Extensions
                         .UseSerilogLogProvider();
                 });
 
-            Log.Debug("Hangfire Service added.");
+            Log.Debug("Hangfire Service added..");
 
             return services;
         }
@@ -58,8 +58,8 @@ namespace Zizi.Bot.Extensions
             var hangfireUsername = hangfireConfig.Username;
             var hangfirePassword = hangfireConfig.Password;
 
-            Log.Information("Hangfire Url: {0}", hangfireBaseUrl);
-            Log.Information("Hangfire Auth: {0} | {1}", hangfireUsername, hangfirePassword);
+            Log.Information("Hangfire Url: {HangfireBaseUrl}", hangfireBaseUrl);
+            Log.Information("Hangfire Auth: {HangfireUsername} | {HangfirePassword}", hangfireUsername, hangfirePassword);
 
             var dashboardOptions = new DashboardOptions
             {
