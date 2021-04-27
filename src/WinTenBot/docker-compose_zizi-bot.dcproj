@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" Sdk="Microsoft.Docker.Sdk">
+  <PropertyGroup Label="Globals">
+    <ProjectVersion>2.1</ProjectVersion>
+    <DockerTargetOS>Linux</DockerTargetOS>
+    <ProjectGuid>c13d3e3b-938b-4cd9-9827-4967de1376cb</ProjectGuid>
+  </PropertyGroup>
+  <PropertyGroup>
+    <DockerServiceName>zizi.bot</DockerServiceName>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include=".env" />
+    <None Include="docker-compose.yml" />
+    <None Include=".dockerignore" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="docker-config\" />
+  </ItemGroup>
+</Project>

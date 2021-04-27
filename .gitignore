@@ -330,6 +330,8 @@ ASALocalRun/
 
 
 # WinTenDev
+src/WinTenBot/.run/
+
 src/WinTenBot/WinTenBot.sln.DotSettings
 
 src/WinTenBot/WinTenBot/Storage/Common/
@@ -357,5 +359,7 @@ src/WinTenBot/Zizi.Portal/appsettings.json
 
 src/WinTenBot/Zizi.Hook/appsettings.json
 src/WinTenBot/Zizi.WebApi/appsettings.json
+
+
 
 

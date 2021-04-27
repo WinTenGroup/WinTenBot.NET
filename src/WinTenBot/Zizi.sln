@@ -4,7 +4,7 @@ VisualStudioVersion = 16.0.29519.87
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zizi.Bot", "Zizi.Bot\Zizi.Bot.csproj", "{07FCA677-7F76-42B7-8C1D-DA47BCD9F360}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zizi.Hook", "Zizi.Hook\Zizi.Hook.csproj", "{B495ECAA-0A5A-4458-B82C-48AA7DFFCEBA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WinTenDev.WebHook", "WinTenDev.WebHook\WinTenDev.WebHook.csproj", "{B495ECAA-0A5A-4458-B82C-48AA7DFFCEBA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zizi.WebApi", "Zizi.WebApi\Zizi.WebApi.csproj", "{B913A17B-1C14-47DB-8284-B61EC2C0151B}"
 EndProject
@@ -14,7 +14,16 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zizi.Core", "Zizi.Core\Zizi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zizi.Mirror", "Zizi.Mirror\Zizi.Mirror.csproj", "{9A7D4E70-3CEF-4C20-80EF-AAF8E6FD3E79}"
 EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose_zizi-bot", "docker-compose_zizi-bot.dcproj", "{C13D3E3B-938B-4CD9-9827-4967DE1376CB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{93D0AC65-D0BE-4A72-998F-B6B491316DF0}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinTenDev.Parser", "WinTenDev.Parser\WinTenDev.Parser.csproj", "{AAA2C64A-B5E7-4822-9734-67E5761F2C74}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinTenDev.Commons", "WinTenDev.Commons\WinTenDev.Commons.csproj", "{199D8F37-8120-4B94-A1DB-9EA044ECBC8A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -46,6 +55,18 @@ Global
 		{9A7D4E70-3CEF-4C20-80EF-AAF8E6FD3E79}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9A7D4E70-3CEF-4C20-80EF-AAF8E6FD3E79}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9A7D4E70-3CEF-4C20-80EF-AAF8E6FD3E79}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C13D3E3B-938B-4CD9-9827-4967DE1376CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C13D3E3B-938B-4CD9-9827-4967DE1376CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C13D3E3B-938B-4CD9-9827-4967DE1376CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C13D3E3B-938B-4CD9-9827-4967DE1376CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AAA2C64A-B5E7-4822-9734-67E5761F2C74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AAA2C64A-B5E7-4822-9734-67E5761F2C74}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AAA2C64A-B5E7-4822-9734-67E5761F2C74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AAA2C64A-B5E7-4822-9734-67E5761F2C74}.Release|Any CPU.Build.0 = Release|Any CPU
+		{199D8F37-8120-4B94-A1DB-9EA044ECBC8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{199D8F37-8120-4B94-A1DB-9EA044ECBC8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{199D8F37-8120-4B94-A1DB-9EA044ECBC8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{199D8F37-8120-4B94-A1DB-9EA044ECBC8A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

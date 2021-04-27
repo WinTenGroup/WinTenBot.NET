@@ -1,0 +1,55 @@
+version: '3.7'
+
+services:
+
+  traefik:
+    image: "traefik:latest"
+    container_name: "zizibeta_traefik-proxy"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "./docker-config/traefik/certs:/etc/traefik/certs"
+      - "./docker-config/traefik/traefik.toml:/etc/traefik/traefik.toml"
+      - "./docker-config/traefik/dyn.toml:/etc/traefik/dyn.toml"
+
+  redis:
+    image: "redis:latest"
+    container_name: "zizibeta_redis-cache"
+    ports:
+      - "6379:6379"
+
+  redis-insight:
+    image: "redislabs/redisinsight:latest"
+    container_name: "zizibeta_redis-insight"
+    ports:
+      - "5101:8001"
+
+  zizi-bot:
+    # image: ${DOCKER_REGISTRY-}zizibot
+    # container_name: zizibot
+    build:
+      context: .
+      dockerfile: Zizi.Bot/Dockerfile
+    #    build: ./Zizi.Bot
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.zizi-bot.loadbalancer.server.port=5100"
+      - "traefik.http.routers.zizi-bot.rule=Host(`localhost`)"
+      - "traefik.http.routers.zizi-bot.entrypoints=web"
+      - "traefik.http.routers.zizi-bot.tls=true"
+      - "traefik.http.routers.app-http.rule=Host(`localhost`)"
+      - "traefik.http.routers.app-http.entrypoints=web"
+      #- "traefik.http.routers.app-http.middlewares=redirect-secure"
+      #- "traefik.http.middlewares.redirect-secure.redirectscheme.scheme=https"
+    #    ports:
+    #      - "5100:5100"
+    restart: on-failure
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    volumes:
+      - "./Zizi.Bot/Storage/Common/gdrive-auth-token-store:/app/Storage/Common/gdrive-auth-token-store"
+      - "D:/System/Docker/zizibeta/MonkeyCaches:app/Storage/MonkeyCache"
+      - "./Zizi.Bot/appsettings.json:/app/appsettings.json"
