@@ -9,14 +9,11 @@ on:
 jobs:    
   linux64-build:
     runs-on: ubuntu-latest
-#     defaults:
-#       run:
-#         working-directory: /home/runner/work/WinTenBot.NET/WinTenBot.NET/src/WinTenBot
+    defaults:
+      run:
+        working-directory: /home/runner/work/ZiziBot.NET/ZiziBot.NET/src/WinTenBot
 
     steps:
-      - name: Change Directory
-#         run: pwd
-        working-directory: /home/runner/work/ZiziBot.NET/ZiziBot.NET/src/WinTenBot
       - uses: actions/checkout@v2
       - name: Setup .NET
         uses: actions/setup-dotnet@v1
