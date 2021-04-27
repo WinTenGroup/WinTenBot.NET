@@ -1,30 +1,23 @@
-﻿#region
-
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
-using Zizi.Hook.Models.Github;
-using Zizi.Hook.Services;
+using WinTenDev.WebHook.Models.Github;
+using WinTenDev.WebHook.Services;
 
-#endregion
-
-namespace Zizi.Hook.Controllers
+namespace WinTenDev.WebHook.Controllers
 {
     [ApiController]
     [Route("/")]
     public class HookController : ControllerBase
     {
-        public HookController(ITelegramService telegramService)
+        private readonly ITelegramService _telegramService;
+        public HookController(ITelegramService telegramServiceService)
         {
-            Telegram = telegramService;
+            _telegramService = telegramServiceService;
         }
 
-        private ITelegramService Telegram
-        {
-            get;
-        }
 
-        // GET
+            // GET
         [HttpGet]
         public IActionResult Index()
         {
@@ -33,14 +26,17 @@ namespace Zizi.Hook.Controllers
         }
 
         [HttpPost("/debug")]
-        public IActionResult Debug([FromBody] object content)
+        public IActionResult Debug([FromBody] object content, [FromQuery] object query)
         {
             var stopwatch = Stopwatch.StartNew();
+
+            Log.Debug("Content: {Content}", content);
+            Log.Debug("Query: {Query}", query);
 
             Log.Information("Receiving hook");
             var github = GithubAdmin.FromJson(content.ToString());
             var zen = github.Zen;
-            Telegram.SendMessage(-1001404591750, zen);
+            _telegramService.SendMessage(-1001404591750, zen);
 
             stopwatch.Stop();
 

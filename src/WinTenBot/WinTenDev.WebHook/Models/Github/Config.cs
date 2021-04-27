@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 
-namespace Zizi.Hook.Models.Github
+namespace WinTenDev.WebHook.Models.Github
 {
     public class Config
     {

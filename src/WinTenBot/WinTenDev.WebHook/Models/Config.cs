@@ -1,4 +1,4 @@
-﻿namespace Zizi.Hook.Models
+﻿namespace WinTenDev.WebHook.Models
 {
     public class Config
     {

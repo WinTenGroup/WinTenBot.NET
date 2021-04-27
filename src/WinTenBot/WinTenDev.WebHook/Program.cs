@@ -2,9 +2,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Serilog;
-using Zizi.Hook.Utils;
+using WinTenDev.WebHook.Utils;
 
-namespace Zizi.Hook
+namespace WinTenDev.WebHook
 {
     public class Program
     {

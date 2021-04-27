@@ -4,9 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Zizi.Hook.Models;
+using WinTenDev.WebHook.Models;
 
-namespace Zizi.Hook.Controllers
+namespace WinTenDev.WebHook.Controllers
 {
     [ApiController]
     [Route("[controller]")]

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace Zizi.Hook.Models.Github
+namespace WinTenDev.WebHook.Models.Github
 {
     public class Hook
     {

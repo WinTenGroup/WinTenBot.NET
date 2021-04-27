@@ -7,7 +7,7 @@ using Newtonsoft.Json.Converters;
 
 #endregion
 
-namespace Zizi.Hook.Models.Github
+namespace WinTenDev.WebHook.Models.Github
 {
     public partial class GithubAdmin
     {

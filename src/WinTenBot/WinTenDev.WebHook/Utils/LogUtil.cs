@@ -3,7 +3,7 @@ using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.SystemConsole.Themes;
 
-namespace Zizi.Hook.Utils
+namespace WinTenDev.WebHook.Utils
 {
     public static class LogUtil
     {

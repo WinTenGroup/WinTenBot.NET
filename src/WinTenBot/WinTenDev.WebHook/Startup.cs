@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Zizi.Hook.Services;
+using WinTenDev.WebHook.Services;
 
-namespace Zizi.Hook
+namespace WinTenDev.WebHook
 {
     public class Startup
     {

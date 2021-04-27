@@ -5,28 +5,25 @@ using Serilog;
 using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
 
-namespace Zizi.Hook.Services
+namespace WinTenDev.WebHook.Services
 {
     public class TelegramService : ITelegramService
     {
+        private readonly TelegramBotClient _client;
+
         public TelegramService(IConfiguration configuration)
         {
             var token = configuration["BotToken"];
 
-            Client = new TelegramBotClient(token);
-        }
-
-        private TelegramBotClient Client
-        {
-            get;
+            _client = new TelegramBotClient(token);
         }
 
         public async Task SendMessage(long chatId, string message)
         {
             try
             {
-                Log.Information("Sending message to {0}", chatId);
-                await Client.SendTextMessageAsync(
+                Log.Information("Sending message to {ChatId}", chatId);
+                await _client.SendTextMessageAsync(
                     chatId,
                     message,
                     ParseMode.Html);
@@ -35,7 +32,7 @@ namespace Zizi.Hook.Services
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Error send to {0}", chatId);
+                Log.Error(ex, "Error send to {ChatId}", chatId);
             }
         }
     }

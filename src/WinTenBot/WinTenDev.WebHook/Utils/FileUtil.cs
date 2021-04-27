@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace Zizi.Hook.Utils
+namespace WinTenDev.WebHook.Utils
 {
     public static class FileUtil
     {
