@@ -10,6 +10,7 @@ jobs:
   linux64-build:
     runs-on: ubuntu-latest
     defaults:
+      run: pwd
       run:
         working-directory: /home/runner/work/WinTenBot.NET/WinTenBot.NET/src/WinTenBot
 
