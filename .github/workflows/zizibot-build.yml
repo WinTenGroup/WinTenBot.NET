@@ -15,8 +15,8 @@ jobs:
 
     steps:
       - name: Change Directory
-        run: pwd
-        working-directory: /home/runner/work/WinTenBot.NET/WinTenBot.NET/src/WinTenBot
+#         run: pwd
+        working-directory: /home/runner/work/ZiziBot.NET/ZiziBot.NET/src/WinTenBot
       - uses: actions/checkout@v2
       - name: Setup .NET
         uses: actions/setup-dotnet@v1
@@ -45,7 +45,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: /home/runner/work/WinTenBot.NET/WinTenBot.NET/src/WinTenBot
+        working-directory: /home/runner/work/ZiziBot.NET/ZiziBot.NET/src/WinTenBot
 
     steps:
       - uses: actions/checkout@v2
