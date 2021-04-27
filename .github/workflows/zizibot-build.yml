@@ -6,15 +6,17 @@ on:
   pull_request:
     branches: [master]
 
-jobs:
+jobs:    
   linux64-build:
     runs-on: ubuntu-latest
-    defaults:
-      run: pwd
-      run:
-        working-directory: /home/runner/work/WinTenBot.NET/WinTenBot.NET/src/WinTenBot
+#     defaults:
+#       run:
+#         working-directory: /home/runner/work/WinTenBot.NET/WinTenBot.NET/src/WinTenBot
 
     steps:
+      - name: Change Directory
+        run: pwd
+        working-directory: /home/runner/work/WinTenBot.NET/WinTenBot.NET/src/WinTenBot
       - uses: actions/checkout@v2
       - name: Setup .NET
         uses: actions/setup-dotnet@v1
