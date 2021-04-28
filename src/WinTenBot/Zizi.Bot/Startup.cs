@@ -96,22 +96,7 @@ namespace Zizi.Bot
 
             // app.UseEmbeddedRavenDBServer();
 
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-
-                // get bot updates from Telegram via long-polling approach during development
-                // this will disable Telegram webhooks
-                app.UseTelegramBotLongPolling<ZiziBot>(configureBot, TimeSpan.FromSeconds(1));
-            }
-            else
-            {
-                // use Telegram bot webhook middleware in higher environments
-                app.UseTelegramBotWebhook<ZiziBot>(configureBot);
-
-                // and make sure webhook is enabled
-                app.EnsureWebhookSet<ZiziBot>();
-            }
+            app.RunZiziBot();
 
             app.UseHangfireDashboardAndServer();
 
