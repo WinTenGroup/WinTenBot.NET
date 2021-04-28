@@ -26,13 +26,22 @@ namespace Zizi.Bot.IO
 
                 var dirInfo = new DirectoryInfo(logsPath);
                 var files = dirInfo.GetFiles();
-                var filteredFiles = files.Where(fileInfo =>
-                    fileInfo.CreationTimeUtc < DateTime.UtcNow.AddDays(-1)).ToArray();
+                // var filteredCreated = files.Where(fileInfo => fileInfo.LastWriteTimeUtc < DateTime.UtcNow.AddDays(-1)).ToList();
+                // var filteredModified = files.Where(fileInfo => fileInfo.CreationTimeUtc < DateTime.UtcNow.AddDays(-1)).ToList();
 
-                if (filteredFiles.Length > 0)
+                var filteredFile = files.Where(fileInfo =>
+                    fileInfo.LastWriteTimeUtc < DateTime.UtcNow.AddDays(-1)
+                    || fileInfo.CreationTimeUtc < DateTime.UtcNow.AddDays(-1)
+                ).ToList();
+
+                // filteredCreated.AddRange(filteredModified);
+
+                var fileCount = filteredFile.Count;
+
+                if (fileCount > 0)
                 {
-                    Log.Information("Found {0} of {1}", filteredFiles.Length, files.Length);
-                    foreach (var fileInfo in filteredFiles)
+                    Log.Information("Found {FileCount} of {Length}", fileCount, files.Length);
+                    foreach (var fileInfo in filteredFile)
                     {
                         var filePath = fileInfo.FullName;
                         var zipFile = filePath.CreateZip();
@@ -40,6 +49,8 @@ namespace Zizi.Bot.IO
                         await using var fileStream = File.OpenRead(zipFile);
 
                         var media = new InputOnlineFile(fileStream, zipFile);
+                        media.FileName = Path.GetFileName(zipFile);
+
                         await botClient.SendDocumentAsync(channelTarget, media);
 
                         fileStream.Close();
@@ -78,11 +89,15 @@ namespace Zizi.Bot.IO
                 var files = dirInfo.GetFiles();
                 var filteredFiles = files.Where(fileInfo =>
                     fileInfo.CreationTimeUtc < DateTime.UtcNow.AddDays(-1) &&
-                    fileInfo.FullName.Contains(filter)).ToArray();
+                    fileInfo.FullName.Contains(filter)).ToList();
 
-                if (filteredFiles.Length > 0)
+                // filteredCreated.AddRange(filteredModified);
+
+                var filteredFilesCount = filteredFiles.Count;
+
+                if (filteredFilesCount > 0)
                 {
-                    Log.Information("Found {Length} of {Length1}", filteredFiles.Length, files.Length);
+                    Log.Information("Found {Length} of {Length1}", filteredFilesCount, files.Length);
                     foreach (var fileInfo in filteredFiles)
                     {
                         var filePath = fileInfo.FullName;
