@@ -356,8 +356,11 @@ src/WinTenBot/Zizi.Mirror/appsettings.json
 
 src/WinTenBot/Zizi.Portal/Storage/EasyCaching/
 src/WinTenBot/Zizi.Portal/appsettings.json
+src/WinTenBot/WinTenDev.ZiziPortal/Storage/EasyCaching/
+src/WinTenBot/WinTenDev.ZiziPortal/appsettings.json
 
 src/WinTenBot/WinTenDev.WebHook/appsettings.json
 src/WinTenBot/Zizi.Hook/appsettings.json
 
 src/WinTenBot/Zizi.WebApi/appsettings.json
+
