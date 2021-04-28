@@ -3,38 +3,42 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Hangfire;
 using Serilog;
-using SqlKata;
 using SqlKata.Execution;
 using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 using Zizi.Bot.Models;
+using Zizi.Bot.Services.Datas;
 using Zizi.Bot.Telegram;
+using Zizi.Core.Utils;
 
 namespace Zizi.Bot.Services.HangfireJobs
 {
     public class ChatService
     {
         private readonly QueryFactory _queryFactory;
-        private TelegramBotClient _botClient;
+        private readonly TelegramBotClient _botClient;
+        private readonly QueryService _queryService;
 
         public ChatService(
             QueryFactory queryFactory,
-            TelegramBotClient botClient
+            TelegramBotClient botClient,
+            QueryService queryService
         )
         {
             _botClient = botClient;
             _queryFactory = queryFactory;
+            _queryService = queryService;
         }
 
         [AutomaticRetry(Attempts = 2, OnAttemptsExceeded = AttemptsExceededAction.Delete)]
         public async Task CheckBotAdminOnGroup()
         {
             Log.Information("Starting Check bot is Admin on all Group!");
-            // var botClient = BotSettings.Client;
             // var urlAddTo = await _botClient.GetUrlStart("startgroup=new");
 
-            var chatGroups = _queryFactory.FromQuery(new Query("group_settings"))
+            var queryFactory = _queryService.CreateMySqlConnection();
+            var chatGroups = queryFactory.FromTable("group_settings")
                 .WhereNot("chat_type", "Private")
                 .WhereNot("chat_type", "0")
                 .Get<ChatSetting>();
@@ -50,7 +54,7 @@ namespace Zizi.Bot.Services.HangfireJobs
 
                 if (isAdminChat) continue;
 
-                Log.Debug("Doing leave chat from {0}", chatId);
+                Log.Debug("Doing leave chat from {ChatId}", chatId);
                 try
                 {
                     var msgLeave = "Sepertinya saya bukan admin di grup ini, saya akan meninggalkan grup. Sampai jumpa!" +
@@ -72,15 +76,15 @@ namespace Zizi.Bot.Services.HangfireJobs
                 {
                     if (ex.Message.Contains("bot is not a member"))
                     {
-                        Log.Warning("This bot may has leave from this chatId '{0}'", chatId);
+                        Log.Warning("This bot may has leave from this chatId '{ChatId}'", chatId);
                     }
                     else if (ex.Message.ToLower().Contains("forbidden"))
                     {
-                        Log.Warning("{0}",ex.Message);
+                        Log.Warning("{Message}", ex.Message);
                     }
                     else
                     {
-                        Log.Error(ex.Demystify(), "Error on Leaving from ChatID: {0}", chatId);
+                        Log.Error(ex.Demystify(), "Error on Leaving from ChatID: {ChatId}", chatId);
                     }
                 }
             }
