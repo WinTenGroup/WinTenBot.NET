@@ -28,7 +28,7 @@ namespace Zizi.Bot.Services.Features
 
         public async Task RegisterScheduler()
         {
-            Log.Information("Initializing RSS Scheduler.");
+            Log.Information("Initializing RSS Scheduler..");
 
             Log.Information("Getting list Chat ID");
             var listChatId = await _rssService.GetAllRssSettingsAsync();
@@ -51,7 +51,7 @@ namespace Zizi.Bot.Services.Features
                 // RegisterScheduler(chatId);
             }
 
-            Log.Information("Registering RSS Scheduler complete.");
+            Log.Information("Registering RSS Scheduler complete..");
         }
 
         [AutomaticRetry(Attempts = 2, OnAttemptsExceeded = AttemptsExceededAction.Delete)]
@@ -85,7 +85,7 @@ namespace Zizi.Bot.Services.Features
 
                     if (currentArticleDate < lastArticleDate)
                     {
-                        Log.Information("Current article is older than last article. Stopped.");
+                        Log.Information("Current article is older than last article. Stopped..");
                         break;
                     }
 
@@ -93,7 +93,7 @@ namespace Zizi.Bot.Services.Features
                     Log.Debug("CurrentArticleDate: {0}", currentArticleDate);
                 }
 
-                Log.Debug("Prepare sending article.");
+                Log.Debug("Prepare sending article..");
 
                 var titleLink = $"{rssTitle} - {rssFeed.Title}".MkUrl(rssFeed.Link);
                 var category = rssFeed.Categories.MkJoin(", ");

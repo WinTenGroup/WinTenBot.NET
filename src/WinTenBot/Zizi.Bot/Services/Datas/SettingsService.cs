@@ -9,7 +9,6 @@ using Telegram.Bot.Types;
 using Zizi.Bot.Common;
 using Zizi.Bot.Models;
 using Zizi.Bot.Telegram;
-using Zizi.Bot.Tools;
 using Zizi.Core.Utils;
 
 namespace Zizi.Bot.Services.Datas
@@ -44,7 +43,7 @@ namespace Zizi.Bot.Services.Datas
             var data = await GetSettingsByGroupCore(chatId);
             var isExist = data != null;
 
-            Log.Debug("Group setting IsExist: {0}", isExist);
+            Log.Debug("Group setting for ChatID '{ChatId}' IsExist? {IsExist}", chatId, isExist);
             return isExist;
         }
 
@@ -69,7 +68,7 @@ namespace Zizi.Bot.Services.Datas
 
         public async Task<ChatSetting> GetSettingsByGroup(long chatId)
         {
-            Log.Information("Get settings chat {0}", chatId);
+            Log.Information("Get settings chat {ChatId}", chatId);
             var cacheKey = GetCacheKey(chatId);
 
             if (!await _cachingProvider.ExistsAsync(cacheKey))
@@ -86,19 +85,18 @@ namespace Zizi.Bot.Services.Datas
 
         public async Task UpdateCacheAsync(long chatId)
         {
-            Log.Debug("Updating cache for {0}", chatId);
+            Log.Debug("Updating cache for {ChatId}", chatId);
             var cacheKey = GetCacheKey(chatId);
 
             var data = await GetSettingsByGroupCore(chatId);
 
             if (data == null)
             {
-                Log.Warning("This may first time chat for this ChatId: {0}", chatId);
+                Log.Warning("This may first time chat for this ChatId: {ChatId}", chatId);
                 return;
             }
 
             await _cachingProvider.SetAsync(cacheKey, data, TimeSpan.FromMinutes(10));
-            // data.AddCache(cacheKey);
         }
 
         public async Task<List<CallBackButton>> GetSettingButtonByGroup(long chatId)
@@ -146,7 +144,7 @@ namespace Zizi.Bot.Services.Datas
                 var textOrig = row["id"].ToString();
                 var value = row[rowId].ToString();
 
-                Log.Debug("Orig: {0}, Value: {1}", textOrig, value);
+                Log.Debug("Orig: {TextOrig}, Value: {Value}", textOrig, value);
 
                 var boolVal = value.ToBool();
 
@@ -205,12 +203,12 @@ namespace Zizi.Bot.Services.Datas
             var chatId = data["chat_id"].ToInt64();
             var where = new Dictionary<string, object>() {{"chat_id", chatId}};
 
-            Log.Debug("Checking settings for {0}", chatId);
+            Log.Debug("Checking settings for {ChatId}", chatId);
 
             var isExist = await IsSettingExist(chatId);
 
             int insert;
-            Log.Debug("Group setting IsExist: {0}", isExist);
+            // Log.Debug("Group setting IsExist: {0}", isExist);
             if (!isExist)
             {
                 Log.Information("Inserting new data for {ChatId}", chatId);
@@ -219,7 +217,7 @@ namespace Zizi.Bot.Services.Datas
             }
             else
             {
-                Log.Information("Updating data for {0}", chatId);
+                Log.Information("Updating data for {ChatId}", chatId);
 
                 insert = await _queryFactory.FromTable(BaseTable)
                     .Where(where)
@@ -233,7 +231,7 @@ namespace Zizi.Bot.Services.Datas
 
         public async Task<int> UpdateCell(long chatId, string key, object value)
         {
-            Log.Debug("Updating Chat Settings {0} => {1}", key, value);
+            Log.Debug("Updating Chat Settings {Key} => {Value}", key, value);
             var where = new Dictionary<string, object>() {{"chat_id", chatId}};
             var data = new Dictionary<string, object>() {{key, value}};
 

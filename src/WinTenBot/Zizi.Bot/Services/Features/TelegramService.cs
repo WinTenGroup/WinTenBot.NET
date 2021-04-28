@@ -225,7 +225,7 @@ namespace Zizi.Bot.Services.Features
                 var cacheExist = await _cachingProvider.ExistsAsync(keyCache);
                 if (!cacheExist)
                 {
-                    Log.Information("Updating list Admin Cache with key: {0}", keyCache);
+                    Log.Information("Updating list Admin Cache with key: {KeyCache}", keyCache);
                     var admins = await Client.GetChatAdministratorsAsync(ChatId);
 
                     await _cachingProvider.SetAsync(keyCache, admins, TimeSpan.FromMinutes(10));
