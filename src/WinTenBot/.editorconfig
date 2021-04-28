@@ -1,0 +1,7 @@
+﻿[*.{cs,vb}]
+end_of_line=lf
+max_line_length = off
+indent_style = space
+
+# S1075: URIs should not be hardcoded
+dotnet_diagnostic.S1075.severity = suggestion
