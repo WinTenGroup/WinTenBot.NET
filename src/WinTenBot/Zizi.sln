@@ -8,7 +8,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WinTenDev.WebHook", "WinTen
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zizi.WebApi", "Zizi.WebApi\Zizi.WebApi.csproj", "{B913A17B-1C14-47DB-8284-B61EC2C0151B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zizi.Portal", "Zizi.Portal\Zizi.Portal.csproj", "{74B777B9-764C-4192-9896-74667D1701A3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WinTenDev.ZiziPortal", "WinTenDev.ZiziPortal\WinTenDev.ZiziPortal.csproj", "{74B777B9-764C-4192-9896-74667D1701A3}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zizi.Core", "Zizi.Core\Zizi.Core.csproj", "{6BDF1EED-884B-4341-B103-738364252BE8}"
 EndProject
