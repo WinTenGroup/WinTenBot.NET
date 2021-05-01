@@ -30,11 +30,11 @@ namespace Zizi.Bot.Services.Datas
             _queryService = queryService;
         }
 
-        public async Task<bool> IsExistInDb(int userId)
+        public async Task<bool> IsExistCore(int userId)
         {
             var user = await GetAfkByIdCore(userId);
             var isExist = user != null;
-            Log.Debug("Is UserId: '{0}' AFK? {1}", userId, isExist);
+            Log.Debug("Is UserId: '{UserId}' AFK? {IsExist}", userId, isExist);
 
             return isExist;
         }
@@ -76,14 +76,14 @@ namespace Zizi.Bot.Services.Datas
             var afk = await GetAfkByIdCore(userId);
             var timeSpan = TimeSpan.FromMinutes(1);
 
-            Log.Debug("Updating AFK by ID cache with key: '{0}', expire in {1}", key, timeSpan);
+            Log.Debug("Updating AFK by ID cache with key: '{Key}', expire in {TimeSpan}", key, timeSpan);
 
             await _cachingProvider.SetAsync(key, afk, timeSpan);
         }
 
         public async Task SaveAsync(Dictionary<string, object> data)
         {
-            Log.Information("Save: {0}", data.ToJson());
+            Log.Information("Save: {V}", data.ToJson());
 
             var queryFactory = _queryService.CreateMySqlConnection();
 
@@ -92,22 +92,22 @@ namespace Zizi.Bot.Services.Datas
                 {"user_id", data["user_id"]}
             };
 
-            var insert = 0;
+            int saveResult;
 
-            var isExist = await IsExistInDb(where["user_id"].ToInt());
+            var isExist = await IsExistCore(where["user_id"].ToInt());
 
             if (isExist)
             {
-                insert = await queryFactory.FromTable(BaseTable)
+                saveResult = await queryFactory.FromTable(BaseTable)
                     .Where(where)
                     .UpdateAsync(data);
             }
             else
             {
-                insert = await queryFactory.FromTable(BaseTable).InsertAsync(data);
+                saveResult = await queryFactory.FromTable(BaseTable).InsertAsync(data);
             }
 
-            Log.Information("SaveAfk: {Insert}", insert);
+            Log.Information("SaveAfk: {Insert}", saveResult);
         }
     }
 }

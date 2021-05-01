@@ -285,8 +285,8 @@ namespace Zizi.Bot.Handlers
                     var repMsg = message.ReplyToMessage;
                     var repFromId = repMsg.From.Id;
 
-                    var isAfkReply = await _afkService.IsExistInDb(repFromId);
-                    if (isAfkReply)
+                    var isAfkReply = await _afkService.GetAfkById(repFromId);
+                    if (isAfkReply.IsAfk)
                     {
                         var repNameLink = repMsg.GetFromNameLink();
                         await _telegramService.SendTextAsync($"{repNameLink} sedang afk");
@@ -294,13 +294,13 @@ namespace Zizi.Bot.Handlers
                 }
 
                 var fromId = message.From.Id;
-                var isAfk = await _afkService.IsExistInDb(fromId);
-                if (isAfk)
+                var fromAfk = await _afkService.GetAfkById(fromId);
+                if (fromAfk.IsAfk)
                 {
                     var nameLink = message.GetFromNameLink();
-                    var currentAfk = await _afkService.GetAfkById(fromId);
+                    // var currentAfk = await _afkService.GetAfkById(fromId);
 
-                    if (currentAfk.IsAfk)
+                    if (fromAfk.IsAfk)
                     {
                         await _telegramService.SendTextAsync($"{nameLink} sudah tidak afk");
                     }
