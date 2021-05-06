@@ -120,5 +120,11 @@ namespace Zizi.Bot.Extensions
 
             return app;
         }
+
+        public static IServiceProvider GetServiceProvider(this IApplicationBuilder app)
+        {
+            var serviceScope = app.ApplicationServices.CreateScope();
+            return serviceScope.ServiceProvider;
+        }
     }
 }
