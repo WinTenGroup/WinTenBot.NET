@@ -38,7 +38,12 @@ namespace Zizi.Bot.Extensions
                 .WriteTo.Async(a =>
                     a.File(logPath, rollingInterval: rollingInterval, flushToDiskInterval: flushInterval, shared: true, outputTemplate: outputTemplate))
                 .WriteTo.Async(a =>
-                    a.Console(theme: SystemConsoleTheme.Colored, outputTemplate: outputTemplate));
+                    a.Console(theme: SystemConsoleTheme.Colored, outputTemplate: outputTemplate))
+                .WriteTo.Async(configuration => configuration.Sentry(options =>
+                {
+                    options.MinimumBreadcrumbLevel = LogEventLevel.Debug;
+                    options.MinimumEventLevel = LogEventLevel.Warning;
+                }));
 
             if (envConfig.IsProduction)
             {

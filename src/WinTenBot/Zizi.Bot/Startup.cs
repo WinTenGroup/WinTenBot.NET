@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Sentry.AspNetCore;
 using Serilog;
 using Telegram.Bot;
 using Telegram.Bot.Framework;
@@ -45,6 +46,8 @@ namespace Zizi.Bot
                 .AddTransient<ZiziBot>()
                 .Configure<BotOptions<ZiziBot>>(Configuration.GetSection("ZiziBot"))
                 .Configure<CustomBotOptions<ZiziBot>>(Configuration.GetSection("ZiziBot"));
+
+            services.AddHttpContextAccessor();
 
             services.AddFluentMigration();
             services.AddEasyCachingDisk();
@@ -93,6 +96,9 @@ namespace Zizi.Bot
 
             app.UseRouting();
             app.UseStaticFiles();
+
+            app.UseSentryTracing();
+            app.ConfigureExceptionless();
 
             // app.UseEmbeddedRavenDBServer();
 

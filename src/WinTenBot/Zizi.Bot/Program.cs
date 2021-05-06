@@ -44,11 +44,18 @@ namespace Zizi.Bot
                 })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
+                    // webBuilder.CaptureStartupErrors(true);
+                    webBuilder.UseSentry((context, builder) =>
+                    {
+                        builder.TracesSampleRate = 1.0;
+                    });
+
                     webBuilder.UseSerilog();
                     webBuilder.UseStartup<Startup>();
                 })
                 .ConfigureLogging((context, builder) =>
                 {
+                    builder.AddSentry();
                     builder.AddSerilog();
                 });
 
