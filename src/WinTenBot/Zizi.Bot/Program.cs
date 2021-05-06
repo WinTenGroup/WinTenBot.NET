@@ -40,6 +40,10 @@ namespace Zizi.Bot
                 })
                 .ConfigureServices((context, services) =>
                 {
+                    services.MappingAppSettings();
+                })
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
                     webBuilder.UseSerilog();
                     webBuilder.UseStartup<Startup>();
                 })
