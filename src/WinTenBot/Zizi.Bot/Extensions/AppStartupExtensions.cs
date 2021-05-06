@@ -80,8 +80,7 @@ namespace Zizi.Bot.Extensions
 
         public static IApplicationBuilder AboutApp(this IApplicationBuilder app)
         {
-            var appConfig = app.ApplicationServices.GetRequiredService<AppConfig>();
-            var engines = appConfig.EnginesConfig;
+            var engines = app.GetServiceProvider().GetRequiredService<IOptionsSnapshot<EnginesConfig>>().Value;
 
             Log.Information("Name: {ProductName}", engines.ProductName);
             Log.Information("Version: {Version}", engines.Version);
