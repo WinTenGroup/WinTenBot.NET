@@ -6,8 +6,10 @@ using Hangfire.Heartbeat.Server;
 using HangfireBasicAuthenticationFilter;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Nito.AsyncEx;
 using Serilog;
+using WinTenDev.Models.Enums;
 using Zizi.Bot.IO;
 using Zizi.Bot.Models.Settings;
 using Zizi.Bot.Services.Features;
@@ -24,20 +26,34 @@ namespace Zizi.Bot.Extensions
 
             var scope = services.BuildServiceProvider();
             var appConfig = scope.GetRequiredService<AppConfig>();
-
-            var connStr = appConfig.ConnectionStrings.MySql;
+            var hangfireConfig = scope.GetRequiredService<IOptionsSnapshot<HangfireConfig>>().Value;
+            var connStrings = scope.GetRequiredService<IOptionsSnapshot<ConnectionStrings>>().Value;
 
             services.AddHangfireServer()
                 .AddHangfire(config =>
                 {
-                    config
-                        .UseStorage(HangfireUtil.GetMysqlStorage(connStr))
-                        // .UseStorage(HangfireJobs.GetSqliteStorage())
-                        // .UseStorage(HangfireJobs.GetLiteDbStorage())
-                        // .UseStorage(HangfireJobs.GetRedisStorage())
+                    switch (hangfireConfig.DataStore)
+                    {
+                        case HangfireDataStore.MySql:
+                            config.UseStorage(HangfireUtil.GetMysqlStorage(connStrings.MySql));
+                            break;
+                        case HangfireDataStore.Sqlite:
+                            config.UseStorage(HangfireUtil.GetSqliteStorage(hangfireConfig.Sqlite));
+                            break;
+                        case HangfireDataStore.Litedb:
+                            config.UseStorage(HangfireUtil.GetLiteDbStorage(hangfireConfig.LiteDb));
+                            break;
+                        case HangfireDataStore.Redis:
+                            config.UseStorage(HangfireUtil.GetRedisStorage(hangfireConfig.Redis));
+                            break;
+                        default:
+                            Log.Warning("Unknown Hangfire DataStore");
+                            break;
+                    }
+
+                    config.UseDarkDashboard()
                         .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
-                        .UseDarkDashboard()
-                        .UseHeartbeatPage(TimeSpan.FromSeconds(5))
+                        .UseHeartbeatPage(TimeSpan.FromSeconds(15))
                         .UseSimpleAssemblyNameTypeSerializer()
                         .UseRecommendedSerializerSettings()
                         .UseColouredConsoleLogProvider()
@@ -54,41 +70,47 @@ namespace Zizi.Bot.Extensions
             var appConfig = app.ApplicationServices.GetRequiredService<AppConfig>();
             var hangfireConfig = appConfig.HangfireConfig;
 
-            var hangfireBaseUrl = hangfireConfig.BaseUrl;
-            var hangfireUsername = hangfireConfig.Username;
-            var hangfirePassword = hangfireConfig.Password;
+            var baseUrl = hangfireConfig.BaseUrl;
+            var username = hangfireConfig.Username;
+            var password = hangfireConfig.Password;
 
-            Log.Information("Hangfire Url: {HangfireBaseUrl}", hangfireBaseUrl);
-            Log.Information("Hangfire Auth: {HangfireUsername} | {HangfirePassword}", hangfireUsername, hangfirePassword);
+            Log.Information("Hangfire Url: {HangfireBaseUrl}", baseUrl);
+            Log.Information("Hangfire Auth: {HangfireUsername} | {HangfirePassword}", username, password);
 
             var dashboardOptions = new DashboardOptions
             {
                 Authorization = new[]
                 {
-                    new HangfireCustomBasicAuthenticationFilter {User = hangfireUsername, Pass = hangfirePassword}
+                    new HangfireCustomBasicAuthenticationFilter
+                    {
+                        User = username, Pass = password
+                    }
                 }
             };
 
-            app.UseHangfireDashboard(hangfireBaseUrl, dashboardOptions);
+            app.UseHangfireDashboard(baseUrl, dashboardOptions);
 
             var serverOptions = new BackgroundJobServerOptions
             {
                 WorkerCount = Environment.ProcessorCount * hangfireConfig.WorkerMultiplier,
-                Queues = new []{"default","rss-feed"}
+                Queues = new[]
+                {
+                    "default", "rss-feed"
+                }
             };
 
             app.UseHangfireServer(serverOptions, new[]
             {
-                new ProcessMonitor(TimeSpan.FromSeconds(1))
+                new ProcessMonitor(TimeSpan.FromSeconds(3))
             });
 
-            app.RegisterHangfireOnStartup();
+            app.RegisterHangfireJobs();
 
             Log.Information("Hangfire is Running..");
             return app;
         }
 
-        public static IApplicationBuilder RegisterHangfireOnStartup(this IApplicationBuilder app)
+        public static IApplicationBuilder RegisterHangfireJobs(this IApplicationBuilder app)
         {
             HangfireUtil.DeleteAllJobs();
 
