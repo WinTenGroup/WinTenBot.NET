@@ -1,12 +1,16 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Hangfire;
+using Hangfire.LiteDB;
 using Hangfire.MySql;
+using Hangfire.Redis;
 using Hangfire.Storage;
+using Hangfire.Storage.SQLite;
 using Serilog;
+using Zizi.Bot.Enums;
 
 namespace Zizi.Bot.Tools
 {
@@ -136,47 +140,43 @@ namespace Zizi.Bot.Tools
             return filteredJobs.Count;
         }
 
-        // public static SQLiteStorage GetSqliteStorage()
-        // {
-        //     var connectionString = BotSettings.HangfireSqliteDb;
-        //     Log.Information($"HangfireSqlite: {connectionString}");
-        //
-        //     var options = new SQLiteStorageOptions()
-        //     {
-        //         QueuePollInterval = TimeSpan.FromSeconds(10)
-        //     };
-        //
-        //     var storage = new SQLiteStorage(connectionString, options);
-        //     return storage;
-        // }
+        public static SQLiteStorage GetSqliteStorage(string connectionString)
+        {
+            Log.Information("HangfireSqlite: {ConnectionString}", connectionString);
 
-        // public static LiteDbStorage GetLiteDbStorage()
-        // {
-        //     var connectionString = BotSettings.HangfireLiteDb;
-        //     Log.Information($"HangfireLiteDb: {connectionString}");
-        //
-        //     var options = new LiteDbStorageOptions()
-        //     {
-        //         QueuePollInterval = TimeSpan.FromSeconds(10)
-        //     };
-        //
-        //     var storage = new LiteDbStorage(connectionString, options);
-        //     return storage;
-        // }
+            var options = new SQLiteStorageOptions()
+            {
+                QueuePollInterval = TimeSpan.FromSeconds(10)
+            };
 
-        // public static RedisStorage GetRedisStorage()
-        // {
-        //     var connStr = "127.0.0.1:6379,password=azhe1234";
-        //     Log.Information($"Hangfire Redis: {connStr}");
-        //
-        //     var options = new RedisStorageOptions()
-        //     {
-        //         Db = (int)RedisMap.HangfireStorage
-        //     };
-        //
-        //     var storage = new RedisStorage(connStr,options);
-        //     return storage;
-        //
-        // }
+            var storage = new SQLiteStorage(connectionString, options);
+            return storage;
+        }
+
+        public static LiteDbStorage GetLiteDbStorage(string connectionString)
+        {
+            Log.Information("HangfireLiteDb: {ConnectionString}", connectionString);
+
+            var options = new LiteDbStorageOptions()
+            {
+                QueuePollInterval = TimeSpan.FromSeconds(10)
+            };
+
+            var storage = new LiteDbStorage(connectionString, options);
+            return storage;
+        }
+
+        public static RedisStorage GetRedisStorage(string connStr)
+        {
+            Log.Information("Hangfire Redis: {ConnStr}", connStr);
+
+            var options = new RedisStorageOptions()
+            {
+                Db = (int) RedisMap.HangfireStorage
+            };
+
+            var storage = new RedisStorage(connStr, options);
+            return storage;
+        }
     }
 }
