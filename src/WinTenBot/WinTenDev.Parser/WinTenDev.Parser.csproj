@@ -5,14 +5,23 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="AngleSharp" Version="0.14.0" />
-      <PackageReference Include="AngleSharp.Css" Version="0.14.2" />
+      <PackageReference Include="AngleSharp" Version="0.15.0" />
+      <PackageReference Include="AngleSharp.Css" Version="0.15.0" />
       <PackageReference Include="AngleSharp.Js" Version="0.14.0" />
       <PackageReference Include="CodeHollow.FeedReader" Version="1.2.1" />
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+      <PackageReference Include="Roslynator.Analyzers" Version="3.1.0">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
       <PackageReference Include="Serilog" Version="2.10.0" />
       <PackageReference Include="SerilogAnalyzer" Version="0.15.0" />
-      <PackageReference Include="YoutubeExplode" Version="5.1.9" />
-      <PackageReference Include="YoutubeExplode.Converter" Version="2.0.2" />
+      <PackageReference Include="SonarAnalyzer.CSharp" Version="8.22.0.31243">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+      <PackageReference Include="YoutubeExplode" Version="6.0.0" />
+      <PackageReference Include="YoutubeExplode.Converter" Version="2.1.0" />
       <PackageReference Include="YouTubeSearch" Version="2.2.6" />
     </ItemGroup>
 

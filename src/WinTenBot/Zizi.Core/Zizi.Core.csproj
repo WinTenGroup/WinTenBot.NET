@@ -5,33 +5,48 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AngleSharp" Version="0.14.0" />
+    <PackageReference Include="AngleSharp" Version="0.15.0" />
     <PackageReference Include="ClickHouse.Client" Version="3.1.0.379" />
     <PackageReference Include="CloudFlareUtilities" Version="1.3.0" />
     <PackageReference Include="CodeHollow.FeedReader" Version="1.2.1" />
-    <PackageReference Include="CsvHelper" Version="26.1.0" />
-    <PackageReference Include="Dapper" Version="2.0.78" />
+    <PackageReference Include="CsvHelper" Version="27.0.2" />
+    <PackageReference Include="Dapper" Version="2.0.90" />
     <PackageReference Include="EasyCaching.Disk" Version="1.2.1" />
+    <PackageReference Include="EasyCaching.InMemory" Version="1.2.0" />
+    <PackageReference Include="EasyCaching.Redis" Version="1.2.1" />
+    <PackageReference Include="EasyCaching.Serialization.Json" Version="1.2.0" />
     <PackageReference Include="EasyCaching.SQLite" Version="1.2.0" />
-    <PackageReference Include="Flurl.Http" Version="3.0.1" />
-    <PackageReference Include="Google.Apis.Drive.v3" Version="1.51.0.2265" />
-    <PackageReference Include="Google.Apis.Iam.v1" Version="1.51.0.2275" />
+    <PackageReference Include="Flurl.Http" Version="3.2.0" />
+    <PackageReference Include="Google.Apis.Drive.v3" Version="1.51.0.2300" />
+    <PackageReference Include="Google.Apis.Iam.v1" Version="1.51.0.2303" />
     <PackageReference Include="JetBrains.Annotations" Version="2021.1.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="5.0.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
     <PackageReference Include="MimeTypesMap" Version="1.0.8" />
-    <PackageReference Include="MySqlConnector" Version="1.3.3" />
+    <PackageReference Include="MySqlConnector" Version="1.3.8" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="Roslynator.Analyzers" Version="3.1.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Serilog" Version="2.10.0" />
     <PackageReference Include="Serilog.Enrichers.Dynamic" Version="1.0.9" />
     <PackageReference Include="SerilogAnalyzer" Version="0.15.0" />
+    <PackageReference Include="SonarAnalyzer.CSharp" Version="8.22.0.31243">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="SqlKata" Version="2.3.2" />
     <PackageReference Include="SqlKata.Execution" Version="2.3.2" />
     <PackageReference Include="SystemInfoLibrary-devel" Version="1.5.0.25" />
     <PackageReference Include="Telegram.Bot" Version="15.7.1" />
     <PackageReference Include="Telegram.Bot.Framework" Version="2.0.0-alpha5" />
-    <PackageReference Include="YoutubeExplode" Version="5.1.9" />
-    <PackageReference Include="YoutubeExplode.Converter" Version="2.0.2" />
+    <PackageReference Include="YoutubeExplode" Version="6.0.0" />
+    <PackageReference Include="YoutubeExplode.Converter" Version="2.1.0" />
     <PackageReference Include="YouTubeSearch" Version="2.2.6" />
   </ItemGroup>
 
