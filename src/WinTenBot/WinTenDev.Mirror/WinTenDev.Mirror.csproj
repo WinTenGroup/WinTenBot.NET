@@ -1,0 +1,56 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+        <UserSecretsId>485d772d-22f1-4ffc-bfd3-634cd486cd55</UserSecretsId>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Dapper" Version="2.0.90" />
+      <PackageReference Include="EasyCaching.Disk" Version="1.2.1" />
+      <PackageReference Include="EasyCaching.HybridCache" Version="1.2.0" />
+      <PackageReference Include="EasyCaching.SQLite" Version="1.2.0" />
+      <PackageReference Include="Exceptionless.AspNetCore" Version="4.6.2" />
+      <PackageReference Include="Hangfire.AspNetCore" Version="1.7.22" />
+      <PackageReference Include="Hangfire.Dashboard.Basic.Authentication" Version="5.0.0" />
+      <PackageReference Include="Hangfire.Heartbeat" Version="0.5.1" />
+      <PackageReference Include="Hangfire.LiteDB" Version="0.4.0" />
+      <PackageReference Include="JetBrains.Annotations" Version="2021.1.0" />
+      <PackageReference Include="LiteDB" Version="5.0.10" />
+      <PackageReference Include="LiteDB.Async" Version="0.0.8" />
+      <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="5.0.5" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.5">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.5" />
+      <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+      <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="5.0.0" />
+      <PackageReference Include="Roslynator.Analyzers" Version="3.1.0">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+      <PackageReference Include="Scrutor.LYKA" Version="1.0.0" />
+      <PackageReference Include="Serilog" Version="2.10.0" />
+      <PackageReference Include="Serilog.Extensions.Hosting" Version="4.1.2" />
+      <PackageReference Include="Serilog.Sinks.Async" Version="1.4.0" />
+      <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
+      <PackageReference Include="Serilog.Sinks.File" Version="4.1.0" />
+      <PackageReference Include="SerilogAnalyzer" Version="0.15.0" />
+      <PackageReference Include="SonarAnalyzer.CSharp" Version="8.22.0.31243">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+      <PackageReference Include="Telegram.Bot.Framework" Version="2.0.0-alpha5" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Zizi.Core\Zizi.Core.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Storage\Data" />
+    </ItemGroup>
+
+</Project>

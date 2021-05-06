@@ -1,0 +1,60 @@
+﻿@page "/"
+@using WinTenDev.WebPortal
+@using Zizi.Portal
+@namespace WinTenDev.ZiziPortal.Pages
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Zizi.Portal</title>
+    <base href="~/"/>
+    <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css"/>
+    <link rel="stylesheet" href="_content/BootstrapBlazor/css/bootstrap.blazor.bundle.min.css">
+    <link href="css/site.css" rel="stylesheet"/>
+    <link href="_content/MatBlazor/dist/matBlazor.css" rel="stylesheet"/>
+    <link href="_content/ZiziPortal/_framework/scoped.styles.css" rel="stylesheet"/>
+</head>
+<body>
+<component type="typeof(App)" render-mode="ServerPrerendered"/>
+
+<div id="blazor-error-ui">
+    <environment include="Staging,Production">
+        An error has occurred. This application may no longer respond until reloaded.
+    </environment>
+    <environment include="Development">
+        An unhandled exception has occurred. See browser dev tools for details.
+    </environment>
+    <a href="" class="reload">Reload</a>
+    <a class="dismiss">🗙</a>
+</div>
+
+<script src="_framework/blazor.server.js"></script>
+<script src="_content/MatBlazor/dist/matBlazor.js"></script>
+<script src="_content/BootstrapBlazor/js/bootstrap.blazor.bundle.min.js"></script>
+
+<environment include="Development">
+    @* <script> *@
+    @*     window.Blazor.defaultReconnectionHandler.onConnectionDown = function () { *@
+    @*         setTimeout(function () { *@
+    @*             location.reload(); *@
+    @*         }, 10000); *@
+    @*     } *@
+    @* </script> *@
+
+    <script>
+        window.Blazor.defaultReconnectionHandler._reconnectCallback = function (d) {
+            setTimeout(function () {
+                document.location.reload();
+            }, 10000);
+        }
+
+    </script>
+</environment>
+</body>
+</html>
