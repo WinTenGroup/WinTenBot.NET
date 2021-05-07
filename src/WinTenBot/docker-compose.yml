@@ -51,5 +51,5 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
     volumes:
       - "./Zizi.Bot/Storage/Common/gdrive-auth-token-store:/app/Storage/Common/gdrive-auth-token-store"
-      - "D:/System/Docker/zizibeta/MonkeyCaches:app/Storage/MonkeyCache"
+      - "./Zizi.Bot/Storage/MonkeyCaches:app/Storage/MonkeyCache"
       - "./Zizi.Bot/appsettings.json:/app/appsettings.json"
