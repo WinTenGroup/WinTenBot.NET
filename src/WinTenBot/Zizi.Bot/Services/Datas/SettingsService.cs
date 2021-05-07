@@ -17,19 +17,19 @@ namespace Zizi.Bot.Services.Datas
     {
         private const string BaseTable = "group_settings";
         private const string CacheKey = "group-setting";
-        private readonly QueryFactory _queryFactory;
         private readonly IEasyCachingProvider _cachingProvider;
-
-        [Obsolete("This property will be removed.")]
-        public Message Message { get; set; }
+        private readonly QueryFactory _queryFactory;
+        private readonly QueryService _queryService;
 
         public SettingsService(
             IEasyCachingProvider cachingProvider,
-            QueryFactory queryFactory
+            QueryFactory queryFactory,
+            QueryService queryService
         )
         {
             _cachingProvider = cachingProvider;
             _queryFactory = queryFactory;
+            _queryService = queryService;
         }
 
         [Obsolete("Next time, this constructor will be removed.")]
@@ -37,6 +37,9 @@ namespace Zizi.Bot.Services.Datas
         {
             Message = message;
         }
+
+        [Obsolete("This property will be removed.")]
+        public Message Message { get; set; }
 
         public async Task<bool> IsSettingExist(long chatId)
         {
@@ -54,12 +57,12 @@ namespace Zizi.Bot.Services.Datas
 
         public async Task<ChatSetting> GetSettingsByGroupCore(long chatId)
         {
-            var where = new Dictionary<string, object>()
+            var where = new Dictionary<string, object>
             {
                 {"chat_id", chatId}
             };
-
-            var data = await _queryFactory.FromTable(BaseTable)
+            var queryFactory = _queryService.CreateMySqlConnection();
+            var data = await queryFactory.FromTable(BaseTable)
                 .Where(where)
                 .FirstOrDefaultAsync<ChatSetting>();
 
@@ -71,10 +74,7 @@ namespace Zizi.Bot.Services.Datas
             Log.Information("Get settings chat {ChatId}", chatId);
             var cacheKey = GetCacheKey(chatId);
 
-            if (!await _cachingProvider.ExistsAsync(cacheKey))
-            {
-                await UpdateCacheAsync(chatId);
-            }
+            if (!await _cachingProvider.ExistsAsync(cacheKey)) await UpdateCacheAsync(chatId);
 
             var cached = await _cachingProvider.GetAsync<ChatSetting>(cacheKey);
 
@@ -119,7 +119,8 @@ namespace Zizi.Bot.Services.Datas
                 "enable_zizi_mata"
             };
 
-            var data = await _queryFactory.FromTable(BaseTable)
+            var queryFactory = _queryService.CreateMySqlConnection();
+            var data = await queryFactory.FromTable(BaseTable)
                 .Select(selectColumns)
                 .Where("chat_id", chatId)
                 .GetAsync();
@@ -151,19 +152,12 @@ namespace Zizi.Bot.Services.Datas
                 var forCallbackData = textOrig;
                 var forCaptionText = textOrig;
 
-                if (!boolVal)
-                {
-                    forCallbackData = textOrig.Replace("enable", "disable");
-                }
+                if (!boolVal) forCallbackData = textOrig.Replace("enable", "disable");
 
                 if (boolVal)
-                {
                     forCaptionText = textOrig.Replace("enable", "✅");
-                }
                 else
-                {
                     forCaptionText = textOrig.Replace("enable", "🚫");
-                }
 
                 var btnText = forCaptionText
                     .Replace("enable_", "")
@@ -175,7 +169,7 @@ namespace Zizi.Bot.Services.Datas
                 //     Data = row[rowId].ToString()
                 // });
 
-                listBtn.Add(new CallBackButton()
+                listBtn.Add(new CallBackButton
                 {
                     Text = btnText.ToTitleCase(),
                     Data = $"setting {forCallbackData}"
@@ -201,7 +195,8 @@ namespace Zizi.Bot.Services.Datas
         public async Task<int> SaveSettingsAsync(Dictionary<string, object> data)
         {
             var chatId = data["chat_id"].ToInt64();
-            var where = new Dictionary<string, object>() {{"chat_id", chatId}};
+            var where = new Dictionary<string, object> {{"chat_id", chatId}};
+            var queryFactory = _queryService.CreateMySqlConnection();
 
             Log.Debug("Checking settings for {ChatId}", chatId);
 
@@ -213,13 +208,13 @@ namespace Zizi.Bot.Services.Datas
             {
                 Log.Information("Inserting new data for {ChatId}", chatId);
 
-                insert = await _queryFactory.FromTable(BaseTable).InsertAsync(data);
+                insert = await queryFactory.FromTable(BaseTable).InsertAsync(data);
             }
             else
             {
                 Log.Information("Updating data for {ChatId}", chatId);
 
-                insert = await _queryFactory.FromTable(BaseTable)
+                insert = await queryFactory.FromTable(BaseTable)
                     .Where(where)
                     .UpdateAsync(data);
             }
@@ -232,10 +227,11 @@ namespace Zizi.Bot.Services.Datas
         public async Task<int> UpdateCell(long chatId, string key, object value)
         {
             Log.Debug("Updating Chat Settings {Key} => {Value}", key, value);
-            var where = new Dictionary<string, object>() {{"chat_id", chatId}};
-            var data = new Dictionary<string, object>() {{key, value}};
+            var where = new Dictionary<string, object> {{"chat_id", chatId}};
+            var data = new Dictionary<string, object> {{key, value}};
 
-            var save = await _queryFactory.FromTable(BaseTable)
+            var queryFactory = _queryService.CreateMySqlConnection();
+            var save = await queryFactory.FromTable(BaseTable)
                 .Where(where)
                 .UpdateAsync(data);
 
