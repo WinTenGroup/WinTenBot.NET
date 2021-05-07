@@ -1,10 +1,9 @@
-using System;
+using Exceptionless;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Sentry.AspNetCore;
 using Serilog;
 using Telegram.Bot;
@@ -20,9 +19,6 @@ namespace Zizi.Bot
 {
     public class Startup
     {
-        public IConfiguration Configuration { get; }
-        private IWebHostEnvironment Environment { get; set; }
-
         public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             Configuration = configuration;
@@ -36,6 +32,9 @@ namespace Zizi.Bot
             Init.RunAll();
         }
 
+        public IConfiguration Configuration { get; }
+        private IWebHostEnvironment Environment { get; }
+
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMappingConfiguration();
@@ -47,6 +46,7 @@ namespace Zizi.Bot
                 .Configure<BotOptions<ZiziBot>>(Configuration.GetSection("ZiziBot"))
                 .Configure<CustomBotOptions<ZiziBot>>(Configuration.GetSection("ZiziBot"));
 
+            services.AddExceptionless();
             services.AddHttpContextAccessor();
 
             services.AddFluentMigration();
@@ -98,9 +98,7 @@ namespace Zizi.Bot
             app.UseStaticFiles();
 
             app.UseSentryTracing();
-            app.ConfigureExceptionless();
-
-            // app.UseEmbeddedRavenDBServer();
+            app.UseExceptionless();
 
             app.RunZiziBot();
 
@@ -108,10 +106,7 @@ namespace Zizi.Bot
 
             app.Run(async context => await context.Response.WriteAsync("Hello World!"));
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapHealthChecks("/health");
-            });
+            app.UseEndpoints(endpoints => { endpoints.MapHealthChecks("/health"); });
 
             Log.Information("App is ready..");
         }
