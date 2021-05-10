@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using Dapper;
+using Dapper.FluentMap;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,7 +14,7 @@ using Serilog;
 using Telegram.Bot;
 using Zizi.Bot.Handlers.Callbacks;
 using Zizi.Bot.Interfaces;
-using Zizi.Bot.Services;
+using Zizi.Bot.Models;
 using Zizi.Bot.Services.Datas;
 using Zizi.Bot.Services.Features;
 using Zizi.Bot.Services.HangfireJobs;
@@ -90,6 +91,8 @@ namespace Zizi.Bot.Extensions
         public static IApplicationBuilder ConfigureDapper(this IApplicationBuilder app)
         {
             DefaultTypeMap.MatchNamesWithUnderscores = true;
+
+            FluentMapper.Initialize(configuration => { configuration.AddMap(new ChatSettingMap()); });
 
             return app;
         }
