@@ -12,7 +12,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WinTenDev.WebPortal", "WinT
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zizi.Core", "Zizi.Core\Zizi.Core.csproj", "{6BDF1EED-884B-4341-B103-738364252BE8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WinTenDev.Mirror", "WinTenDev.Mirror\WinTenDev.Mirror.csproj", "{9A7D4E70-3CEF-4C20-80EF-AAF8E6FD3E79}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WinTenDev.Mirror.Host", "WinTenDev.Mirror.Host\WinTenDev.Mirror.Host.csproj", "{9A7D4E70-3CEF-4C20-80EF-AAF8E6FD3E79}"
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose_zizi-bot", "docker-compose_zizi-bot.dcproj", "{C13D3E3B-938B-4CD9-9827-4967DE1376CB}"
 EndProject
