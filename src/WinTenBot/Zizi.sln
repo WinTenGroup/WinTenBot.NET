@@ -21,7 +21,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinTenDev.Parser", "WinTenDev.Parser\WinTenDev.Parser.csproj", "{AAA2C64A-B5E7-4822-9734-67E5761F2C74}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WinTenDev.ZiziBot.Utils", "WinTenDev.ZiziBot.Utils\WinTenDev.ZiziBot.Utils.csproj", "{199D8F37-8120-4B94-A1DB-9EA044ECBC8A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinTenDev.Commons", "WinTenDev.Commons\WinTenDev.Commons.csproj", "{199D8F37-8120-4B94-A1DB-9EA044ECBC8A}"
 EndProject
@@ -61,10 +61,6 @@ Global
 		{C13D3E3B-938B-4CD9-9827-4967DE1376CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C13D3E3B-938B-4CD9-9827-4967DE1376CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C13D3E3B-938B-4CD9-9827-4967DE1376CB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AAA2C64A-B5E7-4822-9734-67E5761F2C74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AAA2C64A-B5E7-4822-9734-67E5761F2C74}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AAA2C64A-B5E7-4822-9734-67E5761F2C74}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AAA2C64A-B5E7-4822-9734-67E5761F2C74}.Release|Any CPU.Build.0 = Release|Any CPU
 		{199D8F37-8120-4B94-A1DB-9EA044ECBC8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{199D8F37-8120-4B94-A1DB-9EA044ECBC8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{199D8F37-8120-4B94-A1DB-9EA044ECBC8A}.Release|Any CPU.ActiveCfg = Release|Any CPU

@@ -9,7 +9,8 @@ using MoreLinq;
 using Serilog;
 using Telegram.Bot.Framework.Abstractions;
 using Telegram.Bot.Types;
-using WinTenDev.Parser.Url;
+using WinTenDev.ZiziBot.Services;
+using WinTenDev.ZiziBot.Utils.Parsers.Url;
 using Zizi.Bot.Common;
 using Zizi.Bot.Services.Datas;
 using Zizi.Bot.Services.Features;
@@ -245,7 +246,7 @@ namespace Zizi.Bot.Handlers.Commands.Core
 
         private async Task<string> DirectLinkParser(string url)
         {
-            var directLink = await DirectLinkUtil.ParseZippyShare(url);
+            var directLink = await url.ParseZippyShare();
 
             return directLink;
         }
