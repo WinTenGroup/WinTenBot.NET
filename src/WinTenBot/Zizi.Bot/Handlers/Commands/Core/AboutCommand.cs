@@ -1,5 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
 using Telegram.Bot.Framework.Abstractions;
 using Telegram.Bot.Types.ReplyMarkups;
 using Zizi.Bot.Models.Settings;
@@ -12,10 +13,13 @@ namespace Zizi.Bot.Handlers.Commands.Core
         private readonly TelegramService _telegramService;
         private readonly EnginesConfig _enginesConfig;
 
-        public AboutCommand(TelegramService telegramService, EnginesConfig enginesConfig)
+        public AboutCommand(
+            TelegramService telegramService,
+            IOptionsSnapshot<EnginesConfig> enginesConfigSnapshot
+        )
         {
             _telegramService = telegramService;
-            _enginesConfig = enginesConfig;
+            _enginesConfig = enginesConfigSnapshot.Value;
         }
 
         public override async Task HandleAsync(IUpdateContext context, UpdateDelegate next, string[] args,
@@ -69,13 +73,13 @@ namespace Zizi.Bot.Handlers.Commands.Core
                 },
                 new[]
                 {
-                    InlineKeyboardButton.WithUrl("💰 Donate", "http://paypal.me/Azhe403"),
+                    InlineKeyboardButton.WithUrl("💰 Donate", "https://paypal.me/Azhe403"),
                     InlineKeyboardButton.WithUrl("💰 Dana.ID", "https://link.dana.id/qr/5xcp0ma"),
                     InlineKeyboardButton.WithUrl("💰 Saweria", "https://saweria.co/azhe403")
                 }
             });
 
-            await _telegramService.SendTextAsync(sendText, inlineKeyboard);
+            await _telegramService.SendTextAsync(sendText, inlineKeyboard,  0);
         }
     }
 }
