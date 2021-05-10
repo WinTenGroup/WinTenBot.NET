@@ -10,6 +10,8 @@ using Microsoft.Extensions.Options;
 using Serilog;
 using Telegram.Bot.Framework;
 using Telegram.Bot.Framework.Abstractions;
+using WinTenDev.Models.Enums;
+using WinTenDev.ZiziBot.Utils;
 using Zizi.Bot.Bots;
 using Zizi.Bot.Models.Settings;
 using Zizi.Bot.Options;
@@ -27,10 +29,7 @@ namespace Zizi.Bot.Extensions
         )
             where TBot : BotBase
         {
-            if (startAfter == default)
-            {
-                startAfter = TimeSpan.FromSeconds(2);
-            }
+            if (startAfter == default) startAfter = TimeSpan.FromSeconds(2);
 
             var updateManager = new UpdatePollingManager<TBot>(botBuilder, new BotServiceProvider(app));
 
@@ -92,39 +91,68 @@ namespace Zizi.Bot.Extensions
         public static IApplicationBuilder RunZiziBot(this IApplicationBuilder app)
         {
             Log.Information("Starting run ZiziBot..");
-            var configureBot = CommandBuilderExtension.ConfigureBot();
             var env = app.ApplicationServices.GetRequiredService<IWebHostEnvironment>();
+            var serviceProvider = app.GetServiceProvider();
+            var commonConfig = serviceProvider.GetRequiredService<IOptionsSnapshot<CommonConfig>>().Value;
 
-            if (env.IsDevelopment())
+            switch (commonConfig.EngineMode)
             {
-                Log.Information("Starting ZiziBot in Pooling mode..");
-                app.UseDeveloperExceptionPage();
+                case EngineMode.Polling:
+                    app.RunInPooling();
+                    break;
+                case EngineMode.WebHook:
+                    app.RunInWebHook();
+                    break;
+                case EngineMode.FollowHost:
+                {
+                    if (env.IsDevelopment())
+                    {
+                        app.RunInPooling();
+                    }
+                    else
+                    {
+                        app.RunInWebHook();
+                    }
 
-                // get bot updates from Telegram via long-polling approach during development
-                // this will disable Telegram webhooks
-                app.UseTelegramBotLongPolling<ZiziBot>(configureBot, TimeSpan.FromSeconds(1));
-
-                Log.Information("ZiziBot is ready in Pooling mode..");
-            }
-            else
-            {
-                Log.Information("Starting ZiziBot in WebHook mode..");
-                // use Telegram bot webhook middleware in higher environments
-                app.UseTelegramBotWebhook<ZiziBot>(configureBot);
-
-                // and make sure webhook is enabled
-                app.EnsureWebhookSet<ZiziBot>();
-
-                Log.Information("ZiziBot is ready in WebHook mode..");
+                    break;
+                }
+                default:
+                    Log.Error("Unknown Engine Mode!");
+                    break;
             }
 
             return app;
         }
 
-        public static IServiceProvider GetServiceProvider(this IApplicationBuilder app)
+        private static IApplicationBuilder RunInPooling(this IApplicationBuilder app)
         {
-            var serviceScope = app.ApplicationServices.CreateScope();
-            return serviceScope.ServiceProvider;
+            var configureBot = CommandBuilderExtension.ConfigureBot();
+
+            Log.Information("Starting ZiziBot in Pooling mode..");
+
+            // get bot updates from Telegram via long-polling approach during development
+            // this will disable Telegram webhooks
+            app.UseTelegramBotLongPolling<ZiziBot>(configureBot, TimeSpan.FromSeconds(1));
+
+            Log.Information("ZiziBot is ready in Pooling mode..");
+
+            return app;
+        }
+
+        private static IApplicationBuilder RunInWebHook(this IApplicationBuilder app)
+        {
+            var configureBot = CommandBuilderExtension.ConfigureBot();
+
+            Log.Information("Starting ZiziBot in WebHook mode..");
+            // use Telegram bot webhook middleware in higher environments
+            app.UseTelegramBotWebhook<ZiziBot>(configureBot);
+
+            // and make sure webhook is enabled
+            app.EnsureWebhookSet<ZiziBot>();
+
+            Log.Information("ZiziBot is ready in WebHook mode..");
+
+            return app;
         }
     }
 }
