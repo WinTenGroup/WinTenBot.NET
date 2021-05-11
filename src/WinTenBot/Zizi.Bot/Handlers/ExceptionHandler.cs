@@ -2,6 +2,8 @@
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
+using Exceptionless;
+using Sentry;
 using Serilog;
 using Telegram.Bot.Framework.Abstractions;
 
@@ -20,7 +22,10 @@ namespace Zizi.Bot.Handlers
             catch (Exception e)
             {
                 Log.Error(e.Demystify(), "Exception Handler");
-                Log.Error("An error occured in handling update {0}", u.Id);
+                Log.Error("An error occured in handling update {Id}", u.Id);
+
+                SentrySdk.CaptureException(e);
+                e.ToExceptionless().Submit();
             }
         }
     }
