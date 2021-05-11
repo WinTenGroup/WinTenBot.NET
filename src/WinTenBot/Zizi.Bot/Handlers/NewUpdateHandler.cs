@@ -1,15 +1,14 @@
 ﻿using System;
-using Humanizer;
-using Serilog;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Humanizer;
+using Serilog;
 using Telegram.Bot.Framework.Abstractions;
 using Zizi.Bot.Common;
 using Zizi.Bot.Models;
-using Zizi.Bot.Services;
 using Zizi.Bot.Services.Datas;
 using Zizi.Bot.Services.Features;
 using Zizi.Bot.Telegram;
@@ -19,10 +18,10 @@ namespace Zizi.Bot.Handlers
 {
     public class NewUpdateHandler : IUpdateHandler
     {
-        private readonly TelegramService _telegramService;
         private readonly AfkService _afkService;
         private readonly AntiSpamService _antiSpamService;
         private readonly SettingsService _settingsService;
+        private readonly TelegramService _telegramService;
         private readonly WordFilterService _wordFilterService;
 
         private ChatSetting _chatSettings;
@@ -48,7 +47,7 @@ namespace Zizi.Bot.Handlers
 
             if (_telegramService.Context.Update.ChannelPost != null) return;
 
-            _telegramService.IsTooOld();
+            _telegramService.IsMessageTooOld();
 
             _chatSettings = _telegramService.CurrentSetting;
 
@@ -156,10 +155,7 @@ namespace Zizi.Bot.Handlers
         {
             try
             {
-                if (_telegramService.IsPrivateChat)
-                {
-                    return false;
-                }
+                if (_telegramService.IsPrivateChat) return false;
 
                 Log.Information("Starting ensure Chat Restriction");
 
@@ -173,7 +169,7 @@ namespace Zizi.Bot.Handlers
                 if (!isRestricted || !globalRestrict) return false;
 
                 Log.Warning("I must leave right now!");
-                var msgOut = $"Sepertinya saya salah alamat, saya pamit dulu..";
+                var msgOut = "Sepertinya saya salah alamat, saya pamit dulu..";
 
                 await _telegramService.SendTextAsync(msgOut);
                 await _telegramService.LeaveChat(chatId);
@@ -199,10 +195,7 @@ namespace Zizi.Bot.Handlers
 
             var messageBan = antiSpamResult.MessageResult;
 
-            if (antiSpamResult.IsAnyBanned)
-            {
-                await _telegramService.KickMemberAsync(fromId, true);
-            }
+            if (antiSpamResult.IsAnyBanned) await _telegramService.KickMemberAsync(fromId, true);
 
             await _telegramService.SendTextAsync(messageBan, replyToMsgId: 0);
 
@@ -222,7 +215,14 @@ namespace Zizi.Bot.Handlers
                 }
 
                 var message = _telegramService.MessageOrEdited;
+                var chatId = _telegramService.ChatId;
                 var msgId = message.MessageId;
+
+                if (!_chatSettings.EnableWordFilterGroupWide)
+                {
+                    Log.Debug("Word Filter on {ChatId} is disabled!", chatId);
+                    return;
+                }
 
                 var text = message.Text ?? message.Caption;
                 if (text.IsNullOrEmpty())
@@ -234,10 +234,7 @@ namespace Zizi.Bot.Handlers
                     var result = await _wordFilterService.IsMustDelete(text);
                     var isMustDelete = result.IsSuccess;
 
-                    if (isMustDelete)
-                    {
-                        Log.Information("Starting scan image if available..");
-                    }
+                    if (isMustDelete) Log.Information("Starting scan image if available..");
 
                     Log.Information("Message {MsgId} IsMustDelete: {IsMustDelete}", msgId, isMustDelete);
 
@@ -300,10 +297,7 @@ namespace Zizi.Bot.Handlers
                     var nameLink = message.GetFromNameLink();
                     // var currentAfk = await _afkService.GetAfkById(fromId);
 
-                    if (fromAfk.IsAfk)
-                    {
-                        await _telegramService.SendTextAsync($"{nameLink} sudah tidak afk");
-                    }
+                    if (fromAfk.IsAfk) await _telegramService.SendTextAsync($"{nameLink} sudah tidak afk");
 
                     var data = new Dictionary<string, object>
                     {
@@ -357,7 +351,7 @@ namespace Zizi.Bot.Handlers
                 {
                     Log.Information("This may first Hit from User {V}. In {V1}", fromId, sw.Elapsed);
 
-                    _telegramService.SetChatCache(fromId.ToString(), new HitActivity()
+                    _telegramService.SetChatCache(fromId.ToString(), new HitActivity
                     {
                         ViaBot = botUser.Username,
                         MessageType = message.Type.ToString(),
@@ -409,7 +403,7 @@ namespace Zizi.Bot.Handlers
                 {
                     await _telegramService.SendTextAsync(msgBuild.ToString().Trim());
 
-                    _telegramService.SetChatCache(fromId.ToString(), new HitActivity()
+                    _telegramService.SetChatCache(fromId.ToString(), new HitActivity
                     {
                         ViaBot = botUser.Username,
                         MessageType = message.Type.ToString(),
@@ -445,7 +439,7 @@ namespace Zizi.Bot.Handlers
             var chatId = message.Chat.Id;
 
             Log.Information("Preparing restore health on chatId {ChatId}..", chatId);
-            var data = new Dictionary<string, object>()
+            var data = new Dictionary<string, object>
             {
                 {"chat_id", chatId},
                 {"chat_title", message.Chat.Title ?? @"N\A"},
