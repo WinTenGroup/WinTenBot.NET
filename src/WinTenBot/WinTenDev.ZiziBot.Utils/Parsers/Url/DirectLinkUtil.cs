@@ -6,13 +6,13 @@ using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
 using Serilog;
 
-namespace WinTenDev.Parser.Url
+namespace WinTenDev.ZiziBot.Utils.Parsers.Url
 {
-    public class DirectLinkUtil
+    public static class DirectLinkUtil
     {
-        static readonly IConfiguration Config = Configuration.Default.WithDefaultLoader().WithJs().WithCss();
+        private static readonly IConfiguration Config = Configuration.Default.WithDefaultLoader().WithJs().WithCss();
 
-        public static async Task<string> ParseZippyShare(string url)
+        public static async Task<string> ParseZippyShare(this string url)
         {
             var sw = Stopwatch.StartNew();
 

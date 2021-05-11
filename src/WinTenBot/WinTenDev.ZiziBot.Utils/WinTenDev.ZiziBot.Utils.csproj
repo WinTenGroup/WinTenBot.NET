@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="AngleSharp.Css" Version="0.15.0"/>
+        <PackageReference Include="AngleSharp.Js" Version="0.14.0"/>
+        <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0"/>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0"/>
+        <PackageReference Include="Roslynator.Analyzers" Version="3.1.0">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Serilog" Version="2.10.0"/>
+        <PackageReference Include="Slapper.AutoMapper" Version="2.0.4"/>
+        <PackageReference Include="SonarAnalyzer.CSharp" Version="8.22.0.31243">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="SqlKata.Execution" Version="2.3.2"/>
+        <PackageReference Include="SSH.NET" Version="2020.0.1"/>
+    </ItemGroup>
+
+</Project>
