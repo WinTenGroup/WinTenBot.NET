@@ -1,58 +1,39 @@
-﻿#region
-
-using System;
+﻿using System;
 using System.Globalization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
-#endregion
-
 namespace WinTenDev.WebHook.Models.Github
 {
-    public partial class GithubAdmin
+    public partial class GithubZen
     {
         [JsonProperty("zen")]
-        public string Zen
-        {
-            get; set;
-        }
+        public string Zen { get; set; }
 
         [JsonProperty("hook_id")]
-        public long HookId
-        {
-            get; set;
-        }
+        public long HookId { get; set; }
 
         [JsonProperty("hook")]
-        public Hook Hook
-        {
-            get; set;
-        }
+        public Hook Hook { get; set; }
 
         [JsonProperty("repository")]
-        public Repository Repository
-        {
-            get; set;
-        }
+        public Repository Repository { get; set; }
 
         [JsonProperty("sender")]
-        public Sender Sender
-        {
-            get; set;
-        }
+        public Sender Sender { get; set; }
     }
 
-    public partial class GithubAdmin
+    public partial class GithubZen
     {
-        public static GithubAdmin FromJson(string json)
+        public static GithubZen FromJson(string json)
         {
-            return JsonConvert.DeserializeObject<GithubAdmin>(json, Converter.Settings);
+            return JsonConvert.DeserializeObject<GithubZen>(json, Converter.Settings);
         }
     }
 
     public static class Serialize
     {
-        public static string ToJson(this GithubAdmin self)
+        public static string ToJson(this GithubZen self)
         {
             return JsonConvert.SerializeObject(self, Converter.Settings);
         }
@@ -99,7 +80,7 @@ namespace WinTenDev.WebHook.Models.Github
                 return;
             }
 
-            var value = (long)untypedValue;
+            var value = (long) untypedValue;
             serializer.Serialize(writer, value.ToString());
         }
     }
