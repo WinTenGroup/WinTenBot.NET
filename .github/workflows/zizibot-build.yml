@@ -20,7 +20,7 @@ jobs:
         with:
           dotnet-version: 5.0.100
       - name: Install dependencies
-        run: dotnet restore Zizi.sln
+        run: dotnet restore WinTenDev.ZiziBot.sln
 
       - name: Linux64 FD Build
         run: dotnet publish Zizi.Bot -r linux-x64 -c Release --self-contained=false
