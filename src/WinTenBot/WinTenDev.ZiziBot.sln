@@ -19,13 +19,18 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{93D0AC65-D0BE-4A72-998F-B6B491316DF0}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		global.json = global.json
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WinTenDev.ZiziBot.Utils", "WinTenDev.ZiziBot.Utils\WinTenDev.ZiziBot.Utils.csproj", "{199D8F37-8120-4B94-A1DB-9EA044ECBC8A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinTenDev.Commons", "WinTenDev.Commons\WinTenDev.Commons.csproj", "{199D8F37-8120-4B94-A1DB-9EA044ECBC8A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WinTenDev.Models", "WinTenDev.Models\WinTenDev.Models.csproj", "{302B4806-7C82-4CBC-B264-ADD6C98A4ADF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinTenDev.Models", "WinTenDev.Models\WinTenDev.Models.csproj", "{302B4806-7C82-4CBC-B264-ADD6C98A4ADF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WinTenDev.ZiziBot.Services", "WinTenDev.ZiziBot.Services\WinTenDev.ZiziBot.Services.csproj", "{3CDEC4FD-F964-444E-9FEA-7822A534E797}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WinTenDev.ZiziBot.Handlers", "WinTenDev.ZiziBot.Handlers\WinTenDev.ZiziBot.Handlers.csproj", "{E256DF80-1463-47C4-8AC1-05DD82E6D3A5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinTenDev.Mirror.DriveIndex", "WinTenDev.Mirror.DriveIndex\WinTenDev.Mirror.DriveIndex.csproj", "{F95686A3-80A1-40C1-8342-3DB4DD6346BD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -69,6 +74,18 @@ Global
 		{302B4806-7C82-4CBC-B264-ADD6C98A4ADF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{302B4806-7C82-4CBC-B264-ADD6C98A4ADF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{302B4806-7C82-4CBC-B264-ADD6C98A4ADF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3CDEC4FD-F964-444E-9FEA-7822A534E797}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3CDEC4FD-F964-444E-9FEA-7822A534E797}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3CDEC4FD-F964-444E-9FEA-7822A534E797}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3CDEC4FD-F964-444E-9FEA-7822A534E797}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E256DF80-1463-47C4-8AC1-05DD82E6D3A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E256DF80-1463-47C4-8AC1-05DD82E6D3A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E256DF80-1463-47C4-8AC1-05DD82E6D3A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E256DF80-1463-47C4-8AC1-05DD82E6D3A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F95686A3-80A1-40C1-8342-3DB4DD6346BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F95686A3-80A1-40C1-8342-3DB4DD6346BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F95686A3-80A1-40C1-8342-3DB4DD6346BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F95686A3-80A1-40C1-8342-3DB4DD6346BD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
