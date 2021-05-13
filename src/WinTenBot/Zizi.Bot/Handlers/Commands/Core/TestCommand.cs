@@ -27,13 +27,15 @@ namespace Zizi.Bot.Handlers.Commands.Core
         private readonly IEasyCachingProvider _easyCachingProvider;
         private readonly SettingsService _settingsService;
         private readonly DeepAiService _deepAiService;
+        private readonly BlockListService _blockListService;
 
         public TestCommand(
             LiteDatabaseAsync liteDatabaseAsync,
             IEasyCachingProvider easyCachingProvider,
             TelegramService telegramService,
             DeepAiService deepAiService,
-            SettingsService settingsService
+            SettingsService settingsService,
+            BlockListService blockListService
         )
         {
             _telegramService = telegramService;
@@ -41,6 +43,7 @@ namespace Zizi.Bot.Handlers.Commands.Core
             _deepAiService = deepAiService;
             _easyCachingProvider = easyCachingProvider;
             _settingsService = settingsService;
+            _blockListService = blockListService;
         }
 
         public override async Task HandleAsync(IUpdateContext context, UpdateDelegate next, string[] args,
@@ -133,9 +136,20 @@ namespace Zizi.Bot.Handlers.Commands.Core
                     await _telegramService.AppendTextAsync($"DL: {directLink}");
                     break;
 
+                case "parse-bl":
+                    var url = "https://raw.githubusercontent.com/mhhakim/pihole-blocklist/master/porn.txt";
+                    var listUrl = await _blockListService.ParseList(url);
+                    var msgText = $"{listUrl.Name}" +
+                              $"\n{listUrl.Source}" +
+                              $"\n{listUrl.LastUpdate}" +
+                              $"\n{listUrl.DomainCount}";
+
+                    await _telegramService.AppendTextAsync($"{msgText}");
+                    break;
+
                 default:
                     await _telegramService.AppendTextAsync($"Feature '{param1}' is not available.");
-                    Log.Warning("Feature '{0}' is not available.", param1);
+                    Log.Warning("Feature '{0}' is not available", param1);
 
                     break;
             }
