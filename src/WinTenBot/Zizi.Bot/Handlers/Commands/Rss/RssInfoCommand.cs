@@ -44,7 +44,7 @@ namespace Zizi.Bot.Handlers.Commands.Rss
             int num = 1;
             foreach (var rss in rssData)
             {
-                sb.Append($"{num++}. {rss.UrlFeed}");
+                sb.AppendLine($"{num++}. {rss.UrlFeed}");
             }
 
             if (rssCount == 0)
