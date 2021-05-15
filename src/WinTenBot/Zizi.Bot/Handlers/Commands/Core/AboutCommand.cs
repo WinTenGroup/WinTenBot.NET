@@ -5,6 +5,7 @@ using Telegram.Bot.Framework.Abstractions;
 using Telegram.Bot.Types.ReplyMarkups;
 using Zizi.Bot.Models.Settings;
 using Zizi.Bot.Services.Features;
+using Zizi.Bot.Telegram;
 
 namespace Zizi.Bot.Handlers.Commands.Core
 {
@@ -30,24 +31,19 @@ namespace Zizi.Bot.Handlers.Commands.Core
             var me = await _telegramService.GetMeAsync();
             var botName = me.FirstName;
             var botVersion = _enginesConfig.Version;
+            var company = _enginesConfig.Company;
 
-            var sendText = $"<b>{botName} (.NET)";
-
-            if (await _telegramService.IsBeta())
-            {
-                sendText += " Alpha Preview</b>";
-            }
-
-
-            sendText += $"\nby @WinTenDev" +
-                        $"\nVersion: {botVersion}" +
-                        "\n\nℹ️ Bot Telegram resmi berbasis <b>WinTen API.</b> untuk manajemen dan peralatan grup. " +
-                        "Untuk detail fitur pada perintah /start.\n";
+            var sendText = $"<b>{company} {me.GetFullName()}</b>" +
+                           $"\nby @WinTenDev" +
+                           $"\nVersion: {botVersion}" +
+                           "\n\nℹ️ Bot Telegram resmi berbasis <b>WinTen API.</b> untuk manajemen dan peralatan grup. " +
+                           "Ditulis menggunakan .NET (C#). " +
+                           "Untuk detail fitur pada perintah /start.\n";
 
             if (await _telegramService.IsBeta())
             {
                 sendText += "\n<b>Saya masih Beta, mungkin terdapat bug dan tidak stabil. " +
-                            "Tidak di rekomendasikan untuk grup Anda.</b>\n";
+                            "Tidak dapat di tambahkan ke grup Anda.</b>\n";
             }
 
             sendText += "\nUntuk Bot lebih cepat dan tetap cepat dan terus peningkatan dan keandalan, " +
@@ -79,7 +75,7 @@ namespace Zizi.Bot.Handlers.Commands.Core
                 }
             });
 
-            await _telegramService.SendTextAsync(sendText, inlineKeyboard,  0);
+            await _telegramService.SendTextAsync(sendText, inlineKeyboard, 0);
         }
     }
 }
