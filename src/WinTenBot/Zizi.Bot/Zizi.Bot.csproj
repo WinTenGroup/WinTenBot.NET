@@ -6,7 +6,6 @@
 		<UserSecretsId>355a95b3-d179-4f20-9437-b61e4ca8946b</UserSecretsId>
 		<AssemblyVersion>3.2021.4.0</AssemblyVersion>
 		<FileVersion>3.2021.4.0</FileVersion>
-		<ServerGarbageCollection>true</ServerGarbageCollection>
 		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
 		<DockerComposeProjectPath>..\docker-compose_zizi.bot.dcproj</DockerComposeProjectPath>
 	</PropertyGroup>
