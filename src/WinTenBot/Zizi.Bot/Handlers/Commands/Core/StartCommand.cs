@@ -1,5 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
 using Telegram.Bot.Framework.Abstractions;
 using Telegram.Bot.Types.ReplyMarkups;
 using Zizi.Bot.Common;
@@ -14,11 +15,12 @@ namespace Zizi.Bot.Handlers.Commands.Core
         private readonly EnginesConfig _enginesConfig;
 
         public StartCommand(
-        EnginesConfig enginesConfig, TelegramService telegramService
+            IOptionsSnapshot<EnginesConfig> enginesConfig,
+            TelegramService telegramService
         )
         {
             _telegramService = telegramService;
-            _enginesConfig = enginesConfig;
+            _enginesConfig = enginesConfig.Value;
         }
 
         public override async Task HandleAsync(IUpdateContext context, UpdateDelegate next, string[] args,
