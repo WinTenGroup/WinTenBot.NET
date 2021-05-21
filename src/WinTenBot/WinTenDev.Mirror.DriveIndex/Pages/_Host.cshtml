@@ -1,0 +1,61 @@
+﻿@page "/"
+@namespace WinTenDev.Mirror.DriveIndex.Pages
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>WinTenDev.Mirror.DriveIndex</title>
+    <base href="~/"/>
+    <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css"/>
+    <link href="css/site.css" rel="stylesheet"/>
+    <link href="WinTenDev.Mirror.DriveIndex.styles.css" rel="stylesheet"/>
+</head>
+<body>
+<component type="typeof(App)" render-mode="ServerPrerendered"/>
+
+<div id="blazor-error-ui">
+    <environment include="Staging,Production">
+        An error has occurred. This application may no longer respond until reloaded.
+    </environment>
+    <environment include="Development">
+        An unhandled exception has occurred. See browser dev tools for details.
+    </environment>
+    <a href="" class="reload">Reload</a>
+    <a class="dismiss">🗙</a>
+</div>
+
+<script src="_framework/blazor.server.js"></script>
+@* <script> *@
+@*     setTimeout(function () { *@
+@*         // dotnet-watch browser reload script *@
+@*         let connection; *@
+@*         try { *@
+@*             connection = new WebSocket('ws://127.0.0.1:63435'); *@
+@*         } catch (ex) { *@
+@*             console.debug(ex); *@
+@*             return; *@
+@*         } *@
+@*         connection.onmessage = function (message) { *@
+@*             if (message.data === 'Reload') { *@
+@*                 console.debug('Server is ready. Reloading...'); *@
+@*                 location.reload(); *@
+@*             } else if (message.data === 'Wait') { *@
+@*                 console.debug('File changes detected. Waiting for application to rebuild.'); *@
+@*                 const t = document.title; const r = ['☱', '☲', '☴']; let i = 0; *@
+@*                 setInterval(function () { document.title = r[i++ % r.length] + ' ' + t; }, 240); *@
+@*             } *@
+@*         } *@
+@*         connection.onerror = function (event) { console.debug('dotnet-watch reload socket error.', event) } *@
+@*         connection.onclose = function () { console.debug('dotnet-watch reload socket closed.') } *@
+@*         connection.onopen = function () { console.debug('dotnet-watch reload socket connected.') } *@
+@*     }, 500); *@
+@* </script> *@
+
+</body>
+</html>

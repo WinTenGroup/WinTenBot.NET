@@ -7,8 +7,8 @@ using Google.Apis.Services;
 using Google.Apis.Util.Store;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
-using Zizi.Core.Models.Settings;
-using Zizi.Core.Utils;
+using WinTenDev.Zizi.Models.Configs;
+using WinTenDev.Zizi.Utils.IO;
 
 namespace WinTenDev.Mirror.Host.Extensions
 {

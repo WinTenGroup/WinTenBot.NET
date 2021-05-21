@@ -9,10 +9,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Telegram.Bot.Framework;
-using WinTenDev.Mirror.Host.Bots;
-using WinTenDev.Mirror.Host.Contexts;
 using WinTenDev.Mirror.Host.Extensions;
+using WinTenDev.Zizi.DbContexts;
+using WinTenDev.Zizi.Models.Bots;
 
 namespace WinTenDev.Mirror.Host
 {
@@ -23,8 +22,8 @@ namespace WinTenDev.Mirror.Host
 
         public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
-            //GoogleServiceAccount.GenerateServiceAccount(2);
-            //GoogleServiceAccount.ListServiceAccounts("zizibot-295007");
+            //ServiceAccountService.GenerateServiceAccount(2);
+            //ServiceAccountService.ListServiceAccounts("zizibot-295007");
 
             Configuration = configuration;
             _environment = environment;
@@ -36,9 +35,10 @@ namespace WinTenDev.Mirror.Host
         {
             services.AddMapConfiguration(Configuration);
 
-            services
-                .AddTransient<ZiziMirror>()
-                .Configure<BotOptions<ZiziMirror>>(Configuration.GetSection(nameof(ZiziMirror)));
+            // services
+            //     .AddTransient<ZiziMirror>()
+            //     .Configure<BotOptions<ZiziMirror>>(Configuration.GetSection(nameof(ZiziMirror)));
+            services.AddZiziBot();
 
             services.AddEasyCaching(options =>
             {
@@ -84,7 +84,8 @@ namespace WinTenDev.Mirror.Host
             services.Scan(selector =>
             {
                 selector.FromCallingAssembly()
-                    .FromApplicationDependencies(assembly => assembly.FullName.StartsWith("Zizi"))
+                    .FromApplicationDependencies(assembly =>
+                        assembly.FullName.StartsWith("WinTenDev"))
                     .AddClasses(filter => filter.Where(type =>
                             type.FullName.Contains("Handlers")
                             || type.FullName.Contains("Services")

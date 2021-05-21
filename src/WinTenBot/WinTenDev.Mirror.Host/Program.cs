@@ -5,8 +5,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
-using WinTenDev.Mirror.Host.Contexts;
 using WinTenDev.Mirror.Host.Utils;
+using WinTenDev.Zizi.DbContexts;
 
 namespace WinTenDev.Mirror.Host
 {
@@ -51,7 +51,10 @@ namespace WinTenDev.Mirror.Host
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); })
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.UseStartup<Startup>();
+                })
                 .UseSerilog();
     }
 }

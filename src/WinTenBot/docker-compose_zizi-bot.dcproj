@@ -11,9 +11,12 @@
   <ItemGroup>
     <None Include=".env" />
     <None Include="docker-compose.yml" />
+    <None Include="docker-compose_zizihook.yml" />
     <None Include=".dockerignore" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="docker-config\" />
+  </ItemGroup>
+  <ItemGroup>
   </ItemGroup>
 </Project>

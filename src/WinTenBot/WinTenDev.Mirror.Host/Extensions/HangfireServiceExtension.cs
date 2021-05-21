@@ -8,7 +8,7 @@ using LiteDB.Async;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
-using Zizi.Core.Models.Settings;
+using WinTenDev.Zizi.Models.Configs;
 
 namespace WinTenDev.Mirror.Host.Extensions
 {

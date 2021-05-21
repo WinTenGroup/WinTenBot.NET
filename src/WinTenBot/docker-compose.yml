@@ -19,7 +19,7 @@ services:
     image: "redis:latest"
     container_name: "zizibeta_redis-cache"
     ports:
-      - "6379:6379"
+      - "6479:6379"
 
   redis-insight:
     image: "redislabs/redisinsight:latest"

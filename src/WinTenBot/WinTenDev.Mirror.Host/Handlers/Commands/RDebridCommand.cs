@@ -5,11 +5,9 @@ using AngleSharp;
 using AngleSharp.Html.Dom;
 using Telegram.Bot.Framework.Abstractions;
 using Telegram.Bot.Types.ReplyMarkups;
-using Zizi.Core.Models.Settings;
-using Zizi.Core.Services;
-using Zizi.Core.Services.Features;
-using Zizi.Core.Utils;
-using Zizi.Core.Utils.Text;
+using WinTenDev.Zizi.Models.Configs;
+using WinTenDev.Zizi.Services;
+using WinTenDev.Zizi.Utils;
 
 namespace WinTenDev.Mirror.Host.Handlers.Commands
 {
@@ -30,7 +28,7 @@ namespace WinTenDev.Mirror.Host.Handlers.Commands
 
         public override async Task HandleAsync(IUpdateContext context, UpdateDelegate next, string[] args, CancellationToken cancellationToken)
         {
-            _telegramService = new TelegramService(context, _appConfig);
+            await _telegramService.AddUpdateContext(context);
             var from = _telegramService.Message.From;
 
             var url = _telegramService.MessageTextParts.ValueOfIndex(1);
@@ -73,8 +71,8 @@ namespace WinTenDev.Mirror.Host.Handlers.Commands
             }
 
             var sendText = $"📁 <b>Name:</b> {text}" +
-                                $"\n📦 <b>Ukuran:</b> {size}" +
-                                $"\n👽 <b>Pengguna:</b> {from}";
+                           $"\n📦 <b>Ukuran:</b> {size}" +
+                           $"\n👽 <b>Pengguna:</b> {from}";
 
             var inlineKeyboard = new InlineKeyboardMarkup(new[]
             {

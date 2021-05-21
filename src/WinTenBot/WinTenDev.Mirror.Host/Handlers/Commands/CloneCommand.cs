@@ -2,10 +2,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Google.Apis.Drive.v3;
 using Telegram.Bot.Framework.Abstractions;
-using Zizi.Core.Models.Settings;
-using Zizi.Core.Services;
-using Zizi.Core.Utils;
-using Zizi.Core.Utils.GoogleCloud;
+using WinTenDev.Zizi.Models.Configs;
+using WinTenDev.Zizi.Services;
+using WinTenDev.Zizi.Utils;
 
 namespace WinTenDev.Mirror.Host.Handlers.Commands
 {
@@ -23,7 +22,8 @@ namespace WinTenDev.Mirror.Host.Handlers.Commands
 
         public override async Task HandleAsync(IUpdateContext context, UpdateDelegate next, string[] args, CancellationToken cancellationToken)
         {
-            _telegramService = new TelegramService(context, _appConfig);
+            await _telegramService.AddUpdateContext(context);
+
             var texts = _telegramService.MessageTextParts;
             var url = texts.ValueOfIndex(1);
 
@@ -35,7 +35,7 @@ namespace WinTenDev.Mirror.Host.Handlers.Commands
 
             await _telegramService.SendTextAsync("Cloning..");
 
-            await _telegramService.CloneLink(_driveService, url);
+            // await _telegramService.CloneLink(_driveService, url);
         }
     }
 }

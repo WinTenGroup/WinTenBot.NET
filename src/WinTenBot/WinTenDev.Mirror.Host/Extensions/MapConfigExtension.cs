@@ -1,7 +1,6 @@
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Zizi.Core.Models.Settings;
+using WinTenDev.Zizi.Models.Configs;
 
 namespace WinTenDev.Mirror.Host.Extensions
 {

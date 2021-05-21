@@ -2,8 +2,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Serilog;
 using Telegram.Bot.Framework.Abstractions;
-using Zizi.Core.Models.Settings;
-using Zizi.Core.Services;
+using WinTenDev.Zizi.Models.Configs;
+using WinTenDev.Zizi.Services;
 
 namespace WinTenDev.Mirror.Host.Handlers
 {
@@ -19,7 +19,7 @@ namespace WinTenDev.Mirror.Host.Handlers
 
         public async Task HandleAsync(IUpdateContext context, UpdateDelegate next, CancellationToken cancellationToken)
         {
-            _telegramService = new TelegramService(context,_appConfig);
+            await _telegramService.AddUpdateContext(context);
 
             Log.Debug("New Update..");
 

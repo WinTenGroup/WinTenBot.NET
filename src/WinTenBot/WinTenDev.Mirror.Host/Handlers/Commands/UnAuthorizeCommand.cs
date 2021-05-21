@@ -5,9 +5,9 @@ using EasyCaching.Core;
 using LiteDB.Async;
 using Serilog;
 using Telegram.Bot.Framework.Abstractions;
-using WinTenDev.Mirror.Host.Services;
-using Zizi.Core.Models.Settings;
-using Zizi.Core.Services;
+using WinTenDev.Zizi.Models.Configs;
+using WinTenDev.Zizi.Models.Types;
+using WinTenDev.Zizi.Services;
 
 namespace WinTenDev.Mirror.Host.Handlers.Commands
 {
@@ -30,7 +30,7 @@ namespace WinTenDev.Mirror.Host.Handlers.Commands
         public override async Task HandleAsync(IUpdateContext context, UpdateDelegate next, string[] args,
             CancellationToken cancellationToken)
         {
-            _telegramService = new TelegramService(context, _appConfig);
+            await _telegramService.AddUpdateContext(context);
 
             var fromId = _telegramService.FromId;
             var chatId = _telegramService.ChatId;
