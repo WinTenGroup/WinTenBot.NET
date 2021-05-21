@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
@@ -286,6 +286,12 @@ namespace WinTenDev.Zizi.Host.Handlers
                     var repFromId = repMsg.From.Id;
 
                     var isAfkReply = await _afkService.GetAfkById(repFromId);
+                    if (isAfkReply == null)
+                    {
+                        Log.Debug("No AFK data for '{FromId}' because never recorded as AFK", repFromId);
+                        return;
+                    }
+
                     if (isAfkReply.IsAfk)
                     {
                         var repNameLink = repMsg.GetFromNameLink();
@@ -297,7 +303,7 @@ namespace WinTenDev.Zizi.Host.Handlers
                 var fromAfk = await _afkService.GetAfkById(fromId);
                 if (fromAfk == null)
                 {
-                    Log.Debug($"No AFK data for {fromId} because never recorded as AFK.");
+                    Log.Debug("No AFK data for '{FromId}' because never recorded as AFK", fromId);
                     return;
                 }
 
