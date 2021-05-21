@@ -1,9 +1,8 @@
-
 image: gitpod/workspace-dotnet
 
 tasks:
   - init: dotnet restore
-    command: dotnet restore
+    command: dotnet restore /workspace/ZiziBot.NET/src/WinTenBot/WinTenDev.ZiziBot.sln
 
 vscode:
   extensions:
