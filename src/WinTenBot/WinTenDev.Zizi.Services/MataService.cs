@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using EasyCaching.Core;
 using WinTenDev.Zizi.Models.Types;
+using WinTenDev.Zizi.Utils;
 
 namespace WinTenDev.Zizi.Services
 {
@@ -28,7 +29,7 @@ namespace WinTenDev.Zizi.Services
         public async Task SaveMataAsync(int fromId, HitActivity hitActivity)
         {
             var key = baseKey + fromId;
-            await _cachingProvider.SetAsync(key, hitActivity, TimeSpan.Zero);
+            await _cachingProvider.SetAsync(key, hitActivity, TimeUtil.YearSpan(30));
         }
     }
 }
