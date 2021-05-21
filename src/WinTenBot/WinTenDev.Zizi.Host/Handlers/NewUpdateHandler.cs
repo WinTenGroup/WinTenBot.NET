@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 using Humanizer;
 using Serilog;
 using Telegram.Bot.Framework.Abstractions;
+using WinTenDev.Zizi.Host.Telegram;
 using WinTenDev.Zizi.Models.Types;
 using WinTenDev.Zizi.Services;
 using WinTenDev.Zizi.Utils;
 using WinTenDev.Zizi.Utils.Telegram;
 using WinTenDev.Zizi.Utils.Text;
-using WinTenDev.Zizi.Host.Telegram;
 
 namespace WinTenDev.Zizi.Host.Handlers
 {
@@ -457,13 +457,14 @@ namespace WinTenDev.Zizi.Host.Handlers
             Log.Information("Ensuring chat health..");
 
             var message = _telegramService.Message;
+            var fromFullName = _telegramService.From.GetFullName();
             var chatId = message.Chat.Id;
 
             Log.Information("Preparing restore health on chatId {ChatId}..", chatId);
             var data = new Dictionary<string, object>
             {
                 {"chat_id", chatId},
-                {"chat_title", message.Chat.Title ?? @"N\A"},
+                {"chat_title", message.Chat.Title ?? fromFullName},
                 {"chat_type", message.Chat.Type.Humanize()},
                 {"is_admin", _telegramService.IsBotAdmin}
             };
