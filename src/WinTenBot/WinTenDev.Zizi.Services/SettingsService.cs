@@ -109,6 +109,18 @@ namespace WinTenDev.Zizi.Services
             await _cachingProvider.SetAsync(cacheKey, data, TimeSpan.FromMinutes(10));
         }
 
+        public async Task<int> DeleteSettings(long chatId)
+        {
+            Log.Debug("Starting delete ChatSetting for ChatID: '{ChatId}'", chatId);
+            var queryFactory = _queryService.CreateMySqlConnection();
+            var deleteSetting = await queryFactory.FromTable(BaseTable)
+                .Where("chat_id", chatId)
+                .DeleteAsync();
+
+            Log.Debug("Delete ChatSetting by ChatID: '{ChatId}' result => {ChatGroups}", chatId, deleteSetting);
+            return deleteSetting;
+        }
+
         public async Task<List<CallBackButton>> GetSettingButtonByGroup(long chatId)
         {
             var selectColumns = new[]
