@@ -23,33 +23,33 @@ jobs:
         run: dotnet restore WinTenDev.ZiziBot.sln
 
       - name: Linux64 FD Build
-        run: dotnet publish Zizi.Bot -r linux-x64 -c Release --self-contained=false
+        run: dotnet publish WinTenDev.Zizi.Host -r linux-x64 -c Release --self-contained=false
       - name: Upload Linux64 Artifacs
         uses: actions/upload-artifact@v2.2.3
         with:
           name: zizibot-linux64-fd-build.zip
-          path: src/WinTenBot/Zizi.Bot/bin/Release/net5.0/linux-x64/publish
+          path: src/WinTenBot/WinTenDev.Zizi.Host/bin/Release/net5.0/linux-x64/publish
 
       - name: Linux64 FD Single-File Build
-        run: dotnet publish Zizi.Bot -r linux-x64 -c Release --self-contained=false /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true
+        run: dotnet publish WinTenDev.Zizi.Host -r linux-x64 -c Release --self-contained=false /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true
       - name: Upload Linux64 Single-File Artifacs
         uses: actions/upload-artifact@v2.2.3
         with:
           name: zizibot-linux64-sf-build.zip
-          path: src/WinTenBot/Zizi.Bot/bin/Release/net5.0/linux-x64/publish
+          path: src/WinTenBot/WinTenDev.Zizi.Host/bin/Release/net5.0/linux-x64/publish
 
       - name: Win64 FD Build
-        run: dotnet publish Zizi.Bot -r win-x64 -c Release --self-contained=false
+        run: dotnet publish WinTenDev.Zizi.Host -r win-x64 -c Release --self-contained=false
       - name: Upload Win64 FD Artifacs
         uses: actions/upload-artifact@v2.2.3
         with:
           name: zizibot-win64-fd-build.zip
-          path: src/WinTenBot/Zizi.Bot/bin/Release/net5.0/win-x64/publish
+          path: src/WinTenBot/WinTenDev.Zizi.Host/bin/Release/net5.0/win-x64/publish
 
       - name: Win64 FD Single-File Build
-        run: dotnet publish Zizi.Bot -r win-x64 -c Release --self-contained=false /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true
+        run: dotnet publish WinTenDev.Zizi.Host -r win-x64 -c Release --self-contained=false /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true
       - name: Upload Win64 SF Artifacs
         uses: actions/upload-artifact@v2.2.3
         with:
           name: zizibot-win64-sf-build.zip
-          path: src/WinTenBot/Zizi.Bot/bin/Release/net5.0/win-x64/publish
+          path: src/WinTenBot/WinTenDev.Zizi.Host/bin/Release/net5.0/win-x64/publish
