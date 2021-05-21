@@ -20,12 +20,12 @@ namespace WinTenDev.Zizi.Host.Handlers
     {
         private readonly AfkService _afkService;
         private readonly AntiSpamService _antiSpamService;
+        private readonly MataService _mataService;
         private readonly SettingsService _settingsService;
         private readonly TelegramService _telegramService;
         private readonly WordFilterService _wordFilterService;
 
         private ChatSetting _chatSettings;
-        private readonly MataService _mataService;
 
         public NewUpdateHandler(
             AfkService afkService,
@@ -424,20 +424,20 @@ namespace WinTenDev.Zizi.Host.Handlers
 
                     await _mataService.SaveMataAsync(fromId, new HitActivity
                         // _telegramService.SetChatCache(fromId.ToString(), new HitActivity
-                    {
-                        ViaBot = botUser.Username,
-                        MessageType = message.Type.ToString(),
-                        FromId = message.From.Id,
-                        FromFirstName = message.From.FirstName,
-                        FromLastName = message.From.LastName,
-                        FromUsername = message.From.Username,
-                        FromLangCode = message.From.LanguageCode,
-                        ChatId = message.Chat.Id.ToString(),
-                        ChatUsername = message.Chat.Username,
-                        ChatType = message.Chat.Type.ToString(),
-                        ChatTitle = message.Chat.Title,
-                        Timestamp = DateTime.Now
-                    });
+                        {
+                            ViaBot = botUser.Username,
+                            MessageType = message.Type.ToString(),
+                            FromId = message.From.Id,
+                            FromFirstName = message.From.FirstName,
+                            FromLastName = message.From.LastName,
+                            FromUsername = message.From.Username,
+                            FromLangCode = message.From.LanguageCode,
+                            ChatId = message.Chat.Id.ToString(),
+                            ChatUsername = message.Chat.Username,
+                            ChatType = message.Chat.Type.ToString(),
+                            ChatTitle = message.Chat.Title,
+                            Timestamp = DateTime.Now
+                        });
 
                     Log.Debug("Complete update Cache");
                 }
