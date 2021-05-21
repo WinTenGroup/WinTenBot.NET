@@ -46,5 +46,13 @@ namespace WinTenDev.Zizi.Utils
 
             return muteResult;
         }
+
+        public static TimeSpan YearSpan(int year)
+        {
+            var now = DateTime.UtcNow;
+            var span = now.AddYears(year) - now;
+
+            return span;
+        }
     }
 }
