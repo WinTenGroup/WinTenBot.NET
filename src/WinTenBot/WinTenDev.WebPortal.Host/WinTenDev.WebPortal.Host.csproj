@@ -31,9 +31,9 @@
         <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
         <PackageReference Include="Serilog.Sinks.File" Version="4.1.0" />
         <PackageReference Include="SerilogAnalyzer" Version="0.15.0" />
-        <PackageReference Include="SonarAnalyzer.CSharp" Version="8.22.0.31243">
-          <PrivateAssets>all</PrivateAssets>
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        <PackageReference Include="SonarAnalyzer.CSharp" Version="8.23.0.32424">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="SqlKata" Version="2.3.2" />
         <PackageReference Include="SqlKata.Execution" Version="2.3.2" />
