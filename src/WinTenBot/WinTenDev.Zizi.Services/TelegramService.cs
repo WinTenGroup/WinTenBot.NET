@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -6,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using EasyCaching.Core;
+using Humanizer;
 using Serilog;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
@@ -27,10 +29,10 @@ namespace WinTenDev.Zizi.Services
 {
     public class TelegramService
     {
-        private readonly SettingsService _settingsService;
+        private readonly AppConfig _appConfig;
         private readonly IEasyCachingProvider _cachingProvider;
         private readonly CommonConfig _commonConfig;
-        private readonly AppConfig _appConfig;
+        private readonly SettingsService _settingsService;
 
         public bool IsNoUsername { get; private set; }
         public bool HasUsername { get; private set; }
@@ -102,10 +104,7 @@ namespace WinTenDev.Zizi.Services
 
             MessageOrEdited = Message ?? EditedMessage;
 
-            if (Message != null)
-            {
-                TimeInit = Message.Date.GetDelay();
-            }
+            if (Message != null) TimeInit = Message.Date.GetDelay();
 
             if (AnyMessage != null)
             {
@@ -148,10 +147,7 @@ namespace WinTenDev.Zizi.Services
                 var restrictArea = _appConfig.RestrictArea;
                 var match = restrictArea.FirstOrDefault(x => x == ChatId.ToString());
 
-                if (match == null)
-                {
-                    isRestricted = true;
-                }
+                if (match == null) isRestricted = true;
 
                 Log.Information("ChatId: {0} IsRestricted: {1}", ChatId, isRestricted);
                 return isRestricted;
@@ -184,10 +180,7 @@ namespace WinTenDev.Zizi.Services
             try
             {
                 var chatTarget = chatId;
-                if (chatId == 0)
-                {
-                    chatTarget = Message.Chat.Id;
-                }
+                if (chatId == 0) chatTarget = Message.Chat.Id;
 
                 Log.Information("Leaving from {ChatTarget}", chatTarget);
                 await Client.LeaveChatAsync(chatTarget);
@@ -287,14 +280,11 @@ namespace WinTenDev.Zizi.Services
 
         private bool CheckFromSudoer()
         {
-            bool isSudoer = false;
+            var isSudoer = false;
             var sudoers = _appConfig.Sudoers;
             var match = sudoers.FirstOrDefault(x => x == FromId.ToString());
 
-            if (match != null)
-            {
-                isSudoer = true;
-            }
+            if (match != null) isSudoer = true;
 
             Log.Information("UserId: {0} IsSudoer: {1}", FromId, isSudoer);
             return isSudoer;
@@ -354,7 +344,7 @@ namespace WinTenDev.Zizi.Services
 
             var isAdmin = chatMembers.Any(admin => userId == admin.User.Id);
 
-            Log.Debug("Check UserID {0} Admin on Chat {1}? {2}. TimeUtil: {3}", userId, ChatId, isAdmin, sw.Elapsed);
+            Log.Debug("Check UserID {0} Admin on Chat {1}? {2}. Time: {3}", userId, ChatId, isAdmin, sw.Elapsed);
 
             sw.Stop();
 
@@ -453,7 +443,7 @@ namespace WinTenDev.Zizi.Services
             fileName = $"Storage/Caches/{fileName}".EnsureDirectory();
 
             await using var fileStream = File.OpenWrite(fileName);
-            await Client.DownloadFileAsync(filePath: file.FilePath, destination: fileStream);
+            await Client.DownloadFileAsync(file.FilePath, fileStream);
             Log.Information("File saved to {0}", fileName);
 
             return fileName;
@@ -464,21 +454,12 @@ namespace WinTenDev.Zizi.Services
         {
             TimeProc = Message.Date.GetDelay();
 
-            if (sendText.IsNotNullOrEmpty())
-            {
-                sendText += $"\n\n⏱ <code>{TimeInit} s</code> | ⌛️ <code>{TimeProc} s</code>";
-            }
+            if (sendText.IsNotNullOrEmpty()) sendText += $"\n\n⏱ <code>{TimeInit} s</code> | ⌛️ <code>{TimeProc} s</code>";
 
             var chatTarget = Message.Chat.Id;
-            if (customChatId < -1)
-            {
-                chatTarget = customChatId;
-            }
+            if (customChatId < -1) chatTarget = customChatId;
 
-            if (replyToMsgId == -1)
-            {
-                replyToMsgId = Message.MessageId;
-            }
+            if (replyToMsgId == -1) replyToMsgId = Message.MessageId;
 
             Message send = null;
 
@@ -539,10 +520,7 @@ namespace WinTenDev.Zizi.Services
             Log.Information("Sending media: {MediaType}, fileId: {FileId} to {Id}", mediaType, fileId, Message.Chat.Id);
 
             TimeProc = Message.Date.GetDelay();
-            if (caption.IsNotNullOrEmpty())
-            {
-                caption += $"\n\n⏱ <code>{TimeInit} s</code> | ⌛️ <code>{TimeProc} s</code>";
-            }
+            if (caption.IsNotNullOrEmpty()) caption += $"\n\n⏱ <code>{TimeInit} s</code> | ⌛️ <code>{TimeProc} s</code>";
 
             switch (mediaType)
             {
@@ -584,15 +562,20 @@ namespace WinTenDev.Zizi.Services
             return SentMessage;
         }
 
+        public async Task SendMediaGroupAsync(List<IAlbumInputMedia> listAlbum)
+        {
+            var itemCount = "item".ToQuantity(listAlbum.Count);
+            Log.Information("Sending Media Group to {ChatId} with {ItemCount}", ChatId, itemCount);
+            var message = await Client.SendMediaGroupAsync(listAlbum, ChatId);
+            Log.Debug("Send Media Group Result on '{ChatId}' => {Message}", ChatId, message.Length > 0);
+        }
+
         public async Task EditAsync(string sendText, InlineKeyboardMarkup replyMarkup = null,
             bool disableWebPreview = true)
         {
             TimeProc = Message.Date.GetDelay();
 
-            if (sendText.IsNotNullOrEmpty())
-            {
-                sendText += $"\n\n⏱ <code>{TimeInit} s</code> | ⌛️ <code>{TimeProc} s</code>";
-            }
+            if (sendText.IsNotNullOrEmpty()) sendText += $"\n\n⏱ <code>{TimeInit} s</code> | ⌛️ <code>{TimeProc} s</code>";
 
             var chatId = Message.Chat.Id;
             Log.Information("Updating message {SentMessageId} on {ChatId}", SentMessageId, chatId);
@@ -691,7 +674,7 @@ namespace WinTenDev.Zizi.Services
             try
             {
                 var callbackQueryId = Context.Update.CallbackQuery.Id;
-                await Client.AnswerCallbackQueryAsync(callbackQueryId, text, showAlert: showAlert);
+                await Client.AnswerCallbackQueryAsync(callbackQueryId, text, showAlert);
             }
             catch (Exception e)
             {
@@ -807,13 +790,13 @@ namespace WinTenDev.Zizi.Services
                 await Client.PromoteChatMemberAsync(
                     Message.Chat.Id,
                     userId,
-                    canChangeInfo: false,
-                    canPostMessages: false,
-                    canEditMessages: false,
-                    canDeleteMessages: true,
-                    canInviteUsers: true,
-                    canRestrictMembers: true,
-                    canPinMessages: true);
+                    false,
+                    false,
+                    false,
+                    true,
+                    true,
+                    true,
+                    true);
 
                 requestResult.IsSuccess = true;
             }
@@ -836,13 +819,13 @@ namespace WinTenDev.Zizi.Services
                 await Client.PromoteChatMemberAsync(
                     Message.Chat.Id,
                     userId,
-                    canChangeInfo: false,
-                    canPostMessages: false,
-                    canEditMessages: false,
-                    canDeleteMessages: false,
-                    canInviteUsers: false,
-                    canRestrictMembers: false,
-                    canPinMessages: false);
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false);
 
                 requestResult.IsSuccess = true;
             }
@@ -870,10 +853,7 @@ namespace WinTenDev.Zizi.Services
             {
                 var chatId = Message.Chat.Id;
                 var untilDate = until;
-                if (until == default)
-                {
-                    untilDate = DateTime.UtcNow.AddDays(366);
-                }
+                if (until == default) untilDate = DateTime.UtcNow.AddDays(366);
 
                 Log.Information("Restricting member on {0} until {1}", chatId, untilDate);
                 Log.Information("UserId: {0}, IsMute: {1}", userId, unMute);
@@ -904,10 +884,7 @@ namespace WinTenDev.Zizi.Services
             {
                 Log.Error(ex.Demystify(), "Error restrict userId: {UserId} on {ChatId}", userId, ChatId);
                 var exceptionMsg = ex.Message;
-                if (exceptionMsg.Contains("CHAT_ADMIN_REQUIRED"))
-                {
-                    Log.Debug("I'm must Admin on this Group!");
-                }
+                if (exceptionMsg.Contains("CHAT_ADMIN_REQUIRED")) Log.Debug("I'm must Admin on this Group!");
 
                 tgResult.IsSuccess = false;
                 tgResult.Exception = ex;
