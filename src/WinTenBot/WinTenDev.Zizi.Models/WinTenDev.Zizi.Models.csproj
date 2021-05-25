@@ -1,14 +1,22 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+    <Import Project="./../../../config/VersionBuild.target.xml"/>
+
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+        <FileVersion>$(MajorNumber).$(MinorNumber).$(BuildNumber).$(RevNumber)</FileVersion>
+        <Version>$(MajorNumber).$(MinorNumber).$(BuildNumber).$(RevNumber)</Version>
+    </PropertyGroup>
+
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Dapper" Version="2.0.90" />
-      <PackageReference Include="Dapper.FluentMap" Version="2.0.0" />
-      <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0" />
-      <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="5.0.0" />
+        <PackageReference Include="Dapper" Version="2.0.90"/>
+        <PackageReference Include="Dapper.FluentMap" Version="2.0.0"/>
+        <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0"/>
+        <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="5.0.0"/>
       <PackageReference Include="Microsoft.ML" Version="1.5.5" />
       <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
       <PackageReference Include="Roslynator.Analyzers" Version="3.1.0">

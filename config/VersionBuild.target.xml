@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<Project>
+
+    <PropertyGroup>
+        <MajorNumber>2021</MajorNumber>
+        <MinorNumber>5</MinorNumber>
+        <BuildNumber>$([System.DateTime]::UtcNow.Date.Subtract($([System.DateTime]::Parse("2000-01-01"))).TotalDays)</BuildNumber>
+        <RevNumber>$([System.Math]::Floor($([MSBuild]::Divide($([System.DateTime]::UtcNow.TimeOfDay.TotalSeconds), 1.32))))</RevNumber>
+        <VersionNumber>$(MajorNumber).$(MinorNumber).$(BuildNumber).$(RevNumber)</VersionNumber>
+    </PropertyGroup>
+
+</Project>
