@@ -1,6 +1,8 @@
+using System;
 using Dapper.FluentMap.Mapping;
 using Newtonsoft.Json;
 using SqlKata;
+using Telegram.Bot.Types.Enums;
 using WinTenDev.Zizi.Models.Enums;
 
 namespace WinTenDev.Zizi.Models.Types
@@ -10,6 +12,10 @@ namespace WinTenDev.Zizi.Models.Types
         [Column("chat_id")]
         [JsonProperty("chat_id")]
         public string ChatId { get; set; }
+
+        [Column("chat_type")]
+        [JsonProperty("chat_type")]
+        public ChatType ChatType { get; set; }
 
         [Column("member_count")]
         [JsonProperty("member_count")]
@@ -106,6 +112,14 @@ namespace WinTenDev.Zizi.Models.Types
         [Column("enable_zizi_mata")]
         [JsonProperty("enable_zizi_mata")]
         public bool EnableZiziMata { get; set; } = true;
+
+        [Column("created_at")]
+        [JsonProperty("created_at")]
+        public DateTime CreatedAt { get; set; }
+
+        [Column("updated_at")]
+        [JsonProperty("updated_at")]
+        public DateTime UpdatedAt { get; set; }
     }
 
     public class ChatSettingMap : EntityMap<ChatSetting>
