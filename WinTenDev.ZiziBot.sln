@@ -2,35 +2,38 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29519.87
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WinTenDev.Zizi.Host", "WinTenDev.Zizi.Host\WinTenDev.Zizi.Host.csproj", "{07FCA677-7F76-42B7-8C1D-DA47BCD9F360}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WinTenDev.Zizi.Host", "src\WinTenBot\WinTenDev.Zizi.Host\WinTenDev.Zizi.Host.csproj", "{07FCA677-7F76-42B7-8C1D-DA47BCD9F360}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WinTenDev.WebHook.Host", "WinTenDev.WebHook.Host\WinTenDev.WebHook.Host.csproj", "{B495ECAA-0A5A-4458-B82C-48AA7DFFCEBA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WinTenDev.WebHook.Host", "src\WinTenBot\WinTenDev.WebHook.Host\WinTenDev.WebHook.Host.csproj", "{B495ECAA-0A5A-4458-B82C-48AA7DFFCEBA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WinTenDev.WebApi.Host", "WinTenDev.WebApi.Host\WinTenDev.WebApi.Host.csproj", "{B913A17B-1C14-47DB-8284-B61EC2C0151B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WinTenDev.WebApi.Host", "src\WinTenBot\WinTenDev.WebApi.Host\WinTenDev.WebApi.Host.csproj", "{B913A17B-1C14-47DB-8284-B61EC2C0151B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WinTenDev.WebPortal.Host", "WinTenDev.WebPortal.Host\WinTenDev.WebPortal.Host.csproj", "{74B777B9-764C-4192-9896-74667D1701A3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WinTenDev.WebPortal.Host", "src\WinTenBot\WinTenDev.WebPortal.Host\WinTenDev.WebPortal.Host.csproj", "{74B777B9-764C-4192-9896-74667D1701A3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WinTenDev.Mirror.Host", "WinTenDev.Mirror.Host\WinTenDev.Mirror.Host.csproj", "{9A7D4E70-3CEF-4C20-80EF-AAF8E6FD3E79}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WinTenDev.Mirror.Host", "src\WinTenBot\WinTenDev.Mirror.Host\WinTenDev.Mirror.Host.csproj", "{9A7D4E70-3CEF-4C20-80EF-AAF8E6FD3E79}"
 EndProject
-Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose_zizi-bot", "docker-compose_zizi-bot.dcproj", "{C13D3E3B-938B-4CD9-9827-4967DE1376CB}"
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose_zizi-bot", "src\WinTenBot\docker-compose_zizi-bot.dcproj", "{C13D3E3B-938B-4CD9-9827-4967DE1376CB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WinTenDev.Zizi.Utils", "src\WinTenBot\WinTenDev.Zizi.Utils\WinTenDev.Zizi.Utils.csproj", "{199D8F37-8120-4B94-A1DB-9EA044ECBC8A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WinTenDev.Zizi.Models", "src\WinTenBot\WinTenDev.Zizi.Models\WinTenDev.Zizi.Models.csproj", "{302B4806-7C82-4CBC-B264-ADD6C98A4ADF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WinTenDev.Zizi.Services", "src\WinTenBot\WinTenDev.Zizi.Services\WinTenDev.Zizi.Services.csproj", "{3CDEC4FD-F964-444E-9FEA-7822A534E797}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WinTenDev.Zizi.Handlers", "src\WinTenBot\WinTenDev.Zizi.Handlers\WinTenDev.Zizi.Handlers.csproj", "{E256DF80-1463-47C4-8AC1-05DD82E6D3A5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinTenDev.Mirror.DriveIndex", "src\WinTenBot\WinTenDev.Mirror.DriveIndex\WinTenDev.Mirror.DriveIndex.csproj", "{F95686A3-80A1-40C1-8342-3DB4DD6346BD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinTenDev.Zizi.DbContexts", "src\WinTenBot\WinTenDev.Zizi.DbContexts\WinTenDev.Zizi.DbContexts.csproj", "{3A00CA3B-F829-433A-91FF-9A5B3BD4246D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinTenDev.Zizi.Tests", "src\WinTenBot\WinTenDev.Zizi.Tests\WinTenDev.Zizi.Tests.csproj", "{24307A30-787E-46AE-9F2B-9AE163745AE4}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{93D0AC65-D0BE-4A72-998F-B6B491316DF0}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		global.json = global.json
+		config\VersionBuild.target.xml = config\VersionBuild.target.xml
 	EndProjectSection
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WinTenDev.Zizi.Utils", "WinTenDev.Zizi.Utils\WinTenDev.Zizi.Utils.csproj", "{199D8F37-8120-4B94-A1DB-9EA044ECBC8A}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WinTenDev.Zizi.Models", "WinTenDev.Zizi.Models\WinTenDev.Zizi.Models.csproj", "{302B4806-7C82-4CBC-B264-ADD6C98A4ADF}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WinTenDev.Zizi.Services", "WinTenDev.Zizi.Services\WinTenDev.Zizi.Services.csproj", "{3CDEC4FD-F964-444E-9FEA-7822A534E797}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WinTenDev.Zizi.Handlers", "WinTenDev.Zizi.Handlers\WinTenDev.Zizi.Handlers.csproj", "{E256DF80-1463-47C4-8AC1-05DD82E6D3A5}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinTenDev.Mirror.DriveIndex", "WinTenDev.Mirror.DriveIndex\WinTenDev.Mirror.DriveIndex.csproj", "{F95686A3-80A1-40C1-8342-3DB4DD6346BD}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinTenDev.Zizi.DbContexts", "WinTenDev.Zizi.DbContexts\WinTenDev.Zizi.DbContexts.csproj", "{3A00CA3B-F829-433A-91FF-9A5B3BD4246D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -86,6 +89,10 @@ Global
 		{3A00CA3B-F829-433A-91FF-9A5B3BD4246D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3A00CA3B-F829-433A-91FF-9A5B3BD4246D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3A00CA3B-F829-433A-91FF-9A5B3BD4246D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{24307A30-787E-46AE-9F2B-9AE163745AE4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24307A30-787E-46AE-9F2B-9AE163745AE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24307A30-787E-46AE-9F2B-9AE163745AE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24307A30-787E-46AE-9F2B-9AE163745AE4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -93,5 +100,10 @@ Global
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		RESX_ShowPerformanceTraces = True
 		SolutionGuid = {AFE8345E-016B-4B6D-A95A-3D62AEF8BA8A}
+	EndGlobalSection
+	GlobalSection(RiderSharedRunConfigurations) = postSolution
+		File = src\WinTenBot\.run\docker-compose_zizibot.yml_ Deployment.run.xml
+		File = src\WinTenBot\.run\Publish Zizi.Bot.run.xml
+		File = src\WinTenBot\.run\ZiziBot_ Build & Run.run.xml
 	EndGlobalSection
 EndGlobal

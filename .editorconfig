@@ -1,5 +1,5 @@
-﻿[*.{cs,vb}]
-end_of_line=lf
+﻿[*.{cs, vb}]
+end_of_line = lf
 max_line_length = off
 indent_style = space
 
