@@ -17,18 +17,19 @@
         <PackageReference Include="Dapper.FluentMap" Version="2.0.0"/>
         <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0"/>
         <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="5.0.0"/>
-      <PackageReference Include="Microsoft.ML" Version="1.5.5" />
-      <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-      <PackageReference Include="Roslynator.Analyzers" Version="3.1.0">
-        <PrivateAssets>all</PrivateAssets>
-        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      </PackageReference>
-      <PackageReference Include="SonarAnalyzer.CSharp" Version="8.23.0.32424">
-          <PrivateAssets>all</PrivateAssets>
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      </PackageReference>
-      <PackageReference Include="SqlKata" Version="2.3.2" />
-      <PackageReference Include="Telegram.Bot.Framework" Version="2.0.0-alpha5" />
+        <PackageReference Include="Microsoft.ML" Version="1.5.5"/>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.1"/>
+        <PackageReference Include="Roslynator.Analyzers" Version="3.1.0">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="SonarAnalyzer.CSharp" Version="8.23.0.32424">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="SqlKata" Version="2.3.2"/>
+        <PackageReference Include="Telegram.Bot" Version="15.7.1"/>
+        <PackageReference Include="Telegram.Bot.Framework" Version="2.0.0-alpha5"/>
     </ItemGroup>
 
 </Project>

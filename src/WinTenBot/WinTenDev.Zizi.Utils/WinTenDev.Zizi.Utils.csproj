@@ -13,7 +13,7 @@
         <PackageReference Include="AngleSharp.Js" Version="0.14.0" />
         <PackageReference Include="ClickHouse.Client" Version="3.1.0.379" />
         <PackageReference Include="CloudFlareUtilities" Version="1.3.0" />
-        <PackageReference Include="CsvHelper" Version="27.0.4" />
+        <PackageReference Include="CsvHelper" Version="27.1.0"/>
         <PackageReference Include="DotNetZip" Version="1.15.0" />
         <PackageReference Include="EasyCaching.Disk" Version="1.2.1" />
         <PackageReference Include="EasyCaching.SQLite" Version="1.2.0" />
@@ -23,7 +23,7 @@
         <PackageReference Include="Flurl.Http" Version="3.2.0" />
         <PackageReference Include="Google.Apis.Drive.v3" Version="1.51.0.2320" />
         <PackageReference Include="GoogleTranslateFreeApi" Version="1.1.1" />
-        <PackageReference Include="Hangfire.Core" Version="1.7.22" />
+        <PackageReference Include="Hangfire.Core" Version="1.7.23"/>
         <PackageReference Include="Hangfire.LiteDB" Version="0.4.0" />
         <PackageReference Include="Hangfire.MySqlStorage" Version="2.0.3" />
         <PackageReference Include="Hangfire.Redis.StackExchange" Version="1.8.4" />
@@ -34,19 +34,23 @@
         <PackageReference Include="Localtunnel" Version="1.0.3" />
         <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="5.0.6" />
         <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+        <PackageReference Include="Microsoft.Build.Utilities.Core" Version="16.10.0"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.6" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="5.0.6" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
         <PackageReference Include="MonkeyCache" Version="1.5.2" />
         <PackageReference Include="MonkeyCache.FileStore" Version="1.5.2" />
+        <PackageReference Include="MySqlConnector" Version="1.3.9"/>
         <PackageReference Include="MySqlConnector.Logging.Serilog" Version="1.0.0" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+        <PackageReference Include="Nito.AsyncEx.Tasks" Version="5.1.0"/>
         <PackageReference Include="Roslynator.Analyzers" Version="3.1.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Serilog" Version="2.10.0" />
         <PackageReference Include="Serilog.Enrichers.Dynamic" Version="1.0.9" />
+        <PackageReference Include="SerilogAnalyzer" Version="0.15.0"/>
         <PackageReference Include="Slapper.AutoMapper" Version="2.0.4" />
         <PackageReference Include="SonarAnalyzer.CSharp" Version="8.23.0.32424">
             <PrivateAssets>all</PrivateAssets>
@@ -54,14 +58,14 @@
         </PackageReference>
         <PackageReference Include="SqlKata.Execution" Version="2.3.2" />
         <PackageReference Include="SSH.NET" Version="2020.0.1" />
-        <PackageReference Include="System.Data.SQLite.Core" Version="1.0.113.7" />
+        <PackageReference Include="System.Data.SQLite.Core" Version="1.0.114"/>
         <PackageReference Include="Telegram.Bot" Version="15.7.1" />
-        <PackageReference Include="YoutubeExplode" Version="6.0.0" />
+        <PackageReference Include="YoutubeExplode" Version="6.0.2"/>
         <PackageReference Include="YouTubeSearch" Version="2.2.6" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\WinTenDev.Zizi.Models\WinTenDev.Zizi.Models.csproj" />
+        <ProjectReference Include="..\WinTenDev.Zizi.Models\WinTenDev.Zizi.Models.csproj"/>
     </ItemGroup>
 
 </Project>
