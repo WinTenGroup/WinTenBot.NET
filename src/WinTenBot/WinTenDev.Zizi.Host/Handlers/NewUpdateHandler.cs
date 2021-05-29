@@ -470,9 +470,7 @@ namespace WinTenDev.Zizi.Host.Handlers
             };
 
             var saveSettings = await _settingsService.SaveSettingsAsync(data);
-            Log.Debug("Ensure Settings: {SaveSettings}", saveSettings);
-
-            await _settingsService.UpdateCacheAsync(chatId);
+            Log.Debug("Ensure Settings for ChatID: '{ChatId}': {SaveSettings}", chatId, saveSettings);
         }
 
         #endregion
