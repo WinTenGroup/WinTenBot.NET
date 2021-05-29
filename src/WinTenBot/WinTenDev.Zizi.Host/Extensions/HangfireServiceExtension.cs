@@ -63,6 +63,27 @@ namespace WinTenDev.Zizi.Host.Extensions
             return services;
         }
 
+        public static IApplicationBuilder ResetHangfireStorageIfRequired(this IApplicationBuilder app)
+        {
+            var serviceProvider = app.GetServiceProvider();
+
+            var storageService = serviceProvider.GetRequiredService<StorageService>();
+            var lastFtlError = ErrorUtil.ReadErrorTextAsync().Result;
+
+            if (lastFtlError.ToLower().Contains("hangfire"))
+            {
+                if (lastFtlError.Contains("MySql.MySqlStorage"))
+                {
+                    Log.Warning("Last error about Hangfire, seem need to Reset Storage");
+                    AsyncContext.Run(() => storageService.ResetHangfire());
+
+                    "".SaveErrorToText();
+                }
+            }
+
+            return app;
+        }
+
         public static IApplicationBuilder UseHangfireDashboardAndServer(this IApplicationBuilder app)
         {
             var serviceProvider = app.GetServiceProvider();
@@ -76,6 +97,8 @@ namespace WinTenDev.Zizi.Host.Extensions
 
             Log.Information("Hangfire Url: {HangfireBaseUrl}", baseUrl);
             Log.Information("Hangfire Auth: {HangfireUsername} | {HangfirePassword}", username, password);
+
+            app.ResetHangfireStorageIfRequired();
 
             var dashboardOptions = new DashboardOptions
             {

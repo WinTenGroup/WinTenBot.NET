@@ -1,28 +1,36 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using Serilog;
 using Telegram.Bot;
 using Telegram.Bot.Types.InputFiles;
 using WinTenDev.Zizi.Models.Configs;
+using WinTenDev.Zizi.Utils;
 using WinTenDev.Zizi.Utils.IO;
 
 namespace WinTenDev.Zizi.Services
 {
+    /// <summary>
+    /// Storage service for storage management
+    /// </summary>
     public class StorageService
     {
-        private CommonConfig _commonConfig;
+        private readonly CommonConfig _commonConfig;
         private readonly TelegramBotClient _botClient;
+        private readonly QueryService _queryService;
 
         public StorageService(
             IOptionsSnapshot<CommonConfig> optionsCommonConfig,
-            TelegramBotClient botClient
+            TelegramBotClient botClient,
+            QueryService queryService
         )
         {
             _commonConfig = optionsCommonConfig.Value;
             _botClient = botClient;
+            _queryService = queryService;
         }
 
         public async Task ClearLog()
@@ -81,6 +89,49 @@ namespace WinTenDev.Zizi.Services
             {
                 Log.Error(ex, "Error Send .Log file to ChannelTarget");
             }
+        }
+
+        /// <summary>
+        /// Hangfire storage reset
+        /// </summary>
+        public async Task ResetHangfire()
+        {
+            Log.Information("Starting reset Hangfire MySQL storage");
+
+            const string prefixTable = "_hangfire";
+            var factory = _queryService.CreateMySqlConnection();
+            var sbSql = new StringBuilder();
+
+            var listTable = new[]
+            {
+                "AggregatedCounter",
+                "Counter",
+                "DistributedLock",
+                "Hash",
+                "JobParameter",
+                "JobQueue",
+                "State",
+                "List",
+                "Server",
+                "Set",
+                "State",
+                "Job",
+            };
+
+            sbSql.AppendLine("SET FOREIGN_KEY_CHECKS = 0;");
+
+            foreach (var table in listTable)
+            {
+                var tableName = $"{prefixTable}{table}";
+                sbSql.AppendLine($"TRUNCATE TABLE {tableName};");
+            }
+
+            sbSql.AppendLine("SET FOREIGN_KEY_CHECKS = 1;");
+
+            var sqlTruncate = sbSql.ToTrimmedString();
+            var rowCount = await factory.RunSqlAsync(sqlTruncate);
+
+            Log.Information("Reset Hangfire MySQL storage finish");
         }
     }
 }
