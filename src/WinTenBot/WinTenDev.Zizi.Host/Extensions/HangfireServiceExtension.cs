@@ -139,14 +139,10 @@ namespace WinTenDev.Zizi.Host.Extensions
             var rssFeedService = appService.GetRequiredService<RssFeedService>();
             var chatService = appService.GetRequiredService<ChatService>();
 
-            AsyncContext.Run(async () => await rssFeedService.RegisterScheduler());
-
-            AsyncContext.Run(async () => await chatService.RegisterChatHealth());
-
-            // HangfireUtil.RegisterJob<ChatService>("admin-checker", (ChatService service) => service.ChatCleanUp(), Cron.Daily);
+            rssFeedService.RegisterScheduler().Ignore();
+            chatService.RegisterChatHealth().Ignore();
 
             HangfireUtil.RegisterJob<StorageService>("log-cleaner", (StorageService service) => service.ClearLog(), Cron.Daily);
-
             HangfireUtil.RegisterJob("monkeys-remover", () => MonkeyCacheUtil.DeleteExpired(), Cron.Hourly);
 
             return app;
