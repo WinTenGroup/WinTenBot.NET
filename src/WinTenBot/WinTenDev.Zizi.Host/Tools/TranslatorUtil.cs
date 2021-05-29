@@ -1,9 +1,11 @@
 using System.Text;
+using System.Threading.Tasks;
 using Flurl;
 using Flurl.Http;
 using Serilog;
-using System.Threading.Tasks;
 using WinTenDev.Zizi.Models.Types;
+using WinTenDev.Zizi.Utils;
+using WinTenDev.Zizi.Utils.Text;
 
 namespace WinTenDev.Zizi.Host.Tools
 {
@@ -36,6 +38,7 @@ namespace WinTenDev.Zizi.Host.Tools
         public static async Task<string> GoogleTranslatorAsync(this string text, string tl, string sl = "auto")
         {
             var translate = await text.GoogleTranslatorCoreAsync(tl, sl);
+            Log.Debug("Translate result: {V}", translate.LdResult.ToJson(true));
             var sb = new StringBuilder();
 
             foreach (var sentence in translate.Sentences)
@@ -43,7 +46,7 @@ namespace WinTenDev.Zizi.Host.Tools
                 sb.AppendLine(sentence.Trans);
             }
 
-            return sb.ToString().Trim();
+            return sb.ToTrimmedString();
         }
     }
 }
