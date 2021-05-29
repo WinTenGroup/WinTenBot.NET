@@ -15,26 +15,42 @@ using File = System.IO.File;
 
 namespace WinTenDev.Zizi.Host.Handlers.Commands.Additional
 {
+    /// <summary>
+    /// Get Kochenk (cat) single or many by param.<br/>
+    /// Ex: <c>/cat</c> or <c>/cat 5</c>
+    /// </summary>
     public class CatCommand : CommandBase
     {
         private readonly TelegramService _telegramService;
+        private const string CatSource = "https://aws.random.cat/meow";
 
+        /// <summary>
+        /// CatCommand constructor
+        /// </summary>
+        /// <param name="telegramService"></param>
         public CatCommand(TelegramService telegramService)
         {
             _telegramService = telegramService;
         }
 
-        public override async Task HandleAsync(IUpdateContext context, UpdateDelegate next, string[] args,
-            CancellationToken cancellationToken)
+        /// <summary>
+        /// Handle CatCommand
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="next"></param>
+        /// <param name="args"></param>
+        /// <param name="cancellationToken"></param>
+        public override async Task HandleAsync(
+            IUpdateContext context,
+            UpdateDelegate next,
+            string[] args,
+            CancellationToken cancellationToken
+        )
         {
             await _telegramService.AddUpdateContext(context);
 
-            var client = _telegramService.Client;
             var message = _telegramService.Message;
             var partsText = message.Text.SplitText(" ").ToArray();
-            var chatId = message.Chat.Id;
-            var listAlbum = new List<IAlbumInputMedia>();
-            var catSource = "http://aws.random.cat/meow";
             var catNum = 1;
             var param1 = partsText.ValueOfIndex(1);
 
@@ -51,22 +67,29 @@ namespace WinTenDev.Zizi.Host.Handlers.Commands.Additional
 
                 if (catNum > 10)
                 {
-                    await _telegramService.SendTextAsync("Batas maksimal Kochenk yg di minta adalah 10");
+                    await _telegramService.SendTextAsync("Berdasarkan Bot API, Batas maksimal Kochenk yg dapat di minta adalah 10.");
 
                     return;
                 }
             }
 
+            PrepareKochenk(catNum).FireAndForget();
+        }
+
+        private async Task PrepareKochenk(int catNum)
+        {
+            var listAlbum = new List<IAlbumInputMedia>();
+
             await _telegramService.SendTextAsync($"Sedang mempersiapkan {catNum} Kochenk");
 
-            for (int i = 1; i <= catNum; i++)
+            for (var i = 1; i <= catNum; i++)
             {
-                Log.Information("Loading cat {I} of {CatNum} from {CatSource}", i, catNum, catSource);
+                Log.Information("Loading cat {I} of {CatNum} from {CatSource}", i, catNum, CatSource);
 
-                var url = await catSource.GetJsonAsync<CatMeow>(cancellationToken);
+                var url = await CatSource.GetJsonAsync<CatMeow>();
                 var urlFile = url.File.AbsoluteUri;
 
-                Log.Information("Adding kochenk {UrlFile}", urlFile);
+                Log.Debug("Adding kochenk {UrlFile}", urlFile);
 
                 var fileName = Path.GetFileName(urlFile);
                 var timeStamp = DateTime.UtcNow.ToString("yyyy-MM-dd");
@@ -83,13 +106,12 @@ namespace WinTenDev.Zizi.Host.Handlers.Commands.Additional
                 };
                 listAlbum.Add(inputMediaPhoto);
 
-                // await fileStream.DisposeAsync();
-
+                await fileStream.DisposeAsync();
                 Thread.Sleep(100);
             }
 
             await _telegramService.DeleteAsync();
-            await client.SendMediaGroupAsync(listAlbum, chatId, cancellationToken: cancellationToken);
+            await _telegramService.SendMediaGroupAsync(listAlbum);
         }
     }
 }
