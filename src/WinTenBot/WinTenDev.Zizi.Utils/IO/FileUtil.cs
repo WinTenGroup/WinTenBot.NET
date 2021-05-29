@@ -29,23 +29,49 @@ namespace WinTenDev.Zizi.Utils.IO
             // var fileExt = Path.GetExtension(fileName);
             // var newFile = fileName.Replace(fileExt,toExt);
             // return newFile;
-            
+
             return Path.ChangeExtension(fileName, toExt);
         }
 
         public static async Task WriteTextAsync(this string content, string filePath)
         {
-            var cachePath = "BotSettings.PathCache";
+            var cachePath = "Storage/Caches";
 
             filePath = $"{cachePath}/{filePath}";
             Log.Information($"Writing content to {filePath}");
 
-            Path.GetDirectoryName(filePath).EnsureDirectory();
+            Path.GetDirectoryName(filePath).SanitizeSlash().EnsureDirectory();
 
-            await File.WriteAllTextAsync(filePath, content)
-                ;
+            await File.WriteAllTextAsync(filePath, content);
 
             Log.Information("Writing file success..");
+        }
+
+        public static async Task<string> ReadTextAsync(this string filePath)
+        {
+            var cachePath = "Storage/Caches";
+
+            filePath = $"{cachePath}/{filePath}";
+            Log.Debug("Reading content to {FilePath}", filePath);
+
+            var text = await File.ReadAllTextAsync(filePath);
+
+            Log.Information("Writing file success..");
+            return text;
+        }
+
+        public static string ReadText(this string filePath)
+        {
+            var cachePath = "Storage/Caches";
+
+            filePath = $"{cachePath}/{filePath}";
+            Log.Debug("Reading content to {FilePath}", filePath);
+
+            // ReSharper disable once MethodHasAsyncOverload
+            var text = File.ReadAllText(filePath);
+
+            Log.Information("Writing file success..");
+            return text;
         }
 
         // public static void WriteText(this string content, string filePath)
@@ -65,7 +91,7 @@ namespace WinTenDev.Zizi.Utils.IO
         {
             return new FileInfo(filePath).Length;
         }
-        
+
         public static bool IsFileExist(this string filePath)
         {
             return File.Exists(filePath);
