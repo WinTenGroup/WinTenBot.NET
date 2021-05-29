@@ -22,6 +22,12 @@ namespace WinTenDev.Zizi.Services
         private readonly TelegramBotClient _botClient;
         private readonly QueryService _queryService;
 
+        /// <summary>
+        /// Storage service constructor
+        /// </summary>
+        /// <param name="optionsCommonConfig"></param>
+        /// <param name="botClient"></param>
+        /// <param name="queryService"></param>
         public StorageService(
             IOptionsSnapshot<CommonConfig> optionsCommonConfig,
             TelegramBotClient botClient,
@@ -33,6 +39,9 @@ namespace WinTenDev.Zizi.Services
             _queryService = queryService;
         }
 
+        /// <summary>
+        /// Log management for delete old log and upload to channel
+        /// </summary>
         public async Task ClearLog()
         {
             try
@@ -40,7 +49,7 @@ namespace WinTenDev.Zizi.Services
                 const string logsPath = "Storage/Logs";
                 var channelTarget = _commonConfig.ChannelLogs;
 
-                if (!channelTarget.ToString().StartsWith("-100"))
+                if (!channelTarget.StartsWith("-100"))
                 {
                     Log.Information("Please specify ChannelTarget in appsettings.json");
                     return;
@@ -63,11 +72,13 @@ namespace WinTenDev.Zizi.Services
                     {
                         var filePath = fileInfo.FullName;
                         var zipFile = filePath.CreateZip();
-                        Log.Information("Uploading file {0}", zipFile);
+                        Log.Information("Uploading file {ZipFile}", zipFile);
                         await using var fileStream = File.OpenRead(zipFile);
 
-                        var media = new InputOnlineFile(fileStream, zipFile);
-                        media.FileName = Path.GetFileName(zipFile);
+                        var media = new InputOnlineFile(fileStream, zipFile)
+                        {
+                            FileName = Path.GetFileName(zipFile)
+                        };
 
                         await _botClient.SendDocumentAsync(channelTarget, media);
 

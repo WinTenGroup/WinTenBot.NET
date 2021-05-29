@@ -47,6 +47,7 @@ namespace WinTenDev.Zizi.Host.Extensions
                 .AddScoped<TelegramService>()
                 .AddScoped<WeatherService>()
                 .AddScoped<WordFilterService>()
+                .AddScoped<StorageService>()
                 .AddScoped(service =>
                 {
                     var configuration = service.GetRequiredService<IConfiguration>();
