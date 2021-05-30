@@ -72,7 +72,7 @@ namespace WinTenDev.Zizi.Host.Extensions
 
             if (lastFtlError.ToLower().Contains("hangfire"))
             {
-                if (lastFtlError.Contains("MySql.MySqlStorage"))
+                if (lastFtlError.Contains("Storage"))
                 {
                     Log.Warning("Last error about Hangfire, seem need to Reset Storage");
                     AsyncContext.Run(() => storageService.ResetHangfire());
