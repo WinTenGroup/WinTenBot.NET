@@ -143,7 +143,7 @@ namespace WinTenDev.Zizi.Host.Handlers.Events
 
             int sentMsgId;
 
-            Log.Debug("New Member handler before send. TimeUtil: {Elapsed}", stopwatch.Elapsed);
+            Log.Debug("New Member handler before send. Time: {Elapsed}", stopwatch.Elapsed);
             if (Settings.WelcomeMediaType != MediaType.Unknown)
             {
                 var mediaType = Settings.WelcomeMediaType;
@@ -153,11 +153,11 @@ namespace WinTenDev.Zizi.Host.Handlers.Events
                     sendText,
                     keyboard,
                     0
-                    )).MessageId;
+                )).MessageId;
             }
             else
             {
-                sentMsgId = (await _telegramService.SendTextAsync(sendText, keyboard,0)).MessageId;
+                sentMsgId = (await _telegramService.SendTextAsync(sendText, keyboard, 0)).MessageId;
             }
 
             if (!Settings.EnableHumanVerification)
@@ -174,7 +174,7 @@ namespace WinTenDev.Zizi.Host.Handlers.Events
                 {"last_welcome_message_id", sentMsgId}
             });
 
-            Log.Debug("New Member handler complete. TimeUtil: {Elapsed}", stopwatch.Elapsed);
+            Log.Debug("New Member handler complete. Time: {Elapsed}", stopwatch.Elapsed);
             stopwatch.Stop();
         }
 

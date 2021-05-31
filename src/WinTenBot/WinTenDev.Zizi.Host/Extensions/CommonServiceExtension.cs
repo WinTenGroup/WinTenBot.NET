@@ -114,7 +114,7 @@ namespace WinTenDev.Zizi.Host.Extensions
             Log.Debug("Deleting old MonkeyCache");
             MonkeyCacheUtil.DeleteKeys();
 
-            Log.Information("MonkeyCache is ready. TimeUtil: {0}", sw.Elapsed);
+            Log.Information("MonkeyCache is ready. Time: {0}", sw.Elapsed);
             sw.Stop();
 
             return app;
