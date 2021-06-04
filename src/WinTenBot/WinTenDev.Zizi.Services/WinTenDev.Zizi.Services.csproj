@@ -27,7 +27,7 @@
         <PackageReference Include="SerilogAnalyzer" Version="0.15.0"/>
         <PackageReference Include="Telegram.Bot" Version="15.7.1"/>
         <PackageReference Include="Telegram.Bot.Framework" Version="2.0.0-alpha5"/>
-        <PackageReference Include="Tesseract" Version="4.1.1"/>
+        <PackageReference Include="Telega" Version="0.4.0" />
     </ItemGroup>
 
     <ItemGroup>

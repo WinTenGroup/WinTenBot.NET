@@ -96,7 +96,6 @@
         <PackageReference Include="SystemInfoLibrary-devel" Version="1.5.0.25" />
         <PackageReference Include="Telegram.Bot" Version="15.7.1" />
         <PackageReference Include="Telegram.Bot.Framework" Version="2.0.0-alpha5" />
-        <PackageReference Include="Tesseract" Version="4.1.1" />
     </ItemGroup>
     <ItemGroup>
         <None Update="Storage\Buttons\**">
