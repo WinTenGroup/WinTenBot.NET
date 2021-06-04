@@ -13,27 +13,27 @@ namespace WinTenDev.Zizi.Utils
     {
         public static bool ToBool(this object obj)
         {
-            return System.Convert.ToBoolean(obj);
+            return Convert.ToBoolean(obj);
         }
 
         public static bool ToBool(this string obj)
         {
-            return System.Convert.ToBoolean(obj);
+            return Convert.ToBoolean(obj);
         }
         
         public static double ToDouble(this long num)
         {
-            return System.Convert.ToDouble(num);
+            return Convert.ToDouble(num);
         }
 
         public static int ToInt(this object obj)
         {
-            return System.Convert.ToInt32(obj);
+            return Convert.ToInt32(obj);
         }
 
         public static long ToInt64(this object obj)
         {
-            return System.Convert.ToInt64(obj);
+            return Convert.ToInt64(obj);
         }
 
         public static int ToBoolInt(this string str)
