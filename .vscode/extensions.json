@@ -1,5 +1,6 @@
 {
   "recommendations": [
-    "jolhe.csharp-netcore-extensionpack"
+    "jolhe.csharp-netcore-extensionpack",
+    "fernandoescolar.vscode-solution-explorer"
   ]
 }
