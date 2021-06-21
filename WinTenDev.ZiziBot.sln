@@ -35,6 +35,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		config\VersionBuild.target.xml = config\VersionBuild.target.xml
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Telegram.Bot.Framework", "src\WinTenBot\Telegram.Bot.Framework\Telegram.Bot.Framework.csproj", "{1964A7EE-1154-4B34-BD79-825438A9934C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -93,6 +95,10 @@ Global
 		{24307A30-787E-46AE-9F2B-9AE163745AE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{24307A30-787E-46AE-9F2B-9AE163745AE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{24307A30-787E-46AE-9F2B-9AE163745AE4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1964A7EE-1154-4B34-BD79-825438A9934C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1964A7EE-1154-4B34-BD79-825438A9934C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1964A7EE-1154-4B34-BD79-825438A9934C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1964A7EE-1154-4B34-BD79-825438A9934C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
