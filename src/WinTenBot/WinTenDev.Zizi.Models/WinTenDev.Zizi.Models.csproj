@@ -1,16 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-    <Import Project="./../../../config/VersionBuild.target.xml"/>
+	<Import Project="./../../../config/VersionBuild.target.xml" />
 
-    <PropertyGroup>
-        <TargetFramework>net5.0</TargetFramework>
-        <FileVersion>$(MajorNumber).$(MinorNumber).$(BuildNumber).$(RevNumber)</FileVersion>
-        <Version>$(MajorNumber).$(MinorNumber).$(BuildNumber).$(RevNumber)</Version>
-    </PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+		<FileVersion>$(MajorNumber).$(MinorNumber).$(BuildNumber).$(RevNumber)</FileVersion>
+		<Version>$(MajorNumber).$(MinorNumber).$(BuildNumber).$(RevNumber)</Version>
+	</PropertyGroup>
 
-    <PropertyGroup>
-        <TargetFramework>net5.0</TargetFramework>
-    </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net5.0</TargetFramework>
+	</PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="Dapper" Version="2.0.90"/>
