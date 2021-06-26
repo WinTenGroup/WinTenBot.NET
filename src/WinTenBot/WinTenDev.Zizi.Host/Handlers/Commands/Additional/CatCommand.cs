@@ -106,7 +106,7 @@ namespace WinTenDev.Zizi.Host.Handlers.Commands.Additional
                 };
                 listAlbum.Add(inputMediaPhoto);
 
-                await fileStream.DisposeAsync();
+                // await fileStream.DisposeAsync();
                 Thread.Sleep(100);
             }
 
