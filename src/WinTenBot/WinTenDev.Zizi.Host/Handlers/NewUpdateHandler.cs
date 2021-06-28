@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
@@ -456,7 +456,7 @@ namespace WinTenDev.Zizi.Host.Handlers
         {
             Log.Information("Ensuring chat health..");
 
-            var message = _telegramService.Message;
+            var message = _telegramService.AnyMessage;
             var fromFullName = _telegramService.From.GetFullName();
             var chatId = message.Chat.Id;
 
