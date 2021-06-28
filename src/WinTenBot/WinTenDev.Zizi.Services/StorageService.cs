@@ -3,11 +3,13 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Humanizer;
 using Microsoft.Extensions.Options;
 using Serilog;
 using Telegram.Bot;
 using Telegram.Bot.Types.InputFiles;
 using WinTenDev.Zizi.Models.Configs;
+using WinTenDev.Zizi.Models.Enums;
 using WinTenDev.Zizi.Utils;
 using WinTenDev.Zizi.Utils.IO;
 
@@ -105,7 +107,7 @@ namespace WinTenDev.Zizi.Services
         /// <summary>
         /// Hangfire storage reset
         /// </summary>
-        public async Task ResetHangfire()
+        public async Task ResetHangfire(ResetTableMode resetTableMode = ResetTableMode.Truncate)
         {
             Log.Information("Starting reset Hangfire MySQL storage");
 
@@ -134,7 +136,15 @@ namespace WinTenDev.Zizi.Services
             foreach (var table in listTable)
             {
                 var tableName = $"{prefixTable}{table}";
-                sbSql.AppendLine($"TRUNCATE TABLE {tableName};");
+                var resetMode = resetTableMode.Humanize().ToUpperCase();
+
+                sbSql.Append($"{resetMode} TABLE ");
+
+                if (resetMode.Contains("drop", StringComparison.CurrentCultureIgnoreCase)) sbSql.Append("IF EXISTS ");
+
+                sbSql.AppendLine($"{tableName};");
+
+                // sbSql.AppendLine($"{resetMode} TABLE {tableName};");
             }
 
             sbSql.AppendLine("SET FOREIGN_KEY_CHECKS = 1;");
@@ -142,7 +152,7 @@ namespace WinTenDev.Zizi.Services
             var sqlTruncate = sbSql.ToTrimmedString();
             var rowCount = await factory.RunSqlAsync(sqlTruncate);
 
-            Log.Information("Reset Hangfire MySQL storage finish");
+            Log.Information("Reset Hangfire MySQL storage finish. Result: {0}", rowCount);
         }
     }
 }
