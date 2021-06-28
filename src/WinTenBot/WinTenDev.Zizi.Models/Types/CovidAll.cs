@@ -75,15 +75,4 @@ namespace WinTenDev.Zizi.Models.Types
         [JsonProperty("recovered")]
         public long Recovered { get; set; }
     }
-
-    public partial class CovidAll
-    {
-        public static CovidAll FromJson(string json) => JsonConvert.DeserializeObject<CovidAll>(json, Converter.Settings);
-    }
-
-    public static partial class Serialize
-    {
-        public static string ToJson(this CovidAll self) => JsonConvert.SerializeObject(self, Converter.Settings);
-    }
-    
 }
