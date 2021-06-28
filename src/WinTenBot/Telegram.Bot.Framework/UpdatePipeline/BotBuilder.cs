@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstractions;
 
-namespace Telegram.Bot.Framework
+namespace Telegram.Bot.Framework.UpdatePipeline
 {
     public class BotBuilder : IBotBuilder
     {

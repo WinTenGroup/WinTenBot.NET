@@ -1,7 +1,8 @@
 ﻿using System;
 using Telegram.Bot.Framework.Abstractions;
+using Telegram.Bot.Framework.Extensions;
 
-namespace Telegram.Bot.Framework
+namespace Telegram.Bot.Framework.UpdatePipeline
 {
     public static class BotBuilderExtensions
     {

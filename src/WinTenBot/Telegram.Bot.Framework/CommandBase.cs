@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstractions;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
-namespace Telegram.Bot.Framework.Abstractions
+namespace Telegram.Bot.Framework
 {
     /// <summary>
     /// Base handler implementation for a command such as "/start"

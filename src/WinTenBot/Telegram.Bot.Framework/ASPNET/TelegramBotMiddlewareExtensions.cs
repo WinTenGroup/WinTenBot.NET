@@ -1,11 +1,11 @@
 ﻿#if !NETFRAMEWORK
 
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Telegram.Bot.Framework;
 using Telegram.Bot.Framework.Abstractions;
 
-namespace Microsoft.AspNetCore.Builder
+namespace Telegram.Bot.Framework.ASPNET
 {
     /// <summary>
     /// Extenstion methods for adding Telegram Bot framework to the ASP.NET Core middleware

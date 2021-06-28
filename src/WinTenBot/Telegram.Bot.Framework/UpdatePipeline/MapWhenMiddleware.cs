@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstractions;
 
-namespace Telegram.Bot.Framework.Pipeline
+namespace Telegram.Bot.Framework.UpdatePipeline
 {
     internal class MapWhenMiddleware : IUpdateHandler
     {

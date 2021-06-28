@@ -1,16 +1,16 @@
 ﻿#if !NETFRAMEWORK
 
+using System;
+using System.IO;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using System;
-using System.IO;
-using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstractions;
 using Telegram.Bot.Types;
 
-namespace Telegram.Bot.Framework
+namespace Telegram.Bot.Framework.ASPNET
 {
     internal class TelegramBotMiddleware<TBot>
         where TBot : BotBase
