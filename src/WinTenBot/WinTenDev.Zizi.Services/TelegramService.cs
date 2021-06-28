@@ -1,6 +1,3 @@
-using EasyCaching.Core;
-using Humanizer;
-using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,6 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using EasyCaching.Core;
+using Humanizer;
+using Serilog;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Framework.Abstractions;
@@ -47,6 +47,8 @@ namespace WinTenDev.Zizi.Services
         public int ReducedChatId { get; set; }
         public User From { get; set; }
         public Chat Chat { get; set; }
+
+        public ChatMember[] ChatAdmins { get; set; }
 
         public int SentMessageId { get; set; }
         public int EditedMessageId { get; private set; }
@@ -122,6 +124,8 @@ namespace WinTenDev.Zizi.Services
                 if (AnyMessage.Text != null) MessageTextParts = AnyMessage.Text.SplitText(" ").ToArray();
 
                 CheckIsPrivateChat();
+
+                ChatAdmins = await GetChatAdmin();
 
                 var getSettingsTask = _settingsService.GetSettingsByGroup(ChatId);
 
@@ -219,6 +223,13 @@ namespace WinTenDev.Zizi.Services
 
         public async Task<ChatMember[]> GetChatAdmin()
         {
+
+            if (IsPrivateChat)
+            {
+                Log.Information("Seem ChatID {ChatId} is a private chat, so no Admin here..", ChatId);
+                return null;
+            }
+
             try
             {
                 var keyCache = $"list-admin_{ChatId.ReduceChatId()}";
@@ -237,8 +248,9 @@ namespace WinTenDev.Zizi.Services
 
                 return chatMembers.Value;
             }
-            catch
+            catch (Exception ex)
             {
+                Log.Error(ex, "Error when get list of Admin in ChatID: '{ChatId}'", ChatId);
                 return null;
             }
         }
@@ -342,9 +354,10 @@ namespace WinTenDev.Zizi.Services
 
             if (userId == -1) userId = FromId;
 
-            var chatMembers = await GetChatAdmin();
+            //var chatMembers = await GetChatAdmin();
 
-            var isAdmin = chatMembers.Any(admin => userId == admin.User.Id);
+            //var isAdmin = chatMembers.Any(admin => userId == admin.User.Id);
+            var isAdmin = ChatAdmins.Any(admin => userId == admin.User.Id);
 
             Log.Debug("Check UserID {0} Admin on Chat {1}? {2}. Time: {3}", userId, ChatId, isAdmin, sw.Elapsed);
 
