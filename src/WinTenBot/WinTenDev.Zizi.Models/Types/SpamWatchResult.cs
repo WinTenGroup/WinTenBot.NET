@@ -4,7 +4,7 @@ using Newtonsoft.Json.Converters;
 
 namespace WinTenDev.Zizi.Models.Types
 {
-    public partial class SpamWatch
+    public partial class SpamWatchResult
     {
         [JsonProperty("admin")]
         public long Admin { get; set; }
@@ -27,15 +27,15 @@ namespace WinTenDev.Zizi.Models.Types
         public bool IsBan { get; set; }
     }
 
-    public partial class SpamWatch
+    public partial class SpamWatchResult
     {
-        public static SpamWatch FromJson(string json) => 
-            JsonConvert.DeserializeObject<SpamWatch>(json, Converter.Settings);
+        public static SpamWatchResult FromJson(string json) => 
+            JsonConvert.DeserializeObject<SpamWatchResult>(json, Converter.Settings);
     }
 
     public static partial class Serialize
     {
-        public static string ToJson(this SpamWatch self) => 
+        public static string ToJson(this SpamWatchResult self) => 
             JsonConvert.SerializeObject(self, Converter.Settings);
     }
 

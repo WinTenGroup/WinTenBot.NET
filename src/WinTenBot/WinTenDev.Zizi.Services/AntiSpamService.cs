@@ -111,7 +111,7 @@ namespace WinTenDev.Zizi.Services
             var cacheKey = $"sw-ban_{userId}";
 
 
-            var spamWatch = new SpamWatch();
+            var spamWatch = new SpamWatchResult();
             var spamWatchToken = _commonConfig.SpamWatchToken;
 
             try
@@ -122,12 +122,12 @@ namespace WinTenDev.Zizi.Services
                 {
                     var check = await baseUrl
                         .WithOAuthBearerToken(spamWatchToken)
-                        .GetJsonAsync<SpamWatch>();
+                        .GetJsonAsync<SpamWatchResult>();
 
                     await _cachingProvider.SetAsync(baseUrl, check, TimeSpan.FromMinutes(10));
                 }
 
-                var cache = await _cachingProvider.GetAsync<SpamWatch>(cacheKey);
+                var cache = await _cachingProvider.GetAsync<SpamWatchResult>(cacheKey);
 
                 spamWatch = cache.Value;
 
