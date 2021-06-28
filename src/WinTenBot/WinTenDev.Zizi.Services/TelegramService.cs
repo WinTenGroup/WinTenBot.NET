@@ -255,6 +255,14 @@ namespace WinTenDev.Zizi.Services
             }
         }
 
+        public bool IsAdminOrPrivateChat()
+        {
+            var isAdmin = IsFromAdmin;
+            var isPrivateChat = IsPrivateChat;
+
+            return isAdmin || isPrivateChat;
+        }
+
         public bool IsGroupChat()
         {
             var chat = AnyMessage.Chat;
@@ -302,14 +310,6 @@ namespace WinTenDev.Zizi.Services
 
             Log.Information("UserId: {0} IsSudoer: {1}", FromId, isSudoer);
             return isSudoer;
-        }
-
-        public bool IsAdminOrPrivateChat()
-        {
-            var isAdmin = IsFromAdmin;
-            var isPrivateChat = IsPrivateChat;
-
-            return isAdmin || isPrivateChat;
         }
 
         private async Task CheckBotAdmin()
