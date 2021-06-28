@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
+using WinTenDev.Zizi.Models.Types;
 using WinTenDev.Zizi.Utils.IO;
 
 namespace WinTenDev.Zizi.Utils
@@ -41,6 +43,23 @@ namespace WinTenDev.Zizi.Utils
         public static async Task<string> ReadErrorTextAsync()
         {
             return await ErrorFile.ReadTextAsync();
+        }
+
+        public static async Task<LastError> ParseErrorTextAsync()
+        {
+            var errorText = await ReadErrorTextAsync();
+            var errorSplit = errorText.Split("\n\n");
+            var errorLines = errorText.Split(new[] {"\n", "\n\n", "\r", "\r\n", Environment.NewLine},
+                    StringSplitOptions.RemoveEmptyEntries)
+                .Select(line => line.Trim())
+                .ToArray();
+
+            return new LastError()
+            {
+                FullText = errorText,
+                ErrorLines = errorLines,
+                ErrorSplit = errorSplit
+            };
         }
 
         /// <summary>
