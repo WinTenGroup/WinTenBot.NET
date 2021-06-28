@@ -11,31 +11,61 @@ namespace WinTenDev.Zizi.Utils
     /// </summary>
     public static class ConvertUtil
     {
+        /// <summary>Convert object type to bool.</summary>
+        /// <param name="obj">The object.</param>
+        /// <returns>
+        ///   <br />
+        /// </returns>
         public static bool ToBool(this object obj)
         {
             return Convert.ToBoolean(obj);
         }
 
+        /// <summary>Convert string type to bool.</summary>
+        /// <param name="obj">The object.</param>
+        /// <returns>
+        ///   <br />
+        /// </returns>
         public static bool ToBool(this string obj)
         {
             return Convert.ToBoolean(obj);
         }
-        
+
+        /// <summary>Convert long type to double.</summary>
+        /// <param name="num">The number.</param>
+        /// <returns>
+        ///   <br />
+        /// </returns>
         public static double ToDouble(this long num)
         {
             return Convert.ToDouble(num);
         }
 
+        /// <summary>Convert object type to an integer.</summary>
+        /// <param name="obj">The object.</param>
+        /// <returns>
+        ///   <br />
+        /// </returns>
         public static int ToInt(this object obj)
         {
             return Convert.ToInt32(obj);
         }
 
+        /// <summary>Convert object type to int64.</summary>
+        /// <param name="obj">The object.</param>
+        /// <returns>
+        ///   <br />
+        /// </returns>
         public static long ToInt64(this object obj)
         {
             return Convert.ToInt64(obj);
         }
 
+        /// <summary>Convert string type to bool int.</summary>
+        /// <param name="str">The string.</param>
+        /// <returns>
+        ///   <br />
+        /// </returns>
         public static int ToBoolInt(this string str)
         {
             return str.ToLowerCase() == "disable" ? 0 : 1;
@@ -76,6 +106,10 @@ namespace WinTenDev.Zizi.Utils
             }
         }
 
+        /// <summary>Check string is numeric.</summary>
+        /// <param name="str">The string.</param>
+        /// <returns>
+        ///   <c>true</c> if the specified string is numeric; otherwise, <c>false</c>.</returns>
         public static bool IsNumeric(this string str)
         {
             if (str.IsNullOrEmpty()) return false;
