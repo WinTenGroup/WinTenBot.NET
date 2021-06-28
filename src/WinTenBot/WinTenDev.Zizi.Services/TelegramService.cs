@@ -44,6 +44,7 @@ namespace WinTenDev.Zizi.Services
 
         public long FromId { get; set; }
         public long ChatId { get; set; }
+        public int ReducedChatId { get; set; }
         public User From { get; set; }
         public Chat Chat { get; set; }
 
@@ -111,6 +112,7 @@ namespace WinTenDev.Zizi.Services
                 FromId = AnyMessage.From.Id;
                 From = AnyMessage.From;
                 ChatId = AnyMessage.Chat.Id;
+                ReducedChatId = ChatId.ReduceChatId().ToInt();
                 Chat = AnyMessage.Chat;
                 IsNoUsername = CheckUsername();
                 HasUsername = !CheckUsername();
