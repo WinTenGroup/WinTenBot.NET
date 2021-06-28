@@ -180,7 +180,7 @@ namespace WinTenDev.Zizi.Utils
 
         public static string ToUpperCase(this string str)
         {
-            return str.ToUpper(CultureInfo.CurrentCulture);
+            return str.IsNullOrEmpty() ? str : str.ToUpper(CultureInfo.CurrentCulture);
         }
 
         public static string ToTitleCase(this string text)
