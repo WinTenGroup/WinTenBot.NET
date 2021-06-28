@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using EasyCaching.Core;
 using LiteDB.Async;
 using Serilog;
+using Telegram.Bot.Framework;
 using Telegram.Bot.Framework.Abstractions;
 using WinTenDev.Zizi.Models.Configs;
 using WinTenDev.Zizi.Services;

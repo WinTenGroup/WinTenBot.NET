@@ -1,5 +1,5 @@
-using Telegram.Bot.Framework;
 using Telegram.Bot.Framework.Abstractions;
+using Telegram.Bot.Framework.UpdatePipeline;
 using WinTenDev.Mirror.Host.Handlers;
 using WinTenDev.Mirror.Host.Handlers.Commands;
 

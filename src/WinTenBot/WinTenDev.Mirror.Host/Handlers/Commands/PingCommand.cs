@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using EasyCaching.Core;
+using Telegram.Bot.Framework;
 using Telegram.Bot.Framework.Abstractions;
 using WinTenDev.Zizi.Models.Configs;
 using WinTenDev.Zizi.Services;
