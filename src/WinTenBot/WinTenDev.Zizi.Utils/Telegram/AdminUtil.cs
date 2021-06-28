@@ -1,8 +1,8 @@
+using Serilog;
 using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Serilog;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 
@@ -46,7 +46,7 @@ namespace WinTenDev.Zizi.Utils.Telegram
             return chatMembers;
         }
 
-        public static async Task<bool> IsAdminChat(this ITelegramBotClient botClient, long chatId, int userId)
+        public static async Task<bool> IsAdminChat(this ITelegramBotClient botClient, long chatId, long userId)
         {
             var sw = Stopwatch.StartNew();
 

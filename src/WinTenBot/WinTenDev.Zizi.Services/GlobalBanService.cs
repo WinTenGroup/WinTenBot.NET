@@ -32,7 +32,7 @@ namespace WinTenDev.Zizi.Services
             _cachingProvider = cachingProvider;
         }
 
-        public async Task<bool> IsExist(int userId)
+        public async Task<bool> IsExist(long userId)
         {
             var query = await GetGlobalBanFromDbById(userId);
 
@@ -42,7 +42,7 @@ namespace WinTenDev.Zizi.Services
             return isBan;
         }
 
-        public string GetCacheKey(int userId)
+        public string GetCacheKey(long userId)
         {
             return $"global-ban_{userId}";
         }
@@ -95,7 +95,7 @@ namespace WinTenDev.Zizi.Services
         /// </summary>
         /// <param name="userId">The user id.</param>
         /// <returns>Banned user by userId</returns>
-        public async Task<GlobalBanData> GetGlobalBanFromDbById(int userId)
+        public async Task<GlobalBanData> GetGlobalBanFromDbById(long userId)
         {
             var where = new Dictionary<string, object>()
             {
@@ -114,7 +114,7 @@ namespace WinTenDev.Zizi.Services
         /// </summary>
         /// <param name="userId">The user id.</param>
         /// <returns>A Task.</returns>
-        public async Task<GlobalBanData> GetGlobalBanByIdC(int userId)
+        public async Task<GlobalBanData> GetGlobalBanByIdC(long userId)
         {
             var cacheKey = GetCacheKey(userId);
             if (!await _cachingProvider.ExistsAsync(cacheKey))
@@ -160,7 +160,7 @@ namespace WinTenDev.Zizi.Services
             return cache.Value;
         }
 
-        public async Task UpdateGBanCache(int userId = -1)
+        public async Task UpdateGBanCache(long userId = -1)
         {
             if (userId == -1)
             {

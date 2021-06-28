@@ -51,7 +51,7 @@ namespace WinTenDev.Zizi.Models.Types
 
         [Column("banned_by")]
         [JsonProperty("banned_by")]
-        public int BannedBy { get; set; }
+        public long BannedBy { get; set; }
 
         [Column("banned_from")]
         [JsonProperty("banned_from")]

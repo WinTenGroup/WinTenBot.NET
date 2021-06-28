@@ -23,9 +23,9 @@ namespace WinTenDev.Zizi.Host.Telegram
             var isRegistered = querySql.Any();
             Log.Debug("UserId {0} is registered on ES2? {1}", userId, isRegistered);
 
-            
             return isRegistered;
         }
+
         private static async Task<bool> IsRegisteredGBanAsync(this GBanAdminItem gBanAdminItem)
         {
             return await IsGBanAdminAsync(gBanAdminItem.UserId);

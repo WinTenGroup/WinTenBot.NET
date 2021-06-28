@@ -217,7 +217,7 @@ namespace WinTenDev.Zizi.Services
         public async Task<int> SaveSettingsAsync(Dictionary<string, object> data)
         {
             var chatId = data["chat_id"].ToInt64();
-            var where = new Dictionary<string, object> {{"chat_id", chatId}};
+            var where = new Dictionary<string, object> { { "chat_id", chatId } };
             var queryFactory = _queryService.CreateMySqlConnection();
 
             Log.Debug("Checking settings for {ChatId}", chatId);
@@ -248,9 +248,9 @@ namespace WinTenDev.Zizi.Services
 
         public async Task<int> UpdateCell(long chatId, string key, object value)
         {
-            Log.Debug("Updating Chat Settings {Key} => {Value}", key, value);
-            var where = new Dictionary<string, object> {{"chat_id", chatId}};
-            var data = new Dictionary<string, object> {{key, value}};
+            Log.Debug("Updating Chat Settings '{ChatId}'. Field '{Key}' with value '{Value}'", chatId, key, value);
+            var where = new Dictionary<string, object> { { "chat_id", chatId } };
+            var data = new Dictionary<string, object> { { key, value } };
 
             var queryFactory = _queryService.CreateMySqlConnection();
             var save = await queryFactory.FromTable(BaseTable)

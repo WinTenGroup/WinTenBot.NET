@@ -446,7 +446,7 @@ namespace WinTenDev.Zizi.Host.Telegram
                 .Where(x => x.ChatId == chatId);
         }
 
-        public static async Task ResetWarnUsernameStatAsync(int fromId, long chatId)
+        public static async Task ResetWarnUsernameStatAsync(long fromId, long chatId)
         {
             Log.Information("Resetting warn Username step.");
 

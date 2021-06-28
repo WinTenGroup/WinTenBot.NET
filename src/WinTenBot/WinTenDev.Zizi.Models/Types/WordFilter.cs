@@ -16,7 +16,7 @@ namespace WinTenDev.Zizi.Models.Types
         
         [JsonPropertyName("from_id")]
         [Column("from_id")]
-        public int FromId { get; set; }
+        public long FromId { get; set; }
         
         [JsonPropertyName("chat_id")]
         [Column("chat_id")]

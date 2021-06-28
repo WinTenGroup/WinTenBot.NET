@@ -43,7 +43,7 @@ namespace WinTenDev.Zizi.Services
         /// </summary>
         /// <param name="userId">The user id.</param>
         /// <returns>A Task.</returns>
-        public async Task<AntiSpamResult> CheckSpam(int userId)
+        public async Task<AntiSpamResult> CheckSpam(long userId)
         {
             var spamWatchTask = CheckSpamWatch(userId);
             var casBanTask = IsCasBanAsync(userId);
@@ -85,7 +85,7 @@ namespace WinTenDev.Zizi.Services
         /// </summary>
         /// <param name="userId">The user id.</param>
         /// <returns>A Task.</returns>
-        public async Task<bool> CheckEs2Ban(int userId)
+        public async Task<bool> CheckEs2Ban(long userId)
         {
             var sw = Stopwatch.StartNew();
 
@@ -105,7 +105,7 @@ namespace WinTenDev.Zizi.Services
         /// </summary>
         /// <param name="userId">The user id.</param>
         /// <returns>A Task.</returns>
-        public async Task<bool> CheckSpamWatch(int userId)
+        public async Task<bool> CheckSpamWatch(long userId)
         {
             var sw = Stopwatch.StartNew();
             var cacheKey = $"sw-ban_{userId}";
@@ -171,7 +171,7 @@ namespace WinTenDev.Zizi.Services
         /// </summary>
         /// <param name="userId">The user id.</param>
         /// <returns>A Task.</returns>
-        public async Task<bool> IsCasBanAsync(int userId)
+        public async Task<bool> IsCasBanAsync(long userId)
         {
             var casCacheKey = $"cas-ban_{userId}";
             try

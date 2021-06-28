@@ -30,7 +30,7 @@ namespace WinTenDev.Zizi.Host.Handlers.Commands.GlobalBan
         {
             await _telegramService.AddUpdateContext(context);
 
-            int userId;
+            long userId;
             string reason;
 
             var msg = _telegramService.Message;

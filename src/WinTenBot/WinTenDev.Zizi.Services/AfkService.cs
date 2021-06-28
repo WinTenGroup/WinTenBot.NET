@@ -61,7 +61,7 @@ namespace WinTenDev.Zizi.Services
         /// <returns>
         ///   Return single AFK row by User ID (un-cached)
         /// </returns>
-        public async Task<Afk> GetAfkByIdCore(int userId)
+        public async Task<Afk> GetAfkByIdCore(long userId)
         {
             var queryFactory = _queryService.CreateMySqlConnection();
             var data = await queryFactory.FromTable(BaseTable)
@@ -74,7 +74,7 @@ namespace WinTenDev.Zizi.Services
         /// <summary>Gets the afk by identifier.</summary>
         /// <param name="userId">The user identifier.</param>
         /// <returns>Return AFK by User ID (cached)</returns>
-        public async Task<Afk> GetAfkById(int userId)
+        public async Task<Afk> GetAfkById(long userId)
         {
             var key = CacheKey + $"-{userId}";
             var isCached = await _cachingProvider.ExistsAsync(key);
@@ -89,7 +89,7 @@ namespace WinTenDev.Zizi.Services
 
         /// <summary>Updates the AFK Cache by User ID</summary>
         /// <param name="userId">The user identifier.</param>
-        public async Task UpdateAfkByIdCacheAsync(int userId)
+        public async Task UpdateAfkByIdCacheAsync(long userId)
         {
             var key = CacheKey + $"-{userId}";
             var afk = await GetAfkByIdCore(userId);

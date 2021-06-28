@@ -26,7 +26,7 @@ namespace WinTenDev.Zizi.Services
             _cachingProvider = cachingProvider;
         }
 
-        private string GetCacheKey(int fromId)
+        private string GetCacheKey(long fromId)
         {
             return $"{baseKey}_{fromId}";
         }
@@ -37,7 +37,7 @@ namespace WinTenDev.Zizi.Services
         /// </summary>
         /// <param name="fromId"></param>
         /// <returns></returns>
-        public async Task<CacheValue<HitActivity>> GetMataCore(int fromId)
+        public async Task<CacheValue<HitActivity>> GetMataCore(long fromId)
         {
             var key = GetCacheKey(fromId);
             var hitActivity = await _cachingProvider.GetAsync<HitActivity>(key);
@@ -49,7 +49,7 @@ namespace WinTenDev.Zizi.Services
         /// </summary>
         /// <param name="fromId"></param>
         /// <param name="hitActivity"></param>
-        public async Task SaveMataAsync(int fromId, HitActivity hitActivity)
+        public async Task SaveMataAsync(long fromId, HitActivity hitActivity)
         {
             var key = GetCacheKey(fromId);
             var timeSpan = TimeUtil.YearSpan(30);

@@ -1,3 +1,6 @@
+using EasyCaching.Core;
+using Humanizer;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -6,9 +9,6 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using EasyCaching.Core;
-using Humanizer;
-using Serilog;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Framework.Abstractions;
@@ -42,7 +42,7 @@ namespace WinTenDev.Zizi.Services
         public bool IsPrivateChat { get; set; }
         public bool IsChatRestricted { get; set; }
 
-        public int FromId { get; set; }
+        public long FromId { get; set; }
         public long ChatId { get; set; }
         public User From { get; set; }
         public Chat Chat { get; set; }
@@ -334,7 +334,7 @@ namespace WinTenDev.Zizi.Services
             IsPrivateChat = isPrivate;
         }
 
-        public async Task<bool> IsAdminChat(int userId = -1)
+        public async Task<bool> IsAdminChat(long userId = -1)
         {
             var sw = Stopwatch.StartNew();
 
@@ -525,7 +525,7 @@ namespace WinTenDev.Zizi.Services
             switch (mediaType)
             {
                 case MediaType.Document:
-                    SentMessage = await Client.SendDocumentAsync(Message.Chat.Id, fileId, caption, ParseMode.Html,
+                    SentMessage = await Client.SendDocumentAsync(Message.Chat.Id, fileId, caption, parseMode: ParseMode.Html,
                         replyMarkup: replyMarkup, replyToMessageId: replyToMsgId);
                     break;
 
@@ -535,7 +535,7 @@ namespace WinTenDev.Zizi.Services
                     {
                         var inputOnlineFile = new InputOnlineFile(fs, fileName);
                         SentMessage = await Client.SendDocumentAsync(Message.Chat.Id, inputOnlineFile, caption,
-                            ParseMode.Html,
+                            parseMode: ParseMode.Html,
                             replyMarkup: replyMarkup, replyToMessageId: replyToMsgId);
                     }
 
@@ -566,7 +566,7 @@ namespace WinTenDev.Zizi.Services
         {
             var itemCount = "item".ToQuantity(listAlbum.Count);
             Log.Information("Sending Media Group to {ChatId} with {ItemCount}", ChatId, itemCount);
-            var message = await Client.SendMediaGroupAsync(listAlbum, ChatId);
+            var message = await Client.SendMediaGroupAsync(ChatId, listAlbum);
             Log.Debug("Send Media Group Result on '{ChatId}' => {Message}", ChatId, message.Length > 0);
         }
 
@@ -732,7 +732,7 @@ namespace WinTenDev.Zizi.Services
             return isKicked;
         }
 
-        public async Task<bool> KickMemberAsync(int userId, bool unban = false)
+        public async Task<bool> KickMemberAsync(long userId, bool unban = false)
         {
             bool isKicked;
 
@@ -768,7 +768,7 @@ namespace WinTenDev.Zizi.Services
             }
         }
 
-        public async Task UnBanMemberAsync(int userId = -1)
+        public async Task UnBanMemberAsync(long userId = -1)
         {
             Log.Information("Unban {UserId} from {ChatId}", userId, ChatId);
             try
@@ -782,7 +782,7 @@ namespace WinTenDev.Zizi.Services
             }
         }
 
-        public async Task<RequestResult> PromoteChatMemberAsync(int userId)
+        public async Task<RequestResult> PromoteChatMemberAsync(long userId)
         {
             var requestResult = new RequestResult();
             try
@@ -811,7 +811,7 @@ namespace WinTenDev.Zizi.Services
             return requestResult;
         }
 
-        public async Task<RequestResult> DemoteChatMemberAsync(int userId)
+        public async Task<RequestResult> DemoteChatMemberAsync(long userId)
         {
             var requestResult = new RequestResult();
             try
@@ -845,7 +845,7 @@ namespace WinTenDev.Zizi.Services
             return requestResult;
         }
 
-        public async Task<TelegramResult> RestrictMemberAsync(int userId, bool unMute = false, DateTime until = default)
+        public async Task<TelegramResult> RestrictMemberAsync(long userId, bool unMute = false, DateTime until = default)
         {
             var tgResult = new TelegramResult();
 

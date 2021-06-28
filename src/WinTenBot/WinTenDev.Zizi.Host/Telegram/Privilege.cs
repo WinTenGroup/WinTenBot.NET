@@ -12,7 +12,7 @@ namespace WinTenDev.Zizi.Host.Telegram
     public static class Privilege
     {
         [Obsolete("This method will be moved to TelegramService")]
-        public static bool IsSudoer(this int userId)
+        public static bool IsSudoer(this long userId)
         {
             bool isSudoer = false;
             var sudoers = BotSettings.Sudoers;
@@ -52,7 +52,7 @@ namespace WinTenDev.Zizi.Host.Telegram
             return isAdmin || isPrivateChat;
         }
 
-        public static async Task<bool> IsAdminGroup(this TelegramService telegramService, int userId = -1)
+        public static async Task<bool> IsAdminGroup(this TelegramService telegramService, long userId = -1)
         {
             var message = telegramService.MessageOrEdited;
             var client = telegramService.Client;
