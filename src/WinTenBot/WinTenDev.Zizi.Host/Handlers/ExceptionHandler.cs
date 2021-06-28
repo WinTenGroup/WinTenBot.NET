@@ -3,9 +3,9 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Exceptionless;
-using Sentry;
 using Serilog;
 using Telegram.Bot.Framework.Abstractions;
+using WinTenDev.Zizi.Utils.Text;
 
 namespace WinTenDev.Zizi.Host.Handlers
 {
@@ -23,8 +23,8 @@ namespace WinTenDev.Zizi.Host.Handlers
             {
                 Log.Error(e.Demystify(), "Exception Handler");
                 Log.Error("An error occured in handling update {Id}", u.Id);
+                Log.Debug("Current Update: {U}", u.ToJson());
 
-                SentrySdk.CaptureException(e);
                 e.ToExceptionless().Submit();
             }
         }
