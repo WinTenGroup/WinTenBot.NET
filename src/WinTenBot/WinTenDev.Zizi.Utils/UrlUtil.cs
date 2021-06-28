@@ -35,7 +35,7 @@ namespace WinTenDev.Zizi.Utils
             var cachePath = Path.Combine("Storage", "Caches");
             var localPath = Path.Combine(cachePath, localFileName).SanitizeSlash().EnsureDirectory();
 
-            Log.Information("Saving {RemoteFileUrl} to {LocalPath}", remoteFileUrl, localPath);
+            Log.Debug("Saving {RemoteFileUrl} to {LocalPath}", remoteFileUrl, localPath);
             webClient.DownloadFile(remoteFileUrl, localPath);
             webClient.Dispose();
 

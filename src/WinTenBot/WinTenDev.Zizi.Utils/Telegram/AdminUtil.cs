@@ -54,7 +54,7 @@ namespace WinTenDev.Zizi.Utils.Telegram
 
             var isAdmin = chatMembers.Any(admin => userId == admin.User.Id);
 
-            Log.Debug($"Check UserID {0} Admin on Chat {1}? {2}. TimeUtil: {3}", userId, chatId, isAdmin, sw.Elapsed);
+            Log.Debug("Check UserID {V} Admin on Chat {V1}? {V2}. Time: {V3}", userId, chatId, isAdmin, sw.Elapsed);
 
             sw.Stop();
 

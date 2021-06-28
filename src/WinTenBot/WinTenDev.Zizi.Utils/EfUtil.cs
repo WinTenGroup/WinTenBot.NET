@@ -11,7 +11,7 @@ namespace WinTenDev.Zizi.Utils
         {
             var context = app.GetServiceProvider().GetRequiredService<T>();
             var isCreated = context.Database.EnsureCreated();
-            Log.Information($"Is {nameof(context)} creatd? {isCreated}");
+            Log.Information("Is {V} created? {IsCreated}", nameof(context), isCreated);
         }
     }
 }

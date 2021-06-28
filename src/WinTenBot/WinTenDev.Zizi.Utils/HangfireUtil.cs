@@ -36,7 +36,7 @@ namespace WinTenDev.Zizi.Utils
                 Log.Debug("Delete succeeded {RecurringJobId}, Index: {Index}", recurringJobId, index);
             });
 
-            Log.Information("Hangfire jobs successfully deleted. Total: {NumOfJobs}. TimeUtil: {Elapsed}", numOfJobs, sw.Elapsed);
+            Log.Information("Hangfire jobs successfully deleted. Total: {NumOfJobs}. Time: {Elapsed}", numOfJobs, sw.Elapsed);
 
             sw.Stop();
         }
@@ -133,7 +133,7 @@ namespace WinTenDev.Zizi.Utils
                 Log.Debug("Trigger succeeded {RecurringJobId}, Index: {Index}", recurringJobId, index);
             });
 
-            Log.Information("Hangfire jobs successfully trigger. Total: {NumOfJobs}. TimeUtil: {Elapsed}", numOfJobs, sw.Elapsed);
+            Log.Information("Hangfire jobs successfully trigger. Total: {NumOfJobs}. Time: {Elapsed}", numOfJobs, sw.Elapsed);
 
             sw.Stop();
 
