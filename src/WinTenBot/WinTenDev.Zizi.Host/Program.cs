@@ -7,6 +7,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using WinTenDev.Zizi.Host.Extensions;
+using WinTenDev.Zizi.Utils;
+using WinTenDev.Zizi.Utils.IO;
+using WinTenDev.Zizi.Utils.Text;
 
 namespace WinTenDev.Zizi.Host
 {
@@ -23,7 +26,14 @@ namespace WinTenDev.Zizi.Host
             catch (Exception ex)
             {
                 Console.WriteLine(@"Error Start {0}", ex.Demystify());
+                if (ex.StackTrace.Contains("Hangfire"))
+                {
+                    Log.Warning("Seem error about Hangfire!");
+                }
+
                 Log.Fatal(ex.Demystify(), "Host terminated unexpectedly");
+
+                await ex.SaveErrorToText();
             }
             finally
             {
