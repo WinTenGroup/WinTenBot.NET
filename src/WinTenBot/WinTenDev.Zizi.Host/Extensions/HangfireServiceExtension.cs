@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Nito.AsyncEx;
+using Nito.AsyncEx.Synchronous;
 using Serilog;
 using WinTenDev.Zizi.Models.Configs;
 using WinTenDev.Zizi.Models.Enums;
@@ -35,15 +36,19 @@ namespace WinTenDev.Zizi.Host.Extensions
                         case HangfireDataStore.MySql:
                             config.UseStorage(HangfireUtil.GetMysqlStorage(connStrings.MySql));
                             break;
+
                         case HangfireDataStore.Sqlite:
                             config.UseStorage(HangfireUtil.GetSqliteStorage(hangfireConfig.Sqlite));
                             break;
+
                         case HangfireDataStore.Litedb:
                             config.UseStorage(HangfireUtil.GetLiteDbStorage(hangfireConfig.LiteDb));
                             break;
+
                         case HangfireDataStore.Redis:
                             config.UseStorage(HangfireUtil.GetRedisStorage(hangfireConfig.Redis));
                             break;
+
                         default:
                             Log.Warning("Unknown Hangfire DataStore");
                             break;
@@ -68,16 +73,17 @@ namespace WinTenDev.Zizi.Host.Extensions
             var serviceProvider = app.GetServiceProvider();
 
             var storageService = serviceProvider.GetRequiredService<StorageService>();
-            var lastFtlError = ErrorUtil.ReadErrorTextAsync().Result;
+            var parseError = ErrorUtil.ParseErrorTextAsync().Result;
+            var lastFtlError = parseError.FullText;
 
-            if (lastFtlError.ToLower().Contains("hangfire"))
+            if (lastFtlError.Contains("hangfire", StringComparison.CurrentCultureIgnoreCase))
             {
-                if (lastFtlError.Contains("Storage"))
+                if (lastFtlError.Contains("Storage", StringComparison.CurrentCultureIgnoreCase))
                 {
                     Log.Warning("Last error about Hangfire, seem need to Reset Storage");
-                    AsyncContext.Run(() => storageService.ResetHangfire());
+                    storageService.ResetHangfire(ResetTableMode.Truncate).WaitAndUnwrapException();
 
-                    "".SaveErrorToText();
+                    "".SaveErrorToText().WaitAndUnwrapException();
                 }
             }
 
@@ -87,8 +93,6 @@ namespace WinTenDev.Zizi.Host.Extensions
         public static IApplicationBuilder UseHangfireDashboardAndServer(this IApplicationBuilder app)
         {
             var serviceProvider = app.GetServiceProvider();
-            // var appConfig = app.ApplicationServices.GetRequiredService<AppConfig>();
-            // var hangfireConfig = appConfig.HangfireConfig;
             var hangfireConfig = serviceProvider.GetRequiredService<IOptionsSnapshot<HangfireConfig>>().Value;
 
             var baseUrl = hangfireConfig.BaseUrl;
